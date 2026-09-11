@@ -1,0 +1,21 @@
+<div class="flex flex-col gap-2">
+  @if (label()) {
+    <label class="text-sm font-medium text-text-primary">
+      {{ label() }}
+    </label>
+  }
+
+  <select
+    class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary-light"
+  >
+    <option value="" disabled selected>
+      {{ placeholder() }}
+    </option>
+
+    @for (option of options(); track option.value) {
+      <option [value]="option.value">
+        {{ option.label }}
+      </option>
+    }
+  </select>
+</div>

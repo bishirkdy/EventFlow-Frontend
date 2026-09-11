@@ -1,0 +1,121 @@
+<header class="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur">
+  <nav class="container-app">
+    <div class="flex h-16 items-center justify-between">
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center gap-2" (click)="closeMenu()">
+        <div
+          class="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-sm font-bold text-white"
+        >
+          E
+        </div>
+
+        <span class="text-xl font-bold tracking-tight text-text-primary"> EventFlow </span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden items-center gap-8 md:flex">
+        <a
+          routerLink="/events"
+          class="text-sm font-medium text-text-secondary transition hover:text-primary"
+        >
+          Events
+        </a>
+
+        <a
+          routerLink="/features"
+          class="text-sm font-medium text-text-secondary transition hover:text-primary"
+        >
+          Features
+        </a>
+
+        <a
+          routerLink="/about"
+          class="text-sm font-medium text-text-secondary transition hover:text-primary"
+        >
+          About
+        </a>
+      </div>
+
+      <!-- Desktop Actions -->
+      <div class="hidden items-center gap-3 md:flex">
+        <a
+          routerLink="/login"
+          class="px-3 py-2 text-sm font-medium text-text-primary transition hover:text-primary"
+        >
+          Sign In
+        </a>
+
+        <a
+          routerLink="/create-event"
+          class="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-white transition hover:bg-primary-dark"
+        >
+          Create Event
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="flex h-10 w-10 items-center justify-center rounded-md text-text-primary hover:bg-surface-soft md:hidden"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="isMenuOpen()"
+        aria-label="Toggle navigation"
+      >
+        @if (isMenuOpen()) {
+          <span class="text-xl">×</span>
+        } @else {
+          <span class="text-xl">☰</span>
+        }
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    @if (isMenuOpen()) {
+      <div class="border-t border-border py-4 md:hidden">
+        <div class="flex flex-col gap-1">
+          <a
+            routerLink="/events"
+            (click)="closeMenu()"
+            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
+          >
+            Events
+          </a>
+
+          <a
+            routerLink="/features"
+            (click)="closeMenu()"
+            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
+          >
+            Features
+          </a>
+
+          <a
+            routerLink="/about"
+            (click)="closeMenu()"
+            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
+          >
+            About
+          </a>
+
+          <div class="my-2 border-t border-border"></div>
+
+          <a
+            routerLink="/login"
+            (click)="closeMenu()"
+            class="rounded-md px-3 py-3 text-sm font-medium text-text-primary hover:bg-surface-soft"
+          >
+            Sign In
+          </a>
+
+          <a
+            routerLink="/create-event"
+            (click)="closeMenu()"
+            class="mt-1 flex h-10 items-center justify-center rounded-md bg-primary text-sm font-medium text-white hover:bg-primary-dark"
+          >
+            Create Event
+          </a>
+        </div>
+      </div>
+    }
+  </nav>
+</header>

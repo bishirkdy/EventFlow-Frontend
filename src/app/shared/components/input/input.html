@@ -1,0 +1,18 @@
+<div class="flex flex-col gap-2">
+  @if (label()) {
+    <label class="text-sm font-medium text-text-primary">
+      {{ label() }}
+
+      @if (required()) {
+        <span class="text-error">*</span>
+      }
+    </label>
+  }
+
+  <input
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [required]="required()"
+    class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
+  />
+</div>

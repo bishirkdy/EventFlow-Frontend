@@ -1,0 +1,11 @@
+<div
+  class="rounded-lg border px-4 py-3 text-sm"
+  [class]="{
+    'border-blue-200 bg-blue-50 text-info': variant() === 'info',
+    'border-green-200 bg-green-50 text-success': variant() === 'success',
+    'border-orange-200 bg-orange-50 text-warning': variant() === 'warning',
+    'border-red-200 bg-red-50 text-error': variant() === 'error',
+  }"
+>
+  {{ message() }}
+</div>

@@ -1,0 +1,128 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+/* Global EventFlow Design Variables */
+:root {
+  /* Brand */
+  --color-primary: #b5473a;
+  --color-primary-dark: #8f332a;
+  --color-primary-light: #fbe9e6;
+
+  /* Background */
+  --color-background: #faf8f6;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f5f2ef;
+
+  /* Text */
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #a8a29e;
+
+  /* Border */
+  --color-border: #e7e2de;
+  --color-border-dark: #d6d0cb;
+
+  /* Status */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: #3b82f6;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+}
+
+/* Tell Tailwind about the colors */
+@theme {
+  --color-primary: #b5473a;
+  --color-primary-dark: #8f332a;
+  --color-primary-light: #fbe9e6;
+
+  --color-background: #faf8f6;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f5f2ef;
+
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #a8a29e;
+
+  --color-border: #e7e2de;
+  --color-border-dark: #d6d0cb;
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: #3b82f6;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container-app {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.section {
+  padding-block: 80px;
+}
+
+.section-sm {
+  padding-block: 48px;
+}
+
+.heading-xl {
+  font-size: clamp(42px, 6vw, 72px);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.heading-lg {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.heading-md {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+
+.text-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.text-small {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+

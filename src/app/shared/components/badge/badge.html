@@ -1,0 +1,12 @@
+<span
+  class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
+  [class]="{
+    'bg-primary-light text-primary-dark': variant() === 'primary',
+    'bg-green-50 text-success': variant() === 'success',
+    'bg-orange-50 text-warning': variant() === 'warning',
+    'bg-red-50 text-error': variant() === 'error',
+    'bg-surface-soft text-text-secondary': variant() === 'neutral',
+  }"
+>
+  {{ label() }}
+</span>

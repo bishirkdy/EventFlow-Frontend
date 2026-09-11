@@ -1,0 +1,17 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+  <div class="w-full max-w-lg overflow-hidden rounded-xl bg-surface shadow-xl">
+    <div class="flex items-center justify-between border-b border-border px-6 py-4">
+      <h2 class="text-lg font-semibold text-text-primary">
+        {{ title() }}
+      </h2>
+
+      <button type="button" class="text-text-muted hover:text-text-primary" (click)="close.emit()">
+        ✕
+      </button>
+    </div>
+
+    <div class="p-6">
+      <ng-content />
+    </div>
+  </div>
+</div>

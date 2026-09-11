@@ -1,0 +1,18 @@
+<button
+  class="inline-flex items-center justify-center gap-2 font-medium transition duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+  [class]="{
+    'bg-primary text-white hover:bg-primary-dark': variant() === 'primary',
+
+    'border border-border bg-white text-text-primary hover:bg-surface-soft':
+      variant() === 'secondary',
+
+    'text-primary hover:bg-primary-light': variant() === 'ghost',
+    'bg-error text-white hover:opacity-90': variant() === 'danger',
+
+    'h-9 px-3 text-sm rounded-sm': size() === 'sm',
+    'h-10 px-4 text-sm rounded-md': size() === 'md',
+    'h-12 px-6 text-base rounded-md': size() === 'lg',
+  }"
+> 
+  {{ label() }}
+</button>
