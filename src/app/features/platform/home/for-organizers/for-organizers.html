@@ -1,0 +1,58 @@
+<section class="bg-primary py-20 sm:py-24 lg:py-32">
+  <div class="container-app">
+    <div class="grid items-center gap-14 lg:grid-cols-2 lg:gap-24">
+      <!-- Left Content -->
+      <div>
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
+          For Organizers
+        </span>
+
+        <h2
+          class="mt-5 max-w-xl text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-white sm:text-5xl lg:text-6xl"
+        >
+          Your event.
+          <br />
+          Your way.
+        </h2>
+
+        <p class="mt-7 max-w-xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
+          Build a professional event experience, manage everything from one workspace, and give your
+          participants a seamless journey from registration to the final moment.
+        </p>
+
+        <a
+          routerLink="/create-event"
+          class="mt-9 inline-flex items-center gap-3 rounded-md bg-white px-6 py-3.5 text-sm font-semibold text-primary transition duration-200 hover:bg-primary-light"
+        >
+          Create your event
+          <span>→</span>
+        </a>
+      </div>
+
+      <!-- Right Benefits -->
+      <div class="divide-y divide-white/20">
+        @for (benefit of benefits; track benefit.number) {
+          <div class="group py-7 first:pt-0 last:pb-0">
+            <div class="flex gap-5">
+              <!-- Number -->
+              <span class="pt-1 text-sm font-semibold tracking-[0.15em] text-white/50">
+                {{ benefit.number }}
+              </span>
+
+              <!-- Content -->
+              <div>
+                <h3 class="text-xl font-semibold text-white sm:text-2xl">
+                  {{ benefit.title }}
+                </h3>
+
+                <p class="mt-3 max-w-lg text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
+                  {{ benefit.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

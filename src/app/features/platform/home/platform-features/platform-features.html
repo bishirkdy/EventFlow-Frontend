@@ -1,0 +1,81 @@
+<section class="bg-background py-20 sm:py-24 lg:py-32">
+  <div class="container-app">
+    <!-- Section Header -->
+    <div class="max-w-3xl">
+      <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+        Platform capabilities
+      </span>
+
+      <h2
+        class="mt-5 text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-text-primary sm:text-5xl lg:text-6xl"
+      >
+        Everything you need
+        <span class="text-primary"> to run better events. </span>
+      </h2>
+
+      <p class="mt-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+        From planning and registration to attendance and analytics, EventFlow brings your entire
+        event experience together.
+      </p>
+    </div>
+
+    <!-- Features -->
+    <div class="mt-14 grid gap-3 sm:mt-16 lg:grid-cols-3">
+      @for (feature of features; track feature.title; let i = $index) {
+        <article
+          class="group relative min-h-75 overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 ease-out cursor-pointer sm:min-h-[320px]"
+          [class.lg:col-span-2]="activeFeature() === i"
+          [class.lg:col-span-1]="activeFeature() !== i"
+          (mouseenter)="setActive(i)"
+        >
+          <!-- Background Image -->
+          <img
+            [src]="feature.image"
+            [alt]="feature.title"
+            class="absolute inset-0 h-full w-full object-cover opacity-0 scale-105 transition-all duration-700 group-hover:opacity-100 group-hover:scale-100"
+            loading="lazy"
+          />
+
+          <!-- Overlay -->
+          <div
+            class="absolute inset-0 bg-black/55 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          ></div>
+
+          <!-- Content -->
+          <div
+            class="relative z-10 flex h-full min-h-[300px] flex-col justify-between p-6 sm:min-h-[320px] sm:p-8"
+          >
+            <!-- Number -->
+            <span
+              class="text-sm font-medium tracking-[0.15em] text-text-muted transition-colors duration-300 group-hover:text-white/70"
+            >
+              {{ (i + 1).toString().padStart(2, '0') }}
+            </span>
+
+            <!-- Bottom Content -->
+            <div>
+              <h3
+                class="max-w-lg text-2xl font-semibold tracking-tight text-text-primary transition-colors duration-300 group-hover:text-white sm:text-3xl"
+              >
+                {{ feature.title }}
+              </h3>
+
+              <p
+                class="mt-4 max-w-xl text-sm leading-6 text-text-secondary transition-all duration-500 group-hover:text-white/80 sm:text-base sm:leading-7"
+              >
+                {{ feature.description }}
+              </p>
+
+              <!-- Arrow -->
+              <div
+                class="mt-6 flex h-10 w-10 items-center justify-center rounded-full border border-border text-text-primary transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-text-primary"
+              >
+                →
+              </div>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

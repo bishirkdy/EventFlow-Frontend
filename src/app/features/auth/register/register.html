@@ -1,0 +1,202 @@
+<section class="min-h-[calc(100vh-80px)] bg-background">
+  <div class="mx-auto grid min-h-[calc(100vh-80px)] max-w-7xl lg:grid-cols-2">
+    <!-- Left: Visual -->
+    <div class="relative hidden overflow-hidden bg-primary lg:block">
+      <div class="absolute -left-32 -top-32 h-96 w-96 rounded-full border border-white/10"></div>
+
+      <div
+        class="absolute -bottom-40 -right-40 h-125 w-125 rounded-full border border-white/10"
+      ></div>
+
+      <div class="relative flex h-full items-center px-16">
+        <div class="max-w-lg">
+          <span class="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
+            EventFlow
+          </span>
+
+          <h2 class="mt-6 text-5xl font-bold leading-[1.05] tracking-[-0.04em] text-white">
+            Bring your next
+            <span class="text-white/60"> event to life. </span>
+          </h2>
+
+          <p class="mt-7 text-lg leading-8 text-white/70">
+            Create your event, build its experience, and manage everything from one connected
+            workspace.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="flex items-center justify-center px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
+      <div class="w-full max-w-md">
+        <!-- Heading -->
+        <div>
+          <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+            Get started
+          </span>
+
+          <h1 class="mt-4 text-4xl font-bold tracking-[-0.04em] text-text-primary sm:text-5xl">
+            Create your account
+          </h1>
+
+          <p class="mt-4 text-base leading-7 text-text-secondary">
+            Start building and managing your events with EventFlow.
+          </p>
+        </div>
+
+        <!-- Form -->
+        <form class="mt-9 space-y-5">
+          <!-- Name -->
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="firstName" class="mb-2 block text-sm font-medium text-text-primary">
+                First name
+              </label>
+
+              <input
+                id="firstName"
+                type="text"
+                placeholder="John"
+                autocomplete="given-name"
+                class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+              />
+            </div>
+
+            <div>
+              <label for="lastName" class="mb-2 block text-sm font-medium text-text-primary">
+                Last name
+              </label>
+
+              <input
+                id="lastName"
+                type="text"
+                placeholder="Doe"
+                autocomplete="family-name"
+                class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+              />
+            </div>
+          </div>
+
+          <!-- Username -->
+          <div>
+            <label for="username" class="mb-2 block text-sm font-medium text-text-primary">
+              Username
+            </label>
+
+            <input
+              id="username"
+              type="text"
+              placeholder="johndoe"
+              autocomplete="username"
+              class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="mb-2 block text-sm font-medium text-text-primary">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+            />
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="mb-2 block text-sm font-medium text-text-primary">
+              Password
+            </label>
+
+            <div class="relative">
+              <input
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                placeholder="Create a password"
+                autocomplete="new-password"
+                class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-14 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+              />
+
+              <button
+                type="button"
+                (click)="togglePassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-xs font-medium text-text-muted hover:text-text-primary"
+              >
+                {{ showPassword() ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div>
+            <label for="confirmPassword" class="mb-2 block text-sm font-medium text-text-primary">
+              Confirm password
+            </label>
+
+            <div class="relative">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+                class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-14 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+              />
+
+              <button
+                type="button"
+                (click)="toggleConfirmPassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-xs font-medium text-text-muted hover:text-text-primary"
+              >
+                {{ showConfirmPassword() ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Terms -->
+          <label class="flex cursor-pointer items-start gap-3">
+            <input type="checkbox" class="mt-1 h-4 w-4 rounded border-border accent-primary" />
+
+            <span class="text-sm leading-5 text-text-secondary">
+              I agree to the
+              <a href="#" class="font-medium text-primary hover:text-primary-dark"> Terms </a>
+              and
+              <a href="#" class="font-medium text-primary hover:text-primary-dark">
+                Privacy Policy </a
+              >.
+            </span>
+          </label>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="h-12 w-full rounded-md bg-primary text-sm font-semibold text-white transition duration-200 hover:bg-primary-dark"
+          >
+            Create Account
+          </button>
+        </form>
+
+        <!-- Login -->
+        <p class="mt-8 text-center text-sm text-text-secondary">
+          Already have an account?
+
+          <a routerLink="/login" class="font-semibold text-primary hover:text-primary-dark">
+            Sign in
+          </a>
+        </p>
+
+        <!-- Back -->
+        <div class="mt-6 text-center">
+          <a routerLink="/" class="text-sm text-text-muted transition hover:text-primary">
+            ← Back to EventFlow
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
