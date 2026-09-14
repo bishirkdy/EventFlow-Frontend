@@ -1,7 +1,7 @@
 <section class="relative overflow-hidden">
   <!-- Background decoration -->
   <div
-    class="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary-light opacity-60 blur-3xl"></div>
+    class="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary-light opacity-60 blur-3xl">
   </div>
 
   <div
@@ -17,18 +17,15 @@
           <span
             class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-primary">
             @if (currentUser(); as user) {
-
             <p class="text-sm font-medium text-primary">
               Welcome back, {{ user.firstName }} 👋
             </p>
-
             } @else {
-
             <p class="text-sm font-medium text-primary">
               The modern event platform
             </p>
-
             }
+          </span>
         </div>
 
         <!-- Heading -->
