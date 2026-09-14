@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 interface PlatformFeature {
   title: string;
@@ -8,7 +9,7 @@ interface PlatformFeature {
 
 @Component({
   selector: 'app-platform-features',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './platform-features.html',
   styleUrl: './platform-features.css',
 })

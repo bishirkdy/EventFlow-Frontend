@@ -1,121 +1,220 @@
 <header class="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur">
   <nav class="container-app">
     <div class="flex h-16 items-center justify-between">
+
       <!-- Logo -->
       <a routerLink="/" class="flex items-center gap-2" (click)="closeMenu()">
-        <div
-          class="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-sm font-bold text-white"
-        >
+        <div class="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-sm font-bold text-white">
           E
         </div>
 
-        <span class="text-xl font-bold tracking-tight text-text-primary"> EventFlow </span>
+        <span class="text-xl font-bold tracking-tight text-text-primary">
+          EventFlow
+        </span>
       </a>
+
 
       <!-- Desktop Navigation -->
       <div class="hidden items-center gap-8 md:flex">
-        <a
-          routerLink="/events"
-          class="text-sm font-medium text-text-secondary transition hover:text-primary"
-        >
+        <a routerLink="/events" class="text-sm font-medium text-text-secondary transition hover:text-primary">
           Events
         </a>
 
-        <a
-          routerLink="/features"
-          class="text-sm font-medium text-text-secondary transition hover:text-primary"
-        >
+        <a routerLink="/features" class="text-sm font-medium text-text-secondary transition hover:text-primary">
           Features
         </a>
 
-        <a
-          routerLink="/about"
-          class="text-sm font-medium text-text-secondary transition hover:text-primary"
-        >
+        <a routerLink="/about" class="text-sm font-medium text-text-secondary transition hover:text-primary">
           About
         </a>
       </div>
 
+
       <!-- Desktop Actions -->
-      <div class="hidden items-center gap-3 md:flex">
-        <a
-          routerLink="/login"
-          class="px-3 py-2 text-sm font-medium text-text-primary transition hover:text-primary"
-        >
+      <div class="hidden items-center gap-4 md:flex">
+
+        @if (currentUser(); as user) {
+
+        <!-- Profile -->
+        <div class="relative">
+
+          <!-- Avatar -->
+          <button type="button" (click)="toggleProfileMenu()" class="flex h-10 w-10 items-center justify-center rounded-full
+                     bg-primary text-sm font-semibold text-white
+                     transition hover:opacity-90" aria-label="Open profile menu">
+
+            {{ user.firstName.charAt(0).toUpperCase() }}
+
+          </button>
+
+
+          <!-- Profile Popup -->
+          @if (isProfileMenuOpen()) {
+
+          <div class="absolute right-0 top-12 z-50 w-64 overflow-hidden
+                       rounded-lg border border-border bg-surface
+                       shadow-lg">
+
+            <!-- User Info -->
+            <div class="border-b border-border px-4 py-4">
+
+              <div class="flex items-center gap-3">
+
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center
+                             rounded-full bg-primary text-sm font-semibold text-white">
+                  {{ user.firstName.charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold text-text-primary">
+                    {{ user.firstName }} {{ user.lastName }}
+                  </p>
+
+                  <p class="truncate text-xs text-text-secondary">
+                    {{ user.email }}
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Menu -->
+            <div class="p-1">
+
+              <a routerLink="/profile" (click)="closeProfileMenu()" class="flex items-center rounded-md px-3 py-2.5 text-sm
+                           text-text-secondary hover:bg-surface-soft hover:text-primary">
+                Profile
+              </a>
+
+              <button type="button" (click)="logout()" class="flex w-full items-center rounded-md px-3 py-2.5
+                           text-left text-sm text-red-600 hover:bg-red-50">
+                Logout
+              </button>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        } @else {
+
+        <!-- Sign In -->
+        <a routerLink="/login" class="text-sm font-medium text-text-secondary hover:text-primary">
           Sign In
         </a>
 
-        <a
-          routerLink="/create-event"
-          class="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-white transition hover:bg-primary-dark"
-        >
+        }
+
+
+        <!-- Create Event -->
+        <a routerLink="/create-event" class="inline-flex h-10 items-center rounded-md bg-primary
+                 px-4 text-sm font-medium text-white transition
+                 hover:bg-primary-dark">
           Create Event
         </a>
+
       </div>
 
+
       <!-- Mobile Menu Button -->
-      <button
-        type="button"
-        class="flex h-10 w-10 items-center justify-center rounded-md text-text-primary hover:bg-surface-soft md:hidden"
-        (click)="toggleMenu()"
-        [attr.aria-expanded]="isMenuOpen()"
-        aria-label="Toggle navigation"
-      >
+      <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md
+               text-text-primary hover:bg-surface-soft md:hidden" (click)="toggleMenu()"
+        [attr.aria-expanded]="isMenuOpen()" aria-label="Toggle navigation">
+
         @if (isMenuOpen()) {
-          <span class="text-xl">×</span>
+        <span class="text-xl">×</span>
         } @else {
-          <span class="text-xl">☰</span>
+        <span class="text-xl">☰</span>
         }
+
       </button>
+
     </div>
+
 
     <!-- Mobile Navigation -->
     @if (isMenuOpen()) {
-      <div class="border-t border-border py-4 md:hidden">
-        <div class="flex flex-col gap-1">
-          <a
-            routerLink="/events"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
-          >
-            Events
-          </a>
 
-          <a
-            routerLink="/features"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
-          >
-            Features
-          </a>
+    <div class="border-t border-border py-4 md:hidden">
 
-          <a
-            routerLink="/about"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
-          >
-            About
-          </a>
+      <div class="flex flex-col gap-1">
 
-          <div class="my-2 border-t border-border"></div>
+        <a routerLink="/events" (click)="closeMenu()" class="rounded-md px-3 py-3 text-sm font-medium
+                   text-text-secondary hover:bg-surface-soft hover:text-primary">
+          Events
+        </a>
 
-          <a
-            routerLink="/login"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-primary hover:bg-surface-soft"
-          >
-            Sign In
-          </a>
+        <a routerLink="/features" (click)="closeMenu()" class="rounded-md px-3 py-3 text-sm font-medium
+                   text-text-secondary hover:bg-surface-soft hover:text-primary">
+          Features
+        </a>
 
-          <a
-            routerLink="/create-event"
-            (click)="closeMenu()"
-            class="mt-1 flex h-10 items-center justify-center rounded-md bg-primary text-sm font-medium text-white hover:bg-primary-dark"
-          >
-            Create Event
-          </a>
+        <a routerLink="/about" (click)="closeMenu()" class="rounded-md px-3 py-3 text-sm font-medium
+                   text-text-secondary hover:bg-surface-soft hover:text-primary">
+          About
+        </a>
+
+        <div class="my-2 border-t border-border"></div>
+
+
+        @if (currentUser(); as user) {
+
+        <!-- Mobile User -->
+        <div class="flex items-center gap-3 px-3 py-3">
+
+          <div class="flex h-10 w-10 items-center justify-center rounded-full
+                       bg-primary text-sm font-semibold text-white">
+            {{ user.firstName.charAt(0).toUpperCase() }}
+          </div>
+
+          <div class="min-w-0">
+            <p class="text-sm font-semibold text-text-primary">
+              {{ user.firstName }} {{ user.lastName }}
+            </p>
+
+            <p class="truncate text-xs text-text-secondary">
+              {{ user.email }}
+            </p>
+          </div>
+
         </div>
+
+        <a routerLink="/profile" (click)="closeMenu()" class="rounded-md px-3 py-3 text-sm font-medium
+                     text-text-primary hover:bg-surface-soft">
+          Profile
+        </a>
+
+        <button type="button" (click)="logout()" class="w-full rounded-md px-3 py-3 text-left text-sm
+                     font-medium text-red-600 hover:bg-red-50">
+          Logout
+        </button>
+
+        } @else {
+
+        <a routerLink="/login" (click)="closeMenu()" class="rounded-md px-3 py-3 text-sm font-medium
+                     text-text-primary hover:bg-surface-soft">
+          Sign In
+        </a>
+
+        }
+
+
+        <a routerLink="/create-event" (click)="closeMenu()" class="mt-1 flex h-10 items-center justify-center
+                   rounded-md bg-primary text-sm font-medium text-white
+                   hover:bg-primary-dark">
+          Create Event
+        </a>
+
       </div>
+
+    </div>
+
     }
+
   </nav>
 </header>

@@ -46,7 +46,7 @@
         </div>
 
         <!-- Form -->
-        <form class="mt-9 space-y-5">
+        <form (ngSubmit)="register()" class="mt-9 space-y-5">
           <!-- Name -->
           <div class="grid gap-5 sm:grid-cols-2">
             <div>
@@ -56,6 +56,7 @@
 
               <input
                 id="firstName"
+                [(ngModel)]="firstName"
                 type="text"
                 placeholder="John"
                 autocomplete="given-name"
@@ -70,6 +71,7 @@
 
               <input
                 id="lastName"
+                [(ngModel)]="lastName"
                 type="text"
                 placeholder="Doe"
                 autocomplete="family-name"
@@ -86,6 +88,7 @@
 
             <input
               id="username"
+              [(ngModel)]="username"
               type="text"
               placeholder="johndoe"
               autocomplete="username"
@@ -101,6 +104,7 @@
 
             <input
               id="email"
+              [(ngModel)]="email"
               type="email"
               placeholder="you@example.com"
               autocomplete="email"
@@ -117,6 +121,7 @@
             <div class="relative">
               <input
                 id="password"
+                [(ngModel)]="password"
                 [type]="showPassword() ? 'text' : 'password'"
                 placeholder="Create a password"
                 autocomplete="new-password"
@@ -142,6 +147,7 @@
             <div class="relative">
               <input
                 id="confirmPassword"
+                [(ngModel)]="confirmPassword"
                 [type]="showConfirmPassword() ? 'text' : 'password'"
                 placeholder="Confirm your password"
                 autocomplete="new-password"

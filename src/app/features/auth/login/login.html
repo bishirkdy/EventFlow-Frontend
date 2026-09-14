@@ -8,7 +8,6 @@
           <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
             Welcome back
           </span>
-
           <h1 class="mt-4 text-4xl font-bold tracking-[-0.04em] text-text-primary sm:text-5xl">
             Sign in to EventFlow
           </h1>
@@ -19,20 +18,16 @@
         </div>
 
         <!-- Form -->
-        <form class="mt-10 space-y-5">
+        <form (ngSubmit)="login()" class="mt-10 space-y-5">
           <!-- Email -->
           <div>
             <label for="email" class="mb-2 block text-sm font-medium text-text-primary">
               Email
             </label>
 
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
+            <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="Enter your email"
               autocomplete="email"
-              class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
-            />
+              class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light" />
           </div>
 
           <!-- Password -->
@@ -40,45 +35,33 @@
             <div class="mb-2 flex items-center justify-between">
               <label for="password" class="text-sm font-medium text-text-primary"> Password </label>
 
-              <a
-                routerLink="/forgot-password"
-                class="text-sm font-medium text-primary hover:text-primary-dark"
-              >
+              <a routerLink="/forgot-password" class="text-sm font-medium text-primary hover:text-primary-dark">
                 Forgot password?
               </a>
             </div>
 
             <div class="relative">
-              <input
-                id="password"
-                [type]="showPassword() ? 'text' : 'password'"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-                class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-12 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
-              />
+              <input id="password" name="password" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password"
+                placeholder="Enter your password" autocomplete="current-password"
+                class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-12 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light" />
 
-              <button
-                type="button"
-                (click)="togglePassword()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-xs font-medium text-text-muted hover:text-text-primary"
-              >
+              <button type="button" (click)="togglePassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-xs font-medium text-text-muted hover:text-text-primary">
                 {{ showPassword() ? 'Hide' : 'Show' }}
               </button>
             </div>
           </div>
 
-          <!-- Remember -->
+          <!-- Remember
           <label class="flex cursor-pointer items-center gap-3">
             <input type="checkbox" class="h-4 w-4 rounded border-border accent-primary" />
 
             <span class="text-sm text-text-secondary"> Remember me </span>
-          </label>
+          </label> -->
 
           <!-- Submit -->
-          <button
-            type="submit"
-            class="h-12 w-full rounded-md bg-primary text-sm font-semibold text-white transition duration-200 hover:bg-primary-dark"
-          >
+          <button type="submit"
+            class="h-12 w-full rounded-md bg-primary text-sm font-semibold text-white transition duration-200 hover:bg-primary-dark">
             Sign In
           </button>
         </form>
@@ -106,9 +89,7 @@
       <!-- Decorative circle -->
       <div class="absolute -right-32 -top-32 h-96 w-96 rounded-full border border-white/10"></div>
 
-      <div
-        class="absolute -bottom-40 -left-40 h-125 w-125 rounded-full border border-white/10"
-      ></div>
+      <div class="absolute -bottom-40 -left-40 h-125 w-125 rounded-full border border-white/10"></div>
 
       <!-- Content -->
       <div class="relative flex h-full items-center px-16">
