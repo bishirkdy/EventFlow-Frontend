@@ -30,20 +30,20 @@ export class AuthService {
   currentUser = signal<UserProfile | null>(null);
 
   login(data: LoginRequest): Observable<any> {
-    return this.http.post(this.api.getUrl('/auth/v1/login'), data, { withCredentials: true });
+    return this.http.post(this.api.getUrl('/v1/auth/login'), data, { withCredentials: true });
   }
 
   register(request: RegisterRequest): Observable<any> {
-    return this.http.post(this.api.getUrl('/auth/v1/register'), request, { withCredentials: true })
+    return this.http.post(this.api.getUrl('/v1/auth/register'), request, { withCredentials: true })
   }
 
   logout(): Observable<any> {
-    return this.http.post(this.api.getUrl("/auth/logout"), {})
+    return this.http.post(this.api.getUrl("/v1/auth/logout"), {})
   }
 
   getProfile(): Observable<ApiResponse<UserProfile>> {
     return this.http.get<ApiResponse<UserProfile>>(
-      `${this.api.getUrl('/auth/v1/profile')}`,
+      `${this.api.getUrl('/v1/auth/profile')}`,
       {
         withCredentials: true,
       }

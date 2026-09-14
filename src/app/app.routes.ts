@@ -18,10 +18,16 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./features/platform/home/home').then((m) => m.Home),
       },
+      {
+        path: 'create-event',
+        loadComponent: () =>
+          import('./features/platform/create-event/create-event')
+            .then(m => m.CreateEvent),
+      },
     ],
   },
   {
     path: '**',
     redirectTo: '',
-  },
+  }
 ];

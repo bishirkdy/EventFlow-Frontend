@@ -1,0 +1,267 @@
+<div class="min-h-screen bg-background">
+
+  <!-- Main -->
+  <main class="px-4 py-12 sm:py-16">
+    <div class="mx-auto max-w-5xl">
+
+      <!-- Intro -->
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-3">
+          <span class="h-4 w-8 bg-primary"></span>
+
+          <span class="text-sm font-semibold uppercase tracking-wider text-primary">
+            Create an Event
+          </span>
+        </div>
+
+        <h1 class="mt-5 text-4xl font-semibold tracking-tight text-text-primary sm:text-5xl">
+          Let's create something
+          <span class="text-primary">great.</span>
+        </h1>
+
+        <!-- <p class="mt-5 max-w-xl text-base leading-7 text-text-secondary">
+          Start with the essentials. You can build your event website,
+          schedule, registration, and participant experience afterwards.
+        </p> -->
+      </div>
+
+      <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <!-- Form card -->
+        <form
+          (ngSubmit)="createEvent()"
+          class="rounded-2xl border border-border bg-surface p-6 shadow-sm sm:p-8"
+        >
+
+          <!-- Section heading -->
+          <div class="border-b border-border pb-6">
+            <h2 class="text-xl font-semibold tracking-tight">
+              Event details
+            </h2>
+
+            <p class="mt-1 text-sm text-text-secondary">
+              Tell us a little about your event.
+            </p>
+          </div>
+
+          <!-- Event name -->
+          <div class="mt-7">
+            <label
+              for="eventName"
+              class="text-sm font-medium text-text-primary"
+            >
+              Event name
+            </label>
+
+            <input
+              id="eventName"
+              type="text"
+              name="eventName"
+              [(ngModel)]="eventName"
+              required
+              placeholder="e.g. Kerala Tech Summit 2026"
+              class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+            />
+          </div>
+
+          <!-- Event type -->
+          <div class="mt-6">
+            <label
+              for="eventType"
+              class="text-sm font-medium text-text-primary"
+            >
+              Event type
+            </label>
+
+            <select
+              id="eventType"
+              name="eventType"
+              [(ngModel)]="eventType"
+              required
+              class="mt-2 h-12 w-full appearance-none rounded-lg border border-border bg-background px-4 text-sm text-text-primary outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+            >
+              <option value="" disabled>
+                Choose an event type
+              </option>
+
+              @for (type of eventTypes; track type) {
+                <option [value]="type">
+                  {{ type }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <!-- Dates -->
+          <div class="mt-6 grid gap-6 sm:grid-cols-2">
+
+            <div>
+              <label
+                for="startDate"
+                class="text-sm font-medium text-text-primary"
+              >
+                Start date
+              </label>
+
+              <input
+                id="startDate"
+                type="date"
+                name="startDate"
+                [(ngModel)]="startDate"
+                required
+                class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+              />
+            </div>
+
+            <div>
+              <label
+                for="endDate"
+                class="text-sm font-medium text-text-primary"
+              >
+                End date
+              </label>
+
+              <input
+                id="endDate"
+                type="date"
+                name="endDate"
+                [(ngModel)]="endDate"
+                required
+                class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+              />
+            </div>
+
+          </div>
+
+          <!-- Location -->
+          <!-- <div class="mt-6">
+            <label
+              for="location"
+              class="text-sm font-medium text-text-primary"
+            >
+              Location
+            </label>
+
+            <input
+              id="location"
+              type="text"
+              name="location"
+              [(ngModel)]="location"
+              required
+              placeholder="e.g. Calicut, Kerala"
+              class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+            />
+          </div> -->
+
+          <!-- Description -->
+          <div class="mt-6">
+            <div class="flex items-center justify-between">
+              <label
+                for="description"
+                class="text-sm font-medium text-text-primary"
+              >
+                Description
+              </label>
+
+              <span class="text-xs text-text-muted">
+                Optional
+              </span>
+            </div>
+
+            <textarea
+              id="description"
+              name="description"
+              [(ngModel)]="description"
+              rows="5"
+              placeholder="Tell people what makes your event special..."
+              class="mt-2 w-full resize-none rounded-lg border border-border bg-background px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-text-muted focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+            ></textarea>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-8 flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
+
+            <button
+              type="button"
+              (click)="cancel()"
+              class="h-11 rounded-lg border border-border bg-white px-5 text-sm font-medium text-text-primary transition hover:bg-surface-soft"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="h-11 rounded-lg bg-primary px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
+            >
+              Create an Event
+            </button>
+
+          </div>
+
+        </form>
+
+        <!-- Side information -->
+        <aside class="hidden lg:block">
+
+          <div class="sticky top-16 rounded-2xl bg-primary p-7 text-white">
+
+            <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-white/15">
+              <span class="text-lg">✦</span>
+            </div>
+
+            <h3 class="mt-6 text-xl font-semibold">
+              Your event,
+              your experience.
+            </h3>
+
+            <p class="mt-3 text-sm leading-6 text-white/75">
+              Once your event is created, you'll be able to customize
+              every part of the experience.
+            </p>
+
+            <div class="mt-7 space-y-4">
+
+              <div class="flex gap-3">
+                <span class="mt-0.5 text-sm">01</span>
+                <div>
+                  <p class="text-sm font-medium">
+                    Event website
+                  </p>
+                  <p class="mt-1 text-xs leading-5 text-white/65">
+                    Pages, sections and navigation
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
+                <span class="mt-0.5 text-sm">02</span>
+                <div>
+                  <p class="text-sm font-medium">
+                    Schedule
+                  </p>
+                  <p class="mt-1 text-xs leading-5 text-white/65">
+                    Sessions, venues and speakers
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
+                <span class="mt-0.5 text-sm">03</span>
+                <div>
+                  <p class="text-sm font-medium">
+                    Participants
+                  </p>
+                  <p class="mt-1 text-xs leading-5 text-white/65">
+                    Registration and attendance
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+</div>
