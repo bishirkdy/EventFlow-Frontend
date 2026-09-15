@@ -1,1 +1,58 @@
-<p>features works!</p>
+<div class="space-y-4">
+
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-semibold text-stone-900">
+            Features
+        </h1>
+
+        <button type="button" (click)="resetFeatures()"
+            class="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50">
+            Reset Features
+        </button>
+    </div>
+
+    @if (loading()) {
+    <p class="text-stone-500">
+        Loading features...
+    </p>
+    }
+
+    @if (error()) {
+    <p class="text-red-600">
+        {{ error() }}
+    </p>
+    }
+
+    @if (!loading() && !error()) {
+    @if (features().length === 0) {
+    <p class="text-stone-500">
+        No features found.
+    </p>
+    }
+
+    @for (feature of features(); track feature.id) {
+    <div class="rounded-lg border border-stone-200 bg-white p-4">
+        <div class="flex items-center justify-between">
+
+            <div>
+                <p class="font-medium text-stone-900">
+                    Feature ID: {{ feature.featureId }}
+                </p>
+
+                <p class="mt-1 text-sm text-stone-500">
+                    {{ feature.isEnabled ? 'Enabled' : 'Disabled' }}
+                </p>
+            </div>
+
+            <button type="button" (click)="toggleFeature(feature)"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-white" [class.bg-red-600]="feature.isEnabled"
+                [class.bg-[#B5473A]]="!feature.isEnabled">
+                {{ feature.isEnabled ? 'Disable' : 'Enable' }}
+            </button>
+
+        </div>
+    </div>
+    }
+    }
+
+</div>
