@@ -1,1 +1,89 @@
-<p>event-settings works!</p>
+<div class="p-6">
+
+  <div class="mb-6">
+    <h1 class="text-2xl font-semibold text-[#1C1917]">
+      Event Settings
+    </h1>
+
+    <p class="mt-1 text-sm text-[#A8A29E]">
+      Configure features and behaviour for this event.
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="rounded-xl border border-[#E7E2DE] bg-white p-6">
+      Loading settings...
+    </div>
+  }
+
+  @if (error(); as message) {
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+      {{ message }}
+    </div>
+  }
+
+  @if (settings(); as currentSettings) {
+
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#57534E]">Registration</p>
+
+        <p class="mt-2 font-semibold"
+           [class.text-green-600]="currentSettings.registrationEnabled"
+           [class.text-red-600]="!currentSettings.registrationEnabled">
+          {{ currentSettings.registrationEnabled ? 'Enabled' : 'Disabled' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#57534E]">Attendance</p>
+
+        <p class="mt-2 font-semibold"
+           [class.text-green-600]="currentSettings.attendanceEnabled"
+           [class.text-red-600]="!currentSettings.attendanceEnabled">
+          {{ currentSettings.attendanceEnabled ? 'Enabled' : 'Disabled' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#57534E]">Feedback</p>
+
+        <p class="mt-2 font-semibold"
+           [class.text-green-600]="currentSettings.feedbackEnabled"
+           [class.text-red-600]="!currentSettings.feedbackEnabled">
+          {{ currentSettings.feedbackEnabled ? 'Enabled' : 'Disabled' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#57534E]">Certificates</p>
+
+        <p class="mt-2 font-semibold"
+           [class.text-green-600]="currentSettings.certificateEnabled"
+           [class.text-red-600]="!currentSettings.certificateEnabled">
+          {{ currentSettings.certificateEnabled ? 'Enabled' : 'Disabled' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#57534E]">Gallery</p>
+
+        <p class="mt-2 font-semibold"
+           [class.text-green-600]="currentSettings.galleryEnabled"
+           [class.text-red-600]="!currentSettings.galleryEnabled">
+          {{ currentSettings.galleryEnabled ? 'Enabled' : 'Disabled' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#57534E]">Default Language</p>
+
+        <p class="mt-2 font-semibold text-[#1C1917]">
+          {{ currentSettings.defaultLanguage }}
+        </p>
+      </div>
+
+    </div>
+  }
+</div>

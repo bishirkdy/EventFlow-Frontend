@@ -1,1 +1,45 @@
-<p>venue-details works!</p>
+@if (loading()) {
+<p class="text-stone-500">Loading venue...</p>
+}
+
+@if (error()) {
+<p class="text-red-600">{{ error() }}</p>
+}
+
+@if (venue(); as venue) {
+<div class="max-w-2xl">
+    <h1 class="text-2xl font-semibold text-stone-900">
+        {{ venue.name }}
+    </h1>
+
+    <div class="mt-6 space-y-4">
+        <div>
+            <p class="text-sm text-stone-500">Description</p>
+            <p class="text-stone-900">
+                {{ venue.description || 'No description' }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-stone-500">Address</p>
+            <p class="text-stone-900">
+                {{ venue.address || 'No address' }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-stone-500">Capacity</p>
+            <p class="text-stone-900">
+                {{ venue.capacity }}
+            </p>
+        </div>
+
+        <div>
+            <p class="text-sm text-stone-500">Status</p>
+            <p class="text-stone-900">
+                {{ venue.isActive ? 'Active' : 'Inactive' }}
+            </p>
+        </div>
+    </div>
+</div>
+}

@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-event-details',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })
-export class EventDetails {}
+export class EventDetails {
+  private eventState = inject(OrganizerEventStateService);
+  event = this.eventState.event;
+}

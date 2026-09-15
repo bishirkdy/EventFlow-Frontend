@@ -1,1 +1,59 @@
-<p>event-details works!</p>
+<div class="p-6">
+  @if (event(); as currentEvent) {
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold text-[#1C1917]">
+        Event Details
+      </h1>
+
+      <p class="mt-1 text-sm text-[#A8A29E]">
+        View your event information
+      </p>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#A8A29E]">Event Name</p>
+        <p class="mt-1 font-medium text-[#1C1917]">
+          {{ currentEvent.name }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#A8A29E]">Event Type</p>
+        <p class="mt-1 font-medium text-[#1C1917]">
+          {{ currentEvent.eventType }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#A8A29E]">Start Date</p>
+        <p class="mt-1 font-medium text-[#1C1917]">
+          {{ currentEvent.startDate | date:'medium' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#A8A29E]">End Date</p>
+        <p class="mt-1 font-medium text-[#1C1917]">
+          {{ currentEvent.endDate | date:'medium' }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#A8A29E]">Timezone</p>
+        <p class="mt-1 font-medium text-[#1C1917]">
+          {{ currentEvent.timeZone }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
+        <p class="text-sm text-[#A8A29E]">Status</p>
+        <p class="mt-1 font-medium text-[#1C1917]">
+          {{ currentEvent.status }}
+        </p>
+      </div>
+
+    </div>
+  }
+</div>
