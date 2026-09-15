@@ -1,1 +1,67 @@
-<p>pages works!</p>
+<div class="space-y-4">
+
+    <h1 class="text-2xl font-semibold text-stone-900">
+        Event Pages
+    </h1>
+
+    @if (loading()) {
+    <p class="text-stone-500">
+        Loading pages...
+    </p>
+    }
+
+    @if (error()) {
+    <p class="text-red-600">
+        {{ error() }}
+    </p>
+    }
+
+    @if (!loading() && !error()) {
+
+    @if (pages().length === 0) {
+    <p class="text-stone-500">
+        No pages found.
+    </p>
+    }
+
+    @for (page of pages(); track page.id) {
+    <div class="rounded-lg border border-stone-200 bg-white p-4">
+
+        <h2 class="font-medium text-stone-900">
+            {{ page.name }}
+        </h2>
+
+        <p class="mt-1 text-sm text-stone-500">
+            /{{ page.slug }}
+        </p>
+
+        <p class="mt-1 text-sm text-stone-500">
+            Type: {{ page.pageType }}
+        </p>
+
+        <p class="mt-1 text-sm text-stone-500">
+            {{ page.isPublished ? 'Published' : 'Draft' }}
+        </p>
+
+        <div class="mt-4">
+            @if (!page.isPublished) {
+            <button type="button" (click)="publishPage(page)"
+                class="rounded-lg bg-[#B5473A] px-4 py-2 text-sm font-medium text-white">
+                Publish
+            </button>
+            } @else {
+            <button type="button" (click)="unpublishPage(page)"
+                class="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700">
+                Unpublish
+            </button>
+            <button type="button" (click)="deletePage(page)"
+                class="ml-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
+                Delete
+            </button>
+            }
+        </div>
+    </div>
+    }
+    }
+
+</div>
