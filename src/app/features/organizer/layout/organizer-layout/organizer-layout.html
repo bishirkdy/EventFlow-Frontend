@@ -10,56 +10,17 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="p-4">
-            <a routerLink="overview"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Overview
+        <nav class="space-y-1 px-3">
+
+            @for (item of navItems(); track item.route) {
+
+            <a [routerLink]="[item.route]"
+                class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
+                {{ item.label }}
             </a>
 
-            <a routerLink="details"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Event Details
-            </a>
+            }
 
-            <a routerLink="sections"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Sections
-            </a>
-
-            <a routerLink="venues"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Venues
-            </a>
-
-            <a routerLink="sessions"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Sessions
-            </a>
-
-            <a routerLink="registration"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Registration
-            </a>
-
-            <a routerLink="attendance"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Attendance
-            </a>
-
-            <a routerLink="pages"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Pages
-            </a>
-
-            <a routerLink="navigation"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Navigation
-            </a>
-
-            <a routerLink="settings"
-                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
-                Settings
-            </a>
         </nav>
     </aside>
 

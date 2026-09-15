@@ -46,9 +46,18 @@ export class EventService {
     );
   }
 
-  getMyEvents() :  Observable<ApiResponse<Event[]>> {
+  getMyEvents(): Observable<ApiResponse<Event[]>> {
     return this.http.get<ApiResponse<Event[]>>(`${this.api.getUrl('/v1/events/my-events')}`, {
       withCredentials: true,
     });
+  }
+
+  getEventById(eventId: string): Observable<ApiResponse<Event>> {
+    return this.http.get<ApiResponse<Event>>(
+      `${this.api.getUrl(`/v1/events/${eventId}`)}`,
+      {
+        withCredentials: true,
+      }
+    );
   }
 }
