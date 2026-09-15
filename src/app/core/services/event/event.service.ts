@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Api } from '../api';
 import { ApiResponse } from '../../models/api-response';
 import { Observable } from 'rxjs';
+import { Event } from '../../models/event/event.model';
 
 
 export interface CreateEventRequest {
@@ -24,12 +25,16 @@ export interface CreateEventResponse {
   timeZone: string;
 }
 
+
+
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
   private http = inject(HttpClient);
   private api = inject(Api);
+
+  events: Event[] = [];
 
   createEvent(request: CreateEventRequest): Observable<ApiResponse<CreateEventResponse>> {
     return this.http.post<ApiResponse<CreateEventResponse>>(
@@ -39,5 +44,11 @@ export class EventService {
         withCredentials: true,
       }
     );
+  }
+
+  getMyEvents() :  Observable<ApiResponse<Event[]>> {
+    return this.http.get<ApiResponse<Event[]>>(`${this.api.getUrl('/v1/events/my-events')}`, {
+      withCredentials: true,
+    });
   }
 }

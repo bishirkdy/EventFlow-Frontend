@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { Api } from '../api';
 import { ApiResponse } from '../../models/api-response';
 import { UserProfile } from '../../models/user-profile';
@@ -50,15 +50,17 @@ export class AuthService {
     );
   }
 
-  loadCurrentUser(): void {
-    this.getProfile().subscribe({
-      next: (response) => {
+  loadCurrentUser(): Observable<UserProfile | null> {
+    return this.getProfile().pipe(
+      tap((response) => {
         this.currentUser.set(response.data);
-      },
-      error: () => {
+      }),
+      map((response) => response.data),
+      catchError(() => {
         this.currentUser.set(null);
-      },
-    });
+        return of(null);
+      })
+    );
   }
 
   clearCurrentUser(): void {

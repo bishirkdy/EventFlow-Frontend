@@ -1,0 +1,98 @@
+<div class="min-h-screen bg-[#FAF8F6] p-6 md:p-8">
+
+    <!-- Header -->
+    <div class="mx-auto max-w-7xl">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-semibold text-[#1C1917]">
+                    My Events
+                </h1>
+
+                <p class="mt-1 text-sm text-[#57534E]">
+                    Manage the events you have created.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Events -->
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+            @for (event of events(); track event.id) {
+            <div class="group rounded-xl border border-[#E7E2DE] bg-white p-5
+                 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+                <!-- Event type -->
+                <div class="flex items-start justify-between">
+                    <span class="rounded-full bg-[#FBE9E6] px-3 py-1 text-xs font-medium text-[#8F332A]">
+                        {{ event.eventType }}
+                    </span>
+
+                    <span class="rounded-full px-3 py-1 text-xs font-medium"
+                        [class.bg-green-50]="event.status === 'Published'"
+                        [class.text-green-700]="event.status === 'Published'"
+                        [class.bg-orange-50]="event.status === 'Draft'"
+                        [class.text-orange-700]="event.status === 'Draft'">
+                        {{ event.status }}
+                    </span>
+                </div>
+
+                <!-- Name -->
+                <h2 class="mt-5 text-lg font-semibold text-[#1C1917]">
+                    {{ event.name }}
+                </h2>
+
+                <!-- Description -->
+                @if (event.description) {
+                <p class="mt-2 line-clamp-2 text-sm text-[#57534E]">
+                    {{ event.description }}
+                </p>
+                }
+
+                <!-- Date -->
+                <div class="mt-5 border-t border-[#E7E2DE] pt-4">
+                    <p class="text-xs font-medium uppercase tracking-wide text-[#A8A29E]">
+                        Event Date
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-[#1C1917]">
+                        {{ event.startDate | date:'mediumDate' }}
+                        -
+                        {{ event.endDate | date:'mediumDate' }}
+                    </p>
+                </div>
+
+                <!-- Open -->
+                <a [routerLink]="['/events', event.id]" class="mt-5 block w-full rounded-lg border border-[#D6D0CB]
+                   px-4 py-2.5 text-center text-sm font-medium text-[#1C1917]
+                   transition hover:border-[#B5473A] hover:bg-[#FBE9E6]
+                   hover:text-[#8F332A]">
+                    Open Event
+                </a>
+
+            </div>
+
+            }
+
+            @empty {
+            <div class="col-span-full rounded-xl border border-dashed border-[#D6D0CB]
+                 bg-white px-6 py-16 text-center">
+                <h2 class="text-lg font-semibold text-[#1C1917]">
+                    No events yet
+                </h2>
+
+                <p class="mt-2 text-sm text-[#57534E]">
+                    Create your first event to get started.
+                </p>
+
+                <a routerLink="/create-event" class="mt-5 inline-block rounded-lg bg-[#B5473A] px-5 py-2.5
+                   text-sm font-medium text-white hover:bg-[#8F332A]">
+                    Create Event
+                </a>
+            </div>
+            }
+
+        </div>
+    </div>
+
+</div>

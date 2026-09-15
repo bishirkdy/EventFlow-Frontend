@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EventService } from '../../../core/services/event/event.service';
 
 @Component({
   selector: 'app-create-event',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   templateUrl: './create-event.html',
   styleUrl: './create-event.css',
 })

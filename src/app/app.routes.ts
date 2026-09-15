@@ -24,7 +24,20 @@ export const routes: Routes = [
           import('./features/platform/create-event/create-event')
             .then(m => m.CreateEvent),
       },
+      {
+        path: 'my-events',
+        loadComponent: () =>
+          import('./features/platform/my-events/my-events')
+            .then(m => m.MyEvents),
+      },
     ],
+  },
+  {
+    path: 'events/:eventId',
+    loadChildren: () =>
+      import('./features/organizer/organizer.routes').then(
+        (m) => m.organizerRoutes
+      ),
   },
   {
     path: '**',

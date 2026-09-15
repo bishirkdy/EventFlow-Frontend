@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-[#FAF8F6]">
+
+    <!-- Sidebar -->
+    <aside class="fixed inset-y-0 left-0 z-40 w-64 border-r border-[#E7E2DE] bg-white">
+        <!-- Logo -->
+        <div class="flex h-16 items-center border-b border-[#E7E2DE] px-6">
+            <a routerLink="/" class="text-xl font-bold text-[#B5473A]">
+                EventFlow
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4">
+            <a routerLink="overview"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Overview
+            </a>
+
+            <a routerLink="details"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Event Details
+            </a>
+
+            <a routerLink="sections"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Sections
+            </a>
+
+            <a routerLink="venues"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Venues
+            </a>
+
+            <a routerLink="sessions"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Sessions
+            </a>
+
+            <a routerLink="registration"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Registration
+            </a>
+
+            <a routerLink="attendance"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Attendance
+            </a>
+
+            <a routerLink="pages"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Pages
+            </a>
+
+            <a routerLink="navigation"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Navigation
+            </a>
+
+            <a routerLink="settings"
+                class="mb-1 flex items-center rounded-lg px-4 py-3 text-sm font-medium text-[#57534E] hover:bg-[#FBE9E6] hover:text-[#B5473A]">
+                Settings
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="ml-64">
+
+        <!-- Header -->
+        <header
+            class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#E7E2DE] bg-white px-8">
+            <div>
+                <h1 class="text-lg font-semibold text-[#1C1917]">
+                    Organizer
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-[#57534E]">
+                    Organizer
+                </span>
+
+                <div
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-[#FBE9E6] font-semibold text-[#B5473A]">
+                    O
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-8">
+            <router-outlet />
+        </main>
+
+    </div>
+
+</div>
