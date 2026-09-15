@@ -1,1 +1,60 @@
-<p>create-session works!</p>
+<div class="max-w-2xl">
+  <h1 class="text-2xl font-semibold text-stone-900">
+    Create Session
+  </h1>
+
+  <div class="mt-6 space-y-4">
+
+    <input
+      [(ngModel)]="sectionId"
+      type="text"
+      placeholder="Section ID"
+      class="w-full rounded-lg border border-stone-300 px-4 py-3"
+    />
+
+    <input
+      [(ngModel)]="title"
+      type="text"
+      placeholder="Session title"
+      class="w-full rounded-lg border border-stone-300 px-4 py-3"
+    />
+
+    <textarea
+      [(ngModel)]="description"
+      rows="3"
+      placeholder="Description"
+      class="w-full rounded-lg border border-stone-300 px-4 py-3"
+    ></textarea>
+
+    <input
+      [(ngModel)]="sessionType"
+      type="text"
+      placeholder="Session type"
+      class="w-full rounded-lg border border-stone-300 px-4 py-3"
+    />
+
+    <input
+      [(ngModel)]="capacity"
+      type="number"
+      min="0"
+      placeholder="Capacity"
+      class="w-full rounded-lg border border-stone-300 px-4 py-3"
+    />
+
+    @if (error()) {
+      <p class="text-sm text-red-600">
+        {{ error() }}
+      </p>
+    }
+
+    <button
+      type="button"
+      (click)="create()"
+      [disabled]="loading()"
+      class="rounded-lg bg-[#B5473A] px-5 py-3 font-medium text-white disabled:opacity-50"
+    >
+      {{ loading() ? 'Creating...' : 'Create Session' }}
+    </button>
+
+  </div>
+</div>

@@ -1,1 +1,45 @@
-<p>session-details works!</p>
+@if (loading()) {
+  <p class="text-stone-500">Loading session...</p>
+}
+
+@if (error()) {
+  <p class="text-red-600">{{ error() }}</p>
+}
+
+@if (session(); as session) {
+  <div class="max-w-2xl">
+    <h1 class="text-2xl font-semibold text-stone-900">
+      {{ session.title }}
+    </h1>
+
+    <div class="mt-6 space-y-4">
+      <div>
+        <p class="text-sm text-stone-500">Description</p>
+        <p class="text-stone-900">
+          {{ session.description || 'No description' }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-stone-500">Session Type</p>
+        <p class="text-stone-900">
+          {{ session.sessionType }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-stone-500">Capacity</p>
+        <p class="text-stone-900">
+          {{ session.capacity ?? 'No limit' }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-stone-500">Status</p>
+        <p class="text-stone-900">
+          {{ session.status }}
+        </p>
+      </div>
+    </div>
+  </div>
+}
