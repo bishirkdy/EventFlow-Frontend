@@ -8,4 +8,8 @@ export interface Event {
   endDate: string;
   timeZone: string;
   status: string;
+  subdomain?: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt?: string;
 }

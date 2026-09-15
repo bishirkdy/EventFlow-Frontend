@@ -1,58 +1,68 @@
-<div class="min-h-screen bg-[#FAF8F6]">
+<div class="flex min-h-screen flex-col bg-[#FAF8F6]">
 
-    <!-- Sidebar -->
-    <aside class="fixed inset-y-0 left-0 z-40 w-64 border-r border-[#E7E2DE] bg-white">
-        <!-- Logo -->
-        <div class="flex h-16 items-center border-b border-[#E7E2DE] px-6">
-            <a routerLink="/" class="text-xl font-bold text-[#B5473A]">
-                EventFlow
-            </a>
-        </div>
+  <!-- Header -->
+  <header class="h-16 shrink-0 border-b border-[#E7E2DE] bg-white">
+    <div class="flex h-full items-center justify-between px-6">
 
-        <!-- Navigation -->
-        <nav class="space-y-1 px-3">
+      <div>
+        @if (event(); as currentEvent) {
+          <h1 class="text-lg font-semibold text-[#1C1917]">
+            {{ currentEvent.name }}
+          </h1>
 
-            @for (item of navItems(); track item.route) {
+          <p class="text-xs text-[#A8A29E]">
+            {{ currentEvent.eventType }}
+          </p>
+        }
+      </div>
 
-            <a [routerLink]="[item.route]"
-                class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-                {{ item.label }}
-            </a>
-
-            }
-
-        </nav>
-    </aside>
-
-    <!-- Main -->
-    <div class="ml-64">
-
-        <!-- Header -->
-        <header
-            class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#E7E2DE] bg-white px-8">
-            <div>
-                <h1 class="text-lg font-semibold text-[#1C1917]">
-                    Organizer
-                </h1>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <span class="text-sm text-[#57534E]">
-                    Organizer
-                </span>
-
-                <div
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-[#FBE9E6] font-semibold text-[#B5473A]">
-                    O
-                </div>
-            </div>
-        </header>
-
-        <!-- Page Content -->
-        <main class="p-8">
-            <router-outlet />
-        </main>
+      @if (event(); as currentEvent) {
+        <span
+          class="rounded-full bg-[#FBE9E6] px-3 py-1 text-xs font-medium text-[#B5473A]"
+        >
+          {{ currentEvent.status }}
+        </span>
+      }
 
     </div>
+  </header>
+
+
+  <!-- Organizer Body -->
+  <div class="flex flex-1">
+
+    <!-- Sidebar -->
+    <aside class="w-64 shrink-0 border-r border-[#E7E2DE] bg-white">
+
+      <nav class="space-y-1 p-4">
+
+        @for (item of navItems(); track item.route) {
+
+          <a
+            [routerLink]="[item.route]"
+            routerLinkActive="bg-[#FBE9E6] text-[#B5473A]"
+            [routerLinkActiveOptions]="{
+              exact: item.route === ''
+            }"
+            class="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-[#57534E] transition hover:bg-[#F5F2EF]"
+          >
+            {{ item.label }}
+          </a>
+
+        }
+
+      </nav>
+
+    </aside>
+
+
+    <!-- Page Content -->
+    <main class="min-w-0 flex-1">
+
+      <router-outlet />
+
+    </main>
+
+  </div>
 
 </div>

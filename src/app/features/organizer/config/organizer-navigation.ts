@@ -9,7 +9,7 @@ export const ORGANIZER_NAVIGATION: Record<string, OrganizerNavItem[]> = {
   'Wedding & Private Events': [
     {
       label: 'Overview',
-      route: '',
+      route: 'overview',
       icon: 'layout-dashboard',
     },
     {
