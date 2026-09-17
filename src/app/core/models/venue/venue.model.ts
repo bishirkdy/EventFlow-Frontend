@@ -16,3 +16,10 @@ export interface CreateVenueRequest {
   address?: string;
   capacity: number;
 }
+
+export interface UpdateVenueRequest {
+  name: string;
+  description: string;
+  address: string;
+  capacity: number;
+}

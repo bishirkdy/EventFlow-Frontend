@@ -12,12 +12,14 @@ export class EventSettingsService {
   private http = inject(HttpClient);
   private api = inject(Api);
 
+  private readonly endpoint = '/v1/events-settings';
+
   getSettings(eventId: string): Observable<ApiResponse<EventSettings>> {
     return this.http.get<ApiResponse<EventSettings>>(
-      this.api.getUrl(`/api/v1/events-settings/${eventId}/settings`),
+      this.api.getUrl(`${this.endpoint}/${eventId}/settings`),
       {
         withCredentials: true,
-      }
+      },
     );
   }
 }

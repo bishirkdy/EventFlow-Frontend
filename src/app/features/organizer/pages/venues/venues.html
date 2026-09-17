@@ -1,1 +1,162 @@
-<p>venues works!</p>
+<div class="min-h-full bg-[#FAF8F6] p-6">
+
+  <!-- Header -->
+  <div class="mb-6 flex items-center justify-between">
+
+    <div>
+      <h1 class="text-2xl font-semibold text-[#1C1917]">
+        Venues
+      </h1>
+
+      <p class="mt-1 text-sm text-[#78716C]">
+        Manage the locations used for your event.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="createVenue()"
+      class="rounded-lg bg-[#B5473A] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#963B31]"
+    >
+      + Add Venue
+    </button>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (loading()) {
+
+    <div class="rounded-xl border border-[#E7E2DE] bg-white p-8 text-center">
+      <p class="text-sm text-[#78716C]">
+        Loading venues...
+      </p>
+    </div>
+
+  }
+
+  <!-- Content -->
+  @else {
+
+    @if (venues().length === 0) {
+
+      <!-- Empty State -->
+      <div
+        class="rounded-xl border border-[#E7E2DE] bg-white px-6 py-12 text-center"
+      >
+
+        <div
+          class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#FBE9E6]"
+        >
+          <span class="text-xl text-[#B5473A]">⌖</span>
+        </div>
+
+        <h2 class="text-lg font-semibold text-[#1C1917]">
+          No venues yet
+        </h2>
+
+        <p class="mx-auto mt-2 max-w-md text-sm text-[#78716C]">
+          Add a venue to start organizing locations for your event.
+        </p>
+
+        <button
+          type="button"
+          (click)="createVenue()"
+          class="mt-5 rounded-lg bg-[#B5473A] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#963B31]"
+        >
+          Add your first venue
+        </button>
+
+      </div>
+
+    } @else {
+
+      <!-- Venue Grid -->
+      <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+
+        @for (venue of venues(); track venue.id) {
+
+          <div
+            class="group rounded-xl border border-[#E7E2DE] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+
+            <!-- Top -->
+            <div class="flex items-start justify-between gap-4">
+
+              <div class="min-w-0">
+
+                <h2
+                  class="truncate text-base font-semibold text-[#1C1917]"
+                >
+                  {{ venue.name }}
+                </h2>
+
+                @if (venue.description) {
+                  <p class="mt-1 line-clamp-2 text-sm text-[#78716C]">
+                    {{ venue.description }}
+                  </p>
+                }
+
+              </div>
+
+              <span
+                class="shrink-0 rounded-full bg-[#F5F2EF] px-2.5 py-1 text-xs font-medium text-[#57534E]"
+              >
+                {{ venue.capacity }} capacity
+              </span>
+
+            </div>
+
+
+            <!-- Address -->
+            @if (venue.address) {
+
+              <div class="mt-5 border-t border-[#F0ECE8] pt-4">
+
+                <p class="text-xs font-medium uppercase tracking-wide text-[#A8A29E]">
+                  Address
+                </p>
+
+                <p class="mt-1 text-sm text-[#57534E]">
+                  {{ venue.address }}
+                </p>
+
+              </div>
+
+            }
+
+
+            <!-- Actions -->
+            <div
+              class="mt-5 flex items-center justify-between border-t border-[#F0ECE8] pt-4"
+            >
+
+              <button
+                type="button"
+                (click)="viewVenue(venue.id)"
+                class="text-sm font-medium text-[#B5473A] hover:underline"
+              >
+                View details
+              </button>
+
+              <button
+                type="button"
+                (click)="editVenue(venue.id)"
+                class="rounded-lg border border-[#E7E2DE] px-3 py-1.5 text-sm font-medium text-[#57534E] transition hover:bg-[#F5F2EF]"
+              >
+                Edit
+              </button>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+  }
+
+</div>

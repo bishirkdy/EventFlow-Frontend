@@ -1,42 +1,85 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { VenueService } from '../../../../core/services/venue/venue.service';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { VenueModel } from '../../../../core/models/venue/venue.model';
+import { VenueService } from '../../../../core/services/venue/venue.service';
 
 @Component({
-  selector: 'app-venues',
-  imports: [],
+  selector: 'app-venue',
+  standalone: true,
   templateUrl: './venues.html',
   styleUrl: './venues.css',
 })
-export class Venues {
-   private route = inject(ActivatedRoute);
-  private venueService = inject(VenueService);
+export class Venues implements OnInit {
+   private readonly venueService = inject(VenueService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService);
 
   venues = signal<VenueModel[]>([]);
-  loading = signal(true);
-  error = signal<string | null>(null);
+  loading = signal(false);
+
+  private eventId = '';
 
   ngOnInit(): void {
-    const eventId =
-      this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+    this.eventId = this.getEventId();
 
-    if (!eventId) {
-      this.error.set('Event ID not found.');
-      this.loading.set(false);
+    if (!this.eventId) {
+      this.toastr.error('Event ID not found');
       return;
     }
 
-    this.venueService.getVenues(eventId).subscribe({
-      next: response => {
+    this.loadVenues();
+  }
+
+  private getEventId(): string {
+    let route: ActivatedRoute | null = this.route;
+
+    while (route) {
+      const eventId = route.snapshot.paramMap.get('eventId');
+
+      if (eventId) {
+        return eventId;
+      }
+
+      route = route.parent;
+    }
+
+    return '';
+  }
+
+  loadVenues(): void {
+    this.loading.set(true);
+
+    this.venueService.getVenues(this.eventId).subscribe({
+      next: (response) => {
         this.venues.set(response.data);
         this.loading.set(false);
       },
-      error: error => {
-        console.error('Failed to load venues', error);
-        this.error.set('Failed to load venues.');
+
+      error: (error: unknown) => {
+        console.error('Failed to load venues:', error);
         this.loading.set(false);
+        this.toastr.error('Failed to load venues');
       },
+    });
+  }
+
+  createVenue(): void {
+    this.router.navigate(['create'], {
+      relativeTo: this.route,
+    });
+  }
+
+  viewVenue(venueId: string): void {
+    this.router.navigate([venueId], {
+      relativeTo: this.route,
+    });
+  }
+
+  editVenue(venueId: string): void {
+    this.router.navigate([venueId, 'edit'], {
+      relativeTo: this.route,
     });
   }
 }

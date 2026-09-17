@@ -1,9 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import {
-  ORGANIZER_NAVIGATION,
-  OrganizerNavItem,
-} from '../../config/organizer-navigation';
+import { ORGANIZER_NAVIGATION, OrganizerNavItem } from '../../config/organizer-navigation';
 import { EventService } from '../../../../core/services/event/event.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../core/models/event/event.model';
@@ -15,7 +12,6 @@ import { Event as EventModel } from '../../../../core/models/event/event.model';
   styleUrl: './organizer-layout.css',
 })
 export class OrganizerLayout {
-
   private organizerEventState = inject(OrganizerEventStateService);
 
   navItems = signal<OrganizerNavItem[]>([]);
@@ -35,13 +31,10 @@ export class OrganizerLayout {
     this.organizerEventState.setEventId(eventId);
 
     this.eventService.getEventById(eventId).subscribe({
-      next: (response) => { 
+      next: (response) => {
         this.organizerEventState.setEvent(response.data);
 
-        const eventType = response.data.eventType;
-        this.navItems.set(
-          ORGANIZER_NAVIGATION[eventType] ?? []
-        );
+        this.navItems.set(ORGANIZER_NAVIGATION);
       },
 
       error: (error: unknown) => {

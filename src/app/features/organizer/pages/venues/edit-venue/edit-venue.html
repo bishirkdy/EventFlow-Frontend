@@ -1,0 +1,123 @@
+<div class="min-h-full bg-[#FAF8F6] p-6">
+  <!-- Header -->
+  <div class="mx-auto max-w-3xl">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <button
+          type="button"
+          (click)="cancel()"
+          class="mb-3 text-sm text-gray-500 transition hover:text-gray-900"
+        >
+          ← Back to Venues
+        </button>
+
+        <h1 class="text-2xl font-semibold text-gray-900">Edit Venue</h1>
+
+        <p class="mt-1 text-sm text-gray-500">Update the venue information.</p>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="rounded-2xl border border-[#E7E2DE] bg-white p-10 text-center">
+        <p class="text-sm text-gray-500">Loading venue...</p>
+      </div>
+    } @else {
+      <!-- Form -->
+      <form
+        (ngSubmit)="updateVenue()"
+        class="rounded-2xl border border-[#E7E2DE] bg-white shadow-sm"
+      >
+        <div class="space-y-6 p-6">
+          <!-- Name -->
+          <div>
+            <label for="name" class="mb-2 block text-sm font-medium text-gray-700">
+              Venue Name
+            </label>
+
+            <input
+              id="name"
+              name="name"
+              type="text"
+              [(ngModel)]="venue.name"
+              placeholder="Enter venue name"
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#B5473A] focus:ring-2 focus:ring-[#B5473A]/10"
+            />
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label for="description" class="mb-2 block text-sm font-medium text-gray-700">
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              name="description"
+              rows="4"
+              [(ngModel)]="venue.description"
+              placeholder="Enter venue description"
+              class="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#B5473A] focus:ring-2 focus:ring-[#B5473A]/10"
+            ></textarea>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label for="address" class="mb-2 block text-sm font-medium text-gray-700">
+              Address
+            </label>
+
+            <textarea
+              id="address"
+              name="address"
+              rows="3"
+              [(ngModel)]="venue.address"
+              placeholder="Enter venue address"
+              class="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#B5473A] focus:ring-2 focus:ring-[#B5473A]/10"
+            ></textarea>
+          </div>
+
+          <!-- Capacity -->
+          <div>
+            <label for="capacity" class="mb-2 block text-sm font-medium text-gray-700">
+              Capacity
+            </label>
+
+            <input
+              id="capacity"
+              name="capacity"
+              type="number"
+              min="1"
+              [(ngModel)]="venue.capacity"
+              placeholder="Enter capacity"
+              class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#B5473A] focus:ring-2 focus:ring-[#B5473A]/10"
+            />
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-3 border-t border-[#E7E2DE] bg-[#FCFBFA] px-6 py-4">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            [disabled]="saving()"
+            class="rounded-xl bg-[#B5473A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#963B30] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            @if (saving()) {
+              Updating...
+            } @else {
+              Update Venue
+            }
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>
