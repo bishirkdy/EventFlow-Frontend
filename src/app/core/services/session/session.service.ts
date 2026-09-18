@@ -1,38 +1,67 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Api } from '../api';
 import { Observable } from 'rxjs';
+
 import { ApiResponse } from '../../models/api-response';
-import { CreateSessionRequest, SessionModel } from '../../models/session/session.model';
+import { CreateSessionRequest, SessionModel, UpdateSessionRequest } from '../../models/session/session.model';
+import { Api } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionService {
-  private http = inject(HttpClient);
-  private api = inject(Api);
+  private readonly http = inject(HttpClient);
+  private readonly api = inject(Api);
+
+  private readonly endpoint = '/v1/session';
 
   getSessions(eventId: string): Observable<ApiResponse<SessionModel[]>> {
     return this.http.get<ApiResponse<SessionModel[]>>(
-      `${this.api.getUrl('api/v1/events/${eventId}/sessions')}`,
-      { withCredentials: true }
+      this.api.getUrl(`${this.endpoint}/${eventId}/sessions`),
+      {
+        withCredentials: true,
+      },
     );
   }
 
-  createSession(eventId: string, request: CreateSessionRequest): Observable<ApiResponse<SessionModel>> {
+  createSession(
+    eventId: string,
+    request: CreateSessionRequest,
+  ): Observable<ApiResponse<SessionModel>> {
     return this.http.post<ApiResponse<SessionModel>>(
-      `${this.api.getUrl('api/v1/session/${eventId}/sessions')}`,
+      this.api.getUrl(`${this.endpoint}/${eventId}/sessions`),
       request,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      },
     );
   }
 
   getSessionById(eventId: string, sessionId: string): Observable<ApiResponse<SessionModel>> {
     return this.http.get<ApiResponse<SessionModel>>(
-      `${this.api.getUrl('api/v1/events/${eventId}/sessions/${sessionId}')}`,
-      { withCredentials: true }
+      this.api.getUrl(`${this.endpoint}/${eventId}/sessions/${sessionId}`),
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  updateSession(
+    eventId: string,
+    sessionId: string,
+    request: UpdateSessionRequest,
+  ): Observable<void> {
+    return this.http.put<void>(
+      this.api.getUrl(`${this.endpoint}/${eventId}/sessions/${sessionId}`),
+      request,
+      { withCredentials: true },
+    );
+  }
+
+  deleteSession(eventId: string, sessionId: string): Observable<void> {
+    return this.http.delete<void>(
+      this.api.getUrl(`${this.endpoint}/${eventId}/sessions/${sessionId}`),
+      { withCredentials: true },
     );
   }
 }
-
-

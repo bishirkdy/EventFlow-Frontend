@@ -1,83 +1,166 @@
 <div class="p-6">
 
-    <div class="mb-6">
-        <h1 class="text-2xl font-semibold text-[#1C1917]">
-            Section Details
-        </h1>
+    <!-- Header -->
+    <div class="mb-6 flex items-start justify-between">
 
-        <p class="mt-1 text-sm text-[#A8A29E]">
-            View section information.
-        </p>
+        <div>
+            <button
+                type="button"
+                (click)="backToSections()"
+                class="mb-3 text-sm text-[#78716C] hover:text-[#1C1917]"
+            >
+                ← Back to Sections
+            </button>
+
+            <h1 class="text-2xl font-semibold text-[#1C1917]">
+                Section Details
+            </h1>
+
+            <p class="mt-1 text-sm text-[#A8A29E]">
+                View section information.
+            </p>
+        </div>
+
+        @if (section()) {
+            <button
+                type="button"
+                (click)="editSection()"
+                class="rounded-lg bg-[#B5473A] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#963B30]"
+            >
+                Edit Section
+            </button>
+        }
+
     </div>
 
+
+    <!-- Loading -->
     @if (loading()) {
-    <div class="text-sm text-[#57534E]">
-        Loading section...
-    </div>
+        <div class="text-sm text-[#57534E]">
+            Loading section...
+        </div>
     }
 
+
+    <!-- Error -->
     @if (error(); as message) {
-    <div class="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-        {{ message }}
-    </div>
+        <div class="rounded-lg bg-red-50 p-4 text-sm text-red-600">
+            {{ message }}
+        </div>
     }
 
+
+    <!-- Section -->
     @if (section(); as currentSection) {
 
-    <div class="max-w-2xl rounded-xl border border-[#E7E2DE] bg-white">
+        <div class="max-w-2xl rounded-xl border border-[#E7E2DE] bg-white">
 
-        <div class="border-b border-[#E7E2DE] p-5">
-            <h2 class="text-lg font-semibold text-[#1C1917]">
-                {{ currentSection.name }}
-            </h2>
-        </div>
+            <!-- Title -->
+            <div class="flex items-center justify-between border-b border-[#E7E2DE] p-5">
 
-        <div class="grid gap-5 p-5 md:grid-cols-2">
+                <div>
+                    <h2 class="text-lg font-semibold text-[#1C1917]">
+                        {{ currentSection.name }}
+                    </h2>
 
-            <div>
-                <p class="text-xs text-[#A8A29E]">
-                    Description
-                </p>
+                    <p class="mt-1 text-sm text-[#A8A29E]">
+                        Section information
+                    </p>
+                </div>
 
-                <p class="mt-1 text-sm text-[#1C1917]">
-                    {{ currentSection.description || 'No description' }}
-                </p>
-            </div>
-
-            <div>
-                <p class="text-xs text-[#A8A29E]">
-                    Display Order
-                </p>
-
-                <p class="mt-1 text-sm text-[#1C1917]">
-                    {{ currentSection.displayOrder }}
-                </p>
-            </div>
-
-            <div>
-                <p class="text-xs text-[#A8A29E]">
-                    Status
-                </p>
-
-                <p class="mt-1 text-sm font-medium" [class.text-green-600]="currentSection.isActive"
-                    [class.text-red-600]="!currentSection.isActive">
+                <span
+                    class="rounded-full px-3 py-1 text-xs font-medium"
+                    [class.bg-green-50]="currentSection.isActive"
+                    [class.text-green-600]="currentSection.isActive"
+                    [class.bg-red-50]="!currentSection.isActive"
+                    [class.text-red-600]="!currentSection.isActive"
+                >
                     {{ currentSection.isActive ? 'Active' : 'Inactive' }}
-                </p>
+                </span>
+
             </div>
 
-            <div>
-                <p class="text-xs text-[#A8A29E]">
-                    Created
-                </p>
 
-                <p class="mt-1 text-sm text-[#1C1917]">
-                    {{ currentSection.createdAt }}
-                </p>
+            <!-- Details -->
+            <div class="grid gap-5 p-5 md:grid-cols-2">
+
+                <!-- Description -->
+                <div>
+                    <p class="text-xs text-[#A8A29E]">
+                        Description
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#1C1917]">
+                        {{ currentSection.description || 'No description' }}
+                    </p>
+                </div>
+
+
+                <!-- Display Order -->
+                <div>
+                    <p class="text-xs text-[#A8A29E]">
+                        Display Order
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#1C1917]">
+                        {{ currentSection.displayOrder }}
+                    </p>
+                </div>
+
+
+                <!-- Status -->
+                <div>
+                    <p class="text-xs text-[#A8A29E]">
+                        Status
+                    </p>
+
+                    <p
+                        class="mt-1 text-sm font-medium"
+                        [class.text-green-600]="currentSection.isActive"
+                        [class.text-red-600]="!currentSection.isActive"
+                    >
+                        {{ currentSection.isActive ? 'Active' : 'Inactive' }}
+                    </p>
+                </div>
+
+
+                <!-- Created -->
+                <div>
+                    <p class="text-xs text-[#A8A29E]">
+                        Created
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#1C1917]">
+                        {{ currentSection.createdAt }}
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 border-t border-[#E7E2DE] p-5">
+
+                <button
+                    type="button"
+                    (click)="backToSections()"
+                    class="rounded-lg border border-[#D6D3D1] px-4 py-2 text-sm font-medium text-[#57534E] hover:bg-[#FAF8F6]"
+                >
+                    Back
+                </button>
+
+                <button
+                    type="button"
+                    (click)="editSection()"
+                    class="rounded-lg bg-[#B5473A] px-4 py-2 text-sm font-medium text-white hover:bg-[#963B30]"
+                >
+                    Edit Section
+                </button>
+
             </div>
 
         </div>
 
-    </div>
     }
 
 </div>

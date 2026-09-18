@@ -35,31 +35,35 @@ export const organizerRoutes: Routes = [
           import('./pages/event-settings/event-settings').then((m) => m.EventSettings),
       },
 
-      //     // Sections
-      //     {
-      //         path: 'sections',
-      //         children: [
-      //             {
-      //                 path: '',
-      //                 loadComponent: () =>
-      //                     import('./pages/sections/sections')
-      //                         .then(m => m.Sections),
-      //             },
-      //             {
-      //                 path: 'create',
-      //                 loadComponent: () =>
-      //                     import('./pages/sections/create-section/create-section')
-      //                         .then(m => m.CreateSection),
-      //             },
-      //             {
-      //                 path: ':sectionId',
-      //                 loadComponent: () =>
-      //                     import('./pages/sections/section-details/section-details')
-      //                         .then(m => m.SectionDetails),
-      //             },
-      //         ],
-      //     },
+      // Sections
+      {
+        path: 'sections',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/sections/sections').then((m) => m.Sections),
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/sections/create-section/create-section').then((m) => m.CreateSection),
+          },
+          {
+            path: ':sectionId',
+            loadComponent: () =>
+              import('./pages/sections/section-details/section-details').then(
+                (m) => m.SectionDetails,
+              ),
+          }
+        //   {
+        //     path: ':sectionId/edit',
+        //     loadComponent: () =>
+        //       import('./pages/sections/edit-section/edit-section')
+        //         .then(m => m.EditSection),
+        //   },
 
+        ],
+      },
       // Venues
       {
         path: 'venues',
@@ -86,30 +90,28 @@ export const organizerRoutes: Routes = [
         ],
       },
 
-      //     // Sessions
-      //     {
-      //         path: 'sessions',
-      //         children: [
-      //             {
-      //                 path: '',
-      //                 loadComponent: () =>
-      //                     import('./pages/sessions/sessions')
-      //                         .then(m => m.Sessions),
-      //             },
-      //             {
-      //                 path: 'create',
-      //                 loadComponent: () =>
-      //                     import('./pages/sessions/create-session/create-session')
-      //                         .then(m => m.CreateSession),
-      //             },
-      //             {
-      //                 path: ':sessionId',
-      //                 loadComponent: () =>
-      //                     import('./pages/sessions/session-details/session-details')
-      //                         .then(m => m.SessionDetails),
-      //             },
-      //         ],
-      //     },
+      // Sessions
+      {
+        path: 'sessions',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/sessions/sessions').then((m) => m.Sessions),
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/sessions/create-session/create-session').then((m) => m.CreateSession),
+          },
+          {
+            path: ':sessionId',
+            loadComponent: () =>
+              import('./pages/sessions/session-details/session-details').then(
+                (m) => m.SessionDetails,
+              ),
+          },
+        ],
+      },
 
       //     // Features
       //     {
