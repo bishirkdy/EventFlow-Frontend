@@ -1,61 +1,62 @@
-import { inject, Injectable } from '@angular/core';
-import { Api } from '../api';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../../models/api-response';
-import { CreateNavigationMenuRequest, NavigationMenuModel, UpdateNavigationMenuRequest } from '../../models/navigation-menu/navigation-menu.model';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { Api } from '../../api/api';
+import { NAVIGATION_MENU_ENDPOINTS } from '../../api/endpoints/navigation-menu.endpoint';
+
+import { ApiResponse } from '../../models/common/api-response';
+import { NavigationMenuModel } from '../../models/navigation-menu/navigation-menu.model';
+import { CreateNavigationMenuRequest } from '../../models/navigation-menu/create-navigation-menu';
+import { UpdateNavigationMenuRequest } from '../../models/navigation-menu/update-navigation.menu';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class NavigationMenuService {
-  private http = inject(HttpClient);
-  private api = inject(Api);
+  private readonly http = inject(HttpClient);
+  private readonly api = inject(Api);
 
   getNavigationMenus(eventId: string): Observable<ApiResponse<NavigationMenuModel[]>> {
     return this.http.get<ApiResponse<NavigationMenuModel[]>>(
-      this.api.getUrl(
-        `api/v1/navigation-menu/${eventId}/navigation-menus`
-      ),
-      {
-        withCredentials: true,
-      }
+      this.api.getUrl(NAVIGATION_MENU_ENDPOINTS.getMenus(eventId)),
     );
   }
 
-  // GET by ID
-  getNavigationMenuById(eventId: string, menuId: string): Observable<ApiResponse<NavigationMenuModel>> {
+  getNavigationMenuById(
+    eventId: string,
+    menuId: string,
+  ): Observable<ApiResponse<NavigationMenuModel>> {
     return this.http.get<ApiResponse<NavigationMenuModel>>(
-      this.api.getUrl(
-        `api/v1/navigation-menu/${eventId}/navigation-menus/${menuId}`
-      ),
-      { withCredentials: true }
+      this.api.getUrl(NAVIGATION_MENU_ENDPOINTS.getMenuById(eventId, menuId)),
     );
   }
 
-  // CREATE
-  createNavigationMenu(eventId: string, request: CreateNavigationMenuRequest): Observable<ApiResponse<NavigationMenuModel>> {
+  createNavigationMenu(
+    eventId: string,
+    request: CreateNavigationMenuRequest,
+  ): Observable<ApiResponse<NavigationMenuModel>> {
     return this.http.post<ApiResponse<NavigationMenuModel>>(
-      this.api.getUrl(`api/v1/navigation-menu/${eventId}/navigation-menus`),
+      this.api.getUrl(NAVIGATION_MENU_ENDPOINTS.createMenu(eventId)),
       request,
-      { withCredentials: true }
     );
   }
 
-  // UPDATE
-  updateNavigationMenu(eventId: string, menuId: string, request: UpdateNavigationMenuRequest): Observable<ApiResponse<NavigationMenuModel>> {
+  updateNavigationMenu(
+    eventId: string,
+    menuId: string,
+    request: UpdateNavigationMenuRequest,
+  ): Observable<ApiResponse<NavigationMenuModel>> {
     return this.http.put<ApiResponse<NavigationMenuModel>>(
-      this.api.getUrl(`api/v1/navigation-menu/${eventId}/navigation-menus/${menuId}`),
+      this.api.getUrl(NAVIGATION_MENU_ENDPOINTS.updateMenu(eventId, menuId)),
       request,
-      { withCredentials: true }
     );
   }
 
-  // DELETE
   deleteNavigationMenu(eventId: string, menuId: string): Observable<ApiResponse<unknown>> {
     return this.http.delete<ApiResponse<unknown>>(
-      this.api.getUrl(`api/v1/navigation-menu/${eventId}/navigation-menus/${menuId}`),
-      { withCredentials: true }
+      this.api.getUrl(NAVIGATION_MENU_ENDPOINTS.deleteMenu(eventId, menuId)),
     );
   }
 }

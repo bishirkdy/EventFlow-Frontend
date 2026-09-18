@@ -1,53 +1,40 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { catchError, map, Observable, of, tap } from 'rxjs';
-import { Api } from '../api';
-import { ApiResponse } from '../../models/api-response';
-import { UserProfile } from '../../models/user-profile';
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  userName: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
-
+import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
+import { Api } from '../../api/api';
+import { ApiResponse } from '../../models/common/api-response';
+import { UserProfile } from '../../models/common/user-profile';
+import { LoginRequest } from '../../models/auth/login/LoginRequest';
+import { RegisterRequest } from '../../models/auth/register/RegisterRequest';
+import { AUTH_ENDPOINTS } from '../../api/endpoints/auth-endpoints';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private api = inject(Api);
+  private readonly http = inject(HttpClient);
+  private readonly api = inject(Api);
 
-  // Global current user
-  currentUser = signal<UserProfile | null>(null);
+  readonly currentUser = signal<UserProfile | null>(null);
 
-  login(data: LoginRequest): Observable<any> {
-    return this.http.post(this.api.getUrl('/v1/auth/login'), data, { withCredentials: true });
+  login(data: LoginRequest): Observable<UserProfile | null> {
+    return this.http
+      .post<ApiResponse<unknown>>(this.api.getUrl(AUTH_ENDPOINTS.login), data)
+      .pipe(switchMap(() => this.loadCurrentUser()));
   }
 
-  register(request: RegisterRequest): Observable<any> {
-    return this.http.post(this.api.getUrl('/v1/auth/register'), request, { withCredentials: true })
+  register(request: RegisterRequest): Observable<ApiResponse<unknown>> {
+    return this.http.post<ApiResponse<unknown>>(this.api.getUrl(AUTH_ENDPOINTS.register), request);
   }
 
-  logout(): Observable<any> {
-    return this.http.post(this.api.getUrl("/v1/auth/logout"), {})
+  logout(): Observable<ApiResponse<unknown>> {
+    return this.http
+      .post<ApiResponse<unknown>>(this.api.getUrl(AUTH_ENDPOINTS.logout), {})
+      .pipe(tap(() => this.clearCurrentUser()));
   }
 
   getProfile(): Observable<ApiResponse<UserProfile>> {
-    return this.http.get<ApiResponse<UserProfile>>(
-      `${this.api.getUrl('/v1/auth/profile')}`,
-      {
-        withCredentials: true,
-      }
-    );
+    return this.http.get<ApiResponse<UserProfile>>(this.api.getUrl(AUTH_ENDPOINTS.profile));
   }
 
   loadCurrentUser(): Observable<UserProfile | null> {
@@ -57,9 +44,9 @@ export class AuthService {
       }),
       map((response) => response.data),
       catchError(() => {
-        this.currentUser.set(null);
+        this.clearCurrentUser();
         return of(null);
-      })
+      }),
     );
   }
 

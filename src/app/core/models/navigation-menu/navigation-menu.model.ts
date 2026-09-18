@@ -7,12 +7,5 @@ export interface NavigationMenuModel {
   updatedAt?: string;
 }
 
-export interface CreateNavigationMenuRequest {
-  name: string;
-  location: string;
-}
 
-export interface UpdateNavigationMenuRequest {
-  name: string;
-  location: string;
-}
+

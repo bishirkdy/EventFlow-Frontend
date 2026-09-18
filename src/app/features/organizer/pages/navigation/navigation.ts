@@ -2,7 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NavigationMenuService } from '../../../../core/services/navigation-menu/navigation-menu.service';
-import { CreateNavigationMenuRequest, NavigationMenuModel, UpdateNavigationMenuRequest } from '../../../../core/models/navigation-menu/navigation-menu.model';
+import { NavigationMenuModel } from '../../../../core/models/navigation-menu/navigation-menu.model';
+import { CreateNavigationMenuRequest } from '../../../../core/models/navigation-menu/create-navigation-menu';
+import { UpdateNavigationMenuRequest } from '../../../../core/models/navigation-menu/update-navigation.menu';
 
 @Component({
   selector: 'app-navigation',

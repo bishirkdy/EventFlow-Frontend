@@ -9,8 +9,3 @@ export interface SectionModel {
   updatedAt?: string;
 }
 
-export interface CreateSectionRequest {
-  name: string;
-  description?: string;
-  displayOrder: number;
-}

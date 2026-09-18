@@ -8,7 +8,6 @@ import { AuthService } from './core/services/auth/auth.service';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('eventflow-frontend');
   private readonly authService = inject(AuthService);
 
   constructor() {

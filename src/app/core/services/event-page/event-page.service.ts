@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { Api } from '../api';
 import { HttpClient } from '@angular/common/http';
 import { CreateEventPageRequest, EventPageModel } from '../../models/event-page/event-page.model';
-import { ApiResponse } from '../../models/api-response';
+import { ApiResponse } from '../../models/common/api-response';
 import { Observable } from 'rxjs';
+import { Api } from '../../api/api';
 
 @Injectable({
   providedIn: 'root',

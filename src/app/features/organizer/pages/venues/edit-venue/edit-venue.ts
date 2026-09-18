@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { UpdateVenueRequest, VenueModel } from '../../../../../core/models/venue/venue.model';
+import {  VenueModel } from '../../../../../core/models/venue/venue.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { UpdateVenueRequest } from '../../../../../core/models/venue/update-venue.model';
 
 @Component({
   selector: 'app-edit-venue',

@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { CreateVenueRequest } from '../../../../../core/models/venue/venue.model';
 import { FormsModule } from '@angular/forms';
+import { CreateVenueRequest } from '../../../../../core/models/venue/create-venue.model';
 
 @Component({
   selector: 'app-create-venue',

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EventSettingsService } from '../../../../core/services/event-settings/event-settings';
 import {
   EventSettings as EventSettingsModel
-} from '../../../../core/models/event/event-settings.model';
+} from '../../../../core/models/event-settings/event-settings.model';
 
 @Component({
   selector: 'app-event-settings',

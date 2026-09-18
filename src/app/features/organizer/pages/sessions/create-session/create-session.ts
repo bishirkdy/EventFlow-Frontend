@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { CreateSessionRequest } from '../../../../../core/models/session/session.model';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from 'express';
 import { FormsModule } from '@angular/forms';
+import { CreateSessionRequest } from '../../../../../core/models/session/create-session.model';
 
 @Component({
   selector: 'app-create-session',

@@ -2,8 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from 'express';
 import { SectionService } from '../../../../../core/services/section/section.service';
-import { CreateSectionRequest } from '../../../../../core/models/section/section.model';
 import { FormsModule } from '@angular/forms';
+import { CreateSectionRequest } from '../../../../../core/models/section/create-section.model';
 
 @Component({
   selector: 'app-create-section',

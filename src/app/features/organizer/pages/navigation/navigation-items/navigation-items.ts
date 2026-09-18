@@ -2,7 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { ToastrService } from 'ngx-toastr';
-import { CreateNavigationItemRequest, NavigationItemModel, UpdateNavigationItemRequest } from '../../../../../core/models/navigation-item/navigation-item.model';
+import { NavigationItemModel } from '../../../../../core/models/navigation-item/navigation-item.model';
+import { CreateNavigationItemRequest } from '../../../../../core/models/navigation-item/create-navigation-item';
+import { UpdateNavigationItemRequest } from '../../../../../core/models/navigation-item/update-navigation-item';
 
 @Component({
   selector: 'app-navigation-items',
