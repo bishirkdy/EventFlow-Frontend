@@ -1,0 +1,9 @@
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-password-toggle-button {
+  display: none;
+}

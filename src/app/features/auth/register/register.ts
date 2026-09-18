@@ -1,17 +1,26 @@
 import { Component, inject, signal } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
+
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { Router , RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, RouterLink],
+  standalone: true,
+  imports: [FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
 export class Register {
-  authService = inject(AuthService);
-  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService);
+
+  readonly Eye = Eye;
+  readonly EyeOff = EyeOff;
 
   username = '';
   email = '';
@@ -22,6 +31,7 @@ export class Register {
 
   showPassword = signal(false);
   showConfirmPassword = signal(false);
+  loading = signal(false);
 
   togglePassword(): void {
     this.showPassword.update((value) => !value);
@@ -31,21 +41,38 @@ export class Register {
     this.showConfirmPassword.update((value) => !value);
   }
 
-register(): void {
-  this.authService.register({
-    userName: this.username,
-    email: this.email,
-    password: this.password,
-    firstName: this.firstName,
-    lastName: this.lastName,
-  }).subscribe({
-    next: () => {
-      this.router.navigate(['/login']);
-    },
+  register(form: NgForm): void {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
 
-    error: (err) => {
-      console.error('Registration failed:', err);
-    },
-  });
-}
+    if (this.password !== this.confirmPassword) {
+      this.toastr.error('Passwords do not match.');
+      return;
+    }
+
+    this.loading.set(true);
+
+    this.authService
+      .register({
+        userName: this.username,
+        email: this.email,
+        password: this.password,
+        firstName: this.firstName,
+        lastName: this.lastName,
+      })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          this.toastr.success('Account created successfully.');
+          this.router.navigate(['/login']);
+        },
+
+        error: (err: unknown) => {
+          console.error('Registration failed:', err);
+          this.toastr.error('Registration failed. Please try again.');
+        },
+      });
+  }
 }

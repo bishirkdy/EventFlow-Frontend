@@ -1,6 +1,6 @@
 <section class="min-h-[calc(100vh-80px)] bg-background">
-  <div class="mx-auto grid min-h-[calc(100vh-80px)] max-w-7xl lg:grid-cols-2">
-    <!-- Left: Visual -->
+  <div class="mx-auto grid min-h-[calc(100vh-80px)] lg:grid-cols-2">
+    <!-- Left -->
     <div class="relative hidden overflow-hidden bg-primary lg:block">
       <div class="absolute -left-32 -top-32 h-96 w-96 rounded-full border border-white/10"></div>
 
@@ -32,13 +32,9 @@
       <div class="w-full max-w-md">
         <!-- Heading -->
         <div>
-          <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+          <span class="text-sm font-bold uppercase tracking-[0.2em] text-primary">
             Get started
           </span>
-
-          <h1 class="mt-4 text-4xl font-bold tracking-[-0.04em] text-text-primary sm:text-5xl">
-            Create your account
-          </h1>
 
           <p class="mt-4 text-base leading-7 text-text-secondary">
             Start building and managing your events with EventFlow.
@@ -46,9 +42,10 @@
         </div>
 
         <!-- Form -->
-        <form (ngSubmit)="register()" class="mt-9 space-y-5">
+        <form #registerForm="ngForm" (ngSubmit)="register(registerForm)" class="mt-4 space-y-4">
           <!-- Name -->
           <div class="grid gap-5 sm:grid-cols-2">
+            <!-- First Name -->
             <div>
               <label for="firstName" class="mb-2 block text-sm font-medium text-text-primary">
                 First name
@@ -56,14 +53,29 @@
 
               <input
                 id="firstName"
+                name="firstName"
                 [(ngModel)]="firstName"
+                #firstNameField="ngModel"
                 type="text"
                 placeholder="John"
                 autocomplete="given-name"
+                required
+                maxlength="100"
                 class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
               />
+
+              @if (firstNameField.touched && firstNameField.invalid) {
+                @if (firstNameField.hasError('required')) {
+                  <p class="mt-1 text-xs text-red-600">First name is required.</p>
+                } @else if (firstNameField.hasError('maxlength')) {
+                  <p class="mt-1 text-xs text-red-600">
+                    First name must not exceed 100 characters.
+                  </p>
+                }
+              }
             </div>
 
+            <!-- Last Name -->
             <div>
               <label for="lastName" class="mb-2 block text-sm font-medium text-text-primary">
                 Last name
@@ -71,12 +83,24 @@
 
               <input
                 id="lastName"
+                name="lastName"
                 [(ngModel)]="lastName"
+                #lastNameField="ngModel"
                 type="text"
                 placeholder="Doe"
                 autocomplete="family-name"
+                required
+                maxlength="100"
                 class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
               />
+
+              @if (lastNameField.touched && lastNameField.invalid) {
+                @if (lastNameField.hasError('required')) {
+                  <p class="mt-1 text-xs text-red-600">Last name is required.</p>
+                } @else if (lastNameField.hasError('maxlength')) {
+                  <p class="mt-1 text-xs text-red-600">Last name must not exceed 100 characters.</p>
+                }
+              }
             </div>
           </div>
 
@@ -88,12 +112,32 @@
 
             <input
               id="username"
+              name="username"
               [(ngModel)]="username"
+              #usernameField="ngModel"
               type="text"
               placeholder="johndoe"
               autocomplete="username"
+              required
+              minlength="3"
+              maxlength="100"
+              pattern="^[a-zA-Z0-9._-]+$"
               class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
             />
+
+            @if (usernameField.touched && usernameField.invalid) {
+              @if (usernameField.hasError('required')) {
+                <p class="mt-1 text-xs text-red-600">Username is required.</p>
+              } @else if (usernameField.hasError('minlength')) {
+                <p class="mt-1 text-xs text-red-600">Username must be at least 3 characters.</p>
+              } @else if (usernameField.hasError('maxlength')) {
+                <p class="mt-1 text-xs text-red-600">Username must not exceed 100 characters.</p>
+              } @else if (usernameField.hasError('pattern')) {
+                <p class="mt-1 text-xs text-red-600">
+                  Username can contain only letters, numbers, '.', '_' and '-'.
+                </p>
+              }
+            }
           </div>
 
           <!-- Email -->
@@ -104,12 +148,28 @@
 
             <input
               id="email"
+              name="email"
               [(ngModel)]="email"
+              #emailField="ngModel"
               type="email"
               placeholder="you@example.com"
               autocomplete="email"
+              required
+              maxlength="255"
+              email
+              pattern="^[A-Za-z0-9][A-Za-z0-9._%+\-]*@[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)+$"
               class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
             />
+
+            @if (emailField.touched && emailField.invalid) {
+              @if (emailField.hasError('required')) {
+                <p class="mt-1 text-xs text-red-600">Email is required.</p>
+              } @else if (emailField.hasError('maxlength')) {
+                <p class="mt-1 text-xs text-red-600">Email must not exceed 255 characters.</p>
+              } @else if (emailField.hasError('email') || emailField.hasError('pattern')) {
+                <p class="mt-1 text-xs text-red-600">Enter a valid email address.</p>
+              }
+            }
           </div>
 
           <!-- Password -->
@@ -121,21 +181,46 @@
             <div class="relative">
               <input
                 id="password"
+                name="password"
                 [(ngModel)]="password"
+                #passwordField="ngModel"
                 [type]="showPassword() ? 'text' : 'password'"
                 placeholder="Create a password"
                 autocomplete="new-password"
+                required
+                minlength="8"
+                maxlength="100"
+                pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,100}$"
                 class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-14 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
               />
 
               <button
                 type="button"
                 (click)="togglePassword()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-xs font-medium text-text-muted hover:text-text-primary"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
               >
-                {{ showPassword() ? 'Hide' : 'Show' }}
+                @if (showPassword()) {
+                  <lucide-icon [img]="EyeOff" [size]="18"></lucide-icon>
+                } @else {
+                  <lucide-icon [img]="Eye" [size]="18"></lucide-icon>
+                }
               </button>
             </div>
+
+            @if (passwordField.touched && passwordField.invalid) {
+              @if (passwordField.hasError('required')) {
+                <p class="mt-1 text-xs text-red-600">Password is required.</p>
+              } @else if (passwordField.hasError('minlength')) {
+                <p class="mt-1 text-xs text-red-600">Password must be at least 8 characters.</p>
+              } @else if (passwordField.hasError('maxlength')) {
+                <p class="mt-1 text-xs text-red-600">Password must not exceed 100 characters.</p>
+              } @else if (passwordField.hasError('pattern')) {
+                <p class="mt-1 text-xs text-red-600">
+                  Password must contain at least one uppercase letter, one lowercase letter, and one
+                  number.
+                </p>
+              }
+            }
           </div>
 
           <!-- Confirm Password -->
@@ -147,43 +232,83 @@
             <div class="relative">
               <input
                 id="confirmPassword"
+                name="confirmPassword"
                 [(ngModel)]="confirmPassword"
+                #confirmPasswordField="ngModel"
                 [type]="showConfirmPassword() ? 'text' : 'password'"
                 placeholder="Confirm your password"
                 autocomplete="new-password"
+                required
                 class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-14 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
               />
 
               <button
                 type="button"
                 (click)="toggleConfirmPassword()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-xs font-medium text-text-muted hover:text-text-primary"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
               >
-                {{ showConfirmPassword() ? 'Hide' : 'Show' }}
+                @if (showConfirmPassword()) {
+                  <lucide-icon [img]="EyeOff" [size]="18"></lucide-icon>
+                } @else {
+                  <lucide-icon [img]="Eye" [size]="18"></lucide-icon>
+                }
               </button>
             </div>
+
+            @if (confirmPasswordField.touched && confirmPasswordField.hasError('required')) {
+              <p class="mt-1 text-xs text-red-600">Please confirm your password.</p>
+            } @else if (
+              confirmPasswordField.touched && confirmPassword && password !== confirmPassword
+            ) {
+              <p class="mt-1 text-xs text-red-600">Passwords do not match.</p>
+            }
           </div>
 
           <!-- Terms -->
           <label class="flex cursor-pointer items-start gap-3">
-            <input type="checkbox" class="mt-1 h-4 w-4 rounded border-border accent-primary" />
+            <input
+              type="checkbox"
+              name="terms"
+              ngModel
+              #termsField="ngModel"
+              required
+              class="mt-1 h-4 w-4 rounded border-border accent-primary"
+            />
 
             <span class="text-sm leading-5 text-text-secondary">
               I agree to the
+
               <a href="#" class="font-medium text-primary hover:text-primary-dark"> Terms </a>
+
               and
+
               <a href="#" class="font-medium text-primary hover:text-primary-dark">
                 Privacy Policy </a
               >.
             </span>
           </label>
 
+          @if (termsField.invalid && termsField.touched) {
+            <p class="-mt-3 text-xs text-red-600">You must accept the terms and privacy policy.</p>
+          }
+
           <!-- Submit -->
           <button
             type="submit"
-            class="h-12 w-full rounded-md bg-primary text-sm font-semibold text-white transition duration-200 hover:bg-primary-dark"
+            [disabled]="loading()"
+            class="h-12 w-full rounded-md bg-primary text-sm font-semibold text-white transition duration-200 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Create Account
+            @if (loading()) {
+              <span class="flex items-center justify-center gap-2">
+                <span
+                  class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                ></span>
+
+                Creating account...
+              </span>
+            } @else {
+              Create Account
+            }
           </button>
         </form>
 
