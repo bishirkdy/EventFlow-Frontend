@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { PublicLayout } from './shared/layouts/public-layout/public-layout';
+import { authGuard } from './core/guards/auth/auth-guard';
 
 export const routes: Routes = [
   {
@@ -20,27 +21,26 @@ export const routes: Routes = [
       },
       {
         path: 'create-event',
+        canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/platform/create-event/create-event')
-            .then(m => m.CreateEvent),
+          import('./features/platform/create-event/create-event').then((m) => m.CreateEvent),
       },
       {
         path: 'my-events',
+        canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/platform/my-events/my-events')
-            .then(m => m.MyEvents),
+          import('./features/platform/my-events/my-events').then((m) => m.MyEvents),
       },
     ],
   },
   {
-    path: 'events/:eventId',
+    path: 'organizer',
+    canActivate: [authGuard],
     loadChildren: () =>
-      import('./features/organizer/organizer.routes').then(
-        (m) => m.organizerRoutes
-      ),
+      import('./features/organizer/organizer.routes').then((m) => m.organizerRoutes),
   },
   {
     path: '**',
     redirectTo: '',
-  }
+  },
 ];

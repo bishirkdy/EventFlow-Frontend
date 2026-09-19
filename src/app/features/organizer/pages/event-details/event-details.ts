@@ -1,6 +1,8 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { EventService } from '../../../../core/services/event/event.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-event-details',
@@ -9,6 +11,31 @@ import {DatePipe} from '@angular/common';
   styleUrl: './event-details.css',
 })
 export class EventDetails {
-  private eventState = inject(OrganizerEventStateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly eventService = inject(EventService);
+  private readonly eventState = inject(OrganizerEventStateService);
+
   event = this.eventState.event;
+
+  ngOnInit(): void {
+    const eventId = this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+
+    if (!eventId) {
+      return;
+    }
+
+    if (this.eventState.event()?.id === eventId) {
+      return;
+    }
+
+    this.eventService.getEventById(eventId).subscribe({
+      next: (response) => {
+        this.eventState.setEventId(eventId);
+        this.eventState.setEvent(response.data);
+      },
+      error: (error: unknown) => {
+        console.error('Failed to load event details', error);
+      },
+    });
+  }
 }

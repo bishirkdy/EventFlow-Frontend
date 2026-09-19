@@ -1,9 +1,20 @@
+import { EventImage } from '../event-image.model';
+import { EventStatus } from '../event.model';
+
 export interface CreateEventResponse {
   id: string;
   name: string;
+  description: string | null;
   eventType: string;
+  subType: string | null;
   startDate: string;
   endDate: string;
-  description: string;
   timeZone: string;
+  status: EventStatus | string;
+  subdomain: string | null;
+  createdBy: string;
+  createdByName: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+  images: EventImage[];
 }

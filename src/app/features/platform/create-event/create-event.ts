@@ -138,8 +138,9 @@ export class CreateEvent {
           );
 
           this.router.navigate([
-            '/organizer/events',
+            '/organizer',
             eventId,
+            'overview',
           ]);
         },
 

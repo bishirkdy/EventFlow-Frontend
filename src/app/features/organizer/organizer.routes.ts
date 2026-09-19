@@ -4,7 +4,7 @@ import { Overview } from './pages/overview/overview';
 
 export const organizerRoutes: Routes = [
   {
-    path: '',
+    path: ':eventId',
     component: OrganizerLayout,
     children: [
       {

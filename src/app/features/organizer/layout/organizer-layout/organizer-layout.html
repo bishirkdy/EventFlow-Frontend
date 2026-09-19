@@ -1,26 +1,77 @@
-<div class="flex min-h-screen flex-col bg-[#FAF8F6]">
+<div class="flex min-h-screen flex-col bg-background">
 
   <!-- Header -->
-  <header class="h-16 shrink-0 border-b border-[#E7E2DE] bg-white">
-    <div class="flex h-full items-center justify-between px-6">
+  <header class="h-16 shrink-0 border-b border-border bg-surface">
+    <div class="flex h-full items-center justify-between px-4 sm:px-6">
 
-      <div>
+      <!-- Left -->
+      <div class="flex min-w-0 items-center gap-3">
+
+        <!-- Mobile Menu -->
+        <button
+          type="button"
+          class="flex h-9 w-9 shrink-0 items-center justify-center
+                 rounded-lg text-text-secondary transition
+                 hover:bg-background hover:text-text-primary
+                 lg:hidden"
+          (click)="toggleMobileMenu()"
+          aria-label="Toggle navigation">
+
+          @if (mobileMenuOpen()) {
+            <lucide-icon
+              [img]="closeIcon"
+              [size]="20"
+              [strokeWidth]="1.8">
+            </lucide-icon>
+          } @else {
+            <lucide-icon
+              [img]="menuIcon"
+              [size]="20"
+              [strokeWidth]="1.8">
+            </lucide-icon>
+          }
+
+        </button>
+
+        <!-- Event -->
         @if (event(); as currentEvent) {
-          <h1 class="text-lg font-semibold text-[#1C1917]">
-            {{ currentEvent.name }}
-          </h1>
+          <div class="min-w-0">
 
-          <p class="text-xs text-[#A8A29E]">
-            {{ currentEvent.eventType }}
-          </p>
+            <h1
+              class="truncate text-sm font-semibold
+                     text-text-primary sm:text-base">
+              {{ currentEvent.name }}
+            </h1>
+
+            <p class="truncate text-xs text-text-muted">
+              {{ currentEvent.eventType }}
+            </p>
+
+          </div>
         }
+
       </div>
 
+
+      <!-- Status -->
       @if (event(); as currentEvent) {
         <span
-          class="rounded-full bg-[#FBE9E6] px-3 py-1 text-xs font-medium text-[#B5473A]"
-        >
-          {{ currentEvent.status }}
+          class="inline-flex shrink-0 items-center gap-1.5
+                 rounded-full bg-secondary-light
+                 px-2.5 py-1 text-xs font-medium
+                 text-secondary sm:px-3">
+
+          <span
+            class="h-1.5 w-1.5 rounded-full"
+            [class.bg-green-500]="currentEvent.status === 'Published'"
+            [class.bg-orange-500]="currentEvent.status === 'Draft'"
+            [class.bg-red-500]="currentEvent.status === 'Cancelled'">
+          </span>
+
+          <span class="hidden sm:inline">
+            {{ currentEvent.status }}
+          </span>
+
         </span>
       }
 
@@ -28,28 +79,100 @@
   </header>
 
 
-  <!-- Organizer Body -->
-  <div class="flex flex-1">
+  <!-- Body -->
+  <div class="relative flex flex-1">
+
+    <!-- Mobile Overlay -->
+    @if (mobileMenuOpen()) {
+      <button
+        type="button"
+        class="fixed inset-0 z-40 bg-black/30 lg:hidden"
+        aria-label="Close navigation"
+        (click)="closeMobileMenu()">
+      </button>
+    }
+
 
     <!-- Sidebar -->
-    <aside class="w-64 shrink-0 border-r border-[#E7E2DE] bg-white">
+    <aside
+      class="fixed inset-y-0 left-0 z-50 w-72
+             -translate-x-full border-r border-border
+             bg-surface shadow-xl transition-transform duration-200
+             lg:static lg:z-auto lg:w-64 lg:translate-x-0
+             lg:shadow-none"
+      [class.translate-x-0]="mobileMenuOpen()">
 
-      <nav class="space-y-1 p-4">
+      <!-- Mobile Header -->
+      <div
+        class="flex h-16 items-center justify-between
+               border-b border-border px-4 lg:hidden">
 
-        @for (item of navItems(); track item.route) {
+        <div>
+          <p class="text-sm font-semibold text-text-primary">
+            Event Management
+          </p>
 
-          <a
-            [routerLink]="[item.route]"
-            routerLinkActive="bg-[#FBE9E6] text-[#B5473A]"
-            [routerLinkActiveOptions]="{
-              exact: item.route === ''
-            }"
-            class="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-[#57534E] transition hover:bg-[#F5F2EF]"
-          >
-            {{ item.label }}
-          </a>
+          <p class="text-xs text-text-muted">
+            Organizer
+          </p>
+        </div>
 
-        }
+        <button
+          type="button"
+          class="flex h-9 w-9 items-center justify-center
+                 rounded-lg text-text-secondary transition
+                 hover:bg-background hover:text-text-primary"
+          (click)="closeMobileMenu()"
+          aria-label="Close navigation">
+
+          <lucide-icon
+            [img]="closeIcon"
+            [size]="20"
+            [strokeWidth]="1.8">
+          </lucide-icon>
+
+        </button>
+
+      </div>
+
+
+      <!-- Navigation -->
+      <nav class="h-[calc(100vh-4rem)] overflow-y-auto p-3">
+
+        <div class="space-y-1">
+
+          @for (item of navItems(); track item.route) {
+
+            <a
+              [routerLink]="[item.route]"
+              routerLinkActive="bg-secondary-light text-secondary"
+              [routerLinkActiveOptions]="{
+                exact: item.route === 'overview'
+              }"
+              class="flex items-center gap-3 rounded-xl px-3 py-2.5
+                     text-sm font-medium text-text-secondary
+                     transition hover:bg-background
+                     hover:text-text-primary"
+              (click)="closeMobileMenu()">
+
+              <!-- Navigation Icon -->
+              <lucide-icon
+                [img]="item.icon"
+                [size]="19"
+                [strokeWidth]="1.8"
+                class="shrink-0">
+              </lucide-icon>
+
+              <!-- Label -->
+              <span class="truncate">
+                {{ item.label }}
+              </span>
+
+            </a>
+
+          }
+
+        </div>
 
       </nav>
 
@@ -57,7 +180,7 @@
 
 
     <!-- Page Content -->
-    <main class="min-w-0 flex-1">
+    <main class="min-w-0 flex-1 overflow-x-hidden">
 
       <router-outlet />
 

@@ -7,10 +7,4 @@ import { AuthService } from './core/services/auth/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  private readonly authService = inject(AuthService);
-
-  constructor() {
-    this.authService.loadCurrentUser();
-  }
-}
+export class App {}

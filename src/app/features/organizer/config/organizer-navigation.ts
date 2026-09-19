@@ -1,63 +1,79 @@
+import type { LucideIconData } from 'lucide-angular';
+
+import {
+  LayoutDashboard,
+  Calendar,
+  MapPin,
+  CalendarDays,
+  Users,
+  FileText,
+  List,
+  Menu,
+  Image,
+  Megaphone,
+  Settings,
+} from 'lucide-angular';
+
 export interface OrganizerNavItem {
   label: string;
   route: string;
-  icon: string;
+  icon: LucideIconData;
 }
 
 export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
   {
     label: 'Overview',
     route: 'overview',
-    icon: 'layout-dashboard',
+    icon: LayoutDashboard,
   },
   {
     label: 'Schedule',
     route: 'schedule',
-    icon: 'calendar',
+    icon: Calendar,
   },
   {
     label: 'Venues',
     route: 'venues',
-    icon: 'map-pin',
+    icon: MapPin,
   },
   {
     label: 'Sessions',
     route: 'sessions',
-    icon: 'calendar-days',
+    icon: CalendarDays,
   },
   {
     label: 'Participants',
     route: 'participants',
-    icon: 'users',
+    icon: Users,
   },
   {
     label: 'Pages',
     route: 'pages',
-    icon: 'file-text',
+    icon: FileText,
   },
   {
     label: 'Sections',
     route: 'sections',
-    icon: 'layout-list',
+    icon: List,
   },
   {
     label: 'Navigation',
     route: 'navigation',
-    icon: 'menu',
+    icon: Menu,
   },
   {
     label: 'Photos',
     route: 'photos',
-    icon: 'image',
+    icon: Image,
   },
   {
     label: 'Announcements',
     route: 'announcements',
-    icon: 'megaphone',
+    icon: Megaphone,
   },
   {
     label: 'Settings',
     route: 'settings',
-    icon: 'settings',
+    icon: Settings,
   },
 ];

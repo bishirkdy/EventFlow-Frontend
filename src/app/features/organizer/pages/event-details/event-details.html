@@ -1,59 +1,73 @@
-<div class="p-6">
+<div class="min-h-screen bg-background p-6 md:p-8">
   @if (event(); as currentEvent) {
-    <div class="mb-6">
-      <h1 class="text-2xl font-semibold text-[#1C1917]">
-        Event Details
-      </h1>
-
-      <p class="mt-1 text-sm text-[#A8A29E]">
-        View your event information
-      </p>
-    </div>
-
-    <div class="grid gap-4 md:grid-cols-2">
-
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#A8A29E]">Event Name</p>
-        <p class="mt-1 font-medium text-[#1C1917]">
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-6">
+        <h1 class="text-2xl font-semibold text-text-primary">
           {{ currentEvent.name }}
+        </h1>
+        <p class="mt-1 text-sm text-text-secondary">
+          Event details and overview
         </p>
       </div>
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#A8A29E]">Event Type</p>
-        <p class="mt-1 font-medium text-[#1C1917]">
-          {{ currentEvent.eventType }}
-        </p>
-      </div>
+      @if (currentEvent.images.length > 0) {
+        <div class="mb-6 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+          <img
+            [src]="currentEvent.images[0].url"
+            [alt]="currentEvent.name"
+            class="h-64 w-full object-cover md:h-80"
+          />
+        </div>
+      }
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#A8A29E]">Start Date</p>
-        <p class="mt-1 font-medium text-[#1C1917]">
-          {{ currentEvent.startDate | date:'medium' }}
-        </p>
-      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-text-muted">Event Name</p>
+          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.name }}</p>
+        </div>
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#A8A29E]">End Date</p>
-        <p class="mt-1 font-medium text-[#1C1917]">
-          {{ currentEvent.endDate | date:'medium' }}
-        </p>
-      </div>
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-text-muted">Event Type</p>
+          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.eventType }}</p>
+        </div>
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#A8A29E]">Timezone</p>
-        <p class="mt-1 font-medium text-[#1C1917]">
-          {{ currentEvent.timeZone }}
-        </p>
-      </div>
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-text-muted">Start Date</p>
+          <p class="mt-1 font-medium text-text-primary">
+            {{ currentEvent.startDate | date:'medium' }}
+          </p>
+        </div>
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#A8A29E]">Status</p>
-        <p class="mt-1 font-medium text-[#1C1917]">
-          {{ currentEvent.status }}
-        </p>
-      </div>
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-text-muted">End Date</p>
+          <p class="mt-1 font-medium text-text-primary">
+            {{ currentEvent.endDate | date:'medium' }}
+          </p>
+        </div>
 
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-text-muted">Timezone</p>
+          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.timeZone }}</p>
+        </div>
+
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-text-muted">Status</p>
+          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.status }}</p>
+        </div>
+
+        @if (currentEvent.description) {
+          <div class="rounded-xl border border-border bg-surface p-5 md:col-span-2">
+            <p class="text-sm text-text-muted">Description</p>
+            <p class="mt-1 whitespace-pre-line text-sm leading-6 text-text-primary">
+              {{ currentEvent.description }}
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="mx-auto max-w-6xl rounded-xl border border-border bg-surface p-10 text-center">
+      <p class="text-sm text-text-secondary">Loading event...</p>
     </div>
   }
 </div>
