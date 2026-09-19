@@ -13,28 +13,22 @@ import { RouterLink } from '@angular/router';
 export class MyEvents {
 
   events = signal<Event[]>([]);
-
+  private eventService = inject(EventService)
   private platformId = inject(PLATFORM_ID);
 
-  constructor(
-    private eventService: EventService
-  ) { }
 
   ngOnInit(): void {
-
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-
     this.loadEvents();
   }
 
   private loadEvents(): void {
     this.eventService.getMyEvents().subscribe({
       next: (response) => {
-        console.log('My events:from func', this.events);
+        console.log( response.data);
         this.events.set(response.data);
-        console.log('My events:', this.events);
       },
       error: (error: unknown) => {
         console.error('Failed to load events', error);

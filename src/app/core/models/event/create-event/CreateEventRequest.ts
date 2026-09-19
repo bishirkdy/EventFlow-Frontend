@@ -1,8 +1,10 @@
 export interface CreateEventRequest {
   name: string;
+  description?: string;
   eventType: string;
+  subType?: string;
   startDate: string;
   endDate: string;
-  description: string;
   timeZone: string;
+  images: File[];
 }

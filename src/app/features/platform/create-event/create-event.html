@@ -1,267 +1,417 @@
-<div class="min-h-screen bg-background">
+<div class="min-h-screen bg-primary">
+  <div class="grid min-h-screen lg:grid-cols-2">
+    <!-- LEFT SIDE -->
+    <div
+      class="relative hidden overflow-hidden lg:flex"
+      style="background: linear-gradient(145deg, var(--color-primary) 0%, var(--color-fifth) 100%)"
+    >
+      <!-- Decorative shapes -->
 
-  <!-- Main -->
-  <main class="px-4 py-12 sm:py-16">
-    <div class="mx-auto max-w-5xl">
+      <div
+        class="absolute -left-32 -top-32 h-96 w-96 rounded-full opacity-20 blur-3xl"
+        style="background: var(--color-secondary)"
+      ></div>
 
-      <!-- Intro -->
-      <div class="max-w-2xl">
-        <div class="flex items-center gap-3">
-          <span class="h-4 w-8 bg-primary"></span>
+      <div
+        class="absolute -bottom-40 -right-20 h-112 w-md rounded-full opacity-20 blur-3xl"
+        style="background: var(--color-tertiary)"
+      ></div>
 
-          <span class="text-sm font-semibold uppercase tracking-wider text-primary">
-            Create an Event
-          </span>
+      <div
+        class="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10"
+      ></div>
+
+      <div
+        class="absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10"
+      ></div>
+
+      <!-- Content -->
+      <div class="relative z-10 flex w-full flex-col justify-between p-12 xl:p-16">
+        <div class="max-w-md">
+          <h2 class="text-4xl font-bold leading-tight text-white xl:text-5xl">
+            Turn your idea into an event.
+          </h2>
+
+          <p class="mt-6 text-base leading-7 text-white/60">
+            Create your event, organize everything in one place, and build an experience your
+            attendees will remember.
+          </p>
         </div>
 
-        <h1 class="mt-5 text-4xl font-semibold tracking-tight text-text-primary sm:text-5xl">
-          Let's create something
-          <span class="text-primary">great.</span>
-        </h1>
-
-        <!-- <p class="mt-5 max-w-xl text-base leading-7 text-text-secondary">
-          Start with the essentials. You can build your event website,
-          schedule, registration, and participant experience afterwards.
-        </p> -->
+        <div class="text-sm text-white/40">Create. Organize. Experience.</div>
       </div>
+    </div>
 
-      <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-        <!-- Form card -->
-        <form
-          (ngSubmit)="createEvent()"
-          class="rounded-2xl border border-border bg-surface p-6 shadow-sm sm:p-8"
-        >
-
-          <!-- Section heading -->
-          <div class="border-b border-border pb-6">
-            <h2 class="text-xl font-semibold tracking-tight">
-              Event details
-            </h2>
-
-            <p class="mt-1 text-sm text-text-secondary">
-              Tell us a little about your event.
-            </p>
+    <!-- RIGHT SIDE -->
+    <div class="flex min-h-screen items-center justify-center bg-[#faf9f7] px-5 py-10 sm:px-8">
+      <div class="w-full max-w-xl">
+        <!-- Mobile Logo -->
+        <div class="mb-8 flex items-center gap-3 lg:hidden">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-xl"
+            style="background: var(--color-secondary)"
+          >
+            <span class="font-bold text-white">E</span>
           </div>
 
-          <!-- Event name -->
-          <div class="mt-7">
-            <label
-              for="eventName"
-              class="text-sm font-medium text-text-primary"
-            >
-              Event name
-            </label>
+          <span class="text-lg font-bold text-primary"> EventFlow </span>
+        </div>
 
-            <input
-              id="eventName"
-              type="text"
-              name="eventName"
-              [(ngModel)]="eventName"
-              required
-              placeholder="e.g. Kerala Tech Summit 2026"
-              class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
-            />
-          </div>
+        <!-- Header -->
+        <div class="mb-8">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="mb-6 cursor-pointer text-sm font-medium text-gray-500 transition hover:text-(--color-secondary)"
+          >
+            ← Back to events
+          </button>
 
-          <!-- Event type -->
-          <div class="mt-6">
-            <label
-              for="eventType"
-              class="text-sm font-medium text-text-primary"
-            >
-              Event type
-            </label>
+          <h1 class="text-3xl font-bold tracking-tight text-primary">Create an event</h1>
 
-            <select
-              id="eventType"
-              name="eventType"
-              [(ngModel)]="eventType"
-              required
-              class="mt-2 h-12 w-full appearance-none rounded-lg border border-border bg-background px-4 text-sm text-text-primary outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
-            >
-              <option value="" disabled>
-                Choose an event type
-              </option>
+          <p class="mt-2 text-sm leading-6 text-gray-500">
+            Start by adding the basic information about your event.
+          </p>
+        </div>
 
-              @for (type of eventTypes; track type) {
-                <option [value]="type">
-                  {{ type }}
-                </option>
+        <!-- FORM -->
+        <form [formGroup]="eventForm" (ngSubmit)="createEvent()" class="space-y-6">
+          <!-- ========================= -->
+          <!-- EVENT INFORMATION -->
+          <!-- ========================= -->
+
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="mb-6">
+              <h2 class="text-base font-semibold text-primary">Event information</h2>
+
+              <p class="mt-1 text-xs text-gray-500">Give your event a name and choose its type.</p>
+            </div>
+
+            <!-- Event Name -->
+            <div class="mb-5">
+              <label for="eventName" class="mb-2 block text-sm font-medium text-primary">
+                Event name
+                <span style="color: var(--color-secondary)">*</span>
+              </label>
+
+              <input
+                id="eventName"
+                type="text"
+                formControlName="eventName"
+                placeholder="e.g. Kerala Tech Conference 2026"
+                class="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-primary outline-none transition placeholder:text-gray-400 focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
+              />
+
+              @if (
+                eventForm.get('eventName')?.touched &&
+                eventForm.get('eventName')?.hasError('required')
+              ) {
+                <p class="mt-2 text-xs text-red-500">Event name is required.</p>
               }
-            </select>
-          </div>
 
-          <!-- Dates -->
-          <div class="mt-6 grid gap-6 sm:grid-cols-2">
-
-            <div>
-              <label
-                for="startDate"
-                class="text-sm font-medium text-text-primary"
-              >
-                Start date
-              </label>
-
-              <input
-                id="startDate"
-                type="date"
-                name="startDate"
-                [(ngModel)]="startDate"
-                required
-                class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
-              />
+              @if (
+                eventForm.get('eventName')?.touched &&
+                eventForm.get('eventName')?.hasError('maxlength')
+              ) {
+                <p class="mt-2 text-xs text-red-500">Event name cannot exceed 200 characters.</p>
+              }
             </div>
 
-            <div>
-              <label
-                for="endDate"
-                class="text-sm font-medium text-text-primary"
-              >
-                End date
-              </label>
+            <!-- Type + Sub Type -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <!-- Event Type -->
+              <div>
+                <label for="eventType" class="mb-2 block text-sm font-medium text-primary">
+                  Event type
+                  <span style="color: var(--color-secondary)">*</span>
+                </label>
 
-              <input
-                id="endDate"
-                type="date"
-                name="endDate"
-                [(ngModel)]="endDate"
-                required
-                class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
-              />
+                <select
+                  id="eventType"
+                  formControlName="eventType"
+                  class="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-primary outline-none transition focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
+                >
+                  <option value="">Select type</option>
+
+                  @for (type of eventTypes; track type) {
+                    <option [value]="type">
+                      {{ type }}
+                    </option>
+                  }
+                </select>
+
+                @if (
+                  eventForm.get('eventType')?.touched &&
+                  eventForm.get('eventType')?.hasError('required')
+                ) {
+                  <p class="mt-2 text-xs text-red-500">Event type is required.</p>
+                }
+              </div>
+
+              <!-- Sub Type -->
+              <div>
+                <label for="subType" class="mb-2 block text-sm font-medium text-primary">
+                  Sub type
+
+                  <span class="ml-1 text-xs font-normal text-gray-400"> Optional </span>
+                </label>
+
+                <input
+                  id="subType"
+                  type="text"
+                  formControlName="subType"
+                  placeholder="e.g. Conference"
+                  class="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-primary outline-none transition placeholder:text-gray-400 focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
+                />
+
+                @if (
+                  eventForm.get('subType')?.touched &&
+                  eventForm.get('subType')?.hasError('maxlength')
+                ) {
+                  <p class="mt-2 text-xs text-red-500">Sub type cannot exceed 100 characters.</p>
+                }
+              </div>
             </div>
-
           </div>
 
-          <!-- Location -->
-          <!-- <div class="mt-6">
-            <label
-              for="location"
-              class="text-sm font-medium text-text-primary"
-            >
-              Location
-            </label>
+          <!-- ========================= -->
+          <!-- SCHEDULE -->
+          <!-- ========================= -->
 
-            <input
-              id="location"
-              type="text"
-              name="location"
-              [(ngModel)]="location"
-              required
-              placeholder="e.g. Calicut, Kerala"
-              class="mt-2 h-12 w-full rounded-lg border border-border bg-background px-4 text-sm outline-none transition placeholder:text-text-muted focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
-            />
-          </div> -->
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="mb-6">
+              <h2 class="text-base font-semibold text-primary">Schedule</h2>
 
-          <!-- Description -->
-          <div class="mt-6">
-            <div class="flex items-center justify-between">
-              <label
-                for="description"
-                class="text-sm font-medium text-text-primary"
+              <p class="mt-1 text-xs text-gray-500">Set the start and end time for your event.</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <!-- Start -->
+              <div>
+                <label for="startDate" class="mb-2 block text-sm font-medium text-primary">
+                  Start date & time
+                  <span style="color: var(--color-secondary)">*</span>
+                </label>
+
+                <input
+                  id="startDate"
+                  type="datetime-local"
+                  formControlName="startDate"
+                  class="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-primary outline-none transition focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
+                />
+
+                @if (
+                  eventForm.get('startDate')?.touched &&
+                  eventForm.get('startDate')?.hasError('required')
+                ) {
+                  <p class="mt-2 text-xs text-red-500">Start date is required.</p>
+                }
+              </div>
+
+              <!-- End -->
+              <div>
+                <label for="endDate" class="mb-2 block text-sm font-medium text-primary">
+                  End date & time
+                  <span style="color: var(--color-secondary)">*</span>
+                </label>
+
+                <input
+                  id="endDate"
+                  type="datetime-local"
+                  formControlName="endDate"
+                  class="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-primary outline-none transition focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
+                />
+
+                @if (
+                  eventForm.get('endDate')?.touched &&
+                  eventForm.get('endDate')?.hasError('required')
+                ) {
+                  <p class="mt-2 text-xs text-red-500">End date is required.</p>
+                }
+              </div>
+            </div>
+
+            @if (
+              eventForm.get('startDate')?.touched &&
+              eventForm.get('endDate')?.touched &&
+              eventForm.hasError('dateInvalid')
+            ) {
+              <div
+                class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-600"
               >
-                Description
-              </label>
+                End date must be greater than start date.
+              </div>
+            }
+          </div>
 
-              <span class="text-xs text-text-muted">
-                Optional
-              </span>
+          <!-- ========================= -->
+          <!-- DESCRIPTION -->
+          <!-- ========================= -->
+
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="mb-5">
+              <h2 class="text-base font-semibold text-primary">Description</h2>
+
+              <p class="mt-1 text-xs text-gray-500">
+                Add a short description to introduce your event.
+              </p>
             </div>
 
             <textarea
               id="description"
-              name="description"
-              [(ngModel)]="description"
               rows="5"
-              placeholder="Tell people what makes your event special..."
-              class="mt-2 w-full resize-none rounded-lg border border-border bg-background px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-text-muted focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary-light"
+              maxlength="2000"
+              formControlName="description"
+              placeholder="Describe your event..."
+              class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm leading-6 text-primary outline-none transition placeholder:text-gray-400 focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
             ></textarea>
+
+            <div class="mt-2 flex justify-end">
+              <span class="text-xs text-gray-400">
+                {{ eventForm.get('description')?.value?.length || 0 }}/2000
+              </span>
+            </div>
+
+            @if (
+              eventForm.get('description')?.touched &&
+              eventForm.get('description')?.hasError('maxlength')
+            ) {
+              <p class="mt-1 text-xs text-red-500">Description cannot exceed 2000 characters.</p>
+            }
           </div>
 
-          <!-- Actions -->
-          <div class="mt-8 flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
+          <!-- ========================= -->
+          <!-- EVENT IMAGES -->
+          <!-- ========================= -->
 
+          <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="mb-5">
+              <h2 class="text-base font-semibold text-primary">
+                Event images <span class="text-red-500">*</span>
+              </h2>
+
+              <p class="mt-1 text-xs text-gray-500">Upload images that represent your event.</p>
+              @if (selectedImages.length === 0) {
+                <p class="mt-2 text-xs text-red-500">At least one event image is required.</p>
+              }
+            </div>
+
+            <!-- Upload Area -->
+            <label
+              for="eventImages"
+              class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-10 text-center transition hover:border-(--color-secondary) hover:bg-white"
+            >
+              <!-- Icon -->
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
+                style="background: var(--color-secondary)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.8"
+                  stroke="currentColor"
+                  class="h-6 w-6 text-white"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 16.5V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2.5M7 10l5-5m0 0 5 5m-5-5v12"
+                  />
+                </svg>
+              </div>
+
+              <span class="text-sm font-medium text-primary"> Choose event images </span>
+
+              <span class="mt-1 text-xs text-gray-400">
+                JPEG, PNG or WebP · Maximum 5 MB each
+              </span>
+
+              <span class="mt-3 text-xs font-medium text-(--color-secondary)">
+                Select multiple images
+              </span>
+            </label>
+
+            <input
+              id="eventImages"
+              type="file"
+              multiple
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onImagesSelected($event)"
+              class="hidden"
+            />
+
+            <!-- Selected Images -->
+            @if (selectedImages.length > 0) {
+              <div class="mt-5">
+                <div class="mb-3 flex items-center justify-between">
+                  <span class="text-xs font-medium text-primary"> Selected images </span>
+
+                  <span class="text-xs text-gray-400"> {{ selectedImages.length }} image(s) </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  @for (image of selectedImages; track image.name + image.size; let i = $index) {
+                    <div
+                      class="group relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50"
+                    >
+                      <img
+                        [src]="imagePreviews[i]"
+                        [alt]="image.name"
+                        class="h-32 w-full object-cover"
+                      />
+
+                      <div class="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-2">
+                        <p class="truncate text-[11px] text-white" [title]="image.name">
+                          {{ image.name }}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Timezone -->
+          <input type="hidden" formControlName="timeZone" />
+
+          <!-- ========================= -->
+          <!-- ACTIONS -->
+          <!-- ========================= -->
+
+          <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <button
               type="button"
               (click)="cancel()"
-              class="h-11 rounded-lg border border-border bg-white px-5 text-sm font-medium text-text-primary transition hover:bg-surface-soft"
+              [disabled]="loading()"
+              class="h-12 cursor-pointer rounded-xl border border-gray-200 bg-white px-6 text-sm font-medium text-primary transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              class="h-11 rounded-lg bg-primary px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
+              [disabled]="loading()"
+              class="h-12 cursor-pointer rounded-xl px-7 text-sm font-semibold text-primary shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              style="background: var(--color-secondary)"
             >
-              Create an Event
+              @if (loading()) {
+                <span class="inline-flex items-center gap-2">
+                  <span
+                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                  ></span>
+
+                  Creating...
+                </span>
+              } @else {
+                Create Event
+              }
             </button>
-
           </div>
-
         </form>
-
-        <!-- Side information -->
-        <aside class="hidden lg:block">
-
-          <div class="sticky top-16 rounded-2xl bg-primary p-7 text-white">
-
-            <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-white/15">
-              <span class="text-lg">✦</span>
-            </div>
-
-            <h3 class="mt-6 text-xl font-semibold">
-              Your event,
-              your experience.
-            </h3>
-
-            <p class="mt-3 text-sm leading-6 text-white/75">
-              Once your event is created, you'll be able to customize
-              every part of the experience.
-            </p>
-
-            <div class="mt-7 space-y-4">
-
-              <div class="flex gap-3">
-                <span class="mt-0.5 text-sm">01</span>
-                <div>
-                  <p class="text-sm font-medium">
-                    Event website
-                  </p>
-                  <p class="mt-1 text-xs leading-5 text-white/65">
-                    Pages, sections and navigation
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex gap-3">
-                <span class="mt-0.5 text-sm">02</span>
-                <div>
-                  <p class="text-sm font-medium">
-                    Schedule
-                  </p>
-                  <p class="mt-1 text-xs leading-5 text-white/65">
-                    Sessions, venues and speakers
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex gap-3">
-                <span class="mt-0.5 text-sm">03</span>
-                <div>
-                  <p class="text-sm font-medium">
-                    Participants
-                  </p>
-                  <p class="mt-1 text-xs leading-5 text-white/65">
-                    Registration and attendance
-                  </p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </aside>
-
       </div>
     </div>
-  </main>
+  </div>
 </div>

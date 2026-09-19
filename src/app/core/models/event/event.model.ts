@@ -1,3 +1,5 @@
+import { EventImage } from './event-image.model';
+
 export interface Event {
   id: string;
   name: string;
@@ -12,4 +14,5 @@ export interface Event {
   createdBy: string;
   createdAt: string;
   updatedAt?: string;
+  images: EventImage[];
 }
