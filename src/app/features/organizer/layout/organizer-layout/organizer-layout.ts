@@ -34,13 +34,10 @@ import { Event as EventModel } from '../../../../core/models/event/event.model';
   styleUrl: './organizer-layout.css',
 })
 export class OrganizerLayout {
-  private readonly organizerEventState = inject(
-    OrganizerEventStateService
-  );
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   private readonly route = inject(ActivatedRoute);
   private readonly eventService = inject(EventService);
-  private readonly router = inject(Router);
 
   navItems = signal<OrganizerNavItem[]>([]);
 
@@ -55,8 +52,6 @@ export class OrganizerLayout {
 
   ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
-    console.log('ORGANIZER LAYOUT EVENT ID:', eventId);
-console.log('ORGANIZER URL:', this.router.url);
 
     if (!eventId) {
       this.loading.set(false);
@@ -64,7 +59,6 @@ console.log('ORGANIZER URL:', this.router.url);
     }
 
     this.organizerEventState.setEventId(eventId);
-
     this.eventService.getEventById(eventId).subscribe({
       next: (response) => {
         this.event.set(response.data);

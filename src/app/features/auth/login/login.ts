@@ -20,7 +20,7 @@ export class Login {
 
   readonly Eye = Eye;
   readonly EyeOff = EyeOff;
-  
+
   email = '';
   password = '';
 
@@ -39,29 +39,18 @@ export class Login {
 
     this.loading.set(true);
 
-    this.authService
-      .login({
-        email: this.email,
-        password: this.password,
-      })
-      .subscribe({
-        next: () => {
-          this.loading.set(false);
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.toastr.success('Login successful.');
+        this.router.navigate(['/']);
+      },
 
-          this.toastr.success('Login successful.');
-
-          this.router.navigate(['/']);
-        },
-
-        error: (err: unknown) => {
-          console.error('Login failed:', err);
-
-          this.loading.set(false);
-
-          this.toastr.error(
-            'Invalid email or password.'
-          );
-        },
-      });
+      error: (err: unknown) => {
+        console.error('Login failed:', err);
+        this.loading.set(false);
+        this.toastr.error('Invalid email or password.');
+      },
+    });
   }
 }

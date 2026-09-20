@@ -1,45 +1,217 @@
-@if (loading()) {
-  <p class="text-stone-500">Loading session...</p>
-}
+<div class="min-h-full bg-background p-6">
+  <div class="mx-auto max-w-4xl">
 
-@if (error()) {
-  <p class="text-red-600">{{ error() }}</p>
-}
-
-@if (session(); as session) {
-  <div class="max-w-2xl">
-    <h1 class="text-2xl font-semibold text-stone-900">
-      {{ session.title }}
-    </h1>
-
-    <div class="mt-6 space-y-4">
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
       <div>
-        <p class="text-sm text-stone-500">Description</p>
-        <p class="text-stone-900">
-          {{ session.description || 'No description' }}
+        <h1 class="text-2xl font-semibold text-text-primary">
+          Session Details
+        </h1>
+
+        <p class="mt-1 text-sm text-text-secondary">
+          View the details of this session.
         </p>
       </div>
 
-      <div>
-        <p class="text-sm text-stone-500">Session Type</p>
-        <p class="text-stone-900">
-          {{ session.sessionType }}
-        </p>
-      </div>
-
-      <div>
-        <p class="text-sm text-stone-500">Capacity</p>
-        <p class="text-stone-900">
-          {{ session.capacity ?? 'No limit' }}
-        </p>
-      </div>
-
-      <div>
-        <p class="text-sm text-stone-500">Status</p>
-        <p class="text-stone-900">
-          {{ session.status }}
-        </p>
-      </div>
+      <button
+        type="button"
+        (click)="goBack()"
+        class="border border-border px-4 py-2 text-sm
+               font-medium text-text-secondary
+               hover:bg-surface hover:text-text-primary"
+      >
+        Back
+      </button>
     </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div
+        class="border border-border bg-surface px-6 py-10
+               text-center text-sm text-text-muted"
+      >
+        Loading session...
+      </div>
+    }
+
+    <!-- Error -->
+    @if (!loading() && error()) {
+      <div
+        class="border border-red-500/30 bg-red-500/10
+               px-4 py-3 text-sm text-red-500"
+      >
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Details -->
+    @if (!loading() && session(); as currentSession) {
+      <div class="border border-border bg-surface">
+
+        <!-- Header -->
+        <div
+          class="flex items-center justify-between
+                 border-b border-border px-6 py-5"
+        >
+          <div>
+            <h2 class="text-xl font-semibold text-text-primary">
+              {{ currentSession.title }}
+            </h2>
+
+            <p class="mt-1 text-sm text-text-muted">
+              {{ currentSession.sessionType }}
+            </p>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              type="button"
+              (click)="editSession()"
+              class="border border-border px-4 py-2
+                     text-sm font-medium text-text-primary
+                     hover:bg-background"
+            >
+              Edit
+            </button>
+
+            <button
+              type="button"
+              [disabled]="deleting()"
+              (click)="deleteSession()"
+              class="border border-red-500/30 px-4 py-2
+                     text-sm font-medium text-red-500
+                     hover:bg-red-500/10
+                     disabled:cursor-not-allowed
+                     disabled:opacity-50"
+            >
+              @if (deleting()) {
+                Deleting...
+              } @else {
+                Delete
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="divide-y divide-border">
+
+          <!-- Title -->
+          <div
+            class="grid grid-cols-1 gap-2 px-6 py-5
+                   sm:grid-cols-3"
+          >
+            <div class="text-sm font-medium text-text-secondary">
+              Title
+            </div>
+
+            <div
+              class="text-sm text-text-primary
+                     sm:col-span-2"
+            >
+              {{ currentSession.title }}
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div
+            class="grid grid-cols-1 gap-2 px-6 py-5
+                   sm:grid-cols-3"
+          >
+            <div class="text-sm font-medium text-text-secondary">
+              Description
+            </div>
+
+            <div
+              class="text-sm text-text-primary
+                     sm:col-span-2"
+            >
+              @if (currentSession.description) {
+                {{ currentSession.description }}
+              } @else {
+                <span class="text-text-muted">
+                  No description provided.
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Session Type -->
+          <div
+            class="grid grid-cols-1 gap-2 px-6 py-5
+                   sm:grid-cols-3"
+          >
+            <div class="text-sm font-medium text-text-secondary">
+              Session Type
+            </div>
+
+            <div
+              class="text-sm text-text-primary
+                     sm:col-span-2"
+            >
+              {{ currentSession.sessionType }}
+            </div>
+          </div>
+
+          <!-- Capacity -->
+          <div
+            class="grid grid-cols-1 gap-2 px-6 py-5
+                   sm:grid-cols-3"
+          >
+            <div class="text-sm font-medium text-text-secondary">
+              Capacity
+            </div>
+
+            <div
+              class="text-sm text-text-primary
+                     sm:col-span-2"
+            >
+              @if (currentSession.capacity !== null) {
+                {{ currentSession.capacity }}
+              } @else {
+                <span class="text-text-muted">
+                  No capacity limit
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Section -->
+          <div
+            class="grid grid-cols-1 gap-2 px-6 py-5
+                   sm:grid-cols-3"
+          >
+            <div class="text-sm font-medium text-text-secondary">
+              Section ID
+            </div>
+
+            <div
+              class="break-all text-sm text-text-muted
+                     sm:col-span-2"
+            >
+              {{ currentSession.sectionId }}
+            </div>
+          </div>
+
+          <!-- Session ID -->
+          <div
+            class="grid grid-cols-1 gap-2 px-6 py-5
+                   sm:grid-cols-3"
+          >
+            <div class="text-sm font-medium text-text-secondary">
+              Session ID
+            </div>
+
+            <div
+              class="break-all text-sm text-text-muted
+                     sm:col-span-2"
+            >
+              {{ currentSession.id }}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    }
   </div>
-}
+</div>

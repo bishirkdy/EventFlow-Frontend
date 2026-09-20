@@ -55,13 +55,7 @@ export class Register {
     this.loading.set(true);
 
     this.authService
-      .register({
-        userName: this.username,
-        email: this.email,
-        password: this.password,
-        firstName: this.firstName,
-        lastName: this.lastName,
-      })
+      .register({userName: this.username, email: this.email, password: this.password, firstName: this.firstName, lastName: this.lastName})
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

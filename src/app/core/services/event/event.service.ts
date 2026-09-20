@@ -16,9 +16,7 @@ export class EventService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  createEvent(
-    request: CreateEventRequest,
-  ): Observable<ApiResponse<CreateEventResponse>> {
+  createEvent(request: CreateEventRequest): Observable<ApiResponse<CreateEventResponse>> {
     const formData = new FormData();
 
     formData.append('Name', request.name);
@@ -40,14 +38,10 @@ export class EventService {
   }
 
   getMyEvents(): Observable<ApiResponse<Event[]>> {
-    return this.http.get<ApiResponse<Event[]>>(
-      this.api.getUrl(EVENT_ENDPOINTS.myEvents),
-    );
+    return this.http.get<ApiResponse<Event[]>>(this.api.getUrl(EVENT_ENDPOINTS.myEvents));
   }
 
   getEventById(eventId: string): Observable<ApiResponse<Event>> {
-    return this.http.get<ApiResponse<Event>>(
-      this.api.getUrl(EVENT_ENDPOINTS.byId(eventId)),
-    );
+    return this.http.get<ApiResponse<Event>>(this.api.getUrl(EVENT_ENDPOINTS.byId(eventId)));
   }
 }

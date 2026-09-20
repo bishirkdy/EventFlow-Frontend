@@ -1,36 +1,42 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SectionService } from '../../../../core/services/section/section.service';
-import { SectionModel } from '../../../../core/models/section/section.model';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+
+import { SectionModel } from '../../../../core/models/section/section.model';
+import { SectionService } from '../../../../core/services/section/section.service';
+import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({
   selector: 'app-sections',
+  standalone: true,
   imports: [],
   templateUrl: './sections.html',
   styleUrl: './sections.css',
 })
 export class Sections implements OnInit {
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
   private readonly toastr = inject(ToastrService);
+  private readonly organizerEventState =
+    inject(OrganizerEventStateService);
 
   sections = signal<SectionModel[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
+  deleting = signal<string | null>(null);
 
   private eventId = '';
 
   ngOnInit(): void {
-    this.eventId = this.getEventId();
+    const eventId = this.organizerEventState.eventId();
 
-    if (!this.eventId) {
+    if (!eventId) {
       this.error.set('Event ID not found.');
       this.loading.set(false);
       return;
     }
 
+    this.eventId = eventId;
     this.loadSections();
   }
 
@@ -40,7 +46,7 @@ export class Sections implements OnInit {
 
     this.sectionService.getSections(this.eventId).subscribe({
       next: (response) => {
-        this.sections.set(response.data);
+        this.sections.set(response.data ?? []);
         this.loading.set(false);
       },
 
@@ -54,25 +60,35 @@ export class Sections implements OnInit {
   }
 
   createSection(): void {
-    this.router.navigate(['create'], {
-      relativeTo: this.route,
-    });
+    this.router.navigate([
+      '/organizer',
+      this.eventId,
+      'sections',
+      'create',
+    ]);
   }
 
   viewSection(sectionId: string): void {
-    this.router.navigate([sectionId], {
-      relativeTo: this.route,
-    });
+    this.router.navigate([
+      '/organizer',
+      this.eventId,
+      'sections',
+      sectionId,
+    ]);
   }
 
   editSection(sectionId: string): void {
-    this.router.navigate([sectionId, 'edit'], {
-      relativeTo: this.route,
-    });
+    this.router.navigate([
+      '/organizer',
+      this.eventId,
+      'sections',
+      sectionId,
+      'edit',
+    ]);
   }
 
   deleteSection(sectionId: string): void {
-    const confirmed = confirm(
+    const confirmed = window.confirm(
       'Are you sure you want to delete this section?'
     );
 
@@ -80,10 +96,14 @@ export class Sections implements OnInit {
       return;
     }
 
+    this.deleting.set(sectionId);
+
     this.sectionService
       .deleteSection(this.eventId, sectionId)
       .subscribe({
         next: () => {
+          this.deleting.set(null);
+
           this.toastr.success(
             'Section deleted successfully.'
           );
@@ -97,27 +117,12 @@ export class Sections implements OnInit {
             error
           );
 
+          this.deleting.set(null);
+
           this.toastr.error(
             'Failed to delete section.'
           );
         },
       });
-  }
-
-  private getEventId(): string {
-    let route: ActivatedRoute | null = this.route;
-
-    while (route) {
-      const eventId =
-        route.snapshot.paramMap.get('eventId');
-
-      if (eventId) {
-        return eventId;
-      }
-
-      route = route.parent;
-    }
-
-    return '';
   }
 }

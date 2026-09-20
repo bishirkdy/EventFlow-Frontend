@@ -1,5 +1,4 @@
 import type { LucideIconData } from 'lucide-angular';
-
 import {
   LayoutDashboard,
   Calendar,

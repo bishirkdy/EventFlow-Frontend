@@ -11,6 +11,7 @@ import { AUTH_ENDPOINTS } from '../../api/endpoints/auth-endpoints';
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);

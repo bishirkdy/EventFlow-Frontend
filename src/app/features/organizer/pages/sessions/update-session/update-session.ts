@@ -1,37 +1,34 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
-import { CreateSessionModel } from '../../../../../core/models/session/create-session.model';
-import { SectionModel } from '../../../../../core/models/section/section.model';
-import { SectionService } from '../../../../../core/services/section/section.service';
+import { UpdateSessionModel } from '../../../../../core/models/session/update-session.model';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({
-  selector: 'app-create-session',
+  selector: 'app-update-session',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './create-session.html',
-  styleUrl: './create-session.css',
+  templateUrl: './update-session.html',
+  styleUrl: './update-session.css',
 })
-export class CreateSession implements OnInit {
+export class UpdateSession implements OnInit {
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
-  private readonly sectionService = inject(SectionService);
   private readonly toastr = inject(ToastrService);
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
   eventId = '';
+  sessionId = '';
 
-  sections = signal<SectionModel[]>([]);
-  loadingSections = signal(true);
+  loading = signal(true);
   saving = signal(false);
   error = signal<string | null>(null);
 
-  session: CreateSessionModel = {
-    sectionId: '',
+  session: UpdateSessionModel = {
     title: '',
     description: '',
     sessionType: '',
@@ -40,43 +37,55 @@ export class CreateSession implements OnInit {
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
+    const sessionId = this.route.snapshot.paramMap.get('sessionId');
 
     if (!eventId) {
       this.error.set('Event ID not found.');
-      this.loadingSections.set(false);
+      this.loading.set(false);
+      return;
+    }
+
+    if (!sessionId) {
+      this.error.set('Session ID not found.');
+      this.loading.set(false);
       return;
     }
 
     this.eventId = eventId;
-    this.loadSections();
+    this.sessionId = sessionId;
+
+    this.loadSession();
   }
 
-  private loadSections(): void {
-    this.loadingSections.set(true);
+  private loadSession(): void {
+    this.loading.set(true);
+    this.error.set(null);
 
-    this.sectionService.getSections(this.eventId).subscribe({
+    this.sessionService.getSessionById(this.eventId, this.sessionId).subscribe({
       next: (response) => {
-        this.sections.set(response.data ?? []);
-        this.loadingSections.set(false);
+        const data = response.data;
+
+        this.session = {
+          title: data.title,
+          description: data.description ?? '',
+          sessionType: data.sessionType,
+          capacity: data.capacity,
+        };
+
+        this.loading.set(false);
       },
 
       error: (error: unknown) => {
-        console.error('Failed to load sections:', error);
+        console.error('Failed to load session:', error);
 
-        this.error.set('Failed to load sections.');
-
-        this.loadingSections.set(false);
+        this.error.set('Failed to load session.');
+        this.loading.set(false);
       },
     });
   }
 
-  createSession(): void {
+  updateSession(): void {
     this.error.set(null);
-
-    if (!this.session.sectionId) {
-      this.error.set('Section is required.');
-      return;
-    }
 
     if (!this.session.title.trim()) {
       this.error.set('Session title is required.');
@@ -93,8 +102,7 @@ export class CreateSession implements OnInit {
       return;
     }
 
-    const request: CreateSessionModel = {
-      sectionId: this.session.sectionId,
+    const request: UpdateSessionModel = {
       title: this.session.title.trim(),
       description: this.session.description?.trim() || undefined,
       sessionType: this.session.sessionType.trim(),
@@ -103,25 +111,25 @@ export class CreateSession implements OnInit {
 
     this.saving.set(true);
 
-    this.sessionService.createSession(this.eventId, request).subscribe({
+    this.sessionService.updateSession(this.eventId, this.sessionId, request).subscribe({
       next: () => {
         this.saving.set(false);
 
-        this.toastr.success('Session created successfully.');
+        this.toastr.success('Session updated successfully.');
 
-        this.router.navigate(['/organizer', this.eventId, 'sessions']);
+        this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId]);
       },
 
       error: (error: unknown) => {
-        console.error('Failed to create session:', error);
+        console.error('Failed to update session:', error);
 
         this.saving.set(false);
-        this.error.set('Failed to create session.');
+        this.error.set('Failed to update session.');
       },
     });
   }
 
   cancel(): void {
-    this.router.navigate(['/organizer', this.eventId, 'sessions']);
+    this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId]);
   }
 }

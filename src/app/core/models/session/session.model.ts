@@ -3,13 +3,7 @@ export interface SessionModel {
   eventId: string;
   sectionId: string;
   title: string;
-  description?: string;
+  description: string | null;
   sessionType: string;
-  capacity?: number;
-  status: string;
-  createdAt: string;
-  updatedAt?: string;
+  capacity: number | null;
 }
-
-
-

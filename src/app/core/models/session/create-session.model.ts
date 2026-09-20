@@ -1,7 +1,7 @@
-export interface CreateSessionRequest {
+export interface CreateSessionModel {
   sectionId: string;
   title: string;
   description?: string;
   sessionType: string;
-  capacity?: number;
+  capacity?: number | null;
 }

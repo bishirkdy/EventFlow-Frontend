@@ -54,16 +54,15 @@ export const organizerRoutes: Routes = [
               import('./pages/sections/section-details/section-details').then(
                 (m) => m.SectionDetails,
               ),
-          }
-        //   {
-        //     path: ':sectionId/edit',
-        //     loadComponent: () =>
-        //       import('./pages/sections/edit-section/edit-section')
-        //         .then(m => m.EditSection),
-        //   },
-
+          },
+          {
+            path: ':sectionId/edit',
+            loadComponent: () =>
+              import('./pages/sections/update-section/update-section').then((m) => m.UpdateSection),
+          },
         ],
       },
+
       // Venues
       {
         path: 'venues',
@@ -102,6 +101,11 @@ export const organizerRoutes: Routes = [
             path: 'create',
             loadComponent: () =>
               import('./pages/sessions/create-session/create-session').then((m) => m.CreateSession),
+          },
+          {
+            path: ':sessionId/edit',
+            loadComponent: () =>
+              import('./pages/sessions/update-session/update-session').then((m) => m.UpdateSession),
           },
           {
             path: ':sessionId',

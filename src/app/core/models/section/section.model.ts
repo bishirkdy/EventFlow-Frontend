@@ -1,11 +1,7 @@
 export interface SectionModel {
   id: string;
-  eventId: string;
   name: string;
-  description?: string;
+  description: string | null;
   displayOrder: number;
   isActive: boolean;
-  createdAt: string;
-  updatedAt?: string;
 }
-

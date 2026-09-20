@@ -1,166 +1,176 @@
-<div class="p-6">
+<div class="min-h-full bg-background p-6">
+  <div class="mx-auto max-w-4xl">
 
     <!-- Header -->
-    <div class="mb-6 flex items-start justify-between">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-text-primary">
+          Section Details
+        </h1>
 
-        <div>
-            <button
-                type="button"
-                (click)="backToSections()"
-                class="mb-3 text-sm text-[#78716C] hover:text-[#1C1917]"
-            >
-                ← Back to Sections
-            </button>
+        <p class="mt-1 text-sm text-text-secondary">
+          View the details of this event section.
+        </p>
+      </div>
 
-            <h1 class="text-2xl font-semibold text-[#1C1917]">
-                Section Details
-            </h1>
-
-            <p class="mt-1 text-sm text-[#A8A29E]">
-                View section information.
-            </p>
-        </div>
-
-        @if (section()) {
-            <button
-                type="button"
-                (click)="editSection()"
-                class="rounded-lg bg-[#B5473A] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#963B30]"
-            >
-                Edit Section
-            </button>
-        }
-
+      <button
+        type="button"
+        (click)="goBack()"
+        class="border border-border px-4 py-2 text-sm
+               font-medium text-text-secondary
+               hover:bg-surface hover:text-text-primary"
+      >
+        Back
+      </button>
     </div>
-
 
     <!-- Loading -->
     @if (loading()) {
-        <div class="text-sm text-[#57534E]">
-            Loading section...
-        </div>
+      <div
+        class="border border-border bg-surface px-6 py-10
+               text-center text-sm text-text-muted"
+      >
+        Loading section...
+      </div>
     }
-
 
     <!-- Error -->
-    @if (error(); as message) {
-        <div class="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-            {{ message }}
-        </div>
+    @if (!loading() && error()) {
+      <div
+        class="border border-red-500/30 bg-red-500/10
+               px-4 py-3 text-sm text-red-500"
+      >
+        {{ error() }}
+      </div>
     }
 
+    <!-- Details -->
+    @if (!loading() && section(); as currentSection) {
+      <div class="border border-border bg-surface">
 
-    <!-- Section -->
-    @if (section(); as currentSection) {
+        <!-- Section Header -->
+        <div
+          class="flex items-center justify-between
+                 border-b border-border px-6 py-5"
+        >
+          <div>
+            <h2 class="text-xl font-semibold text-text-primary">
+              {{ currentSection.name }}
+            </h2>
 
-        <div class="max-w-2xl rounded-xl border border-[#E7E2DE] bg-white">
+            <p class="mt-1 text-sm text-text-muted">
+              Section information
+            </p>
+          </div>
 
-            <!-- Title -->
-            <div class="flex items-center justify-between border-b border-[#E7E2DE] p-5">
+          <div class="flex gap-3">
+            <button
+              type="button"
+              (click)="editSection()"
+              class="border border-border px-4 py-2
+                     text-sm font-medium text-text-primary
+                     hover:bg-background"
+            >
+              Edit
+            </button>
 
-                <div>
-                    <h2 class="text-lg font-semibold text-[#1C1917]">
-                        {{ currentSection.name }}
-                    </h2>
+            <button
+              type="button"
+              (click)="deleteSection()"
+              class="border border-red-500/30 px-4 py-2
+                     text-sm font-medium text-red-500
+                     hover:bg-red-500/10"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
 
-                    <p class="mt-1 text-sm text-[#A8A29E]">
-                        Section information
-                    </p>
-                </div>
+        <!-- Details -->
+        <div class="divide-y divide-border">
 
-                <span
-                    class="rounded-full px-3 py-1 text-xs font-medium"
-                    [class.bg-green-50]="currentSection.isActive"
-                    [class.text-green-600]="currentSection.isActive"
-                    [class.bg-red-50]="!currentSection.isActive"
-                    [class.text-red-600]="!currentSection.isActive"
-                >
-                    {{ currentSection.isActive ? 'Active' : 'Inactive' }}
+          <!-- Name -->
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">
+              Name
+            </div>
+
+            <div class="text-sm text-text-primary sm:col-span-2">
+              {{ currentSection.name }}
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">
+              Description
+            </div>
+
+            <div class="text-sm text-text-primary sm:col-span-2">
+              @if (currentSection.description) {
+                {{ currentSection.description }}
+              } @else {
+                <span class="text-text-muted">
+                  No description provided.
                 </span>
+              }
+            </div>
+          </div>
 
+          <!-- Display Order -->
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">
+              Display Order
             </div>
 
+            <div class="text-sm text-text-primary sm:col-span-2">
+              {{ currentSection.displayOrder }}
+            </div>
+          </div>
 
-            <!-- Details -->
-            <div class="grid gap-5 p-5 md:grid-cols-2">
-
-                <!-- Description -->
-                <div>
-                    <p class="text-xs text-[#A8A29E]">
-                        Description
-                    </p>
-
-                    <p class="mt-1 text-sm text-[#1C1917]">
-                        {{ currentSection.description || 'No description' }}
-                    </p>
-                </div>
-
-
-                <!-- Display Order -->
-                <div>
-                    <p class="text-xs text-[#A8A29E]">
-                        Display Order
-                    </p>
-
-                    <p class="mt-1 text-sm text-[#1C1917]">
-                        {{ currentSection.displayOrder }}
-                    </p>
-                </div>
-
-
-                <!-- Status -->
-                <div>
-                    <p class="text-xs text-[#A8A29E]">
-                        Status
-                    </p>
-
-                    <p
-                        class="mt-1 text-sm font-medium"
-                        [class.text-green-600]="currentSection.isActive"
-                        [class.text-red-600]="!currentSection.isActive"
-                    >
-                        {{ currentSection.isActive ? 'Active' : 'Inactive' }}
-                    </p>
-                </div>
-
-
-                <!-- Created -->
-                <div>
-                    <p class="text-xs text-[#A8A29E]">
-                        Created
-                    </p>
-
-                    <p class="mt-1 text-sm text-[#1C1917]">
-                        {{ currentSection.createdAt }}
-                    </p>
-                </div>
-
+          <!-- Status -->
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">
+              Status
             </div>
 
-
-            <!-- Actions -->
-            <div class="flex justify-end gap-3 border-t border-[#E7E2DE] p-5">
-
-                <button
-                    type="button"
-                    (click)="backToSections()"
-                    class="rounded-lg border border-[#D6D3D1] px-4 py-2 text-sm font-medium text-[#57534E] hover:bg-[#FAF8F6]"
+            <div class="sm:col-span-2">
+              @if (currentSection.isActive) {
+                <span
+                  class="border border-green-500/30
+                         bg-green-500/10 px-3 py-1
+                         text-xs font-medium text-green-500"
                 >
-                    Back
-                </button>
-
-                <button
-                    type="button"
-                    (click)="editSection()"
-                    class="rounded-lg bg-[#B5473A] px-4 py-2 text-sm font-medium text-white hover:bg-[#963B30]"
+                  Active
+                </span>
+              } @else {
+                <span
+                  class="border border-border bg-background
+                         px-3 py-1 text-xs font-medium
+                         text-text-muted"
                 >
-                    Edit Section
-                </button>
-
+                  Inactive
+                </span>
+              }
             </div>
+          </div>
+
+          <!-- ID -->
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">
+              Section ID
+            </div>
+
+            <div
+              class="break-all text-sm text-text-muted
+                     sm:col-span-2"
+            >
+              {{ currentSection.id }}
+            </div>
+          </div>
 
         </div>
-
+      </div>
     }
-
+  </div>
 </div>

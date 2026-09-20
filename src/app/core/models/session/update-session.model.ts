@@ -1,8 +1,6 @@
-export interface UpdateSessionRequest {
+export interface UpdateSessionModel {
   title: string;
-  description?: string | null;
-  startTime: string;
-  endTime: string;
-  venueId?: string | null;
-  sectionId?: string | null;
+  description?: string;
+  sessionType: string;
+  capacity?: number | null;
 }

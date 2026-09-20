@@ -6,7 +6,6 @@ import { Event } from "../../../core/models/event/event.model";
 })
 export class OrganizerEventStateService {
     eventId = signal<string | null>(null);
-
     event = signal<Event | null>(null);
 
     setEventId(eventId: string): void {
