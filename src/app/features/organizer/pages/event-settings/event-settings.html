@@ -1,89 +1,500 @@
-<div class="p-6">
+<div class="min-h-full bg-background p-6 md:p-8">
 
-  <div class="mb-6">
-    <h1 class="text-2xl font-semibold text-[#1C1917]">
-      Event Settings
-    </h1>
+  <!-- Header -->
+  <div class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
 
-    <p class="mt-1 text-sm text-[#A8A29E]">
-      Configure features and behaviour for this event.
-    </p>
+    <div>
+      <h1 class="text-2xl font-semibold text-text-primary">
+        Event Settings
+      </h1>
+
+      <p class="mt-1 text-sm text-text-secondary">
+        Configure features and behaviour for this event.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+
+      <!-- Reset -->
+      <button
+        type="button"
+        (click)="resetSettings()"
+        [disabled]="resetting() || saving() || loading()"
+        class="border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (resetting()) {
+          Resetting...
+        } @else {
+          Reset to Defaults
+        }
+      </button>
+
+      <!-- Save -->
+      <button
+        type="button"
+        (click)="updateSettings()"
+        [disabled]="saving() || resetting() || loading()"
+        class="bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (saving()) {
+          Saving...
+        } @else {
+          Save Changes
+        }
+      </button>
+
+    </div>
+
   </div>
 
-  @if (loading()) {
-    <div class="rounded-xl border border-[#E7E2DE] bg-white p-6">
-      Loading settings...
+
+  <!-- Success -->
+  @if (success(); as message) {
+
+    <div
+      class="mb-6 flex items-center gap-3 border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+    >
+      <span class="font-medium">
+        Success
+      </span>
+
+      <span>
+        {{ message }}
+      </span>
     </div>
+
   }
 
+
+  <!-- Error -->
   @if (error(); as message) {
-    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-      {{ message }}
+
+    <div
+      class="mb-6 flex items-center gap-3 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
+    >
+      <span class="font-medium">
+        Error
+      </span>
+
+      <span>
+        {{ message }}
+      </span>
     </div>
+
   }
 
+
+  <!-- Loading -->
+  @if (loading()) {
+
+    <div class="border border-border bg-surface p-8">
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-primary"
+        ></div>
+
+        <span class="text-sm text-text-secondary">
+          Loading settings...
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- Settings -->
   @if (settings(); as currentSettings) {
 
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div class="space-y-6">
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#57534E]">Registration</p>
 
-        <p class="mt-2 font-semibold"
-           [class.text-green-600]="currentSettings.registrationEnabled"
-           [class.text-red-600]="!currentSettings.registrationEnabled">
-          {{ currentSettings.registrationEnabled ? 'Enabled' : 'Disabled' }}
-        </p>
-      </div>
+      <!-- Event Features -->
+      <section
+        class="overflow-hidden border border-border bg-surface"
+      >
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#57534E]">Attendance</p>
+        <!-- Section Header -->
+        <div class="border-b border-border px-6 py-5">
 
-        <p class="mt-2 font-semibold"
-           [class.text-green-600]="currentSettings.attendanceEnabled"
-           [class.text-red-600]="!currentSettings.attendanceEnabled">
-          {{ currentSettings.attendanceEnabled ? 'Enabled' : 'Disabled' }}
-        </p>
-      </div>
+          <h2 class="text-base font-semibold text-text-primary">
+            Event Features
+          </h2>
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#57534E]">Feedback</p>
+          <p class="mt-1 text-sm text-text-secondary">
+            Control which features are available for participants.
+          </p>
 
-        <p class="mt-2 font-semibold"
-           [class.text-green-600]="currentSettings.feedbackEnabled"
-           [class.text-red-600]="!currentSettings.feedbackEnabled">
-          {{ currentSettings.feedbackEnabled ? 'Enabled' : 'Disabled' }}
-        </p>
-      </div>
+        </div>
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#57534E]">Certificates</p>
 
-        <p class="mt-2 font-semibold"
-           [class.text-green-600]="currentSettings.certificateEnabled"
-           [class.text-red-600]="!currentSettings.certificateEnabled">
-          {{ currentSettings.certificateEnabled ? 'Enabled' : 'Disabled' }}
-        </p>
-      </div>
+        <!-- Feature List -->
+        <div class="divide-y divide-border">
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#57534E]">Gallery</p>
 
-        <p class="mt-2 font-semibold"
-           [class.text-green-600]="currentSettings.galleryEnabled"
-           [class.text-red-600]="!currentSettings.galleryEnabled">
-          {{ currentSettings.galleryEnabled ? 'Enabled' : 'Disabled' }}
-        </p>
-      </div>
+          <!-- Registration -->
+          <div
+            class="flex items-center justify-between gap-6 px-6 py-5"
+          >
 
-      <div class="rounded-xl border border-[#E7E2DE] bg-white p-5">
-        <p class="text-sm text-[#57534E]">Default Language</p>
+            <div class="flex min-w-0 items-center gap-4">
 
-        <p class="mt-2 font-semibold text-[#1C1917]">
-          {{ currentSettings.defaultLanguage }}
-        </p>
-      </div>
+              <!-- Icon -->
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-text-secondary"
+              >
+                <span class="text-sm font-semibold">
+                  R
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="min-w-0">
+
+                <p class="font-medium text-text-primary">
+                  Registration
+                </p>
+
+                <p class="mt-1 text-sm text-text-secondary">
+                  Allow participants to register for this event.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- Switch -->
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="currentSettings.registrationEnabled"
+              (click)="currentSettings.registrationEnabled = !currentSettings.registrationEnabled"
+              class="relative h-6 w-11 shrink-0 rounded-full transition"
+              [class.bg-primary]="currentSettings.registrationEnabled"
+              [class.bg-border]="!currentSettings.registrationEnabled"
+            >
+              <span
+                class="absolute top-1 h-4 w-4 rounded-full bg-white shadow transition"
+                [class.left-6]="currentSettings.registrationEnabled"
+                [class.left-1]="!currentSettings.registrationEnabled"
+              ></span>
+            </button>
+
+          </div>
+
+
+          <!-- Attendance -->
+          <div
+            class="flex items-center justify-between gap-6 px-6 py-5"
+          >
+
+            <div class="flex min-w-0 items-center gap-4">
+
+              <!-- Icon -->
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-text-secondary"
+              >
+                <span class="text-sm font-semibold">
+                  A
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="min-w-0">
+
+                <p class="font-medium text-text-primary">
+                  Attendance
+                </p>
+
+                <p class="mt-1 text-sm text-text-secondary">
+                  Enable attendance tracking for participants.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- Switch -->
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="currentSettings.attendanceEnabled"
+              (click)="currentSettings.attendanceEnabled = !currentSettings.attendanceEnabled"
+              class="relative h-6 w-11 shrink-0 rounded-full transition"
+              [class.bg-primary]="currentSettings.attendanceEnabled"
+              [class.bg-border]="!currentSettings.attendanceEnabled"
+            >
+              <span
+                class="absolute top-1 h-4 w-4 rounded-full bg-white shadow transition"
+                [class.left-6]="currentSettings.attendanceEnabled"
+                [class.left-1]="!currentSettings.attendanceEnabled"
+              ></span>
+            </button>
+
+          </div>
+
+
+          <!-- Feedback -->
+          <div
+            class="flex items-center justify-between gap-6 px-6 py-5"
+          >
+
+            <div class="flex min-w-0 items-center gap-4">
+
+              <!-- Icon -->
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-text-secondary"
+              >
+                <span class="text-sm font-semibold">
+                  F
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="min-w-0">
+
+                <p class="font-medium text-text-primary">
+                  Feedback
+                </p>
+
+                <p class="mt-1 text-sm text-text-secondary">
+                  Allow participants to submit event feedback.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- Switch -->
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="currentSettings.feedbackEnabled"
+              (click)="currentSettings.feedbackEnabled = !currentSettings.feedbackEnabled"
+              class="relative h-6 w-11 shrink-0 rounded-full transition"
+              [class.bg-primary]="currentSettings.feedbackEnabled"
+              [class.bg-border]="!currentSettings.feedbackEnabled"
+            >
+              <span
+                class="absolute top-1 h-4 w-4 rounded-full bg-white shadow transition"
+                [class.left-6]="currentSettings.feedbackEnabled"
+                [class.left-1]="!currentSettings.feedbackEnabled"
+              ></span>
+            </button>
+
+          </div>
+
+
+          <!-- Certificates -->
+          <div
+            class="flex items-center justify-between gap-6 px-6 py-5"
+          >
+
+            <div class="flex min-w-0 items-center gap-4">
+
+              <!-- Icon -->
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-text-secondary"
+              >
+                <span class="text-sm font-semibold">
+                  C
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="min-w-0">
+
+                <p class="font-medium text-text-primary">
+                  Certificates
+                </p>
+
+                <p class="mt-1 text-sm text-text-secondary">
+                  Enable certificate generation for participants.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- Switch -->
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="currentSettings.certificateEnabled"
+              (click)="currentSettings.certificateEnabled = !currentSettings.certificateEnabled"
+              class="relative h-6 w-11 shrink-0 rounded-full transition"
+              [class.bg-primary]="currentSettings.certificateEnabled"
+              [class.bg-border]="!currentSettings.certificateEnabled"
+            >
+              <span
+                class="absolute top-1 h-4 w-4 rounded-full bg-white shadow transition"
+                [class.left-6]="currentSettings.certificateEnabled"
+                [class.left-1]="!currentSettings.certificateEnabled"
+              ></span>
+            </button>
+
+          </div>
+
+
+          <!-- Gallery -->
+          <div
+            class="flex items-center justify-between gap-6 px-6 py-5"
+          >
+
+            <div class="flex min-w-0 items-center gap-4">
+
+              <!-- Icon -->
+              <div
+                class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-text-secondary"
+              >
+                <span class="text-sm font-semibold">
+                  G
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="min-w-0">
+
+                <p class="font-medium text-text-primary">
+                  Gallery
+                </p>
+
+                <p class="mt-1 text-sm text-text-secondary">
+                  Enable the event photo gallery.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- Switch -->
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="currentSettings.galleryEnabled"
+              (click)="currentSettings.galleryEnabled = !currentSettings.galleryEnabled"
+              class="relative h-6 w-11 shrink-0 rounded-full transition"
+              [class.bg-primary]="currentSettings.galleryEnabled"
+              [class.bg-border]="!currentSettings.galleryEnabled"
+            >
+              <span
+                class="absolute top-1 h-4 w-4 rounded-full bg-white shadow transition"
+                [class.left-6]="currentSettings.galleryEnabled"
+                [class.left-1]="!currentSettings.galleryEnabled"
+              ></span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- General Settings -->
+      <!-- <section
+        class="overflow-hidden border border-border bg-surface"
+      >
+
+        <div class="border-b border-border px-6 py-5">
+
+          <h2 class="text-base font-semibold text-text-primary">
+            General
+          </h2>
+
+          <p class="mt-1 text-sm text-text-secondary">
+            Configure general preferences for this event.
+          </p>
+
+        </div>
+
+
+        <div class="px-6 py-6">
+
+          <div class="max-w-md">
+
+            <label
+              for="defaultLanguage"
+              class="mb-2 block text-sm font-medium text-text-primary"
+            >
+              Default Language
+            </label>
+
+            <select
+              id="defaultLanguage"
+              [(ngModel)]="currentSettings.defaultLanguage"
+              class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+            >
+
+              <option value="english">
+                English
+              </option>
+
+              <option value="malayalam">
+                Malayalam
+              </option>
+
+              <option value="arabic">
+                Arabic
+              </option>
+
+            </select>
+
+            <p class="mt-2 text-xs text-text-muted">
+              This language will be used as the default language for the event.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section> -->
+
+
+      <!-- Bottom Actions -->
+      <!-- <div
+        class="flex justify-end gap-3 border-t border-border pt-6"
+      >
+
+        <button
+          type="button"
+          (click)="resetSettings()"
+          [disabled]="resetting() || saving()"
+          class="border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          @if (resetting()) {
+            Resetting...
+          } @else {
+            Reset Settings
+          }
+        </button>
+
+        <button
+          type="button"
+          (click)="updateSettings()"
+          [disabled]="saving() || resetting()"
+          class="bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          @if (saving()) {
+            Saving...
+          } @else {
+            Save Changes
+          }
+        </button>
+
+      </div> -->
 
     </div>
+
   }
+
 </div>
