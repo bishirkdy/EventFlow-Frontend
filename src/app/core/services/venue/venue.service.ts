@@ -11,7 +11,6 @@ import { VENUE_ENDPOINTS } from '../../api/endpoints/venue.endpoint';
 @Injectable({
   providedIn: 'root',
 })
-
 export class VenueService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
@@ -39,6 +38,12 @@ export class VenueService {
     return this.http.put<void>(
       this.api.getUrl(VENUE_ENDPOINTS.updateVenue(eventId, venueId)),
       request,
+    );
+  }
+
+  deleteVenue(eventId: string, venueId: string): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(
+      this.api.getUrl(VENUE_ENDPOINTS.deleteVenue(eventId, venueId)),
     );
   }
 }

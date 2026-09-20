@@ -1,130 +1,177 @@
-import { Component, inject, signal } from '@angular/core';
-import {  VenueModel } from '../../../../../core/models/venue/venue.model';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VenueService } from '../../../../../core/services/venue/venue.service';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { FormsModule } from '@angular/forms';
+
+import { VenueModel } from '../../../../../core/models/venue/venue.model';
+import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { UpdateVenueRequest } from '../../../../../core/models/venue/update-venue.model';
+import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({
   selector: 'app-edit-venue',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './edit-venue.html',
   styleUrl: './edit-venue.css',
 })
-export class EditVenue {
+export class EditVenue implements OnInit {
+  private readonly fb = inject(FormBuilder);
   private readonly venueService = inject(VenueService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly toastr = inject(ToastrService);
+  private readonly organizerEventState = inject(
+    OrganizerEventStateService
+  );
 
-  loading = signal(false);
+  loading = signal(true);
   saving = signal(false);
+  error = signal<string | null>(null);
 
-  eventId = '';
-  venueId = '';
+  private eventId = '';
+  private venueId = '';
 
-  venue: UpdateVenueRequest = {
-    name: '',
-    description: '',
-    address: '',
-    capacity: 0,
-  };
+  readonly form = this.fb.nonNullable.group({
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(200),
+      ],
+    ],
+
+    description: [
+      '',
+      [
+        Validators.maxLength(2000),
+      ],
+    ],
+
+    address: [
+      '',
+      [
+        Validators.maxLength(500),
+      ],
+    ],
+
+    capacity: [
+      0,
+      [
+        Validators.required,
+        Validators.min(1),
+      ],
+    ],
+  });
 
   ngOnInit(): void {
-    this.eventId = this.getEventId();
-    this.venueId = this.route.snapshot.paramMap.get('venueId') ?? '';
+    const eventId = this.organizerEventState.eventId();
+    const venueId = this.route.snapshot.paramMap.get('venueId');
 
-    if (!this.eventId) {
+    if (!eventId) {
       this.toastr.error('Event ID not found');
+      this.loading.set(false);
       return;
     }
 
-    if (!this.venueId) {
+    if (!venueId) {
       this.toastr.error('Venue ID not found');
+      this.loading.set(false);
       return;
     }
+
+    this.eventId = eventId;
+    this.venueId = venueId;
 
     this.loadVenue();
   }
 
-  private getEventId(): string {
-    let route: ActivatedRoute | null = this.route;
-
-    while (route) {
-      const eventId = route.snapshot.paramMap.get('eventId');
-
-      if (eventId) {
-        return eventId;
-      }
-
-      route = route.parent;
-    }
-
-    return '';
-  }
-
-  loadVenue(): void {
+  private loadVenue(): void {
     this.loading.set(true);
-    this.venueService.getVenueById(this.eventId, this.venueId).subscribe({
-      next: (response) => {
-        const data: VenueModel = response.data;
+    this.error.set(null);
 
-        this.venue = {
-          name: data.name,
-          description: data.description ?? '',
-          address: data.address ?? '',
-          capacity: data.capacity,
-        };
+    this.venueService
+      .getVenueById(this.eventId, this.venueId)
+      .subscribe({
+        next: (response) => {
+          const venue: VenueModel = response.data;
 
-        this.loading.set(false);
-      },
+          this.form.patchValue({
+            name: venue.name,
+            description: venue.description ?? '',
+            address: venue.address ?? '',
+            capacity: venue.capacity,
+          });
 
-      error: (error: unknown) => {
-        console.error('Failed to load venue:', error);
+          this.loading.set(false);
+        },
 
-        this.loading.set(false);
-        this.toastr.error('Failed to load venue');
-      },
-    });
+        error: (error: unknown) => {
+          console.error('Failed to load venue:', error);
+
+          this.error.set('Failed to load venue.');
+          this.loading.set(false);
+
+          this.toastr.error('Failed to load venue');
+        },
+      });
   }
 
   updateVenue(): void {
-    if (!this.venue.name.trim()) {
-      this.toastr.error('Venue name is required');
+    this.error.set(null);
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
-    if (this.venue.capacity <= 0) {
-      this.toastr.error('Capacity must be greater than 0');
-      return;
-    }
+    const formValue = this.form.getRawValue();
 
+const request: UpdateVenueRequest = {
+  name: formValue.name.trim(),
+  description: formValue.description.trim(),
+  address: formValue.address.trim(),
+  capacity: formValue.capacity,
+};
     this.saving.set(true);
 
-    this.venueService.updateVenue(this.eventId, this.venueId, this.venue).subscribe({
-      next: () => {
-        this.saving.set(false);
+    this.venueService
+      .updateVenue(this.eventId, this.venueId, request)
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
 
-        this.toastr.success('Venue updated successfully');
+          this.toastr.success('Venue updated successfully');
 
-        this.router.navigate(['..'], {
-          relativeTo: this.route,
-        });
-      },
+          this.router.navigate([
+            '/organizer',
+            this.eventId,
+            'venues',
+          ]);
+        },
 
-      error: (error: unknown) => {
-        console.error('Failed to update venue:', error);
+        error: (error: unknown) => {
+          console.error('Failed to update venue:', error);
 
-        this.saving.set(false);
-        this.toastr.error('Failed to update venue');
-      },
-    });
+          this.error.set('Failed to update venue.');
+          this.saving.set(false);
+
+          this.toastr.error('Failed to update venue');
+        },
+      });
   }
 
-  cancel(): void {
-    this.router.navigate(['..'], {
-      relativeTo: this.route,
-    });
+  goBack(): void {
+    this.router.navigate([
+      '/organizer',
+      this.eventId,
+      'venues',
+    ]);
   }
 }

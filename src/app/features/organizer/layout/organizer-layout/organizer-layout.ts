@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import {
   ActivatedRoute,
+  Router,
   RouterLink,
   RouterLinkActive,
   RouterOutlet,
@@ -39,6 +40,7 @@ export class OrganizerLayout {
 
   private readonly route = inject(ActivatedRoute);
   private readonly eventService = inject(EventService);
+  private readonly router = inject(Router);
 
   navItems = signal<OrganizerNavItem[]>([]);
 
@@ -53,6 +55,8 @@ export class OrganizerLayout {
 
   ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
+    console.log('ORGANIZER LAYOUT EVENT ID:', eventId);
+console.log('ORGANIZER URL:', this.router.url);
 
     if (!eventId) {
       this.loading.set(false);

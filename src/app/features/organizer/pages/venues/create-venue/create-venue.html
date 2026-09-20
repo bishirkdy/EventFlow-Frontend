@@ -1,51 +1,131 @@
-<div class="max-w-2xl">
-  <h1 class="text-2xl font-semibold text-stone-900">
-    Create Venue
-  </h1>
-
-  <div class="mt-6 space-y-4">
-    <input
-      [(ngModel)]="name"
-      type="text"
-      placeholder="Venue name"
-      class="w-full rounded-lg border border-stone-300 px-4 py-3"
-    />
-
-    <textarea
-      [(ngModel)]="description"
-      placeholder="Description"
-      rows="3"
-      class="w-full rounded-lg border border-stone-300 px-4 py-3"
-    ></textarea>
-
-    <input
-      [(ngModel)]="address"
-      type="text"
-      placeholder="Address"
-      class="w-full rounded-lg border border-stone-300 px-4 py-3"
-    />
-
-    <input
-      [(ngModel)]="capacity"
-      type="number"
-      min="0"
-      placeholder="Capacity"
-      class="w-full rounded-lg border border-stone-300 px-4 py-3"
-    />
-
-    @if (error()) {
-      <p class="text-sm text-red-600">
-        {{ error() }}
-      </p>
-    }
-
+<div class="min-h-full bg-background px-6 py-8 md:px-10 md:py-10">
+  <div class="mx-auto max-w-3xl">
+    <!-- Back -->
     <button
       type="button"
-      (click)="create()"
-      [disabled]="loading()"
-      class="rounded-lg bg-[#B5473A] px-5 py-3 font-medium text-white disabled:opacity-50"
+      (click)="goBack()"
+      class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition hover:text-primary"
     >
-      {{ loading() ? 'Creating...' : 'Create Venue' }}
+      <span class="text-lg">←</span>
+      Back to Venues
     </button>
+
+    <!-- Header -->
+    <div class="mb-10">
+      <h1 class="text-3xl font-semibold tracking-tight text-text-primary">Create Venue</h1>
+
+      <p class="mt-2 text-sm text-text-secondary">Add a location for your event.</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="create()" class="space-y-7">
+      <!-- Name -->
+      <div>
+        <label for="name" class="mb-2 block text-sm font-medium text-text-primary">
+          Venue name
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="e.g. Main Auditorium"
+          class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+        />
+
+        @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+          <p class="mt-2 text-sm text-red-600">Venue name is required.</p>
+        }
+
+        @if (form.controls.name.touched && form.controls.name.hasError('maxlength')) {
+          <p class="mt-2 text-sm text-red-600">Venue name cannot exceed 200 characters.</p>
+        }
+      </div>
+
+      <!-- Address -->
+      <div>
+        <label for="address" class="mb-2 block text-sm font-medium text-text-primary">
+          Address
+        </label>
+
+        <input
+          id="address"
+          type="text"
+          formControlName="address"
+          placeholder="Enter venue address"
+          class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+        />
+
+        @if (form.controls.address.touched && form.controls.address.hasError('maxlength')) {
+          <p class="mt-2 text-sm text-red-600">Venue address cannot exceed 500 characters.</p>
+        }
+      </div>
+
+      <!-- Capacity -->
+      <div class="max-w-sm">
+        <label for="capacity" class="mb-2 block text-sm font-medium text-text-primary">
+          Capacity
+        </label>
+
+        <input
+          id="capacity"
+          type="number"
+          min="1"
+          formControlName="capacity"
+          placeholder="e.g. 500"
+          class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+        />
+
+        @if (form.controls.capacity.touched && form.controls.capacity.hasError('min')) {
+          <p class="mt-2 text-sm text-red-600">Venue capacity must be greater than 0.</p>
+        }
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="description" class="mb-2 block text-sm font-medium text-text-primary">
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          rows="5"
+          formControlName="description"
+          placeholder="Tell us something about this venue..."
+          class="w-full resize-none border-0 border-b border-border bg-transparent px-0 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+        ></textarea>
+
+        @if (form.controls.description.touched && form.controls.description.hasError('maxlength')) {
+          <p class="mt-2 text-sm text-red-600">Venue description cannot exceed 2000 characters.</p>
+        }
+      </div>
+
+      <!-- Server Error -->
+      @if (error()) {
+        <p class="text-sm text-red-600">
+          {{ error() }}
+        </p>
+      }
+
+      <!-- Actions -->
+      <div class="flex items-center gap-4 pt-3">
+        <button
+          type="button"
+          (click)="goBack()"
+          [disabled]="loading()"
+          class="px-5 py-3 text-sm font-medium text-text-secondary transition hover:text-text-primary disabled:opacity-50"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="min-w-32 bg-primary px-6 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {{ loading() ? 'Creating...' : 'Create Venue' }}
+        </button>
+      </div>
+    </form>
   </div>
 </div>

@@ -1,45 +1,137 @@
-@if (loading()) {
-<p class="text-stone-500">Loading venue...</p>
-}
+<div class="min-h-full bg-background px-6 py-8 md:px-10 md:py-10">
 
-@if (error()) {
-<p class="text-red-600">{{ error() }}</p>
-}
+  <div class="mx-auto max-w-3xl">
 
-@if (venue(); as venue) {
-<div class="max-w-2xl">
-    <h1 class="text-2xl font-semibold text-stone-900">
-        {{ venue.name }}
-    </h1>
+    <!-- Back -->
+    <button
+      type="button"
+      (click)="goBack()"
+      class="mb-10 inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition hover:text-primary"
+    >
+      <span class="text-lg">←</span>
+      Back to Venues
+    </button>
 
-    <div class="mt-6 space-y-4">
+
+    <!-- Loading -->
+    @if (loading()) {
+
+      <div class="py-10">
+        <p class="text-sm text-text-secondary">
+          Loading venue...
+        </p>
+      </div>
+
+    }
+
+
+    <!-- Error -->
+    @else if (error()) {
+
+      <div class="py-10">
+        <p class="text-sm text-red-600">
+          {{ error() }}
+        </p>
+      </div>
+
+    }
+
+
+    <!-- Venue -->
+    @else if (venue(); as venue) {
+
+      <!-- Header -->
+      <div class="mb-10 flex items-start justify-between gap-6">
+
         <div>
-            <p class="text-sm text-stone-500">Description</p>
-            <p class="text-stone-900">
-                {{ venue.description || 'No description' }}
-            </p>
+          <h1
+            class="text-3xl font-semibold tracking-tight text-text-primary"
+          >
+            {{ venue.name }}
+          </h1>
+
+          <p class="mt-2 text-sm text-text-secondary">
+            Venue details
+          </p>
         </div>
 
-        <div>
-            <p class="text-sm text-stone-500">Address</p>
-            <p class="text-stone-900">
-                {{ venue.address || 'No address' }}
-            </p>
+        <button
+          type="button"
+          (click)="editVenue()"
+          class="shrink-0 bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+        >
+          Edit
+        </button>
+
+      </div>
+
+
+      <!-- Details -->
+      <div class="border-t border-border">
+
+        <!-- Description -->
+        <div class="border-b border-border py-6">
+
+          <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+            Description
+          </p>
+
+          <p class="mt-2 text-sm leading-6 text-text-primary">
+            {{ venue.description || 'No description' }}
+          </p>
+
         </div>
 
-        <div>
-            <p class="text-sm text-stone-500">Capacity</p>
-            <p class="text-stone-900">
-                {{ venue.capacity }}
-            </p>
+
+        <!-- Address -->
+        <div class="border-b border-border py-6">
+
+          <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+            Address
+          </p>
+
+          <p class="mt-2 text-sm leading-6 text-text-primary">
+            {{ venue.address || 'No address' }}
+          </p>
+
         </div>
 
-        <div>
-            <p class="text-sm text-stone-500">Status</p>
-            <p class="text-stone-900">
-                {{ venue.isActive ? 'Active' : 'Inactive' }}
-            </p>
+
+        <!-- Capacity -->
+        <div class="border-b border-border py-6">
+
+          <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+            Capacity
+          </p>
+
+          <p class="mt-2 text-sm text-text-primary">
+            {{ venue.capacity }}
+          </p>
+
         </div>
-    </div>
+
+
+        <!-- Status -->
+        <div class="border-b border-border py-6">
+
+          <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+            Status
+          </p>
+
+          <p
+            class="mt-2 text-sm font-medium"
+            [class.text-primary]="venue.isActive"
+            [class.text-text-muted]="!venue.isActive"
+          >
+            {{ venue.isActive ? 'Active' : 'Inactive' }}
+          </p>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
 </div>
-}

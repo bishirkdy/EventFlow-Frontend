@@ -1,162 +1,109 @@
-<div class="min-h-full bg-[#FAF8F6] p-6">
+<div class="min-h-full bg-background px-6 py-8 md:px-10 md:py-10">
+  <div class="mx-auto max-w-6xl">
+    <!-- Header -->
+    <div class="mb-10 flex items-end justify-between gap-6">
+      <div>
+        <h1 class="text-3xl font-semibold tracking-tight text-text-primary">Venues</h1>
 
-  <!-- Header -->
-  <div class="mb-6 flex items-center justify-between">
+        <p class="mt-2 text-sm text-text-secondary">Manage the locations used for your event.</p>
+      </div>
 
-    <div>
-      <h1 class="text-2xl font-semibold text-[#1C1917]">
-        Venues
-      </h1>
-
-      <p class="mt-1 text-sm text-[#78716C]">
-        Manage the locations used for your event.
-      </p>
-    </div>
-
-    <button
-      type="button"
-      (click)="createVenue()"
-      class="rounded-lg bg-[#B5473A] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#963B31]"
-    >
-      + Add Venue
-    </button>
-
-  </div>
-
-
-  <!-- Loading -->
-  @if (loading()) {
-
-    <div class="rounded-xl border border-[#E7E2DE] bg-white p-8 text-center">
-      <p class="text-sm text-[#78716C]">
-        Loading venues...
-      </p>
-    </div>
-
-  }
-
-  <!-- Content -->
-  @else {
-
-    @if (venues().length === 0) {
-
-      <!-- Empty State -->
-      <div
-        class="rounded-xl border border-[#E7E2DE] bg-white px-6 py-12 text-center"
+      <button
+        type="button"
+        (click)="createVenue()"
+        class="inline-flex items-center gap-2 bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
       >
+        <span class="text-lg leading-none">+</span>
+        Add Venue
+      </button>
+    </div>
 
-        <div
-          class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#FBE9E6]"
-        >
-          <span class="text-xl text-[#B5473A]">⌖</span>
-        </div>
-
-        <h2 class="text-lg font-semibold text-[#1C1917]">
-          No venues yet
-        </h2>
-
-        <p class="mx-auto mt-2 max-w-md text-sm text-[#78716C]">
-          Add a venue to start organizing locations for your event.
-        </p>
-
-        <button
-          type="button"
-          (click)="createVenue()"
-          class="mt-5 rounded-lg bg-[#B5473A] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#963B31]"
-        >
-          Add your first venue
-        </button>
-
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="py-16 text-center">
+        <p class="text-sm text-text-secondary">Loading venues...</p>
       </div>
-
-    } @else {
-
-      <!-- Venue Grid -->
-      <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-
-        @for (venue of venues(); track venue.id) {
-
-          <div
-            class="group rounded-xl border border-[#E7E2DE] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-
-            <!-- Top -->
-            <div class="flex items-start justify-between gap-4">
-
-              <div class="min-w-0">
-
-                <h2
-                  class="truncate text-base font-semibold text-[#1C1917]"
-                >
-                  {{ venue.name }}
-                </h2>
-
-                @if (venue.description) {
-                  <p class="mt-1 line-clamp-2 text-sm text-[#78716C]">
-                    {{ venue.description }}
-                  </p>
-                }
-
-              </div>
-
-              <span
-                class="shrink-0 rounded-full bg-[#F5F2EF] px-2.5 py-1 text-xs font-medium text-[#57534E]"
-              >
-                {{ venue.capacity }} capacity
-              </span>
-
-            </div>
-
-
-            <!-- Address -->
-            @if (venue.address) {
-
-              <div class="mt-5 border-t border-[#F0ECE8] pt-4">
-
-                <p class="text-xs font-medium uppercase tracking-wide text-[#A8A29E]">
-                  Address
-                </p>
-
-                <p class="mt-1 text-sm text-[#57534E]">
-                  {{ venue.address }}
-                </p>
-
-              </div>
-
-            }
-
-
-            <!-- Actions -->
-            <div
-              class="mt-5 flex items-center justify-between border-t border-[#F0ECE8] pt-4"
-            >
-
-              <button
-                type="button"
-                (click)="viewVenue(venue.id)"
-                class="text-sm font-medium text-[#B5473A] hover:underline"
-              >
-                View details
-              </button>
-
-              <button
-                type="button"
-                (click)="editVenue(venue.id)"
-                class="rounded-lg border border-[#E7E2DE] px-3 py-1.5 text-sm font-medium text-[#57534E] transition hover:bg-[#F5F2EF]"
-              >
-                Edit
-              </button>
-
-            </div>
-
-          </div>
-
-        }
-
-      </div>
-
     }
 
-  }
+    <!-- Content -->
+    @else {
+      @if (venues().length === 0) {
+        <!-- Empty State -->
+        <div class="border-t border-border py-20 text-center">
+          <h2 class="text-lg font-medium text-text-primary">No venues yet</h2>
 
+          <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-text-secondary">
+            Add a venue to start organizing locations for your event.
+          </p>
+
+          <button
+            type="button"
+            (click)="createVenue()"
+            class="mt-6 bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+          >
+            Add your first venue
+          </button>
+        </div>
+      } @else {
+        <!-- Venue List -->
+        <div class="border-t border-border">
+          @for (venue of venues(); track venue.id) {
+            <div class="group border-b border-border py-6 transition">
+              <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+                <!-- Venue Info -->
+                <div class="min-w-0">
+                  <div class="flex items-center gap-3">
+                    <h2 class="text-lg font-medium text-text-primary">
+                      {{ venue.name }}
+                    </h2>
+
+                    <span class="text-xs text-text-muted"> {{ venue.capacity }} capacity </span>
+                  </div>
+
+                  @if (venue.description) {
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
+                      {{ venue.description }}
+                    </p>
+                  }
+
+                  @if (venue.address) {
+                    <div class="mt-3 flex items-start gap-2">
+                      <span class="text-sm text-text-muted"> ⌖ </span>
+
+                      <p class="text-sm text-text-secondary">
+                        {{ venue.address }}
+                      </p>
+                    </div>
+                  }
+                </div>
+
+                <!-- Actions -->
+                <div class="flex shrink-0 items-center gap-5">
+                  <button
+                    type="button"
+                    (click)="viewVenue(venue.id)"
+                    class="text-sm font-medium text-primary transition hover:opacity-70"
+                  >
+                    View details
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="editVenue(venue.id)"
+                    class="text-sm font-medium text-text-secondary transition hover:text-text-primary"
+                  >
+                    Edit
+                  </button>
+
+                  <button type="button" [disabled]="deleting()" (click)="deleteVenue(venue.id)">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
 </div>
