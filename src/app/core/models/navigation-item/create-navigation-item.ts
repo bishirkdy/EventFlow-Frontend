@@ -1,7 +1,7 @@
-export interface CreateNavigationItemRequest {
+export interface CreateNavigationItemModel {
   label: string;
-  url?: string;
-  pageId?: string;
+  url?: string | null;
+  pageId?: string | null;
   displayOrder: number;
   openInNewTab: boolean;
 }

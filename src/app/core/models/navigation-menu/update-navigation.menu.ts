@@ -1,4 +1,4 @@
-export interface UpdateNavigationMenuRequest {
+export interface UpdateNavigationMenuModel {
   name: string;
   location: string;
 }

@@ -4,8 +4,5 @@ export interface NavigationMenuModel {
   name: string;
   location: string;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string | null;
 }
-
-
-
