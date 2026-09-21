@@ -28,8 +28,6 @@ export class Venues implements OnInit {
   ngOnInit(): void {
     const eventId = this.getEventId();
 
-    console.log('VENUE EVENT ID:', eventId);
-    console.log('CURRENT URL:', this.router.url);
 
     if (!eventId) {
       this.toastr.error('Event ID not found');
@@ -99,38 +97,29 @@ export class Venues implements OnInit {
       return;
     }
 
-    const confirmed = confirm(
-      'Are you sure you want to delete this venue?',
-    );
+    const confirmed = confirm('Are you sure you want to delete this venue?');
 
     if (!confirmed) {
       return;
     }
 
     this.deleting.set(true);
-
     this.venueService.deleteVenue(eventId, venueId).subscribe({
       next: (response) => {
         this.deleting.set(false);
 
         if (response.success) {
-          this.toastr.success(
-            response.message || 'Venue deleted successfully',
-          );
+          this.toastr.success(response.message || 'Venue deleted successfully');
 
           this.loadVenues();
         } else {
-          this.toastr.error(
-            response.message || 'Failed to delete venue',
-          );
+          this.toastr.error(response.message || 'Failed to delete venue');
         }
       },
 
       error: (error: unknown) => {
         console.error('Failed to delete venue:', error);
-
         this.deleting.set(false);
-
         this.toastr.error('Failed to delete venue');
       },
     });

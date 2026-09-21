@@ -1,0 +1,196 @@
+<div class="space-y-8 p-6 lg:p-8">
+  <!-- Header -->
+  <div
+    class="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-text-primary">
+        Page Sections
+      </h1>
+
+      <p class="mt-1 text-sm text-text-secondary">
+        Manage the sections displayed on this page.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="createSection()"
+      class="cursor-pointer bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+    >
+      Add Section
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex min-h-56 items-center justify-center border border-border bg-surface">
+      <div class="text-center">
+        <div
+          class="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-border border-t-primary"
+        ></div>
+
+        <p class="text-sm text-text-muted">
+          Loading sections...
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- Empty -->
+  @if (!loading() && sections().length === 0) {
+    <div class="border border-border bg-surface px-6 py-14 text-center">
+      <div
+        class="mx-auto flex h-12 w-12 items-center justify-center border border-border bg-background text-xl text-text-muted"
+      >
+        +
+      </div>
+
+      <h2 class="mt-5 text-lg font-medium text-text-primary">
+        No sections yet
+      </h2>
+
+      <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">
+        Add sections to start building the content and layout of this page.
+      </p>
+
+      <button
+        type="button"
+        (click)="createSection()"
+        class="mt-6 cursor-pointer bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+      >
+        Add First Section
+      </button>
+    </div>
+  }
+
+  <!-- Sections -->
+  @if (!loading() && sections().length > 0) {
+    <div class="overflow-hidden border border-border bg-surface">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[800px] text-left">
+          <!-- Header -->
+          <thead class="border-b border-border bg-background">
+            <tr>
+              <th
+                class="w-24 px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+              >
+                Order
+              </th>
+
+              <th
+                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+              >
+                Section
+              </th>
+
+              <th
+                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+              >
+                Image
+              </th>
+
+              <th
+                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+              >
+                Visibility
+              </th>
+
+              <th
+                class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-text-secondary"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <!-- Body -->
+          <tbody class="divide-y divide-border">
+            @for (section of sections(); track section.id) {
+              <tr class="transition hover:bg-background">
+                <!-- Order -->
+                <td class="px-5 py-4">
+                  <span
+                    class="inline-flex min-w-8 items-center justify-center border border-border px-2 py-1 text-sm font-medium text-text-primary"
+                  >
+                    {{ section.displayOrder }}
+                  </span>
+                </td>
+
+                <!-- Section -->
+                <td class="px-5 py-4">
+                  <div class="font-medium text-text-primary">
+                    {{ section.title || 'Untitled section' }}
+                  </div>
+
+                  <div
+                    class="mt-1 text-xs uppercase tracking-wide text-text-muted"
+                  >
+                    {{ section.sectionType }}
+                  </div>
+                </td>
+
+                <!-- Image -->
+                <td class="px-5 py-4">
+                  @if (section.imageUrl) {
+                    <img
+                      [src]="section.imageUrl"
+                      [alt]="section.title || 'Section image'"
+                      class="h-12 w-20 border border-border object-cover"
+                    />
+                  } @else {
+                    <div
+                      class="flex h-12 w-20 items-center justify-center border border-dashed border-border bg-background text-xs text-text-muted"
+                    >
+                      No image
+                    </div>
+                  }
+                </td>
+
+                <!-- Visibility -->
+                <td class="px-5 py-4">
+                  @if (section.isVisible) {
+                    <span
+                      class="inline-flex items-center gap-2 text-sm font-medium text-green-600"
+                    >
+                      <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                      Visible
+                    </span>
+                  } @else {
+                    <span
+                      class="inline-flex items-center gap-2 text-sm font-medium text-text-muted"
+                    >
+                      <span class="h-1.5 w-1.5 rounded-full bg-text-muted"></span>
+                      Hidden
+                    </span>
+                  }
+                </td>
+
+                <!-- Actions -->
+                <td class="px-5 py-4">
+                  <div class="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      (click)="editSection(section)"
+                      class="cursor-pointer border border-border px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="deleteSection(section)"
+                      class="cursor-pointer border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

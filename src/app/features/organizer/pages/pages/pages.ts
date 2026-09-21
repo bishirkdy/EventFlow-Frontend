@@ -1,125 +1,127 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../core/models/event-page/event-page.model';
-import { ToastrService } from 'ngx-toastr';
+import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({
   selector: 'app-pages',
-  imports: [],
+  standalone: true,
   templateUrl: './pages.html',
   styleUrl: './pages.css',
 })
-export class Pages {
-  private route = inject(ActivatedRoute);
-  private eventPageService = inject(EventPageService);
+export class Pages implements OnInit {
+  private readonly pageService = inject(EventPageService);
+  private readonly eventState = inject(OrganizerEventStateService);
+  private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService);
 
-  private toaster = inject(ToastrService);
+  readonly pages = signal<EventPageModel[]>([]);
+  readonly loading = signal(false);
 
-  pages = signal<EventPageModel[]>([]);
-  loading = signal(true);
-  error = signal<string | null>(null);
+  readonly eventId = this.eventState.eventId;
 
   ngOnInit(): void {
-    const eventId =
-      this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+    this.loadPages();
+  }
+
+  loadPages(): void {
+    const eventId = this.eventId();
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
-      this.loading.set(false);
+      this.toastr.error('Event not found.');
       return;
     }
 
-    this.eventPageService.getPages(eventId).subscribe({
-      next: response => {
-        this.pages.set(response.data);
+    this.loading.set(true);
+
+    this.pageService.getPages(eventId).subscribe({
+      next: (response) => {
+        this.pages.set(response.data ?? []);
         this.loading.set(false);
       },
-      error: error => {
-        console.error('Failed to load pages', error);
-        this.error.set('Failed to load pages.');
+      error: () => {
         this.loading.set(false);
+        this.toastr.error('Failed to load event pages.');
       },
     });
+  }
+
+  createPage(): void {
+    this.router.navigate(['/organizer', this.eventId(), 'pages', 'create']);
   }
 
   publishPage(page: EventPageModel): void {
-    const eventId =
-      this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+    const eventId = this.eventId();
 
     if (!eventId) {
-      this.toaster.error('Event ID not found.');
       return;
     }
 
-    this.eventPageService
-      .publishPage(eventId, page.id)
-      .subscribe({
-        next: response => {
-          this.pages.update(pages =>
-            pages.map(item =>
-              item.id === page.id ? response.data : item
-            )
-          );
-
-          this.toaster.success('Page published successfully.');
-        },
-        error: error => {
-          console.error('Failed to publish page', error);
-          this.toaster.error('Failed to publish page.');
-        },
-      });
+    this.pageService.publishPage(eventId, page.id).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+      error: () => {
+        this.toastr.error('Failed to publish page.');
+      },
+    });
   }
 
   unpublishPage(page: EventPageModel): void {
-    const eventId =
-      this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+    const eventId = this.eventId();
 
     if (!eventId) {
-      this.toaster.error('Event ID not found.');
       return;
     }
 
-    this.eventPageService
-      .unpublishPage(eventId, page.id)
-      .subscribe({
-        next: response => {
-          this.pages.update(pages =>
-            pages.map(item =>
-              item.id === page.id ? response.data : item
-            )
-          );
-
-          this.toaster.success('Page unpublished successfully.');
-        },
-        error: error => {
-          console.error('Failed to unpublish page', error);
-          this.toaster.error('Failed to unpublish page.');
-        },
-      });
+    this.pageService.unpublishPage(eventId, page.id).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+      error: () => {
+        this.toastr.error('Failed to unpublish page.');
+      },
+    });
   }
 
   deletePage(page: EventPageModel): void {
-    const eventId =
-      this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+    const eventId = this.eventId();
 
     if (!eventId) {
-      this.toaster.error('Event ID not found.');
       return;
     }
 
-    this.eventPageService.deletePage(eventId, page.id).subscribe({
-      next: () => {
-        this.pages.update(pages =>
-          pages.filter(item => item.id !== page.id)
-        );
+    const confirmed = window.confirm(`Are you sure you want to delete "${page.name}"?`);
 
-        this.toaster.success('Page deleted successfully.');
+    if (!confirmed) {
+      return;
+    }
+
+    this.pageService.deletePage(eventId, page.id).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
       },
-      error: error => {
-        console.error('Failed to delete page', error);
-        this.toaster.error('Failed to delete page.');
+      error: () => {
+        this.toastr.error('Failed to delete page.');
       },
     });
+  }
+
+  trackById(_: number, page: EventPageModel): string {
+    return page.id;
+  }
+
+  editPage(page: EventPageModel): void {
+    this.router.navigate(['/organizer', this.eventId(), 'pages', page.id, 'edit']);
+  }
+
+  pageDetails(page: EventPageModel): void {
+    this.router.navigate(['/organizer', this.eventId(), 'pages', page.id]);
   }
 }

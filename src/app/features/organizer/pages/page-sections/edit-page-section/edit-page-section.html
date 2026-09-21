@@ -1,0 +1,162 @@
+<div class="space-y-8 p-6 lg:p-8">
+
+  <div>
+    <button
+      type="button"
+      (click)="goBack()"
+      class="text-sm text-text-secondary hover:text-text-primary"
+    >
+      ← Back to Page Sections
+    </button>
+
+    <h1 class="mt-6 text-3xl font-semibold text-text-primary">
+      Edit Page Section
+    </h1>
+
+    <p class="mt-2 text-sm text-text-secondary">
+      Update this page section.
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="py-12 text-sm text-text-muted">
+      Loading section...
+    </div>
+  } @else {
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="updateSection()"
+      class="max-w-3xl space-y-8"
+    >
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-text-primary">
+          Section Type
+        </label>
+
+        <input
+          type="text"
+          formControlName="sectionType"
+          class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
+        />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-text-primary">
+          Title
+        </label>
+
+        <input
+          type="text"
+          formControlName="title"
+          class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
+        />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-text-primary">
+          Content
+        </label>
+
+        <textarea
+          rows="6"
+          formControlName="content"
+          class="w-full border border-border bg-transparent p-3 text-text-primary outline-none focus:border-primary"
+        ></textarea>
+      </div>
+
+      @if (currentImageUrl()) {
+        <div>
+          <label class="mb-2 block text-sm font-medium text-text-primary">
+            Current Image
+          </label>
+
+          <img
+            [src]="currentImageUrl()!"
+            alt="Current section image"
+            class="h-40 w-64 object-cover"
+          />
+        </div>
+      }
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-text-primary">
+          Replace Image
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onImageSelected($event)"
+          class="block w-full text-sm text-text-secondary"
+        />
+
+        @if (selectedImage()) {
+          <p class="mt-2 text-sm text-text-muted">
+            {{ selectedImage()?.name }}
+          </p>
+        }
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-text-primary">
+          Display Order
+        </label>
+
+        <input
+          type="number"
+          formControlName="displayOrder"
+          min="0"
+          class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
+        />
+      </div>
+
+      <div class="flex items-center gap-3">
+        <input
+          id="isVisible"
+          type="checkbox"
+          formControlName="isVisible"
+        />
+
+        <label
+          for="isVisible"
+          class="text-sm text-text-primary"
+        >
+          Visible
+        </label>
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-text-primary">
+          Configuration
+        </label>
+
+        <textarea
+          rows="5"
+          formControlName="configuration"
+          class="w-full border border-border bg-transparent p-3 text-text-primary outline-none focus:border-primary"
+        ></textarea>
+      </div>
+
+      <div class="flex gap-4 pt-4">
+        <button
+          type="button"
+          (click)="goBack()"
+          class="border border-border px-5 py-3 text-sm font-medium text-text-primary"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="bg-primary px-5 py-3 text-sm font-medium text-white disabled:opacity-50"
+        >
+          {{ saving() ? 'Updating...' : 'Update Section' }}
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

@@ -1,0 +1,139 @@
+<div class="space-y-8 p-6 lg:p-8">
+
+  <div>
+    <button
+      type="button"
+      (click)="goBack()"
+      class="text-sm text-text-secondary hover:text-text-primary"
+    >
+      ← Back to Page Sections
+    </button>
+
+    <h1 class="mt-6 text-3xl font-semibold text-text-primary">
+      Create Page Section
+    </h1>
+
+    <p class="mt-2 text-sm text-text-secondary">
+      Add a new section to this page.
+    </p>
+  </div>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="createSection()"
+    class="max-w-3xl space-y-8"
+  >
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-primary">
+        Section Type
+      </label>
+
+      <input
+        type="text"
+        formControlName="sectionType"
+        placeholder="Enter section type"
+        class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
+      />
+
+      @if (
+        form.controls.sectionType.touched &&
+        form.controls.sectionType.invalid
+      ) {
+        <p class="mt-2 text-sm text-red-600">
+          Section type is required.
+        </p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-primary">
+        Title
+      </label>
+
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Enter section title"
+        class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
+      />
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-primary">
+        Content
+      </label>
+
+      <textarea
+        rows="6"
+        formControlName="content"
+        placeholder="Enter section content"
+        class="w-full border border-border bg-transparent p-3 text-text-primary outline-none focus:border-primary"
+      ></textarea>
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-primary">
+        Image
+      </label>
+
+      <input
+        type="file"
+        accept="image/*"
+        (change)="onImageSelected($event)"
+        class="block w-full text-sm text-text-secondary"
+      />
+
+      @if (selectedImage()) {
+        <p class="mt-2 text-sm text-text-muted">
+          {{ selectedImage()?.name }}
+        </p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-primary">
+        Display Order
+      </label>
+
+      <input
+        type="number"
+        formControlName="displayOrder"
+        min="0"
+        class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
+      />
+    </div>
+
+    <div>
+      <label class="mb-2 block text-sm font-medium text-text-primary">
+        Configuration
+      </label>
+
+      <textarea
+        rows="5"
+        formControlName="configuration"
+        placeholder="Optional JSON configuration"
+        class="w-full border border-border bg-transparent p-3 text-text-primary outline-none focus:border-primary"
+      ></textarea>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+      <button
+        type="button"
+        (click)="goBack()"
+        class="border border-border px-5 py-3 text-sm font-medium text-text-primary"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="bg-primary px-5 py-3 text-sm font-medium text-white disabled:opacity-50"
+      >
+        {{ saving() ? 'Creating...' : 'Create Section' }}
+      </button>
+    </div>
+
+  </form>
+</div>

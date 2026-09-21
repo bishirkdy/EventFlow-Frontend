@@ -1,53 +1,67 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CreateEventPageRequest, EventPageModel } from '../../models/event-page/event-page.model';
-import { ApiResponse } from '../../models/common/api-response';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
+import { EVENT_PAGE_ENDPOINTS } from '../../api/endpoints/event-page.endpoint';
+import { ApiResponse } from '../../models/common/api-response';
+import { EventPageModel } from '../../models/event-page/event-page.model';
+import { CreateEventPageModel } from '../../models/event-page/create-event-page.model';
+import { UpdateEventPageModel } from '../../models/event-page/update-event-page.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventPageService {
-  private http = inject(HttpClient);
-  private api = inject(Api);
+  private readonly http = inject(HttpClient);
+  private readonly api = inject(Api);
 
   getPages(eventId: string): Observable<ApiResponse<EventPageModel[]>> {
     return this.http.get<ApiResponse<EventPageModel[]>>(
-      this.api.getUrl('api/v1/events/${eventId}/pages'),
-      { withCredentials: true }
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPages(eventId)),
     );
   }
 
-  createPage(eventId: string, request: CreateEventPageRequest): Observable<ApiResponse<EventPageModel>> {
-    return this.http.post<ApiResponse<EventPageModel>>(
-      this.api.getUrl('api/v1/events/${eventId}/pages'),
+  createPage(eventId: string, request: CreateEventPageModel): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<string>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.createPage(eventId)),
       request,
-      { withCredentials: true }
     );
   }
 
-  publishPage(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
-    return this.http.put<ApiResponse<EventPageModel>>(
-      `${this.api.getUrl}`,
-      {},
-      { withCredentials: true }
+  updatePage(
+    eventId: string,
+    pageId: string,
+    request: UpdateEventPageModel,
+  ): Observable<ApiResponse<object | null>> {
+    return this.http.put<ApiResponse<object | null>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.updatePage(eventId, pageId)),
+      request,
     );
   }
 
-  unpublishPage(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
-    return this.http.put<ApiResponse<EventPageModel>>(
-      this.api.getUrl(`api/v1/event-page/${eventId}/pages/${pageId}/unpublish`),
-      {},
-      { withCredentials: true }
+  publishPage(eventId: string, pageId: string): Observable<ApiResponse<object | null>> {
+    return this.http.put<ApiResponse<object | null>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.publishPage(eventId, pageId)),
+      null,
     );
   }
 
-  deletePage(eventId: string, pageId: string): Observable<ApiResponse<unknown>> {
-    return this.http.delete<ApiResponse<unknown>>(
-      this.api.getUrl(`api/v1/event-page/${eventId}/pages/${pageId}`),
-      { withCredentials: true }
+  unpublishPage(eventId: string, pageId: string): Observable<ApiResponse<object | null>> {
+    return this.http.put<ApiResponse<object | null>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.unpublishPage(eventId, pageId)),
+      null,
     );
   }
 
+  deletePage(eventId: string, pageId: string): Observable<ApiResponse<object | null>> {
+    return this.http.delete<ApiResponse<object | null>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.deletePage(eventId, pageId)),
+    );
+  }
+
+  getPageById(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
+    return this.http.get<ApiResponse<EventPageModel>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPageById(eventId, pageId)),
+    );
+  }
 }

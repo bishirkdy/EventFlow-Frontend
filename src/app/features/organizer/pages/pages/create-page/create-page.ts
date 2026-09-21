@@ -1,76 +1,71 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
-import { CreateEventPageRequest } from '../../../../../core/models/event-page/event-page.model';
-import { FormsModule } from '@angular/forms';
+import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({
   selector: 'app-create-page',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './create-page.html',
   styleUrl: './create-page.css',
 })
 export class CreatePage {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private eventPageService = inject(EventPageService);
+  private readonly fb = inject(FormBuilder);
+  private readonly pageService = inject(EventPageService);
+  private readonly eventState = inject(OrganizerEventStateService);
+  private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService);
 
-  name = '';
-  slug = '';
-  pageType = '';
-  displayOrder = 0;
+  readonly saving = this.fb.nonNullable.control(false);
 
-  loading = signal(false);
-  error = signal<string | null>(null);
+  readonly form = this.fb.nonNullable.group({
+    name: ['', [Validators.required, Validators.maxLength(150)]],
+    slug: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(150),
+        Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      ],
+    ],
+    pageType: ['', [Validators.required, Validators.maxLength(50)]],
+    displayOrder: [0, [Validators.required, Validators.min(0)]],
+  });
 
-  create(): void {
-    const eventId =
-      this.route.parent?.parent?.parent?.snapshot.paramMap.get('eventId');
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const eventId = this.eventState.eventId();
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
+      this.toastr.error('Event not found.');
       return;
     }
 
-    if (!this.name.trim()) {
-      this.error.set('Page name is required.');
-      return;
-    }
+    this.saving.setValue(true);
 
-    if (!this.slug.trim()) {
-      this.error.set('Page slug is required.');
-      return;
-    }
+    this.pageService.createPage(eventId, this.form.getRawValue()).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
 
-    if (!this.pageType.trim()) {
-      this.error.set('Page type is required.');
-      return;
-    }
-
-    const request: CreateEventPageRequest = {
-      name: this.name.trim(),
-      slug: this.slug.trim(),
-      pageType: this.pageType.trim(),
-      displayOrder: this.displayOrder,
-    };
-
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.eventPageService.createPage(eventId, request).subscribe({
-      next: () => {
-        this.loading.set(false);
-
-        this.router.navigate(['../../'], {
-          relativeTo: this.route,
-        });
+        this.router.navigate(['/organizer', eventId, 'pages']);
       },
 
-      error: error => {
-        console.error('Failed to create page', error);
-        this.error.set('Failed to create page.');
-        this.loading.set(false);
+      error: () => {
+        this.saving.setValue(false);
+        this.toastr.error('Failed to create event page.');
       },
     });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/organizer', this.eventState.eventId(), 'pages']);
   }
 }

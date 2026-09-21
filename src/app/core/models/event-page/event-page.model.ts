@@ -7,12 +7,5 @@ export interface EventPageModel {
   displayOrder: number;
   isPublished: boolean;
   createdAt: string;
-  updatedAt?: string;
-}
-
-export interface CreateEventPageRequest {
-  name: string;
-  slug: string;
-  pageType: string;
-  displayOrder: number;
+  updatedAt: string | null;
 }

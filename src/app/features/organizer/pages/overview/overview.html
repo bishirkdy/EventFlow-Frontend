@@ -1,22 +1,13 @@
 <div class="min-h-full bg-background">
 
   @if (event(); as currentEvent) {
-
-    <!-- ========================================================= -->
-    <!-- Event Header -->
-    <!-- ========================================================= -->
-
     <div class="border-b border-border bg-surface">
-
       <div class="mx-auto max-w-7xl px-6 py-6 lg:px-8">
-
         <div class="relative overflow-hidden rounded-2xl border border-border">
 
           <!-- Background -->
           <div class="absolute inset-0">
-
             @if (currentEvent.images.length > 0) {
-
               <img
                 [src]="currentEvent.images[0].url"
                 [alt]="currentEvent.name"
@@ -30,9 +21,7 @@
             } @else {
 
               <div class="h-full w-full bg-primary"></div>
-
             }
-
           </div>
 
 
@@ -68,10 +57,7 @@
 
               <!-- Event Information -->
               <div class="min-w-0 flex-1">
-
-                <!-- Status / Date -->
                 <div class="flex flex-wrap items-center gap-2">
-
                   <span
                     class="inline-flex items-center gap-1.5 rounded-full
                            bg-surface/90 px-3 py-1 text-xs font-medium
@@ -174,16 +160,11 @@
     </div>
 
 
-    <!-- ========================================================= -->
     <!-- Event Navigation -->
-    <!-- ========================================================= -->
-
     <div class="border-b border-border bg-surface">
-
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
 
         <nav class="flex gap-6 overflow-x-auto">
-
           <a
             routerLink="."
             class="border-b-2 border-secondary px-1 py-4
@@ -256,23 +237,15 @@
     </div>
 
 
-    <!-- ========================================================= -->
     <!-- Main Content -->
-    <!-- ========================================================= -->
 
     <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8">
 
       <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
 
 
-        <!-- ===================================================== -->
         <!-- Left -->
-        <!-- ===================================================== -->
-
         <main class="min-w-0">
-
-
-          <!-- Statistics -->
           <div
             class="grid overflow-hidden rounded-2xl border border-border
                    bg-surface sm:grid-cols-2 lg:grid-cols-4">
@@ -487,12 +460,9 @@
         </main>
 
 
-        <!-- ===================================================== -->
         <!-- Right Sidebar -->
-        <!-- ===================================================== -->
 
         <aside class="space-y-6">
-
 
           <!-- Event Information -->
           <section

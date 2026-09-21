@@ -1,4 +1,5 @@
 import type { LucideIconData } from 'lucide-angular';
+
 import {
   LayoutDashboard,
   Calendar,
@@ -41,25 +42,28 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
     icon: CalendarDays,
   },
   {
+    label: 'Sections',
+    route: 'sections',
+    icon: List,
+  },
+  {
     label: 'Participants',
     route: 'participants',
     icon: Users,
   },
+
+  // Event Website
   {
     label: 'Pages',
     route: 'pages',
     icon: FileText,
   },
   {
-    label: 'Sections',
-    route: 'sections',
-    icon: List,
-  },
-  {
     label: 'Navigation',
     route: 'navigation',
     icon: Menu,
   },
+
   {
     label: 'Photos',
     route: 'photos',
