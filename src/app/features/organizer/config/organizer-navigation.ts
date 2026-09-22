@@ -60,7 +60,7 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
   },
   {
     label: 'Navigation',
-    route: 'navigation',
+    route: 'navigation-menus',
     icon: Menu,
   },
 

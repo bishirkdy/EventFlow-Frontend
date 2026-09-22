@@ -1,1 +1,121 @@
-<p>edit-navigation-item works!</p>
+<div class="p-6 lg:p-8">
+  @if (loading) {
+    <div class="py-10 text-center text-sm text-text-muted">Loading navigation item...</div>
+  } @else {
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold text-text-primary">Edit Navigation Item</h1>
+
+      <p class="mt-1 text-sm text-text-secondary">Update the navigation item.</p>
+    </div>
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      class="max-w-2xl border border-border bg-surface"
+    >
+      <div class="space-y-6 p-6">
+        <!-- Label -->
+        <div>
+          <label for="label" class="mb-2 block text-sm font-medium text-text-primary">
+            Label
+          </label>
+
+          <input
+            id="label"
+            type="text"
+            formControlName="label"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+          />
+
+          @if (form.controls.label.touched && form.controls.label.invalid) {
+            <p class="mt-1 text-sm text-red-600">
+              @if (form.controls.label.errors?.['required']) {
+                Label is required.
+              } @else if (form.controls.label.errors?.['maxlength']) {
+                Label cannot exceed 100 characters.
+              }
+            </p>
+          }
+        </div>
+
+        <!-- URL -->
+        <div>
+          <label for="url" class="mb-2 block text-sm font-medium text-text-primary"> URL </label>
+
+          <input
+            id="url"
+            type="text"
+            formControlName="url"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+          />
+        </div>
+
+        <!-- Page ID -->
+        <div>
+          <label for="pageId" class="mb-2 block text-sm font-medium text-text-primary">
+            Page ID
+          </label>
+
+          <input
+            id="pageId"
+            type="text"
+            formControlName="pageId"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+          />
+        </div>
+
+        <!-- Display Order -->
+        <div>
+          <label for="displayOrder" class="mb-2 block text-sm font-medium text-text-primary">
+            Display Order
+          </label>
+
+          <input
+            id="displayOrder"
+            type="number"
+            min="0"
+            formControlName="displayOrder"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+          />
+
+          @if (form.controls.displayOrder.touched && form.controls.displayOrder.invalid) {
+            <p class="mt-1 text-sm text-red-600">Display order cannot be negative.</p>
+          }
+        </div>
+
+        <!-- Open In New Tab -->
+        <label class="flex items-center gap-3">
+          <input type="checkbox" formControlName="openInNewTab" class="h-4 w-4" />
+
+          <span class="text-sm text-text-primary"> Open in new tab </span>
+        </label>
+
+        <!-- Visibility -->
+        <label class="flex items-center gap-3">
+          <input type="checkbox" formControlName="isVisible" class="h-4 w-4" />
+
+          <span class="text-sm text-text-primary"> Visible </span>
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3 border-t border-border p-6">
+        <button
+          type="button"
+          (click)="cancel()"
+          class="border border-border px-4 py-2 text-sm font-medium text-text-primary"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="form.invalid || saving"
+          class="bg-primary px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

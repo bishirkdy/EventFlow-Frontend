@@ -1,1 +1,130 @@
-<p>navigation-menu-details works!</p>
+<div class="p-6 lg:p-8">
+
+  @if (loading) {
+    <div class="py-10 text-center text-sm text-text-muted">
+      Loading navigation menu...
+    </div>
+  } @else if (menu) {
+
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-text-primary">
+          {{ menu.name }}
+        </h1>
+
+        <p class="mt-1 text-sm text-text-secondary">
+          Navigation menu details
+        </p>
+      </div>
+
+      <div class="flex gap-3">
+
+        <button
+          type="button"
+          (click)="goBack()"
+          class="border border-border px-4 py-2 text-sm font-medium text-text-primary"
+        >
+          Back
+        </button>
+
+        <button
+          type="button"
+          (click)="editMenu()"
+          class="bg-primary px-4 py-2 text-sm font-medium text-white"
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
+          (click)="deleteMenu()"
+          class="border border-red-600 px-4 py-2 text-sm font-medium text-red-600"
+        >
+          Delete
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="border border-border bg-surface">
+
+      <div class="grid grid-cols-1 md:grid-cols-2">
+
+        <!-- Name -->
+        <div class="border-b border-border p-6 md:border-r">
+          <p class="mb-2 text-sm text-text-muted">
+            Name
+          </p>
+
+          <p class="text-base font-medium text-text-primary">
+            {{ menu.name }}
+          </p>
+        </div>
+
+        <!-- Location -->
+        <div class="border-b border-border p-6">
+          <p class="mb-2 text-sm text-text-muted">
+            Location
+          </p>
+
+          <p class="text-base font-medium text-text-primary">
+            {{ menu.location }}
+          </p>
+        </div>
+
+        <!-- Created -->
+        <div class="p-6 md:border-r">
+          <p class="mb-2 text-sm text-text-muted">
+            Created
+          </p>
+
+          <p class="text-base text-text-primary">
+            {{ menu.createdAt | date: 'medium' }}
+          </p>
+        </div>
+
+        <!-- Updated -->
+        <div class="p-6">
+          <p class="mb-2 text-sm text-text-muted">
+            Last Updated
+          </p>
+
+          <p class="text-base text-text-primary">
+            {{ menu.updatedAt ? (menu.updatedAt | date: 'medium') : 'Never' }}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Navigation Items -->
+    <div class="mt-6 border border-border bg-surface p-6">
+
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-semibold text-text-primary">
+            Navigation Items
+          </h2>
+
+          <p class="mt-1 text-sm text-text-secondary">
+            Manage the links inside this navigation menu.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          (click)="viewItems()"
+          class="bg-primary px-4 py-2 text-sm font-medium text-white"
+        >
+          Manage Items
+        </button>
+      </div>
+
+    </div>
+
+  }
+
+</div>

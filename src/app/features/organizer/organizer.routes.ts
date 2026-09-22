@@ -167,6 +167,67 @@ export const organizerRoutes: Routes = [
           },
         ],
       },
+
+      // Navigations
+      {
+        path: 'navigation-menus',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/navigation-menus/navigation-menus').then((m) => m.NavigationMenus),
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/navigation-menus/create-navigation-menu/create-navigation-menu').then(
+                (m) => m.CreateNavigationMenu,
+              ),
+          },
+          {
+            path: ':menuId/edit',
+            loadComponent: () =>
+              import('./pages/navigation-menus/edit-navigation-menu/edit-navigation-menu').then(
+                (m) => m.EditNavigationMenu,
+              ),
+          },
+          {
+            path: ':menuId',
+            loadComponent: () =>
+              import('./pages/navigation-menus/navigation-menu-details/navigation-menu-details').then(
+                (m) => m.NavigationMenuDetails,
+              ),
+          },
+
+          // Navigation Items
+          {
+            path: ':menuId/items',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./pages/navigation-menus/navigation-items/navigation-items').then(
+                    (m) => m.NavigationItems,
+                  ),
+              },
+              {
+                path: 'create',
+                loadComponent: () =>
+                  import('./pages/navigation-menus/navigation-items/create-navigation-item/create-navigation-item').then(
+                    (m) => m.CreateNavigationItem,
+                  ),
+              },
+              {
+                path: ':itemId/edit',
+                loadComponent: () =>
+                  import('./pages/navigation-menus/navigation-items/edit-navigation-item/edit-navigation-item').then(
+                    (m) => m.EditNavigationItem,
+                  ),
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 ];

@@ -25,7 +25,7 @@ export class PageSections implements OnInit {
 
   ngOnInit(): void {
     this.pageId = this.route.snapshot.paramMap.get('pageId') ?? '';
-    this.eventId = this.route.parent?.parent?.parent?.snapshot.paramMap.get('eventId') ?? '';
+    this.eventId = this.findRouteParam('eventId');
 
     if (!this.pageId || !this.eventId) {
       this.toastr.error('Page information is missing.');
@@ -33,6 +33,18 @@ export class PageSections implements OnInit {
     }
 
     this.loadSections();
+  }
+
+  private findRouteParam(name: string): string {
+    let current: ActivatedRoute | null = this.route;
+
+    while (current) {
+      const value = current.snapshot.paramMap.get(name);
+      if (value) return value;
+      current = current.parent;
+    }
+
+    return '';
   }
 
   loadSections(): void {
@@ -56,29 +68,19 @@ export class PageSections implements OnInit {
 
   editSection(section: PageSectionModel): void {
     this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'pages',
-      this.pageId,
-      'sections',
-      section.id,
-      'edit',
+      '/organizer', this.eventId, 'pages', this.pageId, 'sections', section.id, 'edit',
     ]);
   }
 
   deleteSection(section: PageSectionModel): void {
-    if (!confirm(`Delete "${section.title || section.sectionType}"?`)) {
-      return;
-    }
+    if (!confirm(`Delete "${section.title || section.sectionType}"?`)) return;
 
     this.pageSectionService.deleteSection(this.pageId, section.id).subscribe({
-      next: () => {
-        this.sections.update((sections) => sections.filter((item) => item.id !== section.id));
-        this.toastr.success('Page section deleted successfully.');
+      next: (response) => {
+        this.sections.update((items) => items.filter((item) => item.id !== section.id));
+        this.toastr.success(response.message);
       },
-      error: () => {
-        this.toastr.error('Failed to delete page section.');
-      },
+      error: () => this.toastr.error('Failed to delete page section.'),
     });
   }
 
@@ -86,12 +88,9 @@ export class PageSections implements OnInit {
     const sectionIds = this.sections().map((section) => section.id);
 
     this.pageSectionService.reorderSections(this.pageId, sectionIds).subscribe({
-      next: () => {
-        this.toastr.success('Page sections reordered successfully.');
-      },
+      next: (response) => this.toastr.success(response.message),
       error: () => {
         this.toastr.error('Failed to reorder page sections.');
-
         this.loadSections();
       },
     });

@@ -1,1 +1,184 @@
-<p>navigation-items works!</p>
+<div class="p-6 lg:p-8">
+
+  <!-- Header -->
+  <div class="mb-6 flex items-center justify-between">
+
+    <div>
+      <h1 class="text-2xl font-semibold text-text-primary">
+        Navigation Items
+      </h1>
+
+      <p class="mt-1 text-sm text-text-secondary">
+        Manage the items in this navigation menu.
+      </p>
+    </div>
+
+    <div class="flex gap-3">
+
+      <button
+        type="button"
+        (click)="goBack()"
+        class="border border-border px-4 py-2 text-sm font-medium text-text-primary"
+      >
+        Back
+      </button>
+
+      <button
+        type="button"
+        (click)="createItem()"
+        class="bg-primary px-4 py-2 text-sm font-medium text-white"
+      >
+        Add Item
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+
+    <div class="py-10 text-center text-sm text-text-muted">
+      Loading navigation items...
+    </div>
+
+  }
+
+  <!-- Empty -->
+  @else if (items().length === 0) {
+
+    <div class="border border-border bg-surface p-8 text-center">
+
+      <p class="text-sm text-text-muted">
+        No navigation items found.
+      </p>
+
+      <button
+        type="button"
+        (click)="createItem()"
+        class="mt-4 bg-primary px-4 py-2 text-sm font-medium text-white"
+      >
+        Add Navigation Item
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Items -->
+  @else {
+
+    <div class="overflow-x-auto border border-border bg-surface">
+
+      <table class="w-full text-left">
+
+        <thead class="border-b border-border">
+          <tr>
+
+            <th class="px-5 py-4 text-sm font-medium text-text-secondary">
+              Label
+            </th>
+
+            <th class="px-5 py-4 text-sm font-medium text-text-secondary">
+              Target
+            </th>
+
+            <th class="px-5 py-4 text-sm font-medium text-text-secondary">
+              Order
+            </th>
+
+            <th class="px-5 py-4 text-sm font-medium text-text-secondary">
+              Visibility
+            </th>
+
+            <th class="px-5 py-4 text-right text-sm font-medium text-text-secondary">
+              Actions
+            </th>
+
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (item of items(); track item.id) {
+
+            <tr class="border-b border-border last:border-b-0">
+
+              <!-- Label -->
+              <td class="px-5 py-4">
+                <p class="font-medium text-text-primary">
+                  {{ item.label }}
+                </p>
+              </td>
+
+              <!-- Target -->
+              <td class="px-5 py-4 text-sm text-text-secondary">
+
+                @if (item.pageId) {
+                  Page
+                } @else if (item.url) {
+                  {{ item.url }}
+                } @else {
+                  —
+                }
+
+              </td>
+
+              <!-- Order -->
+              <td class="px-5 py-4 text-sm text-text-secondary">
+                {{ item.displayOrder }}
+              </td>
+
+              <!-- Visibility -->
+              <td class="px-5 py-4">
+
+                <button
+                  type="button"
+                  (click)="toggleVisibility(item)"
+                  class="text-sm font-medium"
+                  [class.text-green-600]="item.isVisible"
+                  [class.text-red-600]="!item.isVisible"
+                >
+                  {{ item.isVisible ? 'Visible' : 'Hidden' }}
+                </button>
+
+              </td>
+
+              <!-- Actions -->
+              <td class="px-5 py-4">
+
+                <div class="flex justify-end gap-3">
+
+                  <button
+                    type="button"
+                    (click)="editItem(item)"
+                    class="text-sm font-medium text-primary"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="deleteItem(item)"
+                    class="text-sm font-medium text-red-600"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

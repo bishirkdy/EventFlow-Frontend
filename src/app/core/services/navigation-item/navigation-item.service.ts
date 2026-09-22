@@ -8,6 +8,7 @@ import { ApiResponse } from '../../models/common/api-response';
 import { NAVIGATION_ITEM_ENDPOINTS } from '../../api/endpoints/navigation-item.endpoint';
 import { CreateNavigationItemModel } from '../../models/navigation-item/create-navigation-item';
 import { UpdateNavigationItemModel } from '../../models/navigation-item/update-navigation-item';
+import { NavigationItemByPageModel } from '../../models/navigation-item/navigation-item-bypage.model';
 
 @Injectable({
   providedIn: 'root',
@@ -67,6 +68,12 @@ export class NavigationItemService {
     return this.http.patch<ApiResponse<object | null>>(
       this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.setVisibility(navigationMenuId, itemId)),
       isVisible,
+    );
+  }
+
+  getItemByPage(pageId: string): Observable<ApiResponse<NavigationItemByPageModel | null>> {
+    return this.http.get<ApiResponse<NavigationItemByPageModel | null>>(
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.getItemByPage(pageId)),
     );
   }
 }
