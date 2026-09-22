@@ -18,10 +18,9 @@ export class EventService {
 
   createEvent(request: CreateEventRequest): Observable<ApiResponse<CreateEventResponse>> {
     const formData = new FormData();
-
     formData.append('Name', request.name);
     formData.append('Description', request.description ?? '');
-    formData.append('EventType', request.eventType);
+    formData.append('EventTypeId', request.eventTypeId);
     formData.append('SubType', request.subType ?? '');
     formData.append('StartDate', request.startDate);
     formData.append('EndDate', request.endDate);

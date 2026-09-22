@@ -1,0 +1,280 @@
+<div class="min-h-screen bg-white text-text-primary">
+
+  <!-- Website Header -->
+  <header class="sticky top-0 z-50 border-b border-border bg-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
+
+      <!-- Website Name -->
+      <div>
+        <span class="text-lg font-bold tracking-tight">
+          {{ selectedPage()?.name || 'Event' }}
+        </span>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="hidden items-center gap-8 md:flex">
+        @for (item of navigationItems(); track item.id) {
+          @if (item.isVisible) {
+            <button
+              type="button"
+              class="text-sm font-medium text-text-secondary transition hover:text-text-primary"
+              (click)="
+                item.pageId
+                  ? selectPage(
+                      pages().find(
+                        page => page.id === item.pageId
+                      )!
+                    )
+                  : null
+              "
+            >
+              {{ item.label }}
+            </button>
+          }
+        }
+      </nav>
+
+      <!-- Mobile Menu -->
+      <button
+        type="button"
+        class="border border-border px-4 py-2 text-sm md:hidden"
+      >
+        Menu
+      </button>
+
+    </div>
+  </header>
+
+
+  @if (loading()) {
+
+    <!-- Loading -->
+    <main class="flex min-h-[70vh] items-center justify-center">
+      <p class="text-sm text-text-muted">
+        Loading preview...
+      </p>
+    </main>
+
+  } @else {
+
+    @if (selectedPage(); as page) {
+
+      <!-- Page Hero -->
+      <section class="border-b border-border bg-surface">
+
+        <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+
+          <p
+            class="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-text-muted"
+          >
+            {{ page.pageType }}
+          </p>
+
+          <h1
+            class="max-w-4xl text-5xl font-bold tracking-tight text-text-primary lg:text-7xl"
+          >
+            {{ page.name }}
+          </h1>
+
+        </div>
+
+      </section>
+
+
+      <!-- Page Sections -->
+      <main>
+
+        @for (section of sections(); track section.id; let i = $index) {
+
+          @if (section.sectionType === 'hero') {
+
+            <!-- Hero Section -->
+            <section class="relative min-h-[600px]">
+
+              @if (section.imageUrl) {
+                <img
+                  [src]="section.imageUrl"
+                  [alt]="section.title || page.name"
+                  class="absolute inset-0 h-full w-full object-cover"
+                />
+
+                <div
+                  class="absolute inset-0 bg-black/45"
+                ></div>
+              }
+
+              <div
+                class="relative mx-auto flex min-h-[600px] max-w-7xl items-center px-6 py-20 lg:px-10"
+              >
+                <div class="max-w-3xl">
+
+                  @if (section.title) {
+                    <h2
+                      class="text-4xl font-bold text-white lg:text-6xl"
+                    >
+                      {{ section.title }}
+                    </h2>
+                  }
+
+                  @if (section.content) {
+                    <p
+                      class="mt-6 max-w-2xl text-lg leading-8 text-white/90"
+                    >
+                      {{ section.content }}
+                    </p>
+                  }
+
+                </div>
+              </div>
+
+            </section>
+
+          } @else {
+
+            <!-- Normal Content Section -->
+            <section
+              class="border-b border-border"
+              [class.bg-surface]="i % 2 === 1"
+            >
+
+              <div
+                class="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28"
+              >
+
+                <div
+                  class="grid items-center gap-12 lg:grid-cols-2"
+                  [class.lg:grid-flow-dense]="i % 2 === 1"
+                >
+
+                  <!-- Image -->
+                  @if (section.imageUrl) {
+
+                    <div
+                      [class.lg:col-start-2]="i % 2 === 1"
+                    >
+                      <img
+                        [src]="section.imageUrl"
+                        [alt]="section.title || page.name"
+                        class="h-[420px] w-full object-cover"
+                      />
+                    </div>
+
+                  }
+
+                  <!-- Content -->
+                  <div
+                    [class.lg:col-start-1]="i % 2 === 1"
+                  >
+
+                    @if (section.title) {
+                      <h2
+                        class="text-3xl font-bold tracking-tight lg:text-4xl"
+                      >
+                        {{ section.title }}
+                      </h2>
+                    }
+
+                    @if (section.content) {
+                      <div
+                        class="mt-6 whitespace-pre-line text-base leading-8 text-text-secondary"
+                      >
+                        {{ section.content }}
+                      </div>
+                    }
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+          }
+
+        }
+
+      </main>
+
+
+      <!-- Footer -->
+      <footer class="border-t border-border bg-text-primary text-white">
+
+        <div
+          class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 lg:px-10"
+        >
+
+          <div>
+            <h2 class="text-xl font-bold">
+              {{ page.name }}
+            </h2>
+
+            <p class="mt-3 max-w-md text-sm leading-6 text-white/60">
+              Event website preview.
+            </p>
+          </div>
+
+          <div class="md:text-right">
+
+            <nav class="flex flex-wrap gap-6 md:justify-end">
+
+              @for (item of navigationItems(); track item.id) {
+                @if (item.isVisible) {
+                  <button
+                    type="button"
+                    class="text-sm text-white/70 transition hover:text-white"
+                    (click)="
+                      item.pageId
+                        ? selectPage(
+                            pages().find(
+                              page => page.id === item.pageId
+                            )!
+                          )
+                        : null
+                    "
+                  >
+                    {{ item.label }}
+                  </button>
+                }
+              }
+
+            </nav>
+
+          </div>
+
+        </div>
+
+        <div class="border-t border-white/10">
+          <div
+            class="mx-auto max-w-7xl px-6 py-5 text-xs text-white/50 lg:px-10"
+          >
+            © {{ page.name }}
+          </div>
+        </div>
+
+      </footer>
+
+    } @else {
+
+      <!-- No Pages -->
+      <main class="flex min-h-[70vh] items-center justify-center">
+
+        <div class="text-center">
+
+          <h2 class="text-2xl font-semibold">
+            No page available
+          </h2>
+
+          <p class="mt-3 text-sm text-text-secondary">
+            Create a page to see it in the preview.
+          </p>
+
+        </div>
+
+      </main>
+
+    }
+
+  }
+
+</div>

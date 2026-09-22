@@ -228,6 +228,11 @@ export const organizerRoutes: Routes = [
           },
         ],
       },
+      // Preview
+      {
+        path: 'preview',
+        loadComponent: () => import('./pages/preview/preview').then((m) => m.Preview),
+      },
     ],
   },
 ];

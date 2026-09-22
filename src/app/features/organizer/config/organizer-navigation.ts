@@ -12,6 +12,7 @@ import {
   Image,
   Megaphone,
   Settings,
+  Eye,
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -63,7 +64,11 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
     route: 'navigation-menus',
     icon: Menu,
   },
-
+  {
+    label: 'Preview Website',
+    route: 'preview',
+    icon: Eye,
+  },
   {
     label: 'Photos',
     route: 'photos',

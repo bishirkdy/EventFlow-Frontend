@@ -1,72 +1,47 @@
-import { Component, inject, signal } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
+import { EventTypeService } from '../../../core/services/event-type/event-type.service';
+import { EventTypeModel } from '../../../core/models/event-type/event-type.model';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
 
 @Component({
   selector: 'app-create-event',
+  standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-event.html',
   styleUrl: './create-event.css',
 })
-export class CreateEvent {
+export class CreateEvent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly eventService = inject(EventService);
   private readonly toastr = inject(ToastrService);
+  private readonly eventTypeService = inject(EventTypeService);
 
-  loading = signal(false);
+  readonly loading = signal(false);
+  readonly eventTypes = signal<EventTypeModel[]>([]);
 
   selectedImages: File[] = [];
   imagePreviews: string[] = [];
 
-  eventTypes = [
-    'Wedding & Private Events',
-    'Conference & Business',
-    'Education & Workshop',
-    'Festival & Cultural',
-    'Sports & Competition',
-  ];
-
-  eventForm = this.fb.group(
+  readonly eventForm = this.fb.nonNullable.group(
     {
-      eventName: [
-        '',
-        [Validators.required, Validators.maxLength(200)],
-      ],
+      eventName: ['', [Validators.required, Validators.maxLength(200)]],
 
-      eventType: [
-        '',
-        [Validators.required, Validators.maxLength(100)],
-      ],
+      eventTypeId: ['', [Validators.required]],
 
-      subType: [
-        '',
-        [Validators.maxLength(100)],
-      ],
+      subType: ['', [Validators.maxLength(100)]],
 
-      startDate: [
-        '',
-        [Validators.required],
-      ],
+      startDate: ['', [Validators.required]],
 
-      endDate: [
-        '',
-        [Validators.required],
-      ],
+      endDate: ['', [Validators.required]],
 
-      description: [
-        '',
-        [Validators.maxLength(2000)],
-      ],
+      description: ['', [Validators.maxLength(2000)]],
 
       timeZone: [
         Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -77,6 +52,24 @@ export class CreateEvent {
       validators: dateRangeValidator,
     },
   );
+
+  ngOnInit(): void {
+    this.loadEventTypes();
+  }
+
+  private loadEventTypes(): void {
+    this.eventTypeService.getEventTypes().subscribe({
+      next: (response) => {
+        this.eventTypes.set(response.data ?? []);
+      },
+
+      error: (error) => {
+        console.error('Failed to load event types:', error);
+
+        this.toastr.error(error?.error?.message || 'Failed to load event types.');
+      },
+    });
+  }
 
   onImagesSelected(event: globalThis.Event): void {
     const input = event.target as HTMLInputElement;
@@ -91,9 +84,7 @@ export class CreateEvent {
 
     this.selectedImages = Array.from(input.files);
 
-    this.imagePreviews = this.selectedImages.map((file) =>
-      URL.createObjectURL(file),
-    );
+    this.imagePreviews = this.selectedImages.map((file) => URL.createObjectURL(file));
   }
 
   createEvent(): void {
@@ -103,22 +94,22 @@ export class CreateEvent {
     }
 
     if (this.selectedImages.length === 0) {
-      this.toastr.error(
-        'Please select at least one event image.',
-      );
+      this.toastr.error('Please select at least one event image.');
       return;
     }
 
     this.loading.set(true);
 
+    const formValue = this.eventForm.getRawValue();
+
     const request = {
-      name: this.eventForm.value.eventName!,
-      description: this.eventForm.value.description || '',
-      eventType: this.eventForm.value.eventType!,
-      subType: this.eventForm.value.subType || '',
-      startDate: this.eventForm.value.startDate!,
-      endDate: this.eventForm.value.endDate!,
-      timeZone: this.eventForm.value.timeZone!,
+      name: formValue.eventName,
+      description: formValue.description,
+      eventTypeId: formValue.eventTypeId,
+      subType: formValue.subType,
+      startDate: formValue.startDate,
+      endDate: formValue.endDate,
+      timeZone: formValue.timeZone,
       images: this.selectedImages,
     };
 
@@ -133,27 +124,15 @@ export class CreateEvent {
         next: (response) => {
           const eventId = response.data.id;
 
-          this.toastr.success(
-            'Event and images created successfully!',
-          );
+          this.toastr.success('Event and images created successfully!');
 
-          this.router.navigate([
-            '/organizer',
-            eventId,
-            'overview',
-          ]);
+          this.router.navigate(['/organizer', eventId, 'overview']);
         },
 
         error: (error) => {
-          console.error(
-            'Create event failed:',
-            error,
-          );
+          console.error('Create event failed:', error);
 
-          this.toastr.error(
-            error?.error?.message ||
-              'Failed to create event.',
-          );
+          this.toastr.error(error?.error?.message || 'Failed to create event.');
         },
       });
   }

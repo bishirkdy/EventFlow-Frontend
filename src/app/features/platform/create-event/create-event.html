@@ -121,31 +121,23 @@
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <!-- Event Type -->
               <div>
-                <label for="eventType" class="mb-2 block text-sm font-medium text-primary">
-                  Event type
-                  <span style="color: var(--color-secondary)">*</span>
+                <label for="eventTypeId" class="mb-2 block text-sm font-medium text-text-primary">
+                  Event Type
                 </label>
 
                 <select
-                  id="eventType"
-                  formControlName="eventType"
-                  class="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-primary outline-none transition focus:border-(--color-secondary) focus:bg-white focus:ring focus:ring-(--color-secondary)/10"
+                  id="eventTypeId"
+                  formControlName="eventTypeId"
+                  class="w-full border border-border bg-surface px-3 py-2 text-sm text-text-primary"
                 >
-                  <option value="">Select type</option>
+                  <option value="" disabled>Select event type</option>
 
-                  @for (type of eventTypes; track type) {
-                    <option [value]="type">
-                      {{ type }}
+                  @for (eventType of eventTypes(); track eventType.id) {
+                    <option [value]="eventType.id">
+                      {{ eventType.name }}
                     </option>
                   }
                 </select>
-
-                @if (
-                  eventForm.get('eventType')?.touched &&
-                  eventForm.get('eventType')?.hasError('required')
-                ) {
-                  <p class="mt-2 text-xs text-red-500">Event type is required.</p>
-                }
               </div>
 
               <!-- Sub Type -->
