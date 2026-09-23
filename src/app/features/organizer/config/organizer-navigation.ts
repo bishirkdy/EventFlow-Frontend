@@ -13,6 +13,7 @@ import {
   Megaphone,
   Settings,
   Eye,
+  FileArchiveIcon
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -28,10 +29,16 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    label: 'Schedule',
-    route: 'schedule',
-    icon: Calendar,
+    label: 'Features',
+    route: 'features',
+    icon: FileArchiveIcon,
   },
+  {
+    label: 'Settings',
+    route: 'settings',
+    icon: Settings,
+  },
+
   {
     label: 'Venues',
     route: 'venues',
@@ -78,10 +85,5 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
     label: 'Announcements',
     route: 'announcements',
     icon: Megaphone,
-  },
-  {
-    label: 'Settings',
-    route: 'settings',
-    icon: Settings,
   },
 ];

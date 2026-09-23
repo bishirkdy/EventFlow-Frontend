@@ -1,58 +1,89 @@
-<div class="space-y-4">
+<div class="p-6 lg:p-8">
+  <!-- Header -->
+  <div class="flex items-start justify-between border-b border-border pb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-text-primary">
+        Event Features
+      </h1>
 
-    <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-stone-900">
-            Features
-        </h1>
-
-        <button type="button" (click)="resetFeatures()"
-            class="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50">
-            Reset Features
-        </button>
+      <p class="mt-1 text-sm text-text-secondary">
+        Choose the features available for this event website.
+      </p>
     </div>
 
-    @if (loading()) {
-    <p class="text-stone-500">
-        Loading features...
-    </p>
-    }
+    <button
+      type="button"
+      (click)="resetFeatures()"
+      [disabled]="resetting()"
+      class="border border-border px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      @if (resetting()) {
+        Resetting...
+      } @else {
+        Reset Features
+      }
+    </button>
+  </div>
 
-    @if (error()) {
-    <p class="text-red-600">
-        {{ error() }}
-    </p>
-    }
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="py-10 text-sm text-text-secondary">
+      Loading features...
+    </div>
+  }
 
-    @if (!loading() && !error()) {
+  <!-- Error -->
+  @if (!loading() && error()) {
+    <div class="mt-6 border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Features -->
+  @if (!loading() && !error()) {
     @if (features().length === 0) {
-    <p class="text-stone-500">
+      <div class="py-10 text-sm text-text-secondary">
         No features found.
-    </p>
+      </div>
     }
 
-    @for (feature of features(); track feature.id) {
-    <div class="rounded-lg border border-stone-200 bg-white p-4">
-        <div class="flex items-center justify-between">
+    @if (features().length > 0) {
+      <div class="mt-6 divide-y divide-border border-y border-border">
+        @for (feature of features(); track feature.id) {
+          <div class="flex items-center justify-between gap-6 py-5">
+            <!-- Feature information -->
+            <div class="min-w-0">
+              <h3 class="text-sm font-medium text-text-primary">
+                {{ feature.featureName }}
+              </h3>
 
-            <div>
-                <p class="font-medium text-stone-900">
-                    Feature ID: {{ feature.featureId }}
+              @if (feature.featureDescription) {
+                <p class="mt-1 text-sm text-text-secondary">
+                  {{ feature.featureDescription }}
                 </p>
-
-                <p class="mt-1 text-sm text-stone-500">
-                    {{ feature.isEnabled ? 'Enabled' : 'Disabled' }}
-                </p>
+              }
             </div>
 
-            <button type="button" (click)="toggleFeature(feature)"
-                class="rounded-lg px-4 py-2 text-sm font-medium text-white" [class.bg-red-600]="feature.isEnabled"
-                [class.bg-[#B5473A]]="!feature.isEnabled">
-                {{ feature.isEnabled ? 'Disable' : 'Enable' }}
+            <!-- Toggle -->
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="feature.isEnabled"
+              [disabled]="updatingFeatureId() === feature.id"
+              (click)="toggleFeature(feature)"
+              class="relative h-6 w-11 shrink-0 rounded-full transition disabled:cursor-not-allowed disabled:opacity-50"
+              [class.bg-primary]="feature.isEnabled"
+              [class.bg-border]="!feature.isEnabled"
+            >
+              <span
+                class="absolute top-1 h-4 w-4 rounded-full bg-white transition"
+                [class.left-6]="feature.isEnabled"
+                [class.left-1]="!feature.isEnabled"
+              ></span>
             </button>
-
-        </div>
-    </div>
+          </div>
+        }
+      </div>
     }
-    }
-
+  }
 </div>

@@ -19,15 +19,15 @@ export class EventFeatureService {
     );
   }
 
-  enableFeature(eventId: string, featureId: string): Observable<ApiResponse<EventFeatureModel>> {
-    return this.http.post<ApiResponse<EventFeatureModel>>(
+  enableFeature(eventId: string, featureId: string): Observable<ApiResponse<object>> {
+    return this.http.post<ApiResponse<object>>(
       this.api.getUrl(EVENT_FEATURE_ENDPOINTS.enable(eventId, featureId)),
       {},
     );
   }
 
-  disableFeature(eventId: string, featureId: string): Observable<ApiResponse<EventFeatureModel>> {
-    return this.http.post<ApiResponse<EventFeatureModel>>(
+  disableFeature(eventId: string, featureId: string): Observable<ApiResponse<object>> {
+    return this.http.post<ApiResponse<object>>(
       this.api.getUrl(EVENT_FEATURE_ENDPOINTS.disable(eventId, featureId)),
       {},
     );

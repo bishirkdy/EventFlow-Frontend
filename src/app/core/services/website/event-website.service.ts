@@ -6,7 +6,7 @@ import { SectionService } from '../section/section.service';
 import { SessionService } from '../session/session.service';
 import { VenueService } from '../venue/venue.service';
 import { NavigationMenuService } from '../navigation-menu/navigation-menu.service';
-import { EventWebsiteData } from '../../models/website/event-website-data.model';
+import { EventWebsiteData } from '../../../features/website/models/event-website-data.model';
 
 @Injectable({ providedIn: 'root' })
 export class EventWebsiteService {

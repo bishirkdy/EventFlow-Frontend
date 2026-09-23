@@ -1,12 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EventWebsiteService } from '../../../../core/services/website/event-website.service';
-import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
-import { WeddingTemplate } from '../../templates/wedding/wedding-template';
-import { ConferenceTemplate } from '../../templates/conference/conference-template';
-import { FestivalTemplate } from '../../templates/festival/festival-template';
-import { EducationTemplate } from '../../templates/education/education-template';
-import { SportsTemplate } from '../../templates/sports/sports-template';
+import { EventWebsiteService } from '../../core/services/website/event-website.service';
+import { EventWebsiteData } from './models/event-website-data.model';
+import { WeddingTemplate } from './templates/wedding/wedding-template';
+import { ConferenceTemplate } from './templates/conference/conference-template';
+import { FestivalTemplate } from './templates/festival/festival-template';
+import { EducationTemplate } from './templates/education/education-template';
+import { SportsTemplate } from './templates/sports/sports-template';
 
 @Component({
   selector: 'app-website',
