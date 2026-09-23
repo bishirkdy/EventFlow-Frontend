@@ -47,4 +47,6 @@ export class NavigationMenuService {
       this.api.getUrl(NAVIGATION_MENU_ENDPOINTS.deleteMenu(eventId, menuId)),
     );
   }
+  
 }
+

@@ -1,0 +1,28 @@
+@if (loading()) {
+  <main class="min-h-screen grid place-items-center bg-white">Loading website...</main>
+} @else if (error() || !data()) {
+  <main class="min-h-screen grid place-items-center bg-white">
+    Unable to load this event website.
+  </main>
+} @else {
+  @switch (data()!.event?.eventType?.code ?? data()!.event?.eventType) {
+    @case ('Wedding') {
+      <app-wedding-template [data]="data()!" />
+    }
+    @case ('Conference') {
+      <app-conference-template [data]="data()!" />
+    }
+    @case ('Festival') {
+      <app-festival-template [data]="data()!" />
+    }
+    @case ('Education') {
+      <app-education-template [data]="data()!" />
+    }
+    @case ('Sports') {
+      <app-sports-template [data]="data()!" />
+    }
+    @default {
+      <app-wedding-template [data]="data()!" />
+    }
+  }
+}

@@ -13,4 +13,6 @@ export const NAVIGATION_MENU_ENDPOINTS = {
 
   deleteMenu: (eventId: string, menuId: string) =>
     `/v1/navigation-menu/${eventId}/navigation-menus/${menuId}`,
+
+  
 } as const;
