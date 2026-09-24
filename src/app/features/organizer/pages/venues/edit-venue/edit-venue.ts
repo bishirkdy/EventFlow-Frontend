@@ -28,6 +28,9 @@ export class EditVenue implements OnInit {
   loading = signal(true);
   saving = signal(false);
   error = signal<string | null>(null);
+  selectedImage = signal<File | null>(null);
+  imagePreview = signal<string | null>(null);
+  currentImageUrl = signal<string | null>(null);
 
   private eventId = '';
   private venueId = '';
@@ -78,6 +81,8 @@ export class EditVenue implements OnInit {
           address: venue.address ?? '',
           capacity: venue.capacity,
         });
+        this.currentImageUrl.set(venue.imageUrl ?? null);
+        this.imagePreview.set(venue.imageUrl ?? null);
 
         this.loading.set(false);
       },
@@ -91,6 +96,13 @@ export class EditVenue implements OnInit {
         this.toastr.error('Failed to load venue');
       },
     });
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.selectedImage.set(file);
+    this.imagePreview.set(file ? URL.createObjectURL(file) : this.currentImageUrl());
   }
 
   updateVenue(): void {
@@ -108,6 +120,7 @@ export class EditVenue implements OnInit {
       description: formValue.description.trim(),
       address: formValue.address.trim(),
       capacity: formValue.capacity,
+      image: this.selectedImage() ?? undefined,
     };
     this.saving.set(true);
 

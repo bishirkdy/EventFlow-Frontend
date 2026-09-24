@@ -89,7 +89,44 @@
             />
           </div>
 
-          <!-- Capacity -->
+          @if (eventWindowLabel()) {
+            <div class="border border-border bg-background px-4 py-3">
+              <p class="text-xs font-medium uppercase tracking-wide text-text-muted">Event window</p>
+              <p class="mt-1 text-sm text-text-primary">{{ eventWindowLabel() }}</p>
+              <p class="mt-1 text-xs text-text-muted">Session times must stay inside this event window.</p>
+            </div>
+          }
+
+          <div class="grid gap-6 md:grid-cols-2">
+          <div>
+            <label for="startTime" class="mb-2 block text-sm font-medium text-text-primary">Start Time</label>
+            <input id="startTime" name="startTime" type="datetime-local" [min]="eventStartLocal()" [max]="eventEndLocal()" [(ngModel)]="session.startTime" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary" />
+          </div>
+          <div>
+            <label for="endTime" class="mb-2 block text-sm font-medium text-text-primary">End Time</label>
+            <input id="endTime" name="endTime" type="datetime-local" [min]="eventStartLocal()" [max]="eventEndLocal()" [(ngModel)]="session.endTime" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary" />
+          </div>
+        </div>
+
+        <div>
+          <label for="venueId" class="mb-2 block text-sm font-medium text-text-primary">Venue</label>
+          <select id="venueId" name="venueId" [(ngModel)]="session.venueId" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary">
+            <option [ngValue]="null">No venue assigned</option>
+            @for (venue of venues(); track venue.id) { <option [value]="venue.id">{{ venue.name }}</option> }
+          </select>
+        </div>
+
+        <!-- Image -->
+        <div>
+          <label for="sessionImage" class="mb-2 block text-sm font-medium text-text-primary">Session image</label>
+          <input id="sessionImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="onImageSelected($event)" class="block w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary file:mr-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white" />
+          @if (imagePreview()) {
+            <img [src]="imagePreview()!" alt="Session preview" class="mt-4 aspect-[16/7] w-full object-cover" />
+          }
+          <p class="mt-2 text-xs text-text-muted">Upload one image. It will be stored in Cloudinary.</p>
+        </div>
+
+        <!-- Capacity -->
           <div>
             <label for="capacity" class="mb-2 block text-sm font-medium text-text-primary">
               Capacity

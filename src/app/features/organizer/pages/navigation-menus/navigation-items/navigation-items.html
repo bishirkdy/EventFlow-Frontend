@@ -149,6 +149,8 @@
 
                 <div class="flex justify-end gap-3">
 
+                  <button type="button" (click)="moveItem(item, -1)" class="text-sm font-medium text-text-secondary">Up</button>
+                  <button type="button" (click)="moveItem(item, 1)" class="text-sm font-medium text-text-secondary">Down</button>
                   <button
                     type="button"
                     (click)="editItem(item)"

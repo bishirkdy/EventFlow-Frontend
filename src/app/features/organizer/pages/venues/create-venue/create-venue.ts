@@ -24,6 +24,8 @@ export class CreateVenue {
   );
 
   loading = signal(false);
+  selectedImage = signal<File | null>(null);
+  imagePreview = signal<string | null>(null);
   error = signal<string | null>(null);
 
   readonly form = this.fb.nonNullable.group({
@@ -62,6 +64,14 @@ export class CreateVenue {
     this.location.back();
   }
 
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.selectedImage.set(file);
+    this.imagePreview.set(file ? URL.createObjectURL(file) : null);
+  }
+
   create(): void {
     this.error.set(null);
 
@@ -84,6 +94,7 @@ export class CreateVenue {
       description: formValue.description.trim() || undefined,
       address: formValue.address.trim() || undefined,
       capacity: formValue.capacity,
+      image: this.selectedImage() ?? undefined,
     };
 
     this.loading.set(true);

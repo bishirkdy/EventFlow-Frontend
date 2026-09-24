@@ -153,6 +153,19 @@
             </div>
           </div>
 
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">Schedule</div>
+            <div class="text-sm text-text-primary sm:col-span-2">
+              @if (currentSession.startTime && currentSession.endTime) {
+                {{ currentSession.startTime | date:'medium' }} — {{ currentSession.endTime | date:'medium' }}
+              } @else { <span class="text-text-muted">Not scheduled</span> }
+            </div>
+          </div>
+          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+            <div class="text-sm font-medium text-text-secondary">Venue</div>
+            <div class="break-all text-sm text-text-muted sm:col-span-2">{{ venueName(currentSession.venueId) }}</div>
+          </div>
+
           <!-- Capacity -->
           <div
             class="grid grid-cols-1 gap-2 px-6 py-5

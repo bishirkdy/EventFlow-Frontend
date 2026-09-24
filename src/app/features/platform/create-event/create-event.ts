@@ -2,12 +2,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from 'rxjs';
+import { finalize, map, switchMap } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
 import { EventTypeService } from '../../../core/services/event-type/event-type.service';
 import { EventTypeModel } from '../../../core/models/event-type/event-type.model';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
+import { EventWebsiteSetupService } from '../../../core/services/website/event-website-setup.service';
 
 @Component({
   selector: 'app-create-event',
@@ -22,6 +23,7 @@ export class CreateEvent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly toastr = inject(ToastrService);
   private readonly eventTypeService = inject(EventTypeService);
+  private readonly websiteSetupService = inject(EventWebsiteSetupService);
 
   readonly loading = signal(false);
   readonly eventTypes = signal<EventTypeModel[]>([]);
@@ -116,6 +118,11 @@ export class CreateEvent implements OnInit {
     this.eventService
       .createEvent(request)
       .pipe(
+        switchMap((response) =>
+          this.websiteSetupService
+            .setup(response.data.id, response.data.eventTypeId)
+            .pipe(map(() => response)),
+        ),
         finalize(() => {
           this.loading.set(false);
         }),
@@ -124,7 +131,7 @@ export class CreateEvent implements OnInit {
         next: (response) => {
           const eventId = response.data.id;
 
-          this.toastr.success('Event and images created successfully!');
+          this.toastr.success('Event created and starter website configured.');
 
           this.router.navigate(['/organizer', eventId, 'overview']);
         },

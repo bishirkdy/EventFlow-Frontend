@@ -1,0 +1,183 @@
+<div class="site" [class]="'theme-' + theme()">
+  @if (data().event; as event) {
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" [href]="brandHref()" aria-label="Open event home">
+          <span class="brand-kicker">{{ event.eventType || 'Event' }}</span>
+          <span class="brand-name">{{ event.name }}</span>
+        </a>
+
+        @if (navItems().length) {
+          <nav class="desktop-nav" aria-label="Event navigation">
+            @for (item of navItems(); track item.id) {
+              <a [href]="pageHref(item)" [class.active]="isActive(item)" [target]="item.openInNewTab ? '_blank' : null" [rel]="item.openInNewTab ? 'noopener noreferrer' : null">
+                {{ item.label }}
+              </a>
+            }
+          </nav>
+        }
+      </div>
+
+      @if (navItems().length) {
+        <nav class="mobile-nav" aria-label="Event navigation">
+          @for (item of navItems(); track item.id) {
+            <a [href]="pageHref(item)" [class.active]="isActive(item)" [target]="item.openInNewTab ? '_blank' : null" [rel]="item.openInNewTab ? 'noopener noreferrer' : null">
+              {{ item.label }}
+            </a>
+          }
+        </nav>
+      }
+    </header>
+
+    <main>
+      @if (page(); as currentPage) {
+        @if (!isHomePage()) {
+          <section class="page-intro">
+            <div class="page-intro-inner">
+              <h1>{{ normalizedTitle(currentPage.name) }}</h1>
+              <div class="page-intro-line"></div>
+            </div>
+          </section>
+        }
+
+        @if (pageSections().length) {
+          @for (section of pageSections(); track section.id; let sectionIndex = $index) {
+            @switch (sectionKind(section.sectionType, section.title)) {
+              @case ('hero') {
+                <section class="hero-section" [id]="sectionId(section.sectionType, section.title)">
+                  <div class="hero-inner">
+                    <div class="hero-copy">
+                      <span class="hero-kicker">{{ isHomePage() ? 'Welcome' : normalizedTitle(currentPage.name) }}</span>
+                      <h2>{{ normalizedTitle(section.title) || event.name }}</h2>
+                      @if (displayDescription(section.content, event.description || '')) {
+                        <p>{{ displayDescription(section.content, event.description || '') }}</p>
+                      }
+                      @if (isHomePage()) {
+                        <div class="hero-meta">
+                          <div><span>Date</span><strong>{{ formatDate(event.startDate) }}</strong></div>
+                          <div><span>Time</span><strong>{{ formatTime(event.startDate) }}</strong></div>
+                          <div><span>Time zone</span><strong>{{ event.timeZone }}</strong></div>
+                        </div>
+                      }
+                    </div>
+                    @if (imageForSection(section.imageUrl, sectionIndex); as image) {
+                      <figure class="hero-media"><img [src]="image" [alt]="normalizedTitle(section.title) || event.name" /></figure>
+                    }
+                  </div>
+                </section>
+              }
+
+              @case ('venue') {
+                <section class="resource-section venue-section" id="venue">
+                  <div class="section-intro">
+                    <div>
+                      <span class="section-index">{{ isHomePage() ? '02' : '01' }}</span>
+                      <h2>{{ normalizedTitle(section.title) || 'Venues' }}</h2>
+                    </div>
+                    @if (displayDescription(section.content)) { <p>{{ displayDescription(section.content) }}</p> }
+                  </div>
+
+                  @if (hasFeature('venues') && data().venues.length) {
+                    <div class="venue-grid">
+                      @for (venue of data().venues; track venue.id) {
+                        <article class="venue-card">
+                          @if (imageForVenue(venue); as image) {
+                            <figure class="venue-image"><img [src]="image" [alt]="venue.name" loading="lazy" /></figure>
+                          } @else {
+                            <div class="venue-image venue-image--empty"><span>No venue image</span></div>
+                          }
+                          <div class="venue-body">
+                            <div class="venue-topline"><span>Location</span><span>{{ venue.capacity }} guests</span></div>
+                            <h3>{{ venue.name }}</h3>
+                            @if (venue.address) { <p class="venue-address">{{ venue.address }}</p> }
+                            @if (displayDescription(venue.description)) { <p>{{ displayDescription(venue.description) }}</p> }
+                          </div>
+                        </article>
+                      }
+                    </div>
+                  }
+                </section>
+              }
+
+              @case ('schedule') {
+                <section class="resource-section schedule-section" id="schedule">
+                  <div class="section-intro">
+                    <div>
+                      <span class="section-index">01</span>
+                      <h2>{{ normalizedTitle(section.title) || 'Schedule' }}</h2>
+                    </div>
+                    @if (displayDescription(section.content)) { <p>{{ displayDescription(section.content) }}</p> }
+                  </div>
+                  @if (hasFeature('sessions') && data().sessions.length) {
+                    <div class="session-list">
+                      @for (session of data().sessions; track session.id) {
+                        <article class="session-card">
+                          @if (imageForSession(session); as image) {
+                            <figure class="session-image"><img [src]="image" [alt]="session.title" loading="lazy" /></figure>
+                          }
+                          <div class="session-time"><strong>{{ formatTime(session.startTime) }}</strong><span>{{ formatDate(session.startTime) }}</span></div>
+                          <div class="session-body"><h3>{{ session.title }}</h3>@if (session.sessionType) {<span>{{ session.sessionType }}</span>}@if (displayDescription(session.description)) {<p>{{ displayDescription(session.description) }}</p>}</div>
+                        </article>
+                      }
+                    </div>
+                  }
+                </section>
+              }
+
+              @case ('gallery') {
+                <section class="gallery-section" id="gallery">
+                  <div class="gallery-inner">
+                    <div class="section-intro section-intro--dark">
+                      <div><span class="section-index">01</span><h2>{{ normalizedTitle(section.title) || 'Gallery' }}</h2></div>
+                      @if (displayDescription(section.content)) { <p>{{ displayDescription(section.content) }}</p> }
+                    </div>
+                    @if (data().images.length) {
+                      <div class="gallery-grid">
+                        @for (image of data().images; track image.id; let imageIndex = $index) {
+                          <figure class="gallery-item" [class.featured]="imageIndex === 0"><img [src]="image.url" [alt]="image.originalFileName || event.name" loading="lazy" /></figure>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+
+              @case ('rsvp') {
+                <section class="rsvp-section" id="rsvp">
+                  <div class="rsvp-inner">
+                    <div><span class="section-index">RSVP</span><h2>{{ normalizedTitle(section.title) || 'We hope you can join us.' }}</h2>@if (displayDescription(section.content)) {<p>{{ displayDescription(section.content) }}</p>}</div>
+                    <a class="rsvp-link" href="#rsvp">RSVP <span>↗</span></a>
+                  </div>
+                </section>
+              }
+
+              @default {
+                <section class="detail-section">
+                  <div class="detail-grid">
+                    <div class="detail-copy">
+                      <span class="section-index">{{ (sectionIndex + 1).toString().padStart(2, '0') }}</span>
+                      @if (normalizedTitle(section.title)) { <h2>{{ normalizedTitle(section.title) }}</h2> }
+                      @if (displayDescription(section.content)) { <p>{{ displayDescription(section.content) }}</p> }
+                    </div>
+                    @if (imageForSection(section.imageUrl, sectionIndex); as image) { <figure class="detail-media"><img [src]="image" [alt]="normalizedTitle(section.title) || event.name" loading="lazy" /></figure> }
+                  </div>
+                </section>
+              }
+            }
+          }
+        } @else {
+          <section class="empty-state"><h2>{{ normalizedTitle(currentPage.name) }}</h2><p>Content for this page has not been added yet.</p></section>
+        }
+      } @else {
+        <section class="empty-state"><h2>Page not found</h2><p>The requested page is not published.</p></section>
+      }
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div><span class="brand-kicker">{{ event.eventType || 'Event' }}</span><h2>{{ event.name }}</h2><a [href]="brandHref()">Back to home <span>↗</span></a></div>
+        <div class="footer-meta"><span>{{ formatDate(event.startDate) }}</span><span>{{ event.timeZone }}</span></div>
+      </div>
+    </footer>
+  }
+</div>

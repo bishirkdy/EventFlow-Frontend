@@ -1,17 +1,1 @@
-@switch (templateType()) {
-  @case ('Wedding') {
-    <app-wedding-template [data]="data()" />
-  }
-  @case ('Conference') {
-    <app-conference-template [data]="data()" />
-  }
-  @case ('Festival') {
-    <app-festival-template [data]="data()" />
-  }
-  @case ('Education') {
-    <app-education-template [data]="data()" />
-  }
-  @case ('Sports') {
-    <app-sports-template [data]="data()" />
-  }
-}
+<app-event-website-shell [data]="data()" [pageSlug]="pageSlug()" />

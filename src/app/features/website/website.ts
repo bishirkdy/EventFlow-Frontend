@@ -19,9 +19,11 @@ export class Website implements OnInit {
   readonly data = signal<EventWebsiteData | null>(null);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+  readonly pageSlug = signal<string | null>(null);
 
   ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
+    this.pageSlug.set(this.route.snapshot.paramMap.get('slug'));
 
     if (!eventId) {
       this.error.set('Event ID not found.');

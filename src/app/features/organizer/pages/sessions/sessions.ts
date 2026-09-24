@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -9,7 +10,7 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 @Component({
   selector: 'app-sessions',
   standalone: true,
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './sessions.html',
   styleUrl: './sessions.css',
 })

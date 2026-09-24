@@ -1,15 +1,18 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { SessionModel } from '../../../../../core/models/session/session.model';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { VenueService } from '../../../../../core/services/venue/venue.service';
+import { VenueModel } from '../../../../../core/models/venue/venue.model';
 
 @Component({
   selector: 'app-session-details',
   standalone: true,
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './session-details.html',
   styleUrl: './session-details.css',
 })
@@ -18,6 +21,7 @@ export class SessionDetails implements OnInit {
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
   private readonly toastr = inject(ToastrService);
+  private readonly venueService = inject(VenueService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
 
@@ -25,6 +29,7 @@ export class SessionDetails implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
   deleting = signal(false);
+  venues = signal<VenueModel[]>([]);
 
   private eventId = '';
   private sessionId = '';
@@ -50,6 +55,19 @@ export class SessionDetails implements OnInit {
     this.sessionId = sessionId;
 
     this.loadSession();
+    this.loadVenues();
+  }
+
+  private loadVenues(): void {
+    this.venueService.getVenues(this.eventId).subscribe({
+      next: (response) => this.venues.set(response.data ?? []),
+      error: () => undefined,
+    });
+  }
+
+  venueName(venueId: string | null): string {
+    if (!venueId) return 'No venue assigned';
+    return this.venues().find(venue => venue.id === venueId)?.name ?? 'Venue unavailable';
   }
 
   private loadSession(): void {

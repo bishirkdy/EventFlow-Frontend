@@ -81,6 +81,16 @@
         }
       </div>
 
+      <!-- Image -->
+      <div>
+        <label for="venueImage" class="mb-2 block text-sm font-medium text-text-primary">Venue image</label>
+        <input id="venueImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="onImageSelected($event)" class="block w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary file:mr-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white" />
+        @if (imagePreview()) {
+          <img [src]="imagePreview()!" alt="Venue preview" class="mt-4 aspect-[16/7] w-full object-cover" />
+        }
+        <p class="mt-2 text-xs text-text-muted">Upload one image. It will be stored in Cloudinary.</p>
+      </div>
+
       <!-- Description -->
       <div>
         <label for="description" class="mb-2 block text-sm font-medium text-text-primary">

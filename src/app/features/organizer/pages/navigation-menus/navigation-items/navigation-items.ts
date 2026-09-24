@@ -113,6 +113,20 @@ export class NavigationItems implements OnInit {
       });
   }
 
+  moveItem(item: NavigationItemModel, direction: -1 | 1): void {
+    const current = [...this.items()].sort((a, b) => a.displayOrder - b.displayOrder);
+    const index = current.findIndex(x => x.id === item.id);
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= current.length) return;
+
+    [current[index], current[target]] = [current[target], current[index]];
+    const itemIds = current.map(x => x.id);
+    this.navigationItemService.reorderItems(this.menuId, itemIds).subscribe({
+      next: (response) => { this.toastr.success(response.message); this.loadItems(); },
+      error: () => this.toastr.error('Failed to reorder navigation items.'),
+    });
+  }
+
   reorderItems(): void {
     const itemIds = this.items().map(item => item.id);
 

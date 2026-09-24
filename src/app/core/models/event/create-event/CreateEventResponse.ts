@@ -5,7 +5,7 @@ export interface CreateEventResponse {
   id: string;
   name: string;
   description: string | null;
-  eventType: string;
+  eventTypeId: string;
   subType: string | null;
   startDate: string;
   endDate: string;

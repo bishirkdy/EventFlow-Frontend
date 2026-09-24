@@ -36,6 +36,16 @@ export class EventService {
     );
   }
 
+  publishEvent(eventId: string): Observable<void> {
+    return this.http.post<void>(this.api.getUrl(EVENT_ENDPOINTS.publish(eventId)), {});
+  }
+
+  getPublicEvents(take = 3): Observable<ApiResponse<Event[]>> {
+    return this.http.get<ApiResponse<Event[]>>(
+      this.api.getUrl(`${EVENT_ENDPOINTS.public}?take=${take}`),
+    );
+  }
+
   getMyEvents(): Observable<ApiResponse<Event[]>> {
     return this.http.get<ApiResponse<Event[]>>(this.api.getUrl(EVENT_ENDPOINTS.myEvents));
   }

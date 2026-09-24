@@ -6,9 +6,7 @@ export interface VenueModel {
   address?: string;
   capacity: number;
   isActive: boolean;
+  imageUrl?: string | null;
   createdAt: string;
   updatedAt?: string;
 }
-
-
-

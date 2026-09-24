@@ -32,7 +32,7 @@ export class SessionService {
   createSession(eventId: string, request: CreateSessionModel): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
       this.api.getUrl(SESSION_ENDPOINTS.createSession(eventId)),
-      request,
+      this.toFormData(request),
     );
   }
 
@@ -43,8 +43,22 @@ export class SessionService {
   ): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(SESSION_ENDPOINTS.updateSession(eventId, sessionId)),
-      request,
+      this.toFormData(request),
     );
+  }
+
+  private toFormData(request: CreateSessionModel | UpdateSessionModel): FormData {
+    const formData = new FormData();
+    if ('sectionId' in request) formData.append('SectionId', request.sectionId);
+    formData.append('Title', request.title);
+    formData.append('Description', request.description ?? '');
+    formData.append('SessionType', request.sessionType);
+    if (request.capacity !== null && request.capacity !== undefined) formData.append('Capacity', String(request.capacity));
+    if (request.startTime) formData.append('StartTime', request.startTime);
+    if (request.endTime) formData.append('EndTime', request.endTime);
+    if (request.venueId) formData.append('VenueId', request.venueId);
+    if (request.image) formData.append('Image', request.image, request.image.name);
+    return formData;
   }
 
   deleteSession(eventId: string, sessionId: string): Observable<ApiResponse<object | null>> {

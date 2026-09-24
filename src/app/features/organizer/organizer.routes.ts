@@ -28,14 +28,13 @@ export const organizerRoutes: Routes = [
         ],
       },
 
-      // Preview
-
-      // Event Settings
+      // Website preview
       {
-        path: 'settings',
+        path: 'preview',
         loadComponent: () =>
-          import('./pages/event-settings/event-settings').then((m) => m.EventSettings),
+          import('./pages/preview/preview').then((m) => m.Preview),
       },
+
       // Event Features
       {
         path: 'features',

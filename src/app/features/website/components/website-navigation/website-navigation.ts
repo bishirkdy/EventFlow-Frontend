@@ -12,13 +12,14 @@ export class WebsiteNavigation {
   readonly data = input.required<EventWebsiteData>();
 
   visibleItems(): NavigationItemModel[] {
-    const items = this.data().navigationItems
-      .filter((item) => item.isVisible)
+    const publishedPageIds = new Set(this.data().pages.filter(page => page.isPublished).map(page => page.id));
+    const items = this.data()
+      .navigationItems.filter((item) => item.isVisible && (!item.pageId || publishedPageIds.has(item.pageId)))
       .sort((a, b) => a.displayOrder - b.displayOrder);
 
     const primaryMenuIds = new Set(
-      this.data().navigationMenus
-        .filter((menu) => {
+      this.data()
+        .navigationMenus.filter((menu) => {
           const location = menu.location.trim().toLowerCase();
           return location === 'header' || location === 'main' || location === 'primary';
         })

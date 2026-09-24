@@ -1,150 +1,65 @@
 @if (section().isVisible) {
-  @switch (sectionType()) {
-    @case ('hero') {
-      <section class="relative overflow-hidden border-y border-current/10">
-        @if (section().imageUrl) {
-          <img
-            [src]="section().imageUrl"
-            [alt]="title() || 'Event image'"
-            class="h-[32rem] w-full object-cover"
-          />
-          <div class="absolute inset-0 bg-black/40"></div>
+  <section class="section">
+    @if (type() === 'hero') {
+      <div class="hero">
+        @if (image(); as imageUrl) {
+          <img [src]="imageUrl" [alt]="title() || 'Event image'" />
         }
-
-        <div class="relative mx-auto max-w-5xl px-6 py-24">
-          <div class="max-w-3xl">
-            @if (title()) {
-              <h2 class="text-4xl font-semibold md:text-6xl">
-                {{ title() }}
-              </h2>
+        <div class="hero-overlay"></div>
+        <div class="hero-copy">
+          @if (title()) { <h2>{{ title() }}</h2> }
+          @if (content()) { <p>{{ content() }}</p> }
+        </div>
+      </div>
+    } @else if (type() === 'gallery') {
+      @if (title()) { <h2>{{ title() }}</h2> }
+      @if (content()) { <p class="intro">{{ content() }}</p> }
+      <div class="gallery">
+        @for (item of data().images; track item.id) {
+          <img [src]="item.url" [alt]="item.originalFileName || 'Event image'" loading="lazy" />
+        }
+      </div>
+    } @else if (type() === 'venue') {
+      @if (title()) { <h2>{{ title() }}</h2> }
+      @if (content()) { <p class="intro">{{ content() }}</p> }
+      <div class="cards">
+        @for (venue of data().venues; track venue.id) {
+          <article class="card">
+            @if (venue.imageUrl || data().images[0]?.url; as imageUrl) {
+              <img [src]="imageUrl" [alt]="venue.name" loading="lazy" />
             }
-
-            @if (content()) {
-              <p class="mt-6 max-w-2xl text-base leading-8 opacity-80">
-                {{ content() }}
-              </p>
+            <div class="card-body">
+              <h3>{{ venue.name }}</h3>
+              @if (venue.address) { <p>{{ venue.address }}</p> }
+              @if (venue.description) { <p>{{ venue.description }}</p> }
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (type() === 'schedule' || type() === 'sessions') {
+      @if (title()) { <h2>{{ title() }}</h2> }
+      @if (content()) { <p class="intro">{{ content() }}</p> }
+      <div class="cards">
+        @for (session of data().sessions; track session.id) {
+          <article class="card">
+            @if (session.imageUrl || data().images[0]?.url; as imageUrl) {
+              <img [src]="imageUrl" [alt]="session.title" loading="lazy" />
             }
-          </div>
-        </div>
-      </section>
-    }
-
-    @case ('image') {
-      <section class="mx-auto max-w-7xl px-6 py-16">
-        @if (title()) {
-          <h2 class="mb-6 text-3xl font-semibold">{{ title() }}</h2>
+            <div class="card-body">
+              <h3>{{ session.title }}</h3>
+              @if (session.description) { <p>{{ session.description }}</p> }
+            </div>
+          </article>
         }
-
+      </div>
+    } @else {
+      <div class="content">
+        @if (title()) { <h2>{{ title() }}</h2> }
+        @if (content()) { <p>{{ content() }}</p> }
         @if (section().imageUrl) {
-          <img
-            [src]="section().imageUrl"
-            [alt]="title() || 'Event image'"
-            class="max-h-[42rem] w-full object-cover"
-          />
+          <img [src]="section().imageUrl!" [alt]="title() || 'Event image'" loading="lazy" />
         }
-
-        @if (content()) {
-          <p class="mt-5 max-w-3xl leading-8 opacity-75">
-            {{ content() }}
-          </p>
-        }
-      </section>
+      </div>
     }
-
-    @case ('gallery') {
-      <section class="mx-auto max-w-7xl px-6 py-16">
-        @if (title()) {
-          <h2 class="mb-8 text-3xl font-semibold">{{ title() }}</h2>
-        }
-
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          @for (image of data().images; track image.id) {
-            <img
-              [src]="image.url"
-              [alt]="image.originalFileName"
-              class="aspect-[4/3] w-full object-cover"
-            />
-          }
-        </div>
-
-        @if (data().images.length === 0) {
-          <p class="text-sm opacity-60">No images available.</p>
-        }
-      </section>
-    }
-
-    @case ('schedule') {
-      <section class="mx-auto max-w-7xl px-6 py-16">
-        @if (title()) {
-          <h2 class="mb-8 text-3xl font-semibold">{{ title() }}</h2>
-        } @else {
-          <h2 class="mb-8 text-3xl font-semibold">Schedule</h2>
-        }
-
-        <div class="grid gap-5 md:grid-cols-2">
-          @for (session of data().sessions; track session.id) {
-            <article class="border border-current/10 p-6">
-              <h3 class="text-lg font-semibold">{{ session.title }}</h3>
-
-              @if (session.description) {
-                <p class="mt-3 leading-7 opacity-70">
-                  {{ session.description }}
-                </p>
-              }
-            </article>
-          }
-        </div>
-      </section>
-    }
-
-    @case ('venue') {
-      <section class="mx-auto max-w-7xl px-6 py-16">
-        @if (title()) {
-          <h2 class="mb-8 text-3xl font-semibold">{{ title() }}</h2>
-        } @else {
-          <h2 class="mb-8 text-3xl font-semibold">Venues</h2>
-        }
-
-        <div class="grid gap-5 md:grid-cols-2">
-          @for (venue of data().venues; track venue.id) {
-            <article class="border border-current/10 p-6">
-              <h3 class="text-lg font-semibold">{{ venue.name }}</h3>
-
-              @if (venue.address) {
-                <p class="mt-2 opacity-70">{{ venue.address }}</p>
-              }
-
-              @if (venue.description) {
-                <p class="mt-3 leading-7 opacity-70">
-                  {{ venue.description }}
-                </p>
-              }
-            </article>
-          }
-        </div>
-      </section>
-    }
-
-    @default {
-      <section class="mx-auto max-w-7xl px-6 py-16">
-        @if (title()) {
-          <h2 class="text-3xl font-semibold">{{ title() }}</h2>
-        }
-
-        @if (content()) {
-          <p class="mt-5 max-w-3xl whitespace-pre-line leading-8 opacity-75">
-            {{ content() }}
-          </p>
-        }
-
-        @if (section().imageUrl) {
-          <img
-            [src]="section().imageUrl"
-            [alt]="title() || 'Event image'"
-            class="mt-8 max-h-[42rem] w-full object-cover"
-          />
-        }
-      </section>
-    }
-  }
+  </section>
 }

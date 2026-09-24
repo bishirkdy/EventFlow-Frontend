@@ -38,31 +38,29 @@
           }
         </div>
 
-        <!-- URL -->
+        <!-- Destination -->
         <div>
-          <label for="url" class="mb-2 block text-sm font-medium text-text-primary"> URL </label>
-
-          <input
-            id="url"
-            type="text"
-            formControlName="url"
-            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
-          />
+          <p class="mb-3 text-sm font-medium text-text-primary">Destination</p>
+          <div class="flex gap-6 text-sm text-text-secondary">
+            <label class="flex items-center gap-2"><input type="radio" formControlName="targetType" value="page" /> Event page</label>
+            <label class="flex items-center gap-2"><input type="radio" formControlName="targetType" value="url" /> Custom URL</label>
+          </div>
         </div>
 
-        <!-- Page ID -->
-        <div>
-          <label for="pageId" class="mb-2 block text-sm font-medium text-text-primary">
-            Page ID
-          </label>
-
-          <input
-            id="pageId"
-            type="text"
-            formControlName="pageId"
-            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
-          />
-        </div>
+        @if (form.controls.targetType.value === 'page') {
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-primary">Page</label>
+            <select formControlName="pageId" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary" [disabled]="loadingPages">
+              <option value="">{{ loadingPages ? 'Loading pages...' : 'Select a published page' }}</option>
+              @for (page of pageOptions; track page.id) { <option [value]="page.id">{{ page.name }}</option> }
+            </select>
+          </div>
+        } @else {
+          <div>
+            <label class="mb-2 block text-sm font-medium text-text-primary">URL</label>
+            <input type="url" formControlName="url" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary" />
+          </div>
+        }
 
         <!-- Display Order -->
         <div>

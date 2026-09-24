@@ -3,4 +3,5 @@ export interface CreateVenueRequest {
   description?: string;
   address?: string;
   capacity: number;
+  image?: File;
 }

@@ -1,6 +1,9 @@
-<footer class="border-t border-current/10 px-6 py-10">
-  <div class="mx-auto flex max-w-7xl flex-col gap-2 text-sm opacity-60 md:flex-row md:items-center md:justify-between">
-    <span>{{ data().event?.name || 'Event' }}</span>
-    <span>EventFlow</span>
+<footer class="border-t border-current/10 bg-black/[0.03]">
+  <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold">{{ data().event?.name || 'EventFlow Event' }}</p>
+      <p class="mt-1 text-xs opacity-50">Event website powered by EventFlow.</p>
+    </div>
+    <p class="text-xs opacity-45">{{ data().event?.timeZone }}</p>
   </div>
 </footer>

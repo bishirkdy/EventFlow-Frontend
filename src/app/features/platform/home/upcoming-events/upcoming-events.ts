@@ -1,16 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
-
-interface UpcomingEvent {
-  id: string;
-  name: string;
-  slug: string;
-  imageUrl: string;
-  eventType: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-}
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { EventService } from '../../../../core/services/event/event.service';
+import { Event as EventModel } from '../../../../core/models/event/event.model';
 
 @Component({
   selector: 'app-upcoming-events',
@@ -18,45 +9,30 @@ interface UpcomingEvent {
   templateUrl: './upcoming-events.html',
   styleUrl: './upcoming-events.css',
 })
-export class UpcomingEvents {
-  events: UpcomingEvent[] = [
-    {
-      id: '1',
-      name: 'Tech Innovation Summit',
-      slug: 'tech-innovation-summit',
-      imageUrl: '/images/journey/img3.png',
-      eventType: 'Conference',
-      startDate: '2026-10-18',
-      endDate: '2026-10-19',
-      location: 'Calicut, Kerala',
-    },
-    {
-      id: '2',
-      name: 'Future of Design',
-      slug: 'future-of-design',
-      imageUrl: '/images/journey/img3.png',
-      eventType: 'Workshop',
-      startDate: '2026-10-25',
-      endDate: '2026-10-25',
-      location: 'Kochi, Kerala',
-    },
-    {
-      id: '3',
-      name: 'Kerala Cultural Festival',
-      slug: 'kerala-cultural-festival',
-      imageUrl: '/images/journey/img3.png',
-      eventType: 'Festival',
-      startDate: '2026-11-02',
-      endDate: '2026-11-04',
-      location: 'Kozhikode, Kerala',
-    },
-  ];
+export class UpcomingEvents implements OnInit {
+  private readonly eventService = inject(EventService);
 
-  formatDate(date: string): string {
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(new Date(date));
+  readonly events = signal<EventModel[]>([]);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.eventService.getPublicEvents(3).subscribe({
+      next: (response) => {
+        this.events.set((response.data ?? []).slice(0, 3));
+        this.loading.set(false);
+      },
+      error: (error: unknown) => {
+        console.error('Failed to load public events:', error);
+        this.error.set('Unable to load upcoming events.');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  formatDate(date: string, timeZone?: string): string {
+    const value = new Date(date);
+    if (Number.isNaN(value.getTime())) return date;
+    return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric', ...(timeZone ? { timeZone } : {}) }).format(value);
   }
 }

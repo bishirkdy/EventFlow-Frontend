@@ -24,7 +24,7 @@ export class VenueService {
   createVenue(eventId: string, request: CreateVenueRequest): Observable<ApiResponse<VenueModel>> {
     return this.http.post<ApiResponse<VenueModel>>(
       this.api.getUrl(VENUE_ENDPOINTS.createVenue(eventId)),
-      request,
+      this.toFormData(request),
     );
   }
 
@@ -37,8 +37,18 @@ export class VenueService {
   updateVenue(eventId: string, venueId: string, request: UpdateVenueRequest): Observable<void> {
     return this.http.put<void>(
       this.api.getUrl(VENUE_ENDPOINTS.updateVenue(eventId, venueId)),
-      request,
+      this.toFormData(request),
     );
+  }
+
+  private toFormData(request: CreateVenueRequest | UpdateVenueRequest): FormData {
+    const formData = new FormData();
+    formData.append('Name', request.name);
+    formData.append('Description', request.description ?? '');
+    formData.append('Address', request.address ?? '');
+    formData.append('Capacity', String(request.capacity));
+    if (request.image) formData.append('Image', request.image, request.image.name);
+    return formData;
   }
 
   deleteVenue(eventId: string, venueId: string): Observable<ApiResponse<null>> {

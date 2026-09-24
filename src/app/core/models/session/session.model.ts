@@ -6,4 +6,11 @@ export interface SessionModel {
   description: string | null;
   sessionType: string;
   capacity: number | null;
+  startTime: string | null;
+  endTime: string | null;
+  venueId: string | null;
+  imageUrl: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string | null;
 }
