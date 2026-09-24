@@ -1,45 +1,50 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { WebsiteTemplateSelector } from './components/website-template-selector/website-template-selector';
 import { EventWebsiteService } from '../../core/services/website/event-website.service';
-import { EventWebsiteData } from './models/event-website-data.model';
-import { WeddingTemplate } from './templates/wedding/wedding-template';
-import { ConferenceTemplate } from './templates/conference/conference-template';
-import { FestivalTemplate } from './templates/festival/festival-template';
-import { EducationTemplate } from './templates/education/education-template';
-import { SportsTemplate } from './templates/sports/sports-template';
+import { EventWebsiteData } from '../../core/models/website/event-website-data.model';
 
 @Component({
   selector: 'app-website',
   standalone: true,
-  imports: [WeddingTemplate, ConferenceTemplate, FestivalTemplate, EducationTemplate, SportsTemplate],
+  imports: [WebsiteTemplateSelector],
   templateUrl: './website.html',
   styleUrl: './website.css',
 })
+
 export class Website implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly websiteService = inject(EventWebsiteService);
 
   readonly data = signal<EventWebsiteData | null>(null);
   readonly loading = signal(true);
-  readonly error = signal(false);
+  readonly error = signal<string | null>(null);
 
   ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
+
     if (!eventId) {
+      this.error.set('Event ID not found.');
       this.loading.set(false);
-      this.error.set(true);
       return;
     }
 
+    this.loadWebsite(eventId);
+  }
+
+  private loadWebsite(eventId: string): void {
+    this.loading.set(true);
+    this.error.set(null);
+
     this.websiteService.load(eventId).subscribe({
-      next: data => {
+      next: (data) => {
         this.data.set(data);
         this.loading.set(false);
       },
-      error: error => {
+      error: (error: unknown) => {
         console.error('Failed to load event website:', error);
+        this.error.set('Failed to load event website.');
         this.loading.set(false);
-        this.error.set(true);
       },
     });
   }

@@ -1,280 +1,434 @@
-<div class="min-h-screen bg-white text-text-primary">
-
-  <!-- Website Header -->
-  <header class="sticky top-0 z-50 border-b border-border bg-white">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-
-      <!-- Website Name -->
-      <div>
-        <span class="text-lg font-bold tracking-tight">
-          {{ selectedPage()?.name || 'Event' }}
-        </span>
-      </div>
-
-      <!-- Navigation -->
-      <nav class="hidden items-center gap-8 md:flex">
-        @for (item of navigationItems(); track item.id) {
-          @if (item.isVisible) {
-            <button
-              type="button"
-              class="text-sm font-medium text-text-secondary transition hover:text-text-primary"
-              (click)="
-                item.pageId
-                  ? selectPage(
-                      pages().find(
-                        page => page.id === item.pageId
-                      )!
-                    )
-                  : null
-              "
-            >
-              {{ item.label }}
-            </button>
-          }
-        }
-      </nav>
-
-      <!-- Mobile Menu -->
-      <button
-        type="button"
-        class="border border-border px-4 py-2 text-sm md:hidden"
-      >
-        Menu
-      </button>
-
-    </div>
-  </header>
-
-
+<div class="min-h-screen bg-background">
   @if (loading()) {
-
-    <!-- Loading -->
-    <main class="flex min-h-[70vh] items-center justify-center">
-      <p class="text-sm text-text-muted">
-        Loading preview...
+    <div class="flex min-h-screen items-center justify-center">
+      <p class="text-sm text-text-secondary">
+        Loading website preview...
       </p>
-    </main>
-
-  } @else {
-
-    @if (selectedPage(); as page) {
-
-      <!-- Page Hero -->
-      <section class="border-b border-border bg-surface">
-
-        <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
-
-          <p
-            class="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-text-muted"
-          >
-            {{ page.pageType }}
-          </p>
-
-          <h1
-            class="max-w-4xl text-5xl font-bold tracking-tight text-text-primary lg:text-7xl"
-          >
-            {{ page.name }}
-          </h1>
-
-        </div>
-
-      </section>
-
-
-      <!-- Page Sections -->
-      <main>
-
-        @for (section of sections(); track section.id; let i = $index) {
-
-          @if (section.sectionType === 'hero') {
-
-            <!-- Hero Section -->
-            <section class="relative min-h-[600px]">
-
-              @if (section.imageUrl) {
-                <img
-                  [src]="section.imageUrl"
-                  [alt]="section.title || page.name"
-                  class="absolute inset-0 h-full w-full object-cover"
-                />
-
-                <div
-                  class="absolute inset-0 bg-black/45"
-                ></div>
-              }
-
-              <div
-                class="relative mx-auto flex min-h-[600px] max-w-7xl items-center px-6 py-20 lg:px-10"
-              >
-                <div class="max-w-3xl">
-
-                  @if (section.title) {
-                    <h2
-                      class="text-4xl font-bold text-white lg:text-6xl"
-                    >
-                      {{ section.title }}
-                    </h2>
-                  }
-
-                  @if (section.content) {
-                    <p
-                      class="mt-6 max-w-2xl text-lg leading-8 text-white/90"
-                    >
-                      {{ section.content }}
-                    </p>
-                  }
-
-                </div>
-              </div>
-
-            </section>
-
-          } @else {
-
-            <!-- Normal Content Section -->
-            <section
-              class="border-b border-border"
-              [class.bg-surface]="i % 2 === 1"
-            >
-
-              <div
-                class="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28"
-              >
-
-                <div
-                  class="grid items-center gap-12 lg:grid-cols-2"
-                  [class.lg:grid-flow-dense]="i % 2 === 1"
-                >
-
-                  <!-- Image -->
-                  @if (section.imageUrl) {
-
-                    <div
-                      [class.lg:col-start-2]="i % 2 === 1"
-                    >
-                      <img
-                        [src]="section.imageUrl"
-                        [alt]="section.title || page.name"
-                        class="h-[420px] w-full object-cover"
-                      />
-                    </div>
-
-                  }
-
-                  <!-- Content -->
-                  <div
-                    [class.lg:col-start-1]="i % 2 === 1"
-                  >
-
-                    @if (section.title) {
-                      <h2
-                        class="text-3xl font-bold tracking-tight lg:text-4xl"
-                      >
-                        {{ section.title }}
-                      </h2>
-                    }
-
-                    @if (section.content) {
-                      <div
-                        class="mt-6 whitespace-pre-line text-base leading-8 text-text-secondary"
-                      >
-                        {{ section.content }}
-                      </div>
-                    }
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </section>
-
-          }
-
-        }
-
-      </main>
-
-
-      <!-- Footer -->
-      <footer class="border-t border-border bg-text-primary text-white">
-
-        <div
-          class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 lg:px-10"
-        >
-
-          <div>
-            <h2 class="text-xl font-bold">
-              {{ page.name }}
-            </h2>
-
-            <p class="mt-3 max-w-md text-sm leading-6 text-white/60">
-              Event website preview.
-            </p>
-          </div>
-
-          <div class="md:text-right">
-
-            <nav class="flex flex-wrap gap-6 md:justify-end">
-
-              @for (item of navigationItems(); track item.id) {
-                @if (item.isVisible) {
-                  <button
-                    type="button"
-                    class="text-sm text-white/70 transition hover:text-white"
-                    (click)="
-                      item.pageId
-                        ? selectPage(
-                            pages().find(
-                              page => page.id === item.pageId
-                            )!
-                          )
-                        : null
-                    "
-                  >
-                    {{ item.label }}
-                  </button>
-                }
-              }
-
-            </nav>
-
-          </div>
-
-        </div>
-
-        <div class="border-t border-white/10">
-          <div
-            class="mx-auto max-w-7xl px-6 py-5 text-xs text-white/50 lg:px-10"
-          >
-            © {{ page.name }}
-          </div>
-        </div>
-
-      </footer>
-
-    } @else {
-
-      <!-- No Pages -->
-      <main class="flex min-h-[70vh] items-center justify-center">
-
-        <div class="text-center">
-
-          <h2 class="text-2xl font-semibold">
-            No page available
-          </h2>
-
-          <p class="mt-3 text-sm text-text-secondary">
-            Create a page to see it in the preview.
-          </p>
-
-        </div>
-
-      </main>
-
-    }
-
+    </div>
   }
 
+  @if (!loading() && error()) {
+    <div class="flex min-h-screen items-center justify-center p-6">
+      <div class="max-w-md border border-border bg-surface p-6 text-center">
+        <h1 class="text-lg font-semibold text-text-primary">
+          Unable to load website preview
+        </h1>
+
+        <p class="mt-2 text-sm text-text-secondary">
+          The event website could not be loaded.
+        </p>
+      </div>
+    </div>
+  }
+
+  @if (!loading() && !error() && websiteData(); as website) {
+    @if (website.event; as event) {
+      <!-- Header -->
+      <header class="border-b border-border bg-surface">
+        <div
+          class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8"
+        >
+          <div>
+            <h1 class="text-xl font-semibold text-text-primary">
+              {{ event.name }}
+            </h1>
+
+            @if (event.description) {
+              <p class="mt-1 text-sm text-text-secondary">
+                {{ event.description }}
+              </p>
+            }
+          </div>
+
+          <!-- Navigation -->
+          @if (website.navigationMenus.length > 0) {
+            <nav class="hidden items-center gap-6 md:flex">
+              @for (
+                menu of website.navigationMenus;
+                track menu.id
+              ) {
+                @for (
+                  item of website.navigationItems;
+                  track item.id
+                ) {
+                  @if (
+                    item.navigationMenuId === menu.id &&
+                    item.isVisible
+                  ) {
+                    <a
+                      [href]="item.url || '#'"
+                      [attr.target]="
+                        item.openInNewTab ? '_blank' : null
+                      "
+                      [attr.rel]="
+                        item.openInNewTab
+                          ? 'noopener noreferrer'
+                          : null
+                      "
+                      class="text-sm text-text-secondary transition hover:text-text-primary"
+                    >
+                      {{ item.label }}
+                    </a>
+                  }
+                }
+              }
+            </nav>
+          }
+        </div>
+      </header>
+
+      <!-- Main -->
+      <main>
+        <!-- Hero -->
+        <section class="border-b border-border bg-surface">
+          <div
+            class="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-24"
+          >
+            <div class="max-w-3xl">
+              <p
+                class="text-sm font-medium uppercase tracking-wide text-secondary"
+              >
+                {{ event.eventType }}
+              </p>
+
+              <h2
+                class="mt-3 text-4xl font-semibold text-text-primary lg:text-6xl"
+              >
+                {{ event.name }}
+              </h2>
+
+              @if (event.description) {
+                <p
+                  class="mt-6 max-w-2xl text-base leading-7 text-text-secondary"
+                >
+                  {{ event.description }}
+                </p>
+              }
+
+              <div
+                class="mt-8 flex flex-wrap gap-6 text-sm text-text-secondary"
+              >
+                <div>
+                  <span class="font-medium text-text-primary">
+                    Starts
+                  </span>
+
+                  <p class="mt-1">
+                    {{ event.startDate }}
+                  </p>
+                </div>
+
+                <div>
+                  <span class="font-medium text-text-primary">
+                    Ends
+                  </span>
+
+                  <p class="mt-1">
+                    {{ event.endDate }}
+                  </p>
+                </div>
+
+                <div>
+                  <span class="font-medium text-text-primary">
+                    Time zone
+                  </span>
+
+                  <p class="mt-1">
+                    {{ event.timeZone }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Event Images -->
+        @if (website.images.length > 0) {
+          <section class="border-b border-border">
+            <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+              <h2
+                class="text-2xl font-semibold text-text-primary"
+              >
+                Event Gallery
+              </h2>
+
+              <div
+                class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              >
+                @for (
+                  image of website.images;
+                  track image.id
+                ) {
+                  <img
+                    [src]="image.url"
+                    [alt]="event.name"
+                    class="h-64 w-full object-cover"
+                  />
+                }
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Pages -->
+        @if (website.pages.length > 0) {
+          @for (
+            page of website.pages;
+            track page.id
+          ) {
+            <section class="border-b border-border">
+              <div
+                class="mx-auto max-w-7xl px-6 py-12 lg:px-8"
+              >
+                <div class="max-w-3xl">
+                  <h2
+                    class="text-2xl font-semibold text-text-primary"
+                  >
+                    {{ page.name }}
+                  </h2>
+                </div>
+
+                <!-- Page Sections -->
+                @if (website.pageSections.length > 0) {
+                  <div class="mt-8 space-y-8">
+                    @for (
+                      section of website.pageSections;
+                      track section.id
+                    ) {
+                      @if (
+                        section.pageId === page.id &&
+                        section.isVisible
+                      ) {
+                        <article
+                          class="border-b border-border pb-8"
+                        >
+                          @if (section.title) {
+                            <h3
+                              class="text-xl font-semibold text-text-primary"
+                            >
+                              {{ section.title }}
+                            </h3>
+                          }
+
+                          @if (section.imageUrl) {
+                            <img
+                              [src]="section.imageUrl"
+                              [alt]="
+                                section.title || page.name
+                              "
+                              class="mt-5 max-h-[500px] w-full object-cover"
+                            />
+                          }
+
+                          @if (section.content) {
+                            <div
+                              class="mt-5 whitespace-pre-line text-sm leading-7 text-text-secondary"
+                            >
+                              {{ section.content }}
+                            </div>
+                          }
+                        </article>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        }
+
+        <!-- Sections -->
+        @if (website.sections.length > 0) {
+          <section class="border-b border-border">
+            <div
+              class="mx-auto max-w-7xl px-6 py-12 lg:px-8"
+            >
+              <h2
+                class="text-2xl font-semibold text-text-primary"
+              >
+                Sections
+              </h2>
+
+              <div
+                class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              >
+                @for (
+                  section of website.sections;
+                  track section.id
+                ) {
+                  <article
+                    class="border border-border bg-surface p-6"
+                  >
+                    <h3
+                      class="text-lg font-medium text-text-primary"
+                    >
+                      {{ section.name }}
+                    </h3>
+
+                    @if (section.description) {
+                      <p
+                        class="mt-2 text-sm leading-6 text-text-secondary"
+                      >
+                        {{ section.description }}
+                      </p>
+                    }
+                  </article>
+                }
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Sessions -->
+        @if (website.sessions.length > 0) {
+          <section class="border-b border-border">
+            <div
+              class="mx-auto max-w-7xl px-6 py-12 lg:px-8"
+            >
+              <h2
+                class="text-2xl font-semibold text-text-primary"
+              >
+                Sessions
+              </h2>
+
+              <div
+                class="mt-6 divide-y divide-border border-y border-border"
+              >
+                @for (
+                  session of website.sessions;
+                  track session.id
+                ) {
+                  <article class="py-5">
+                    <h3
+                      class="text-lg font-medium text-text-primary"
+                    >
+                      {{ session.title }}
+                    </h3>
+
+                    @if (session.description) {
+                      <p
+                        class="mt-2 text-sm text-text-secondary"
+                      >
+                        {{ session.description }}
+                      </p>
+                    }
+
+                    <div
+                      class="mt-3 flex flex-wrap gap-4 text-sm text-text-secondary"
+                    >
+                      @if (session.sessionType) {
+                        <span>
+                          {{ session.sessionType }}
+                        </span>
+                      }
+
+                      @if (
+                        session.capacity !== null &&
+                        session.capacity !== undefined
+                      ) {
+                        <span>
+                          Capacity:
+                          {{ session.capacity }}
+                        </span>
+                      }
+                    </div>
+                  </article>
+                }
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- Venues -->
+        @if (website.venues.length > 0) {
+          <section class="border-b border-border">
+            <div
+              class="mx-auto max-w-7xl px-6 py-12 lg:px-8"
+            >
+              <h2
+                class="text-2xl font-semibold text-text-primary"
+              >
+                Venues
+              </h2>
+
+              <div
+                class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              >
+                @for (
+                  venue of website.venues;
+                  track venue.id
+                ) {
+                  <article
+                    class="border border-border bg-surface p-6"
+                  >
+                    <h3
+                      class="text-lg font-medium text-text-primary"
+                    >
+                      {{ venue.name }}
+                    </h3>
+
+                    @if (venue.description) {
+                      <p
+                        class="mt-2 text-sm text-text-secondary"
+                      >
+                        {{ venue.description }}
+                      </p>
+                    }
+
+                    @if (venue.address) {
+                      <p
+                        class="mt-4 text-sm text-text-secondary"
+                      >
+                        {{ venue.address }}
+                      </p>
+                    }
+
+                    @if (venue.capacity !== null &&
+                          venue.capacity !== undefined) {
+                      <p
+                        class="mt-3 text-sm text-text-secondary"
+                      >
+                        Capacity:
+                        {{ venue.capacity }}
+                      </p>
+                    }
+                  </article>
+                }
+              </div>
+            </div>
+          </section>
+        }
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-border bg-surface">
+        <div
+          class="mx-auto max-w-7xl px-6 py-8 lg:px-8"
+        >
+          <p class="text-sm text-text-secondary">
+            {{ event.name }}
+          </p>
+        </div>
+      </footer>
+    } @else {
+      <!-- Event is null -->
+      <div
+        class="flex min-h-screen items-center justify-center p-6"
+      >
+        <div class="text-center">
+          <h1
+            class="text-lg font-semibold text-text-primary"
+          >
+            Event not found
+          </h1>
+
+          <p
+            class="mt-2 text-sm text-text-secondary"
+          >
+            Event information is not available for this preview.
+          </p>
+        </div>
+      </div>
+    }
+  }
 </div>

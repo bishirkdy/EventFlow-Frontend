@@ -1,28 +1,16 @@
 @if (loading()) {
-  <main class="min-h-screen grid place-items-center bg-white">Loading website...</main>
+  <main class="grid min-h-screen place-items-center bg-white text-black">
+    <p class="text-sm text-black/60">Loading website...</p>
+  </main>
 } @else if (error() || !data()) {
-  <main class="min-h-screen grid place-items-center bg-white">
-    Unable to load this event website.
+  <main class="grid min-h-screen place-items-center bg-white text-black">
+    <div class="px-6 text-center">
+      <h1 class="text-xl font-semibold">Unable to load this event website.</h1>
+      @if (error()) {
+        <p class="mt-2 text-sm text-black/60">{{ error() }}</p>
+      }
+    </div>
   </main>
 } @else {
-  @switch (data()!.event?.eventType?.code ?? data()!.event?.eventType) {
-    @case ('Wedding') {
-      <app-wedding-template [data]="data()!" />
-    }
-    @case ('Conference') {
-      <app-conference-template [data]="data()!" />
-    }
-    @case ('Festival') {
-      <app-festival-template [data]="data()!" />
-    }
-    @case ('Education') {
-      <app-education-template [data]="data()!" />
-    }
-    @case ('Sports') {
-      <app-sports-template [data]="data()!" />
-    }
-    @default {
-      <app-wedding-template [data]="data()!" />
-    }
-  }
+  <app-website-template-selector [data]="data()!" />
 }

@@ -34,6 +34,12 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'organizer/:eventId/preview',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/website/website').then((m) => m.Website),
+  },
+  {
     path: 'organizer',
     canActivate: [authGuard],
     loadChildren: () =>

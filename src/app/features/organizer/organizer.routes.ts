@@ -28,6 +28,8 @@ export const organizerRoutes: Routes = [
         ],
       },
 
+      // Preview
+
       // Event Settings
       {
         path: 'settings',
@@ -35,13 +37,10 @@ export const organizerRoutes: Routes = [
           import('./pages/event-settings/event-settings').then((m) => m.EventSettings),
       },
       // Event Features
-{
-  path: 'features',
-  loadComponent: () =>
-    import('./pages/features/features').then(
-      (m) => m.Features,
-    ),
-},
+      {
+        path: 'features',
+        loadComponent: () => import('./pages/features/features').then((m) => m.Features),
+      },
 
       // Sections
       {
@@ -236,12 +235,6 @@ export const organizerRoutes: Routes = [
           },
         ],
       },
-      // Preview
-      {
-        path: 'preview',
-        loadComponent: () => import('./pages/preview/preview').then((m) => m.Preview),
-      },
-
     ],
   },
 ];

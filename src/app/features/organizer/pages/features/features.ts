@@ -87,12 +87,10 @@ export class Features implements OnInit {
           feature.isEnabled ? 'Feature disabled successfully.' : 'Feature enabled successfully.',
         );
       },
-      
+
       error: (error) => {
         console.error('Failed to update feature:', error);
-
         this.updatingFeatureId.set(null);
-
         this.toastr.error(error?.error?.message || 'Failed to update feature.');
       },
     });
@@ -122,9 +120,7 @@ export class Features implements OnInit {
 
       error: (error) => {
         console.error('Failed to reset features:', error);
-
         this.resetting.set(false);
-
         this.toastr.error(error?.error?.message || 'Failed to reset features.');
       },
     });
