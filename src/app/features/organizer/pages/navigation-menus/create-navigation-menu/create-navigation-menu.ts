@@ -44,6 +44,11 @@ export class CreateNavigationMenu {
       .createMenu(eventId, this.form.getRawValue())
       .subscribe({
         next: (response) => {
+          if (!response.data) {
+            this.toastr.error('Navigation menu was created but no menu ID was returned.');
+            return;
+          }
+
           this.toastr.success(response.message);
 
           this.router.navigate([

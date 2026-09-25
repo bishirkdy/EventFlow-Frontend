@@ -68,6 +68,11 @@ export class UpdateSection implements OnInit {
       .subscribe({
         next: (response) => {
           const data = response.data;
+          if (!data) {
+            this.error.set('Section data was not returned.');
+            this.loading.set(false);
+            return;
+          }
 
           this.section = {
             name: data.name,

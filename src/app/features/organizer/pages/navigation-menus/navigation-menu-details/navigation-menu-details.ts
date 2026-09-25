@@ -50,6 +50,12 @@ export class NavigationMenuDetails implements OnInit {
       .getMenuById(eventId, this.menuId)
       .subscribe({
         next: (response) => {
+          if (!response.data) {
+            this.loading = false;
+            this.toastr.error('Navigation menu data was not returned.');
+            return;
+          }
+
           this.menu = response.data;
           this.loading = false;
         },

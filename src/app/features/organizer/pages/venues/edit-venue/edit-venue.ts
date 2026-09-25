@@ -73,7 +73,12 @@ export class EditVenue implements OnInit {
 
     this.venueService.getVenueById(this.eventId, this.venueId).subscribe({
       next: (response) => {
-        const venue: VenueModel = response.data;
+        const venue = response.data;
+        if (!venue) {
+          this.error.set('Venue data was not returned.');
+          this.loading.set(false);
+          return;
+        }
 
         this.form.patchValue({
           name: venue.name,

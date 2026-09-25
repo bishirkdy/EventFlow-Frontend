@@ -118,18 +118,24 @@ export class CreateEvent implements OnInit {
     this.eventService
       .createEvent(request)
       .pipe(
-        switchMap((response) =>
-          this.websiteSetupService
-            .setup(response.data.id, response.data.eventTypeId)
-            .pipe(map(() => response)),
-        ),
+        switchMap((response) => {
+          const data = response.data;
+
+          if (!data) {
+            throw new Error('Event was created but no event data was returned.');
+          }
+
+          return this.websiteSetupService
+            .setup(data.id, data.eventTypeId)
+            .pipe(map(() => data));
+        }),
         finalize(() => {
           this.loading.set(false);
         }),
       )
       .subscribe({
-        next: (response) => {
-          const eventId = response.data.id;
+        next: (data) => {
+          const eventId = data.id;
 
           this.toastr.success('Event created and starter website configured.');
 

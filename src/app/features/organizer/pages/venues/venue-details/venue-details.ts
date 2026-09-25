@@ -53,6 +53,12 @@ export class VenueDetails implements OnInit {
       .getVenueById(this.eventId, this.venueId)
       .subscribe({
         next: (response) => {
+          if (!response.data) {
+            this.toastr.error('Venue data was not returned.');
+            this.loading.set(false);
+            return;
+          }
+
           this.venue.set(response.data);
           this.loading.set(false);
         },

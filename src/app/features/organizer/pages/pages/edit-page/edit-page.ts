@@ -62,6 +62,11 @@ export class EditPage implements OnInit {
     this.pageService.getPageById(eventId, this.pageId).subscribe({
       next: (response) => {
         const page = response.data;
+        if (!page) {
+          this.loading.set(false);
+          this.toastr.error('Page data was not returned.');
+          return;
+        }
 
         this.form.patchValue({
           name: page.name,

@@ -61,6 +61,11 @@ export class EditNavigationMenu implements OnInit {
       .subscribe({
         next: (response) => {
           const menu = response.data;
+          if (!menu) {
+            this.loading = false;
+            this.toastr.error('Navigation menu data was not returned.');
+            return;
+          }
 
           this.form.patchValue({
             name: menu.name,

@@ -81,6 +81,12 @@ export class SessionDetails implements OnInit {
       )
       .subscribe({
         next: (response) => {
+          if (!response.data) {
+            this.toastr.error('Session data was not returned.');
+            this.loading.set(false);
+            return;
+          }
+
           this.session.set(response.data);
           this.loading.set(false);
         },

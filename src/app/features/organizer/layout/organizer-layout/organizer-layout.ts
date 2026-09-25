@@ -55,8 +55,14 @@ export class OrganizerLayout {
     this.organizerEventState.setEventId(eventId);
     this.eventService.getEventById(eventId).subscribe({
       next: (response) => {
-        this.event.set(response.data);
-        this.organizerEventState.setEvent(response.data);
+        const event = response.data;
+        if (!event) {
+          this.loading.set(false);
+          return;
+        }
+
+        this.event.set(event);
+        this.organizerEventState.setEvent(event);
         this.loadNavigation(eventId);
       },
 

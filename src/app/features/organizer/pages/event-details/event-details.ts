@@ -30,8 +30,13 @@ export class EventDetails {
 
     this.eventService.getEventById(eventId).subscribe({
       next: (response) => {
+        const event = response.data;
+        if (!event) {
+          console.error('Event data was not returned.');
+          return;
+        }
         this.eventState.setEventId(eventId);
-        this.eventState.setEvent(response.data);
+        this.eventState.setEvent(event);
       },
       error: (error: unknown) => {
         console.error('Failed to load event details', error);

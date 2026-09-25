@@ -43,8 +43,8 @@ export class MyEvents {
   private loadEvents(): void {
     this.eventService.getMyEvents().subscribe({
       next: (response) => {
-        console.log( response.data);
-        this.events.set(response.data);
+        const events = response.data;
+        this.events.set(events ?? []);
       },
       error: (error: unknown) => {
         console.error('Failed to load events', error);

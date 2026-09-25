@@ -94,6 +94,11 @@ export class UpdateSession implements OnInit {
     this.sessionService.getSessionById(this.eventId, this.sessionId).subscribe({
       next: (response) => {
         const data = response.data;
+        if (!data) {
+          this.error.set('Session data was not returned.');
+          this.loading.set(false);
+          return;
+        }
 
         this.session = {
           title: data.title,

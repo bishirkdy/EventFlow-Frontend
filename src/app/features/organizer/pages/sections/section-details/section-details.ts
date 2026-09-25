@@ -58,6 +58,12 @@ export class SectionDetails implements OnInit {
       .getSectionById(this.sectionId)
       .subscribe({
         next: (response) => {
+          if (!response.data) {
+            this.toastr.error('Section data was not returned.');
+            this.loading.set(false);
+            return;
+          }
+
           this.section.set(response.data);
           this.loading.set(false);
         },

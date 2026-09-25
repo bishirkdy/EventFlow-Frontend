@@ -108,7 +108,7 @@ export class Venues implements OnInit {
       next: (response) => {
         this.deleting.set(false);
 
-        if (response.success) {
+        if (response.isSuccess) {
           this.toastr.success(response.message || 'Venue deleted successfully');
 
           this.loadVenues();
