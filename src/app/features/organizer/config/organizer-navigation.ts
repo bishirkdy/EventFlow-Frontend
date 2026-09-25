@@ -9,6 +9,8 @@ import {
   Menu,
   Eye,
   FileArchiveIcon,
+  Mic2,
+  Handshake,
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -25,6 +27,8 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
   { label: 'Sections', route: 'sections', icon: List, feature: 'sessions' },
   { label: 'Sessions', route: 'sessions', icon: CalendarDays, feature: 'sessions' },
   { label: 'Venues', route: 'venues', icon: MapPin, feature: 'venues' },
+  { label: 'Speakers', route: 'speakers', icon: Mic2, feature: 'speakers' },
+  { label: 'Sponsors', route: 'sponsors', icon: Handshake, feature: 'sponsors' },
   { label: 'Pages', route: 'pages', icon: FileText },
   { label: 'Navigation', route: 'navigation-menus', icon: Menu },
 ];

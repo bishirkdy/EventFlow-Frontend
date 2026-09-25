@@ -34,8 +34,15 @@ export class EventWebsiteShell {
     const pages = this.pages();
 
     if (!slug) return this.homePage();
-    return pages.find(page => page.slug.trim().toLowerCase() === slug) ?? this.homePage();
+    return pages.find(page => page.slug.trim().toLowerCase() === slug && this.isPageAvailable(page)) ?? this.homePage();
   });
+
+  private isPageAvailable(page: EventPageModel): boolean {
+    const value = `${page.slug} ${page.name} ${page.pageType}`.trim().toLowerCase();
+    if (value.includes('speaker')) return this.hasFeature('speakers');
+    if (value.includes('sponsor') || value.includes('partner')) return this.hasFeature('sponsors');
+    return true;
+  }
 
   readonly pageSections = computed(() => {
     const pageId = this.page()?.id;
@@ -67,6 +74,15 @@ export class EventWebsiteShell {
         if (label === 'home') return false;
         if (item.pageId && item.pageId === homeId) return false;
 
+        if (item.pageId) {
+          const page = pages.find(candidate => candidate.id === item.pageId);
+          if (page) {
+            const pageValue = `${page.slug} ${page.name} ${page.pageType}`.toLowerCase();
+            if (pageValue.includes('speaker') && !this.hasFeature('speakers')) return false;
+            if ((pageValue.includes('sponsor') || pageValue.includes('partner')) && !this.hasFeature('sponsors')) return false;
+          }
+        }
+
         return true;
       })
       .sort((a, b) => a.displayOrder - b.displayOrder);
@@ -74,10 +90,10 @@ export class EventWebsiteShell {
 
   readonly theme = computed(() => {
     const type = (this.data().event?.eventType ?? '').trim().toLowerCase();
-    if (type === 'conference') return 'conference';
-    if (type === 'education') return 'education';
-    if (type === 'festival') return 'festival';
-    if (type === 'sports') return 'sports';
+    if (type.includes('conference')) return 'conference';
+    if (type.includes('education') || type.includes('workshop')) return 'education';
+    if (type.includes('festival') || type.includes('cultural')) return 'festival';
+    if (type.includes('sports') || type.includes('competition')) return 'sports';
     return 'wedding';
   });
 
@@ -97,6 +113,8 @@ export class EventWebsiteShell {
     if (type === 'hero' || value.includes('hero')) return 'hero';
     if (type === 'venue' || value.includes('venue') || value.includes('location')) return 'venue';
     if (type === 'schedule' || type === 'sessions' || value.includes('schedule') || value.includes('programme') || value.includes('program') || value.includes('session')) return 'schedule';
+    if (type === 'speakers' || value.includes('speaker')) return 'speakers';
+    if (type === 'sponsors' || value.includes('sponsor') || value.includes('partner')) return 'sponsors';
     if (type === 'gallery' || type === 'image-gallery' || value.includes('gallery') || value.includes('photo')) return 'gallery';
     if (type === 'rsvp' || value.includes('rsvp') || value.includes('registration')) return 'rsvp';
     return 'content';

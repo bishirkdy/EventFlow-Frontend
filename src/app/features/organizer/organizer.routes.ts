@@ -1,3 +1,4 @@
+import { eventFeatureGuard } from '../../core/guards/feature/feature.guard';
 import { Routes } from '@angular/router';
 import { OrganizerLayout } from './layout/organizer-layout/organizer-layout';
 import { Overview } from './pages/overview/overview';
@@ -92,6 +93,30 @@ export const organizerRoutes: Routes = [
             loadComponent: () =>
               import('./pages/venues/edit-venue/edit-venue').then((m) => m.EditVenue),
           },
+        ],
+      },
+
+      // Speakers
+      {
+        path: 'speakers',
+        canActivate: [eventFeatureGuard('speakers')],
+        children: [
+          { path: '', loadComponent: () => import('./pages/speakers/speakers').then((m) => m.Speakers) },
+          { path: 'create', loadComponent: () => import('./pages/speakers/create-speaker/create-speaker').then((m) => m.CreateSpeaker) },
+          { path: ':speakerId/edit', loadComponent: () => import('./pages/speakers/edit-speaker/edit-speaker').then((m) => m.EditSpeaker) },
+          { path: ':speakerId', loadComponent: () => import('./pages/speakers/speaker-details/speaker-details').then((m) => m.SpeakerDetails) },
+        ],
+      },
+
+      // Sponsors
+      {
+        path: 'sponsors',
+        canActivate: [eventFeatureGuard('sponsors')],
+        children: [
+          { path: '', loadComponent: () => import('./pages/sponsors/sponsors').then((m) => m.Sponsors) },
+          { path: 'create', loadComponent: () => import('./pages/sponsors/create-sponsor/create-sponsor').then((m) => m.CreateSponsor) },
+          { path: ':sponsorId/edit', loadComponent: () => import('./pages/sponsors/edit-sponsor/edit-sponsor').then((m) => m.EditSponsor) },
+          { path: ':sponsorId', loadComponent: () => import('./pages/sponsors/sponsor-details/sponsor-details').then((m) => m.SponsorDetails) },
         ],
       },
 

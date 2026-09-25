@@ -1,1 +1,1 @@
-<app-event-website-shell [data]="data()" [pageSlug]="pageSlug()" />
+@if(type()==='conference'){<app-conference-template [data]="data()" [pageSlug]="pageSlug()"/>} @else if(type()==='education'){<app-education-template [data]="data()" [pageSlug]="pageSlug()"/>} @else if(type()==='festival'){<app-festival-template [data]="data()" [pageSlug]="pageSlug()"/>} @else if(type()==='sports'){<app-sports-template [data]="data()" [pageSlug]="pageSlug()"/>} @else {<app-wedding-template [data]="data()" [pageSlug]="pageSlug()"/>}

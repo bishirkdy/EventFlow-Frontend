@@ -124,6 +124,65 @@
                 </section>
               }
 
+
+              @case ('speakers') {
+                @if (hasFeature('speakers')) {
+                  <section class="people-section people-section--speakers">
+                    <div class="people-inner">
+                      <div class="section-intro">
+                        <div><span class="section-index">01 / PEOPLE</span><h2>{{ normalizedTitle(section.title) || 'Speakers' }}</h2></div>
+                        @if (displayDescription(section.content)) { <p>{{ displayDescription(section.content) }}</p> }
+                      </div>
+                      @if (data().speakers.length) {
+                        <div class="speaker-grid">
+                          @for (speaker of data().speakers; track speaker.id) {
+                            <article class="speaker-card">
+                              <div class="speaker-image">
+                                @if (speaker.imageUrl) { <img [src]="speaker.imageUrl" [alt]="speaker.name" loading="lazy" /> }
+                                @else { <span>{{ speaker.name.charAt(0) }}</span> }
+                              </div>
+                              <div class="speaker-body">
+                                <span class="speaker-number">{{ ($index + 1).toString().padStart(2,'0') }}</span>
+                                <h3>{{ speaker.name }}</h3>
+                                @if (speaker.designation || speaker.organization) { <p class="speaker-role">{{ speaker.designation || 'Speaker' }}{{ speaker.organization ? ' · ' + speaker.organization : '' }}</p> }
+                                @if (displayDescription(speaker.bio)) { <p class="speaker-bio">{{ displayDescription(speaker.bio) }}</p> }
+                              </div>
+                            </article>
+                          }
+                        </div>
+                      } @else { <div class="empty-resource">Speaker profiles will appear here.</div> }
+                    </div>
+                  </section>
+                }
+              }
+
+              @case ('sponsors') {
+                @if (hasFeature('sponsors')) {
+                  <section class="sponsor-section">
+                    <div class="sponsor-inner">
+                      <div class="section-intro">
+                        <div><span class="section-index">02 / PARTNERS</span><h2>{{ normalizedTitle(section.title) || 'Sponsors' }}</h2></div>
+                        @if (displayDescription(section.content)) { <p>{{ displayDescription(section.content) }}</p> }
+                      </div>
+                      @if (data().sponsors.length) {
+                        <div class="sponsor-grid">
+                          @for (sponsor of data().sponsors; track sponsor.id) {
+                            <article class="sponsor-card">
+                              <div class="sponsor-level">{{ sponsor.sponsorLevel }}</div>
+                              <div class="sponsor-logo">
+                                @if (sponsor.logoUrl) { <img [src]="sponsor.logoUrl" [alt]="sponsor.name" loading="lazy" /> }
+                                @else { <span>{{ sponsor.name }}</span> }
+                              </div>
+                              <div class="sponsor-body"><h3>{{ sponsor.name }}</h3>@if(displayDescription(sponsor.description)){<p>{{displayDescription(sponsor.description)}}</p>}@if(sponsor.websiteUrl){<a [href]="sponsor.websiteUrl" target="_blank" rel="noreferrer">Visit partner ↗</a>}</div>
+                            </article>
+                          }
+                        </div>
+                      } @else { <div class="empty-resource">Partner profiles will appear here.</div> }
+                    </div>
+                  </section>
+                }
+              }
+
               @case ('gallery') {
                 <section class="gallery-section" id="gallery">
                   <div class="gallery-inner">
