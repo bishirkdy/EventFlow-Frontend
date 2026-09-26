@@ -64,4 +64,11 @@ export class EventPageService {
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPageById(eventId, pageId)),
     );
   }
+
+  reorderPages(eventId: string, pageIds: string[]): Observable<ApiResponse<object | null>> {
+    return this.http.put<ApiResponse<object | null>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.reorderPages(eventId)),
+      pageIds,
+    );
+  }
 }

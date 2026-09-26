@@ -24,7 +24,6 @@ export class CreateNavigationMenu {
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(100)]],
-    location: ['', [Validators.required, Validators.maxLength(100)]],
   });
 
   submit(): void {

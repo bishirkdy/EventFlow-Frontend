@@ -3,7 +3,6 @@ export interface UpdatePageSectionModel {
   title?: string;
   content?: string;
   image?: File;
-  displayOrder: number;
   isVisible: boolean;
   configuration?: string;
 }

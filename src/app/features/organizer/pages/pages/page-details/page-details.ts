@@ -50,21 +50,7 @@ export class PageDetails implements OnInit {
 
   readonly navigationForm = this.fb.nonNullable.group({
     navigationMenuId: ['', Validators.required],
-    label: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(200),
-      ],
-    ],
-    displayOrder: [
-      0,
-      [
-        Validators.required,
-        Validators.min(0),
-      ],
-    ],
-    openInNewTab: [false],
+    label: ['', [Validators.required, Validators.maxLength(200)]],
   });
 
 ngOnInit(): void {
@@ -182,8 +168,6 @@ ngOnInit(): void {
     this.navigationForm.reset({
       navigationMenuId: '',
       label: currentPage.name,
-      displayOrder: currentPage.displayOrder,
-      openInNewTab: false,
     });
 
     this.loadNavigationMenus();
@@ -201,8 +185,6 @@ ngOnInit(): void {
     this.navigationForm.reset({
       navigationMenuId: item.navigationMenuId,
       label: item.label,
-      displayOrder: item.displayOrder,
-      openInNewTab: item.openInNewTab,
     });
 
     this.loadNavigationMenus();
@@ -214,8 +196,6 @@ ngOnInit(): void {
     this.navigationForm.reset({
       navigationMenuId: '',
       label: '',
-      displayOrder: 0,
-      openInNewTab: false,
     });
   }
 
@@ -287,11 +267,7 @@ ngOnInit(): void {
         value.navigationMenuId,
         {
           label: value.label,
-          url: null,
           pageId: this.pageId,
-          displayOrder: value.displayOrder,
-          openInNewTab:
-            value.openInNewTab,
         },
       )
       .subscribe({
@@ -328,11 +304,7 @@ ngOnInit(): void {
         item.id,
         {
           label: value.label,
-          url: null,
           pageId: this.pageId,
-          displayOrder: value.displayOrder,
-          openInNewTab:
-            value.openInNewTab,
           isVisible: item.isVisible,
         },
       )

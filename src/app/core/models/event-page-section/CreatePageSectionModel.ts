@@ -3,6 +3,5 @@ export interface CreatePageSectionModel {
   title?: string;
   content?: string;
   image?: File;
-  displayOrder: number;
   configuration?: string;
 }

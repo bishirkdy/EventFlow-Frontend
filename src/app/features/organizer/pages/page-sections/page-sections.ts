@@ -72,6 +72,29 @@ export class PageSections implements OnInit {
     ]);
   }
 
+  moveSection(section: PageSectionModel, direction: -1 | 1): void {
+    const current = [...this.sections()].sort((a, b) => a.displayOrder - b.displayOrder);
+    const index = current.findIndex((item) => item.id === section.id);
+    const target = index + direction;
+
+    if (index < 0 || target < 0 || target >= current.length) {
+      return;
+    }
+
+    [current[index], current[target]] = [current[target], current[index]];
+
+    this.pageSectionService.reorderSections(
+      this.pageId,
+      current.map((item) => item.id),
+    ).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.loadSections();
+      },
+      error: () => this.toastr.error('Failed to reorder page sections.'),
+    });
+  }
+
   deleteSection(section: PageSectionModel): void {
     if (!confirm(`Delete "${section.title || section.sectionType}"?`)) return;
 

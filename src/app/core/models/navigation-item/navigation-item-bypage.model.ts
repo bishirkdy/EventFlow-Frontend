@@ -6,5 +6,4 @@ export interface NavigationItemByPageModel {
   pageId: string;
   displayOrder: number;
   isVisible: boolean;
-  openInNewTab: boolean;
 }

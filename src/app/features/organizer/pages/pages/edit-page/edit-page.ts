@@ -42,7 +42,6 @@ export class EditPage implements OnInit {
 
     pageType: ['', [Validators.required, Validators.maxLength(50)]],
 
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
   });
 
   ngOnInit(): void {
@@ -72,7 +71,6 @@ export class EditPage implements OnInit {
           name: page.name,
           slug: page.slug,
           pageType: page.pageType,
-          displayOrder: page.displayOrder,
         });
 
         this.loading.set(false);

@@ -33,7 +33,6 @@ export class EditNavigationMenu implements OnInit {
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(100)]],
-    location: ['', [Validators.required, Validators.maxLength(100)]],
   });
 
   ngOnInit(): void {
@@ -69,7 +68,6 @@ export class EditNavigationMenu implements OnInit {
 
           this.form.patchValue({
             name: menu.name,
-            location: menu.location,
           });
 
           this.loading = false;

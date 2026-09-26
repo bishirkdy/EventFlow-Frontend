@@ -31,11 +31,7 @@ export class CreateNavigationItem implements OnInit {
 
   readonly form = this.fb.nonNullable.group({
     label: ['', [Validators.required, Validators.maxLength(100)]],
-    targetType: ['page' as 'page' | 'url'],
-    pageId: [''],
-    url: [''],
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
-    openInNewTab: [false],
+    pageId: ['', Validators.required],
   });
 
   ngOnInit(): void {
@@ -56,15 +52,10 @@ export class CreateNavigationItem implements OnInit {
   submit(): void {
     if (this.form.invalid || !this.menuId) { this.form.markAllAsTouched(); return; }
     const value = this.form.getRawValue();
-    if (value.targetType === 'page' && !value.pageId) { this.toastr.error('Select a page.'); return; }
-    if (value.targetType === 'url' && !value.url.trim()) { this.toastr.error('Enter a URL.'); return; }
     this.saving = true;
     const request = {
       label: value.label.trim(),
-      url: value.targetType === 'url' ? value.url.trim() : null,
-      pageId: value.targetType === 'page' ? value.pageId : null,
-      displayOrder: value.displayOrder,
-      openInNewTab: value.openInNewTab,
+      pageId: value.pageId,
     };
     this.navigationItemService.createItem(this.menuId, request).subscribe({
       next: (response) => {

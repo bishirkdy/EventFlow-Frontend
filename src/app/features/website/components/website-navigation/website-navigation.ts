@@ -17,32 +17,13 @@ export class WebsiteNavigation {
       .navigationItems.filter((item) => item.isVisible && (!item.pageId || publishedPageIds.has(item.pageId)))
       .sort((a, b) => a.displayOrder - b.displayOrder);
 
-    const primaryMenuIds = new Set(
-      this.data()
-        .navigationMenus.filter((menu) => {
-          const location = menu.location.trim().toLowerCase();
-          return location === 'header' || location === 'main' || location === 'primary';
-        })
-        .map((menu) => menu.id),
-    );
-
-    if (primaryMenuIds.size === 0) {
-      return items;
-    }
-
-    return items.filter((item) => primaryMenuIds.has(item.navigationMenuId));
+    return items;
   }
 
   href(item: NavigationItemModel): string {
-    if (item.url?.trim()) {
-      return item.url;
-    }
-
     if (item.pageId) {
       const page = this.data().pages.find((candidate) => candidate.id === item.pageId);
-      if (page) {
-        return `#page-${page.id}`;
-      }
+      if (page) return `#page-${page.id}`;
     }
 
     return '#';

@@ -56,15 +56,7 @@
                     item.isVisible
                   ) {
                     <a
-                      [href]="item.url || '#'"
-                      [attr.target]="
-                        item.openInNewTab ? '_blank' : null
-                      "
-                      [attr.rel]="
-                        item.openInNewTab
-                          ? 'noopener noreferrer'
-                          : null
-                      "
+                      [href]="item.pageId ? '/events/' + event.id + '/' + item.pageId : '#'"
                       class="text-sm text-text-secondary transition hover:text-text-primary"
                     >
                       {{ item.label }}

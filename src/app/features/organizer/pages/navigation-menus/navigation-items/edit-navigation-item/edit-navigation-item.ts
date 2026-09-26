@@ -39,11 +39,7 @@ export class EditNavigationItem implements OnInit {
 
   readonly form = this.fb.nonNullable.group({
     label: ['', [Validators.required, Validators.maxLength(100)]],
-    targetType: ['page' as 'page' | 'url'],
-    url: [''],
-    pageId: [''],
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
-    openInNewTab: [false],
+    pageId: ['', Validators.required],
     isVisible: [true],
   });
 
@@ -92,11 +88,7 @@ export class EditNavigationItem implements OnInit {
 
           this.form.patchValue({
             label: item.label,
-            targetType: item.pageId ? 'page' : 'url',
-            url: item.url ?? '',
-            pageId: item.pageId ?? '',
-            displayOrder: item.displayOrder,
-            openInNewTab: item.openInNewTab,
+            pageId: item.pageId,
             isVisible: item.isVisible,
           });
 
@@ -124,11 +116,8 @@ export class EditNavigationItem implements OnInit {
     const value = this.form.getRawValue();
 
     const request = {
-      label: value.label,
-      url: value.targetType === 'url' ? value.url.trim() : null,
-      pageId: value.targetType === 'page' ? value.pageId : null,
-      displayOrder: value.displayOrder,
-      openInNewTab: value.openInNewTab,
+      label: value.label.trim(),
+      pageId: value.pageId,
       isVisible: value.isVisible,
     };
 

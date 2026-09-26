@@ -19,7 +19,7 @@ export class EventWebsiteShell {
       .sort((a, b) => a.displayOrder - b.displayOrder),
   );
 
-  /** The website home is the page explicitly identified as Home, never an arbitrary page. */
+  /* Finds the website Home page. */
   readonly homePage = computed<EventPageModel | null>(() => {
     const pages = this.pages();
     return pages.find(page =>
@@ -58,21 +58,10 @@ export class EventWebsiteShell {
     const homeId = this.homePage()?.id;
     const publishedIds = new Set(pages.map(page => page.id));
 
-    const primaryMenuIds = new Set(
-      this.data().navigationMenus
-        .filter(menu => ['header', 'main', 'primary'].includes(menu.location.trim().toLowerCase()))
-        .map(menu => menu.id),
-    );
-
     return this.data().navigationItems
       .filter(item => {
         if (!item.isVisible) return false;
         if (item.pageId && !publishedIds.has(item.pageId)) return false;
-        if (primaryMenuIds.size > 0 && !primaryMenuIds.has(item.navigationMenuId)) return false;
-
-        const label = item.label.trim().toLowerCase();
-        if (label === 'home') return false;
-        if (item.pageId && item.pageId === homeId) return false;
 
         if (item.pageId) {
           const page = pages.find(candidate => candidate.id === item.pageId);
@@ -120,9 +109,19 @@ export class EventWebsiteShell {
     return 'content';
   }
 
-  normalizedTitle(value: string | null | undefined): string {
-    return value?.trim().replace(/^the\s+/i, '') ?? '';
+normalizedTitle(value: string | null | undefined): string {
+  const text = value?.trim() ?? '';
+
+  if (!text) {
+    return '';
   }
+
+  return text
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/\s+/g, ' ')
+    .replace(/^the\s+/i, '')
+    .trim();
+}
 
   sectionId(sectionType: string | null | undefined, title: string | null | undefined): string {
     const kind = this.sectionKind(sectionType, title);
@@ -151,20 +150,9 @@ export class EventWebsiteShell {
     const eventId = this.data().event?.id;
     if (!eventId) return '#';
 
-    const rawUrl = item.url?.trim();
-    if (rawUrl) {
-      if (/^https?:\/\//i.test(rawUrl)) return rawUrl;
-      if (rawUrl.startsWith('#')) return `/events/${eventId}${rawUrl}`;
-
-      const slug = rawUrl.replace(/^\/+/, '').split(/[?#]/)[0];
-      if (slug) return `/events/${eventId}/${encodeURIComponent(slug)}`;
-    }
-
-    if (item.pageId) {
-      const page = this.pages().find(candidate => candidate.id === item.pageId);
-      if (page && page.id !== this.homePage()?.id) {
-        return `/events/${eventId}/${encodeURIComponent(page.slug)}`;
-      }
+    const page = this.pages().find(candidate => candidate.id === item.pageId);
+    if (page && page.id !== this.homePage()?.id) {
+      return `/events/${eventId}/${encodeURIComponent(page.slug)}`;
     }
 
     return `/events/${eventId}`;

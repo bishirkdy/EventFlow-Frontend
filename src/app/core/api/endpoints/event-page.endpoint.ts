@@ -18,5 +18,8 @@ export const EVENT_PAGE_ENDPOINTS = {
     `/v1/event-page/${eventId}/pages/${pageId}`,
 
   getPageById: (eventId: string, pageId: string) =>
-  `/v1/event-page/${eventId}/pages/${pageId}`,
+    `/v1/event-page/${eventId}/pages/${pageId}`,
+
+  reorderPages: (eventId: string) =>
+    `/v1/event-page/${eventId}/pages/reorder`,
 } as const;

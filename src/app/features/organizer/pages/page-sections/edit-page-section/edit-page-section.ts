@@ -35,7 +35,6 @@ export class EditPageSection implements OnInit {
     sectionType: ['', Validators.required],
     title: [''],
     content: [''],
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
     isVisible: [true],
     configuration: [''],
   });
@@ -104,7 +103,6 @@ export class EditPageSection implements OnInit {
       sectionType: section.sectionType,
       title: section.title ?? '',
       content: section.content ?? '',
-      displayOrder: section.displayOrder,
       isVisible: section.isVisible,
       configuration: section.configuration ?? '',
     });

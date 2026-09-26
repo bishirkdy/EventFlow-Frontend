@@ -25,7 +25,6 @@ export class EventPageSectionService {
     const formData = new FormData();
 
     formData.append('sectionType', request.sectionType);
-    formData.append('displayOrder', request.displayOrder.toString());
 
     if (request.title) {
       formData.append('title', request.title);
@@ -53,7 +52,6 @@ export class EventPageSectionService {
     const formData = new FormData();
 
     formData.append('sectionType', request.sectionType);
-    formData.append('displayOrder', request.displayOrder.toString());
     formData.append('isVisible', request.isVisible.toString());
 
     if (request.title) {

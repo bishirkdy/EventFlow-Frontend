@@ -2,13 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, map, switchMap } from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
 import { EventTypeService } from '../../../core/services/event-type/event-type.service';
 import { EventTypeModel } from '../../../core/models/event-type/event-type.model';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
-import { EventWebsiteSetupService } from '../../../core/services/website/event-website-setup.service';
 
 @Component({
   selector: 'app-create-event',
@@ -23,7 +22,6 @@ export class CreateEvent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly toastr = inject(ToastrService);
   private readonly eventTypeService = inject(EventTypeService);
-  private readonly websiteSetupService = inject(EventWebsiteSetupService);
 
   readonly loading = signal(false);
   readonly eventTypes = signal<EventTypeModel[]>([]);
@@ -118,28 +116,21 @@ export class CreateEvent implements OnInit {
     this.eventService
       .createEvent(request)
       .pipe(
-        switchMap((response) => {
-          const data = response.data;
-
-          if (!data) {
-            throw new Error('Event was created but no event data was returned.');
-          }
-
-          return this.websiteSetupService
-            .setup(data.id, data.eventTypeId)
-            .pipe(map(() => data));
-        }),
         finalize(() => {
           this.loading.set(false);
         }),
       )
       .subscribe({
-        next: (data) => {
-          const eventId = data.id;
+        next: (response) => {
+          const data = response.data;
 
-          this.toastr.success('Event created and starter website configured.');
+          if (!data) {
+            this.toastr.error('Event was created but no event data was returned.');
+            return;
+          }
 
-          this.router.navigate(['/organizer', eventId, 'overview']);
+          this.toastr.success('Event created successfully.');
+          this.router.navigate(['/organizer', data.id, 'overview']);
         },
 
         error: (error) => {

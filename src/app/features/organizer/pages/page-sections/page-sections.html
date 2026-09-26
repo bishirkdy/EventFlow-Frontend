@@ -169,6 +169,8 @@
                 <!-- Actions -->
                 <td class="px-5 py-4">
                   <div class="flex justify-end gap-2">
+                    <button type="button" (click)="moveSection(section, -1)" class="cursor-pointer px-2 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary">Up</button>
+                    <button type="button" (click)="moveSection(section, 1)" class="cursor-pointer px-2 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary">Down</button>
                     <button
                       type="button"
                       (click)="editSection(section)"

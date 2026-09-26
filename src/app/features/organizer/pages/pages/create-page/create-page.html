@@ -85,25 +85,6 @@
       }
     </div>
 
-    <!-- Display Order -->
-    <div class="max-w-md">
-      <label for="displayOrder" class="mb-5 block text-base font-medium text-text-primary">
-        Display order
-      </label>
-
-      <input
-        id="displayOrder"
-        type="number"
-        min="0"
-        formControlName="displayOrder"
-        class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-base text-text-primary outline-none focus:border-primary"
-      />
-
-      @if (form.controls.displayOrder.touched && form.controls.displayOrder.invalid) {
-        <p class="mt-3 text-sm text-red-600">Display order must be 0 or greater.</p>
-      }
-    </div>
-
     <!-- Actions -->
     <div class="flex items-center justify-end gap-6 border-t border-border pt-8">
       <button

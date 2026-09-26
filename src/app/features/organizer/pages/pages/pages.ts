@@ -89,6 +89,35 @@ export class Pages implements OnInit {
     });
   }
 
+  movePage(page: EventPageModel, direction: -1 | 1): void {
+    const current = [...this.pages()].sort((a, b) => a.displayOrder - b.displayOrder);
+    const index = current.findIndex((item) => item.id === page.id);
+    const target = index + direction;
+
+    if (index < 0 || target < 0 || target >= current.length) {
+      return;
+    }
+
+    [current[index], current[target]] = [current[target], current[index]];
+
+    const eventId = this.eventId();
+
+    if (!eventId) {
+      return;
+    }
+
+    this.pageService.reorderPages(
+      eventId,
+      current.map((item) => item.id),
+    ).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+      error: () => this.toastr.error('Failed to reorder event pages.'),
+    });
+  }
+
   deletePage(page: EventPageModel): void {
     const eventId = this.eventId();
 

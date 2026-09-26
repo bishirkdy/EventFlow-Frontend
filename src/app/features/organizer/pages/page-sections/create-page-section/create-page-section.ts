@@ -29,7 +29,6 @@ export class CreatePageSection {
     sectionType: ['', Validators.required],
     title: [''],
     content: [''],
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
     configuration: [''],
   });
 

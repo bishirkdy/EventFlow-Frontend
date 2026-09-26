@@ -1,8 +1,5 @@
 export interface UpdateNavigationItemModel {
   label: string;
-  url?: string | null;
-  pageId?: string | null;
-  displayOrder: number;
-  openInNewTab: boolean;
+  pageId: string;
   isVisible: boolean;
 }

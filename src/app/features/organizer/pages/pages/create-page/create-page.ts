@@ -33,7 +33,6 @@ export class CreatePage {
       ],
     ],
     pageType: ['', [Validators.required, Validators.maxLength(50)]],
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
   });
 
   submit(): void {

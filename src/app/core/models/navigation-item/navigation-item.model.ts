@@ -2,9 +2,9 @@ export interface NavigationItemModel {
   id: string;
   navigationMenuId: string;
   label: string;
-  url: string | null;
-  pageId: string | null;
+  pageId: string;
   displayOrder: number;
   isVisible: boolean;
-  openInNewTab: boolean;
+  createdAt: string;
+  updatedAt: string | null;
 }

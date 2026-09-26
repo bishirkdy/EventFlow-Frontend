@@ -4,8 +4,6 @@
       @for (item of visibleItems(); track item.id) {
         <a
           [href]="href(item)"
-          [target]="item.openInNewTab ? '_blank' : '_self'"
-          [rel]="item.openInNewTab ? 'noreferrer' : null"
           class="shrink-0 px-3 py-2 text-sm font-medium opacity-65 transition hover:bg-black/5 hover:opacity-100"
         >
           {{ item.label }}
