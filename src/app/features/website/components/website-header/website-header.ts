@@ -7,6 +7,7 @@ import { EventWebsiteData } from '../../../../core/models/website/event-website-
   templateUrl: './website-header.html',
   styleUrl: './website-header.css',
 })
+
 export class WebsiteHeader {
   readonly data = input.required<EventWebsiteData>();
   readonly templateLabel = input('Event');

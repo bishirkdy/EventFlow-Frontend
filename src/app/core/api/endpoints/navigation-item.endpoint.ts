@@ -1,19 +1,22 @@
 export const NAVIGATION_ITEM_ENDPOINTS = {
-  getItems: (navigationMenuId: string) => `/v1/navigation-items/${navigationMenuId}/items`,
+  getItems: (eventId: string) =>
+    `/v1/navigation-items/${eventId}`,
 
-  createItem: (navigationMenuId: string) => `/v1/navigation-items/${navigationMenuId}/items`,
+  createItem: (eventId: string) =>
+    `/v1/navigation-items/${eventId}`,
 
-  updateItem: (navigationMenuId: string, itemId: string) =>
-    `/v1/navigation-items/${navigationMenuId}/items/${itemId}`,
+  updateItem: (eventId: string, itemId: string) =>
+    `/v1/navigation-items/${eventId}/${itemId}`,
 
-  deleteItem: (navigationMenuId: string, itemId: string) =>
-    `/v1/navigation-items/${navigationMenuId}/items/${itemId}`,
+  deleteItem: (eventId: string, itemId: string) =>
+    `/v1/navigation-items/${eventId}/${itemId}`,
 
-  reorderItems: (navigationMenuId: string) =>
-    `/v1/navigation-items/${navigationMenuId}/items/reorder`,
+  reorderItems: (eventId: string) =>
+    `/v1/navigation-items/${eventId}/reorder`,
 
-  setVisibility: (navigationMenuId: string, itemId: string) =>
-    `/v1/navigation-items/${navigationMenuId}/items/${itemId}/visibility`,
+  setVisibility: (eventId: string, itemId: string) =>
+    `/v1/navigation-items/${eventId}/${itemId}/visibility`,
 
-  getItemByPage: (pageId: string) => `/v1/navigation-items/page/${pageId}`,
+  getItemByPage: (pageId: string) =>
+    `/v1/navigation-items/page/${pageId}`,
 } as const;

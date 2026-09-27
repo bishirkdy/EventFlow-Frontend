@@ -1,6 +1,6 @@
 export interface NavigationItemModel {
   id: string;
-  navigationMenuId: string;
+  eventId: string;
   label: string;
   pageId: string;
   displayOrder: number;

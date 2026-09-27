@@ -8,7 +8,6 @@ import { EventPageSectionService } from '../event-page-section/event-page-sectio
 import { SectionService } from '../section/section.service';
 import { SessionService } from '../session/session.service';
 import { VenueService } from '../venue/venue.service';
-import { NavigationMenuService } from '../navigation-menu/navigation-menu.service';
 import { NavigationItemService } from '../navigation-item/navigation-item.service';
 import { SpeakerService } from '../speaker/speaker.service';
 import { SponsorService } from '../sponsor/sponsor.service';
@@ -26,7 +25,6 @@ export class EventWebsiteService {
   private readonly sectionService = inject(SectionService);
   private readonly sessionService = inject(SessionService);
   private readonly venueService = inject(VenueService);
-  private readonly navigationMenuService = inject(NavigationMenuService);
   private readonly navigationItemService = inject(NavigationItemService);
   private readonly speakerService = inject(SpeakerService);
   private readonly sponsorService = inject(SponsorService);
@@ -36,15 +34,17 @@ export class EventWebsiteService {
       event: this.eventService.getEventById(eventId),
       features: this.eventFeatureService.getFeatures(eventId),
       pages: this.eventPageService.getPages(eventId),
-      navigationMenus: this.navigationMenuService.getMenus(eventId),
+      navigationItems: this.navigationItemService.getItems(eventId),
     }).pipe(
       switchMap((response) => {
         const event = response.event.data ?? null;
         const features = response.features.data ?? [];
         const pages = response.pages.data ?? [];
-        const navigationMenus = response.navigationMenus.data ?? [];
+        const navigationItems = response.navigationItems.data ?? [];
         const enabled = new Set(
-          features.filter((feature) => feature.isEnabled).map((feature) => feature.featureCode.toLowerCase()),
+          features
+            .filter((feature) => feature.isEnabled)
+            .map((feature) => feature.featureCode.toLowerCase()),
         );
 
         const sections$ = enabled.has('sessions')
@@ -57,25 +57,23 @@ export class EventWebsiteService {
           ? this.venueService.getVenues(eventId).pipe(map((result) => result.data ?? []))
           : of([]);
         const speakers$ = enabled.has('speakers')
-          ? this.speakerService.getSpeakers(eventId).pipe(map((result) => (result.data ?? []).filter((speaker) => speaker.isActive)))
+          ? this.speakerService.getSpeakers(eventId).pipe(
+              map((result) => (result.data ?? []).filter((speaker) => speaker.isActive)),
+            )
           : of([]);
         const sponsors$ = enabled.has('sponsors')
-          ? this.sponsorService.getSponsors(eventId).pipe(map((result) => (result.data ?? []).filter((sponsor) => sponsor.isActive)))
+          ? this.sponsorService.getSponsors(eventId).pipe(
+              map((result) => (result.data ?? []).filter((sponsor) => sponsor.isActive)),
+            )
           : of([]);
 
         const pageSectionRequests: Observable<PageSectionModel[]>[] = pages.map((page) =>
           this.pageSectionService.getSections(page.id).pipe(map((result) => result.data ?? [])),
         );
-        const navigationItemRequests: Observable<NavigationItemModel[]>[] = navigationMenus.map((menu) =>
-          this.navigationItemService.getItems(menu.id).pipe(map((result) => result.data ?? [])),
-        );
 
         const pageSections$ = pageSectionRequests.length > 0
           ? forkJoin(pageSectionRequests)
           : of([] as PageSectionModel[][]);
-        const navigationItems$ = navigationItemRequests.length > 0
-          ? forkJoin(navigationItemRequests)
-          : of([] as NavigationItemModel[][]);
 
         return forkJoin({
           sections: sections$,
@@ -84,9 +82,8 @@ export class EventWebsiteService {
           speakers: speakers$,
           sponsors: sponsors$,
           pageSections: pageSections$,
-          navigationItems: navigationItems$,
         }).pipe(
-          map(({ sections, sessions, venues, speakers, sponsors, pageSections, navigationItems }): EventWebsiteData => ({
+          map(({ sections, sessions, venues, speakers, sponsors, pageSections }): EventWebsiteData => ({
             event,
             images: event?.images ?? [],
             features,
@@ -97,8 +94,7 @@ export class EventWebsiteService {
             venues,
             speakers,
             sponsors,
-            navigationMenus,
-            navigationItems: navigationItems.flat(),
+            navigationItems,
           })),
         );
       }),

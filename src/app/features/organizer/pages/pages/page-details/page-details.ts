@@ -5,13 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../../core/models/event-page/event-page.model';
-
 import { NavigationItemByPageModel } from '../../../../../core/models/navigation-item/navigation-item-bypage.model';
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
-
-import { NavigationMenuModel } from '../../../../../core/models/navigation-menu/navigation-menu.model';
-import { NavigationMenuService } from '../../../../../core/services/navigation-menu/navigation-menu.service';
-
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({
@@ -25,20 +20,13 @@ export class PageDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
-
   private readonly pageService = inject(EventPageService);
   private readonly navigationItemService = inject(NavigationItemService);
-  private readonly navigationMenuService = inject(NavigationMenuService);
   private readonly eventState = inject(OrganizerEventStateService);
   private readonly toastr = inject(ToastrService);
 
   readonly page = signal<EventPageModel | null>(null);
-
-  readonly navigationItem =
-    signal<NavigationItemByPageModel | null>(null);
-
-  readonly navigationMenus =
-    signal<NavigationMenuModel[]>([]);
+  readonly navigationItem = signal<NavigationItemByPageModel | null>(null);
 
   readonly loading = signal(true);
   readonly navigationLoading = signal(false);
@@ -49,128 +37,86 @@ export class PageDetails implements OnInit {
   private eventId = '';
 
   readonly navigationForm = this.fb.nonNullable.group({
-    navigationMenuId: ['', Validators.required],
     label: ['', [Validators.required, Validators.maxLength(200)]],
   });
 
-ngOnInit(): void {
-  this.pageId =
-    this.route.snapshot.paramMap.get('pageId') ?? '';
+  ngOnInit(): void {
+    this.pageId = this.route.snapshot.paramMap.get('pageId') ?? '';
 
-  this.eventId =
-    this.eventState.eventId() ?? '';
+    this.eventId =
+      this.eventState.eventId() ??
+      this.route.parent?.parent?.snapshot.paramMap.get('eventId') ??
+      '';
 
-  if (!this.pageId || !this.eventId) {
-    this.toastr.error('Page information is missing.');
-    this.loading.set(false);
-    return;
+    if (!this.pageId || !this.eventId) {
+      this.toastr.error('Page information is missing.');
+      this.loading.set(false);
+      return;
+    }
+
+    this.loadPage();
+    this.loadNavigation();
   }
-
-  this.loadPage();
-  this.loadNavigation();
-}
-
-  // ============================================
-  // PAGE
-  // ============================================
 
   loadPage(): void {
     this.loading.set(true);
 
-    this.pageService
-      .getPageById(this.eventId, this.pageId)
-      .subscribe({
-        next: (response) => {
-          if (!response.data) {
-            this.toastr.error(
-              'Page not found.',
-            );
-
-            this.loading.set(false);
-            return;
-          }
-
-          this.page.set(response.data);
+    this.pageService.getPageById(this.eventId, this.pageId).subscribe({
+      next: (r) => {
+        if (!r.data) {
+          this.toastr.error('Page not found.');
           this.loading.set(false);
-        },
+          return;
+        }
 
-        error: () => {
-          this.loading.set(false);
-
-          this.toastr.error(
-            'Failed to load page.',
-          );
-        },
-      });
+        this.page.set(r.data);
+        this.loading.set(false);
+      },
+      error: (e) => {
+        this.loading.set(false);
+        this.toastr.error(this.apiMessage(e, 'Failed to load page.'));
+      },
+    });
   }
 
   editPage(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'pages',
-      this.pageId,
-      'edit',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'pages', this.pageId, 'edit']);
   }
 
   viewSection(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'pages',
-      this.pageId,
-      'sections',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'pages', this.pageId, 'sections']);
   }
 
   backToPages(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'pages',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'pages']);
   }
 
-  // ============================================
-  // NAVIGATION
-  // ============================================
-
   loadNavigation(): void {
-    this.navigationItemService
-      .getItemByPage(this.pageId)
-      .subscribe({
-        next: (response) => {
-          this.navigationItem.set(
-            response.data ?? null,
-          );
-        },
+    this.navigationLoading.set(true);
 
-        error: () => {
-          this.navigationItem.set(null);
-
-          this.toastr.error(
-            'Failed to load navigation information.',
-          );
-        },
-      });
+    this.navigationItemService.getItemByPage(this.pageId).subscribe({
+      next: (r) => {
+        this.navigationItem.set(r.data ?? null);
+        this.navigationLoading.set(false);
+      },
+      error: () => {
+        this.navigationItem.set(null);
+        this.navigationLoading.set(false);
+      },
+    });
   }
 
   addToNavigation(): void {
-    const currentPage = this.page();
+    const page = this.page();
 
-    if (!currentPage) {
+    if (!page) {
       return;
     }
 
     this.showNavigationForm.set(true);
-
     this.navigationForm.reset({
-      navigationMenuId: '',
-      label: currentPage.name,
+      label: page.name,
     });
-
-    this.loadNavigationMenus();
   }
 
   editNavigation(): void {
@@ -181,189 +127,97 @@ ngOnInit(): void {
     }
 
     this.showNavigationForm.set(true);
-
     this.navigationForm.reset({
-      navigationMenuId: item.navigationMenuId,
       label: item.label,
     });
-
-    this.loadNavigationMenus();
   }
 
   cancelNavigation(): void {
     this.showNavigationForm.set(false);
-
     this.navigationForm.reset({
-      navigationMenuId: '',
       label: '',
     });
   }
 
-  loadNavigationMenus(): void {
-    this.navigationLoading.set(true);
-
-    this.navigationMenuService
-      .getMenus(this.eventId)
-      .subscribe({
-        next: (response) => {
-          const menus = response.data ?? [];
-
-          this.navigationMenus.set(menus);
-          this.navigationLoading.set(false);
-
-          if (menus.length === 0) {
-            this.toastr.info(
-              'Create a navigation menu before adding this page.',
-            );
-          }
-        },
-
-        error: () => {
-          this.navigationMenus.set([]);
-          this.navigationLoading.set(false);
-
-          this.toastr.error(
-            'Failed to load navigation menus.',
-          );
-        },
-      });
-  }
-
   saveNavigation(): void {
-    if (this.navigationSaving()) {
-      return;
-    }
-
-    if (this.navigationForm.invalid) {
+    if (this.navigationSaving() || this.navigationForm.invalid) {
       this.navigationForm.markAllAsTouched();
       return;
     }
 
-    const value =
-      this.navigationForm.getRawValue();
-
-    const existingItem =
-      this.navigationItem();
+    const value = this.navigationForm.getRawValue();
+    const existing = this.navigationItem();
 
     this.navigationSaving.set(true);
 
-    if (existingItem) {
-      this.updateNavigation(
-        existingItem,
-        value,
-      );
+    if (existing) {
+      this.navigationItemService
+        .updateItem(this.eventId, existing.id, {
+          label: value.label.trim(),
+          pageId: this.pageId,
+          isVisible: existing.isVisible,
+        })
+        .subscribe({
+          next: (r) => {
+            this.navigationSaving.set(false);
+            this.showNavigationForm.set(false);
+            this.toastr.success(r.message);
+            this.loadNavigation();
+          },
+          error: (e) => {
+            this.navigationSaving.set(false);
+            this.toastr.error(this.apiMessage(e, 'Failed to update navigation.'));
+          },
+        });
     } else {
-      this.createNavigation(value);
+      this.navigationItemService
+        .createItem(this.eventId, {
+          label: value.label.trim(),
+          pageId: this.pageId,
+        })
+        .subscribe({
+          next: (r) => {
+            this.navigationSaving.set(false);
+            this.showNavigationForm.set(false);
+            this.toastr.success(r.message);
+            this.loadNavigation();
+          },
+          error: (e) => {
+            this.navigationSaving.set(false);
+            this.toastr.error(this.apiMessage(e, 'Failed to add page to navigation.'));
+          },
+        });
     }
-  }
-
-  private createNavigation(
-    value: ReturnType<
-      typeof this.navigationForm.getRawValue
-    >,
-  ): void {
-    this.navigationItemService
-      .createItem(
-        value.navigationMenuId,
-        {
-          label: value.label,
-          pageId: this.pageId,
-        },
-      )
-      .subscribe({
-        next: (response) => {
-          this.toastr.success(
-            response.message,
-          );
-
-          this.navigationSaving.set(false);
-          this.showNavigationForm.set(false);
-
-          this.loadNavigation();
-        },
-
-        error: () => {
-          this.navigationSaving.set(false);
-
-          this.toastr.error(
-            'Failed to add page to navigation.',
-          );
-        },
-      });
-  }
-
-  private updateNavigation(
-    item: NavigationItemByPageModel,
-    value: ReturnType<
-      typeof this.navigationForm.getRawValue
-    >,
-  ): void {
-    this.navigationItemService
-      .updateItem(
-        item.navigationMenuId,
-        item.id,
-        {
-          label: value.label,
-          pageId: this.pageId,
-          isVisible: item.isVisible,
-        },
-      )
-      .subscribe({
-        next: (response) => {
-          this.toastr.success(
-            response.message,
-          );
-
-          this.navigationSaving.set(false);
-          this.showNavigationForm.set(false);
-
-          this.loadNavigation();
-        },
-
-        error: () => {
-          this.navigationSaving.set(false);
-
-          this.toastr.error(
-            'Failed to update navigation.',
-          );
-        },
-      });
   }
 
   removeFromNavigation(): void {
     const item = this.navigationItem();
 
-    if (!item) {
+    if (!item || !confirm('Remove this page from navigation?')) {
       return;
     }
 
-    if (
-      !confirm(
-        'Remove this page from navigation?',
-      )
-    ) {
-      return;
-    }
+    this.navigationItemService.deleteItem(this.eventId, item.id).subscribe({
+      next: (r) => {
+        this.toastr.success(r.message);
+        this.navigationItem.set(null);
+      },
+      error: (e) => {
+        this.toastr.error(this.apiMessage(e, 'Failed to remove page from navigation.'));
+      },
+    });
+  }
 
-    this.navigationItemService
-      .deleteItem(
-        item.navigationMenuId,
-        item.id,
-      )
-      .subscribe({
-        next: (response) => {
-          this.toastr.success(
-            response.message,
-          );
+  private apiMessage(error: unknown, fallback: string): string {
+    const r = (
+      error as {
+        error?: {
+          message?: string;
+          errors?: string[];
+        };
+      }
+    )?.error;
 
-          this.navigationItem.set(null);
-        },
-
-        error: () => {
-          this.toastr.error(
-            'Failed to remove page from navigation.',
-          );
-        },
-      });
+    return r?.errors?.join(' ') || r?.message || fallback;
   }
 }

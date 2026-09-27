@@ -30,5 +30,5 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
   { label: 'Speakers', route: 'speakers', icon: Mic2, feature: 'speakers' },
   { label: 'Sponsors', route: 'sponsors', icon: Handshake, feature: 'sponsors' },
   { label: 'Pages', route: 'pages', icon: FileText },
-  { label: 'Navigation', route: 'navigation-menus', icon: Menu },
+  { label: 'Navigation', route: 'navigation', icon: Menu },
 ];

@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { getApiErrorMessage } from '../../../core/api/api-error';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -65,7 +66,7 @@ export class Register {
 
         error: (err: unknown) => {
           console.error('Registration failed:', err);
-          this.toastr.error('Registration failed. Please try again.');
+          this.toastr.error(getApiErrorMessage(err, 'Registration failed. Please try again.'));
         },
       });
   }

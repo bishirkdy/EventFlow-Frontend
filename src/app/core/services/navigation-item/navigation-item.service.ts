@@ -10,63 +10,55 @@ import { CreateNavigationItemModel } from '../../models/navigation-item/create-n
 import { UpdateNavigationItemModel } from '../../models/navigation-item/update-navigation-item';
 import { NavigationItemByPageModel } from '../../models/navigation-item/navigation-item-bypage.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class NavigationItemService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  getItems(navigationMenuId: string): Observable<ApiResponse<NavigationItemModel[]>> {
+  getItems(eventId: string): Observable<ApiResponse<NavigationItemModel[]>> {
     return this.http.get<ApiResponse<NavigationItemModel[]>>(
-      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.getItems(navigationMenuId)),
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.getItems(eventId)),
     );
   }
 
-  createItem(
-    navigationMenuId: string,
-    request: CreateNavigationItemModel,
-  ): Observable<ApiResponse<string>> {
+  createItem(eventId: string, request: CreateNavigationItemModel): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
-      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.createItem(navigationMenuId)),
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.createItem(eventId)),
       request,
     );
   }
 
   updateItem(
-    navigationMenuId: string,
+    eventId: string,
     itemId: string,
     request: UpdateNavigationItemModel,
   ): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
-      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.updateItem(navigationMenuId, itemId)),
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.updateItem(eventId, itemId)),
       request,
     );
   }
 
-  deleteItem(navigationMenuId: string, itemId: string): Observable<ApiResponse<object | null>> {
+  deleteItem(eventId: string, itemId: string): Observable<ApiResponse<object | null>> {
     return this.http.delete<ApiResponse<object | null>>(
-      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.deleteItem(navigationMenuId, itemId)),
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.deleteItem(eventId, itemId)),
     );
   }
 
-  reorderItems(
-    navigationMenuId: string,
-    itemIds: string[],
-  ): Observable<ApiResponse<object | null>> {
+  reorderItems(eventId: string, itemIds: string[]): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
-      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.reorderItems(navigationMenuId)),
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.reorderItems(eventId)),
       itemIds,
     );
   }
 
   setVisibility(
-    navigationMenuId: string,
+    eventId: string,
     itemId: string,
     isVisible: boolean,
   ): Observable<ApiResponse<object | null>> {
     return this.http.patch<ApiResponse<object | null>>(
-      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.setVisibility(navigationMenuId, itemId)),
+      this.api.getUrl(NAVIGATION_ITEM_ENDPOINTS.setVisibility(eventId, itemId)),
       isVisible,
     );
   }

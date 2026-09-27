@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { getApiErrorMessage } from '../../../core/api/api-error';
 
 @Component({
   selector: 'app-login',
@@ -49,7 +50,7 @@ export class Login {
       error: (err: unknown) => {
         console.error('Login failed:', err);
         this.loading.set(false);
-        this.toastr.error('Invalid email or password.');
+        this.toastr.error(getApiErrorMessage(err, 'Login failed.'));
       },
     });
   }

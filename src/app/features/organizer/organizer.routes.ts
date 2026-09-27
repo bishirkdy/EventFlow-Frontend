@@ -199,63 +199,28 @@ export const organizerRoutes: Routes = [
         ],
       },
 
-      // Navigations
+      // Navigation items
       {
-        path: 'navigation-menus',
+        path: 'navigation',
         children: [
           {
             path: '',
             loadComponent: () =>
-              import('./pages/navigation-menus/navigation-menus').then((m) => m.NavigationMenus),
+              import('./pages/navigation/navigation').then((m) => m.Navigation),
           },
           {
             path: 'create',
             loadComponent: () =>
-              import('./pages/navigation-menus/create-navigation-menu/create-navigation-menu').then(
-                (m) => m.CreateNavigationMenu,
+              import('./pages/navigation/create-navigation-item/create-navigation-item').then(
+                (m) => m.CreateNavigationItem,
               ),
           },
           {
-            path: ':menuId/edit',
+            path: ':itemId/edit',
             loadComponent: () =>
-              import('./pages/navigation-menus/edit-navigation-menu/edit-navigation-menu').then(
-                (m) => m.EditNavigationMenu,
+              import('./pages/navigation/edit-navigation-item/edit-navigation-item').then(
+                (m) => m.EditNavigationItem,
               ),
-          },
-          {
-            path: ':menuId',
-            loadComponent: () =>
-              import('./pages/navigation-menus/navigation-menu-details/navigation-menu-details').then(
-                (m) => m.NavigationMenuDetails,
-              ),
-          },
-
-          // Navigation Items
-          {
-            path: ':menuId/items',
-            children: [
-              {
-                path: '',
-                loadComponent: () =>
-                  import('./pages/navigation-menus/navigation-items/navigation-items').then(
-                    (m) => m.NavigationItems,
-                  ),
-              },
-              {
-                path: 'create',
-                loadComponent: () =>
-                  import('./pages/navigation-menus/navigation-items/create-navigation-item/create-navigation-item').then(
-                    (m) => m.CreateNavigationItem,
-                  ),
-              },
-              {
-                path: ':itemId/edit',
-                loadComponent: () =>
-                  import('./pages/navigation-menus/navigation-items/edit-navigation-item/edit-navigation-item').then(
-                    (m) => m.EditNavigationItem,
-                  ),
-              },
-            ],
           },
         ],
       },

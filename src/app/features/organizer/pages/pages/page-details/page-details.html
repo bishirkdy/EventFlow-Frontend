@@ -73,39 +73,42 @@
         <div class="flex flex-col gap-4 border-b border-border p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 class="text-lg font-semibold text-text-primary">Navigation</h2>
-            <p class="mt-1 text-sm text-text-secondary">Connect this page to one of your event navigation menus.</p>
+            <p class="mt-1 text-sm text-text-secondary">Add this page directly to the event navigation.</p>
           </div>
           @if (!navigationItem() && !showNavigationForm()) {
-            <button type="button" (click)="addToNavigation()" class="cursor-pointer bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90">Add to Navigation</button>
+            <button type="button" (click)="addToNavigation()" class="bg-primary px-4 py-2 text-sm font-medium text-white">Add to Navigation</button>
           }
         </div>
 
-        @if (navigationItem() && !showNavigationForm()) {
+        @if (navigationLoading()) {
+          <div class="p-6 text-sm text-text-muted">Checking navigation...</div>
+        } @else if (navigationItem() && !showNavigationForm()) {
           <div class="p-6">
             <div class="flex flex-col gap-5 border border-border p-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div class="flex items-center gap-3">
                   <h3 class="font-medium text-text-primary">{{ navigationItem()!.label }}</h3>
-                  @if (navigationItem()!.isVisible) { <span class="text-xs font-medium text-green-600">Visible</span> } @else { <span class="text-xs font-medium text-text-muted">Hidden</span> }
+                  @if (navigationItem()!.isVisible) {
+                    <span class="text-xs font-medium text-green-600">Visible</span>
+                  } @else {
+                    <span class="text-xs font-medium text-text-muted">Hidden</span>
+                  }
                 </div>
-                <p class="mt-1 text-sm text-text-secondary">{{ navigationItem()!.navigationMenuName }}</p>
                 <div class="mt-3 flex gap-6 text-xs text-text-muted">
                   <span>Position: {{ navigationItem()!.displayOrder }}</span>
                 </div>
               </div>
               <div class="flex shrink-0 gap-4">
-                <button type="button" (click)="editNavigation()" class="cursor-pointer border border-border px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-background">Edit</button>
-                <button type="button" (click)="removeFromNavigation()" class="cursor-pointer px-2 py-2 text-sm font-medium text-red-600 transition hover:opacity-70">Remove</button>
+                <button type="button" (click)="editNavigation()" class="border border-border px-4 py-2 text-sm font-medium text-text-primary">Edit</button>
+                <button type="button" (click)="removeFromNavigation()" class="px-2 py-2 text-sm font-medium text-red-600">Remove</button>
               </div>
             </div>
           </div>
-        }
-
-        @if (!navigationItem() && !showNavigationForm()) {
+        } @else if (!showNavigationForm()) {
           <div class="p-6 text-center">
             <h3 class="font-medium text-text-primary">Not connected to navigation</h3>
-            <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">Add this page to a navigation menu so visitors can access it from your event website.</p>
-            <button type="button" (click)="addToNavigation()" class="mt-5 cursor-pointer bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90">Add to Navigation</button>
+            <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">Add this page directly to your event navigation so visitors can access it.</p>
+            <button type="button" (click)="addToNavigation()" class="mt-5 bg-primary px-4 py-2 text-sm font-medium text-white">Add to Navigation</button>
           </div>
         }
 
@@ -114,28 +117,18 @@
             <form [formGroup]="navigationForm" (ngSubmit)="saveNavigation()" class="space-y-6 border border-border p-6">
               <div>
                 <h3 class="font-semibold text-text-primary">{{ navigationItem() ? 'Edit Navigation' : 'Add to Navigation' }}</h3>
-                <p class="mt-1 text-sm text-text-secondary">Choose the menu and navigation label for this page.</p>
+                <p class="mt-1 text-sm text-text-secondary">Set the label visitors will see.</p>
               </div>
-
               <div>
-                <label for="navigationMenuId" class="mb-2 block text-sm font-medium text-text-primary">Navigation Menu</label>
-                <select id="navigationMenuId" formControlName="navigationMenuId" class="w-full border border-border bg-background px-3 py-2.5 text-sm text-text-primary outline-none focus:border-primary">
-                  <option value="">Select navigation menu</option>
-                  @for (menu of navigationMenus(); track menu.id) {
-                    <option [value]="menu.id">{{ menu.name }}</option>
-                  }
-                </select>
-                @if (navigationLoading()) { <p class="mt-2 text-xs text-text-muted">Loading menus...</p> }
+                <label for="navigation-label" class="mb-2 block text-sm font-medium text-text-primary">Navigation Label</label>
+                <input id="navigation-label" type="text" formControlName="label" class="w-full border border-border bg-background px-3 py-2.5 text-sm text-text-primary outline-none focus:border-primary" />
+                @if (navigationForm.controls.label.touched && navigationForm.controls.label.invalid) {
+                  <p class="mt-2 text-xs text-red-600">A navigation label is required.</p>
+                }
               </div>
-
-              <div>
-                <label for="label" class="mb-2 block text-sm font-medium text-text-primary">Navigation Label</label>
-                <input id="label" type="text" formControlName="label" placeholder="About Us" class="w-full border border-border bg-background px-3 py-2.5 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary" />
-              </div>
-
               <div class="flex justify-end gap-3 border-t border-border pt-6">
-                <button type="button" (click)="cancelNavigation()" class="cursor-pointer border border-border px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-background">Cancel</button>
-                <button type="submit" [disabled]="navigationSaving() || navigationLoading()" class="cursor-pointer bg-primary px-5 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{{ navigationItem() ? 'Save Changes' : 'Add to Navigation' }}</button>
+                <button type="button" (click)="cancelNavigation()" class="border border-border px-4 py-2 text-sm font-medium text-text-primary">Cancel</button>
+                <button type="submit" [disabled]="navigationSaving()" class="bg-primary px-5 py-2 text-sm font-medium text-white disabled:opacity-50">{{ navigationSaving() ? 'Saving...' : (navigationItem() ? 'Save Changes' : 'Add to Navigation') }}</button>
               </div>
             </form>
           </div>
