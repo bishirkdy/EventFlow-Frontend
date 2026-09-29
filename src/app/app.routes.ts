@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { PublicLayout } from './shared/layouts/public-layout/public-layout';
 import { authGuard } from './core/guards/auth/auth-guard';
+import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
 
 export const routes: Routes = [
+  ...REGISTRATION_ROUTES,
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
@@ -35,13 +37,11 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/:slug',
-    loadComponent: () =>
-      import('./features/website/website').then((m) => m.Website),
+    loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },
   {
     path: 'events/:eventId',
-    loadComponent: () =>
-      import('./features/website/website').then((m) => m.Website),
+    loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },
   {
     path: 'organizer',

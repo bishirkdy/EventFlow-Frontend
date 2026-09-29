@@ -8,28 +8,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastrService } from 'ngx-toastr';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-
-import {
-  CapacityMode,
-  RegistrationFieldType,
-} from '../../../../../core/models/registration/registration.enums';
-
-import {
-  RegistrationFormFieldModel,
-  UpsertRegistrationFormRequest,
-} from '../../../../../core/models/registration/registration-index';
-
+import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
 import { RegistrationFormService } from '../../../../../core/services/registration/registration-form.service';
+import { RegistrationFormFieldModel, UpsertRegistrationFormRequest } from '../../../../../core/models/registration/registration-form.model';
+import { EditableField } from '../../../../../core/models/registration/registration-editable-field.model';
 
-interface EditableField {
-  id?: string;
-  fieldKey: string;
-  label: string;
-  fieldType: RegistrationFieldType;
-  isRequired: boolean;
-  optionsJson: string | null;
-  validationJson: string | null;
-}
+
+
+
 
 @Component({
   selector: 'app-registration-form-page',
@@ -286,10 +272,10 @@ export class RegistrationFormPageComponent {
 
           this.error.set(message);
           this.toastr.error(message);
+          this.saving.set(false);
         },
 
-        complete: () =>
-          this.saving.set(false),
+        complete: () => this.saving.set(false),
       });
   }
 
@@ -297,9 +283,7 @@ export class RegistrationFormPageComponent {
     const eventId = this.eventId();
 
     if (!eventId) {
-      this.error.set(
-        'No event is selected.',
-      );
+      this.error.set('No event is selected.');
       return;
     }
 
@@ -308,56 +292,87 @@ export class RegistrationFormPageComponent {
 
     this.formService
       .get(eventId)
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           if (!response.isSuccess) {
-            this.error.set(
-              response.message ||
-                'Unable to load registration form.',
-            );
+            const message =
+              response.errors?.[0] ??
+              response.message ??
+              'Unable to load registration form.';
+
+            if (this.isFormNotFoundMessage(message)) {
+              this.prepareCreateForm();
+              return;
+            }
+
+            this.error.set(message);
+            this.loading.set(false);
             return;
           }
 
           if (response.data) {
-            this.formId.set(
-              response.data.id,
-            );
-
-            this.applyModel(
-              response.data,
-            );
+            this.formId.set(response.data.id);
+            this.applyModel(response.data);
+          } else {
+            this.prepareCreateForm();
           }
+
+          this.loading.set(false);
         },
 
         error: (
           err: {
+            status?: number;
             error?: {
               message?: string;
+              errors?: string[];
             };
             message?: string;
           },
         ) => {
-          this.error.set(
+          const message =
+            err.error?.errors?.[0] ??
             err.error?.message ??
-              err.message ??
-              'Unable to load registration form.',
-          );
-        },
+            err.message ??
+            'Unable to load registration form.';
 
-        complete: () =>
-          this.loading.set(false),
+          if (this.isFormNotFoundMessage(message)) {
+            this.prepareCreateForm();
+            return;
+          }
+
+          this.error.set(message);
+          this.loading.set(false);
+        },
       });
   }
 
+  private prepareCreateForm(): void {
+    this.formId.set(null);
+    this.error.set(null);
+    this.fields.set([]);
+
+    this.form.reset({
+      name: 'Event Registration',
+      description: '',
+      isActive: true,
+      capacityMode: CapacityMode.Unlimited,
+      capacity: 0,
+      enableWaitlist: false,
+      opensAtUtc: '',
+      closesAtUtc: '',
+    });
+
+    this.loading.set(false);
+  }
+
+  private isFormNotFoundMessage(message: string): boolean {
+    return message.trim().toLowerCase() === 'registration form not found.';
+  }
+
   private applyModel(
-    model: RegistrationFormFieldModel extends never
-      ? never
-      : {
+    model: {
           id: string;
           name: string;
           description: string | null;
@@ -368,7 +383,7 @@ export class RegistrationFormPageComponent {
           opensAtUtc: string | null;
           closesAtUtc: string | null;
           fields: RegistrationFormFieldModel[];
-        },
+    },
   ): void {
     this.form.patchValue({
       name: model.name,

@@ -7,10 +7,14 @@
           Registration
         </div>
         <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
-          Registration form
+          {{ formId() ? 'Registration form' : 'Create registration form' }}
         </h1>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
-          Configure registration rules and the information attendees must provide.
+          {{
+            formId()
+              ? 'Configure registration rules and the information attendees must provide.'
+              : 'Create a registration form and configure the information attendees must provide.'
+          }}
         </p>
       </div>
 
@@ -24,7 +28,7 @@
           [disabled]="saving() || loading()"
           class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {{ saving() ? 'Saving...' : 'Save form' }}
+          {{ saving() ? 'Saving...' : formId() ? 'Save form' : 'Create form' }}
         </button>
       </div>
     </div>

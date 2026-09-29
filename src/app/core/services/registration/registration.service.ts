@@ -6,16 +6,13 @@ import { Api } from '../../api/api';
 import { REGISTRATION_ENDPOINTS } from '../../api/endpoints/registration/registration.endpoint';
 
 import {
-  CancelRegistrationRequest,
-  CreateRegistrationRequest,
   PaginatedResponseModel,
   RegistrationModel,
   RegistrationStatsModel,
-  RejectRegistrationRequest,
-  UpdateRegistrationRequest,
 } from '../../models/registration/registration-index';
 
 import { ApiResponse } from '../../models/common/api-response';
+import { CancelRegistrationRequest, CreateRegistrationRequest, RejectRegistrationRequest, UpdateRegistrationRequest } from '../../models/registration/registration-request.model';
 
 @Injectable({
   providedIn: 'root',
