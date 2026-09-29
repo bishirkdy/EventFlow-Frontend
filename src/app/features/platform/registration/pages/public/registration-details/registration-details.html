@@ -1,0 +1,17 @@
+<main class="public-registration-page">
+  <header>
+    <p class="eyebrow">EventFlow</p>
+    <h1>Registration Details</h1>
+    <p>Registration information for your event.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="state-card">Loading...</div>
+  } @else if (error()) {
+    <div class="state-card error">{{ error() }}</div>
+  } @else {
+    <div class="content-card">
+      <p>Registration Details is ready.</p>
+    </div>
+  }
+</main>
