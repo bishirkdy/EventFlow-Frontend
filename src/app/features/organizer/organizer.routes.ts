@@ -257,41 +257,31 @@ export const organizerRoutes: Routes = [
         ],
       },
 
+      //Registration
       {
-        path: ':eventId',
+        path: 'registration',
         children: [
-          // existing organizer routes...
-
           {
-            path: 'registration/settings',
-            loadComponent: () =>
-              import('./pages/registration/registration-settings/registration-settings').then(
-                (m) => m.RegistrationSettingsComponent,
-              ),
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'registrations',
           },
           {
-            path: 'registration/form',
+            path: 'form',
             loadComponent: () =>
               import('./pages/registration/registration-form/registration-form').then(
                 (m) => m.RegistrationFormPageComponent,
               ),
           },
           {
-            path: 'registration/preview',
-            loadComponent: () =>
-              import('./pages/registration/registration-preview/registration-preview').then(
-                (m) => m.RegistrationPreviewComponent,
-              ),
-          },
-          {
-            path: 'registration/registrations',
+            path: 'registrations',
             loadComponent: () =>
               import('./pages/registration/registrations/registrations').then(
                 (m) => m.RegistrationsComponent,
               ),
           },
           {
-            path: 'registration/registrations/:registrationId',
+            path: 'registrations/:registrationId',
             loadComponent: () =>
               import('./pages/registration/registration-details/registration-details').then(
                 (m) => m.RegistrationDetailsComponent,

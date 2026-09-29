@@ -12,7 +12,6 @@ describe('RegistrationDetailsComponent', () => {
 
     fixture = TestBed.createComponent(RegistrationDetailsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

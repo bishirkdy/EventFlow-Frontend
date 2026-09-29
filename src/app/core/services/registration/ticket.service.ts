@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { TICKET_ENDPOINTS } from '../../api/endpoints/registration/ticket.endpoint';
 import { TicketModel } from '../../models/registration/registration-index';
+import { ApiResponse } from '../../models/common/api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +17,8 @@ export class TicketService {
   getByRegistration(
     eventId: string,
     registrationId: string,
-  ): Observable<TicketModel> {
-    return this.http.get<TicketModel>(
+  ): Observable<ApiResponse<TicketModel>> {
+    return this.http.get<ApiResponse<TicketModel>>(
       this.api.getUrl(
         TICKET_ENDPOINTS.byRegistration(eventId, registrationId),
       ),
@@ -27,8 +28,8 @@ export class TicketService {
   verify(
     eventId: string,
     qrCodeValue: string,
-  ): Observable<TicketModel> {
-    return this.http.post<TicketModel>(
+  ): Observable<ApiResponse<TicketModel>> {
+    return this.http.post<ApiResponse<TicketModel>>(
       this.api.getUrl(TICKET_ENDPOINTS.verify(eventId)),
       { qrCodeValue },
     );
@@ -37,8 +38,8 @@ export class TicketService {
   revoke(
     eventId: string,
     ticketId: string,
-  ): Observable<TicketModel> {
-    return this.http.post<TicketModel>(
+  ): Observable<ApiResponse<TicketModel>> {
+    return this.http.post<ApiResponse<TicketModel>>(
       this.api.getUrl(TICKET_ENDPOINTS.revoke(eventId, ticketId)),
       {},
     );

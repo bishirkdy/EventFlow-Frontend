@@ -1,16 +1,130 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ToastrService } from 'ngx-toastr';
+
+import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { RegistrationService } from '../../../../../core/services/registration/registration.service';
+import { RegistrationModel } from '../../../../../core/models/registration/registration.model';
+import { RegistrationStatus } from '../../../../../core/models/registration/registration.enums';
+
 
 @Component({
   selector: 'app-registration-details',
   standalone: true,
+  imports: [DatePipe],
   templateUrl: './registration-details.html',
-  styleUrl: './registration-details.css',
 })
 export class RegistrationDetailsComponent {
-  protected readonly route = inject(ActivatedRoute);
-  protected readonly eventId = signal(this.route.snapshot.paramMap.get('eventId'));
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly eventState = inject(OrganizerEventStateService);
+  private readonly service = inject(RegistrationService);
+  private readonly toastr = inject(ToastrService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
+  protected readonly registration = signal<RegistrationModel | null>(null);
+
+  protected readonly status = RegistrationStatus;
+
+  constructor() {
+    this.load();
+  }
+
+  protected back(): void {
+    const eventId = this.eventState.eventId();
+    if (eventId) {
+      this.router.navigate(['/organizer', eventId, 'registration', 'registrations']);
+    }
+  }
+
+  protected approve(): void {
+    this.action((eventId, id) => this.service.approve(eventId, id), 'Registration approved.');
+  }
+
+  protected reject(): void {
+    const reason = window.prompt('Reason for rejection:');
+    if (reason === null) return;
+    const eventId = this.eventState.eventId();
+    const item = this.registration();
+    if (!eventId || !item) return;
+
+    this.service.reject(eventId, item.id, { reason: reason.trim() })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (!response.isSuccess) {
+            this.toastr.error(response.message || 'Rejection failed.');
+            return;
+          }
+          this.toastr.success('Registration rejected.');
+          this.registration.set(response.data);
+        },
+        error: () => this.toastr.error('Rejection failed.'),
+      });
+  }
+
+  protected cancel(): void {
+    if (!window.confirm('Cancel this registration?')) return;
+    this.action((eventId, id) => this.service.cancel(eventId, id), 'Registration cancelled.');
+  }
+
+  protected statusLabel(value: RegistrationStatus): string {
+    return RegistrationStatus[value] ?? 'Unknown';
+  }
+
+  private action(
+    request: (eventId: string, registrationId: string) => ReturnType<RegistrationService['approve']>,
+    successMessage: string,
+  ): void {
+    const eventId = this.eventState.eventId();
+    const item = this.registration();
+
+    if (!eventId || !item) return;
+
+    request(eventId, item.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (!response.isSuccess) {
+            this.toastr.error(response.message || 'Action failed.');
+            return;
+          }
+          this.toastr.success(successMessage);
+          this.registration.set(response.data);
+        },
+        error: () => this.toastr.error('Action failed.'),
+      });
+  }
+
+  private load(): void {
+    const eventId = this.eventState.eventId();
+    const registrationId = this.route.snapshot.paramMap.get('registrationId');
+
+    if (!eventId || !registrationId) {
+      this.error.set('Registration could not be identified.');
+      return;
+    }
+
+    this.loading.set(true);
+
+    this.service.getById(eventId, registrationId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (!response.isSuccess || !response.data) {
+            this.error.set(response.message || 'Unable to load registration.');
+            return;
+          }
+          this.registration.set(response.data);
+        },
+        error: (err: { error?: { message?: string }; message?: string }) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Unable to load registration.');
+        },
+        complete: () => this.loading.set(false),
+      });
+  }
 }

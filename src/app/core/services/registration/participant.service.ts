@@ -4,10 +4,13 @@ import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { PARTICIPANT_ENDPOINTS } from '../../api/endpoints/registration/participant.endpoint';
+
 import {
   PaginatedResponseModel,
   ParticipantModel,
 } from '../../models/registration/registration-index';
+
+import { ApiResponse } from '../../models/common/api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -20,8 +23,10 @@ export class ParticipantService {
     eventId: string,
     pageNumber = 1,
     pageSize = 20,
-  ): Observable<PaginatedResponseModel<ParticipantModel>> {
-    return this.http.get<PaginatedResponseModel<ParticipantModel>>(
+  ): Observable<ApiResponse<PaginatedResponseModel<ParticipantModel>>> {
+    return this.http.get<
+      ApiResponse<PaginatedResponseModel<ParticipantModel>>
+    >(
       this.api.getUrl(
         `${PARTICIPANT_ENDPOINTS.collection(eventId)}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
       ),
@@ -31,9 +36,11 @@ export class ParticipantService {
   get(
     eventId: string,
     participantId: string,
-  ): Observable<ParticipantModel> {
-    return this.http.get<ParticipantModel>(
-      this.api.getUrl(PARTICIPANT_ENDPOINTS.byId(eventId, participantId)),
+  ): Observable<ApiResponse<ParticipantModel>> {
+    return this.http.get<ApiResponse<ParticipantModel>>(
+      this.api.getUrl(
+        PARTICIPANT_ENDPOINTS.byId(eventId, participantId),
+      ),
     );
   }
 }
