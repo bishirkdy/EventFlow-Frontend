@@ -1,0 +1,23 @@
+<section class="registration-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Registration</p>
+      <h1>Registrations</h1>
+      <p class="description">Manage event registration from this workspace.</p>
+    </div>
+  </header>
+  
+  @if (loading()) {
+    <section class="registration-page">
+      <p>Loading...</p>
+    </section>
+  } @else if (error()) {
+    <section class="registration-page">
+      <p>{{ error() }}</p>
+    </section>
+  } @else {
+    <section class="registration-page">
+      <h1>Registration</h1>
+    </section>
+  }
+</section>

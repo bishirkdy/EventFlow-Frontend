@@ -32,8 +32,7 @@ export const organizerRoutes: Routes = [
       // Website preview
       {
         path: 'preview',
-        loadComponent: () =>
-          import('./pages/preview/preview').then((m) => m.Preview),
+        loadComponent: () => import('./pages/preview/preview').then((m) => m.Preview),
       },
 
       // Event Features
@@ -101,10 +100,27 @@ export const organizerRoutes: Routes = [
         path: 'speakers',
         canActivate: [eventFeatureGuard('speakers')],
         children: [
-          { path: '', loadComponent: () => import('./pages/speakers/speakers').then((m) => m.Speakers) },
-          { path: 'create', loadComponent: () => import('./pages/speakers/create-speaker/create-speaker').then((m) => m.CreateSpeaker) },
-          { path: ':speakerId/edit', loadComponent: () => import('./pages/speakers/edit-speaker/edit-speaker').then((m) => m.EditSpeaker) },
-          { path: ':speakerId', loadComponent: () => import('./pages/speakers/speaker-details/speaker-details').then((m) => m.SpeakerDetails) },
+          {
+            path: '',
+            loadComponent: () => import('./pages/speakers/speakers').then((m) => m.Speakers),
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/speakers/create-speaker/create-speaker').then((m) => m.CreateSpeaker),
+          },
+          {
+            path: ':speakerId/edit',
+            loadComponent: () =>
+              import('./pages/speakers/edit-speaker/edit-speaker').then((m) => m.EditSpeaker),
+          },
+          {
+            path: ':speakerId',
+            loadComponent: () =>
+              import('./pages/speakers/speaker-details/speaker-details').then(
+                (m) => m.SpeakerDetails,
+              ),
+          },
         ],
       },
 
@@ -113,10 +129,27 @@ export const organizerRoutes: Routes = [
         path: 'sponsors',
         canActivate: [eventFeatureGuard('sponsors')],
         children: [
-          { path: '', loadComponent: () => import('./pages/sponsors/sponsors').then((m) => m.Sponsors) },
-          { path: 'create', loadComponent: () => import('./pages/sponsors/create-sponsor/create-sponsor').then((m) => m.CreateSponsor) },
-          { path: ':sponsorId/edit', loadComponent: () => import('./pages/sponsors/edit-sponsor/edit-sponsor').then((m) => m.EditSponsor) },
-          { path: ':sponsorId', loadComponent: () => import('./pages/sponsors/sponsor-details/sponsor-details').then((m) => m.SponsorDetails) },
+          {
+            path: '',
+            loadComponent: () => import('./pages/sponsors/sponsors').then((m) => m.Sponsors),
+          },
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('./pages/sponsors/create-sponsor/create-sponsor').then((m) => m.CreateSponsor),
+          },
+          {
+            path: ':sponsorId/edit',
+            loadComponent: () =>
+              import('./pages/sponsors/edit-sponsor/edit-sponsor').then((m) => m.EditSponsor),
+          },
+          {
+            path: ':sponsorId',
+            loadComponent: () =>
+              import('./pages/sponsors/sponsor-details/sponsor-details').then(
+                (m) => m.SponsorDetails,
+              ),
+          },
         ],
       },
 
@@ -205,8 +238,7 @@ export const organizerRoutes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () =>
-              import('./pages/navigation/navigation').then((m) => m.Navigation),
+            loadComponent: () => import('./pages/navigation/navigation').then((m) => m.Navigation),
           },
           {
             path: 'create',
@@ -220,6 +252,49 @@ export const organizerRoutes: Routes = [
             loadComponent: () =>
               import('./pages/navigation/edit-navigation-item/edit-navigation-item').then(
                 (m) => m.EditNavigationItem,
+              ),
+          },
+        ],
+      },
+
+      {
+        path: ':eventId',
+        children: [
+          // existing organizer routes...
+
+          {
+            path: 'registration/settings',
+            loadComponent: () =>
+              import('./pages/registration/registration-settings/registration-settings').then(
+                (m) => m.RegistrationSettingsComponent,
+              ),
+          },
+          {
+            path: 'registration/form',
+            loadComponent: () =>
+              import('./pages/registration/registration-form/registration-form').then(
+                (m) => m.RegistrationFormPageComponent,
+              ),
+          },
+          {
+            path: 'registration/preview',
+            loadComponent: () =>
+              import('./pages/registration/registration-preview/registration-preview').then(
+                (m) => m.RegistrationPreviewComponent,
+              ),
+          },
+          {
+            path: 'registration/registrations',
+            loadComponent: () =>
+              import('./pages/registration/registrations/registrations').then(
+                (m) => m.RegistrationsComponent,
+              ),
+          },
+          {
+            path: 'registration/registrations/:registrationId',
+            loadComponent: () =>
+              import('./pages/registration/registration-details/registration-details').then(
+                (m) => m.RegistrationDetailsComponent,
               ),
           },
         ],
