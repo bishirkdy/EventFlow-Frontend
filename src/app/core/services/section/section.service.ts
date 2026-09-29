@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
-import { SECTION_ENDPOINTS } from '../../api/endpoints/section.endpoint';
+import { SECTION_ENDPOINTS } from '../../api/endpoints/event-features/section.endpoint';
 import { ApiResponse } from '../../models/common/api-response';
 
 import { SectionModel } from '../../models/section/section.model';

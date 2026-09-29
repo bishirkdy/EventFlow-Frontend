@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
-import { SPONSOR_ENDPOINTS } from '../../api/endpoints/sponsor.endpoint';
+import { SPONSOR_ENDPOINTS } from '../../api/endpoints/event-features/sponsor.endpoint';
 import { ApiResponse } from '../../models/common/api-response';
 import { CreateSponsorModel } from '../../models/sponsor/create-sponsor.model';
 import { SponsorModel } from '../../models/sponsor/sponsor.model';

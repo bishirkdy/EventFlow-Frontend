@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { ApiResponse } from '../../models/common/api-response';
 import { Event } from '../../models/event/event.model';
-import { EVENT_ENDPOINTS } from '../../api/endpoints/event-endpoints';
+import { EVENT_ENDPOINTS } from '../../api/endpoints/event-entpoints/event-endpoints';
 import { CreateEventRequest } from '../../models/event/create-event/CreateEventRequest';
 import { CreateEventResponse } from '../../models/event/create-event/CreateEventResponse';
 

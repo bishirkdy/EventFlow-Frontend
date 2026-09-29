@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
 import { Api } from '../../api/api';
-import { EVENT_FEATURE_ENDPOINTS } from '../../api/endpoints/event-feature.endpoint';
+import { EVENT_FEATURE_ENDPOINTS } from '../../api/endpoints/event-features/event-feature.endpoint';
 import { ApiResponse } from '../../models/common/api-response';
 import { EventFeatureModel } from '../../models/event-feature/event-feature.model';
 

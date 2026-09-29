@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
-import { SPEAKER_ENDPOINTS } from '../../api/endpoints/speaker.endpoint';
+import { SPEAKER_ENDPOINTS } from '../../api/endpoints/event-features/speaker.endpoint';
 import { ApiResponse } from '../../models/common/api-response';
 import { CreateSpeakerModel } from '../../models/speaker/create-speaker.model';
 import { SpeakerDetailsModel, SpeakerModel } from '../../models/speaker/speaker.model';

@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
-import { SESSION_ENDPOINTS } from '../../api/endpoints/session.endpoint';
+import { SESSION_ENDPOINTS } from '../../api/endpoints/event-features/session.endpoint';
 import { ApiResponse } from '../../models/common/api-response';
 
 import { SessionModel } from '../../models/session/session.model';

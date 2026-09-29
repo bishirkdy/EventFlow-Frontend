@@ -6,7 +6,7 @@ import { Api } from '../../api/api';
 import { VenueModel } from '../../models/venue/venue.model';
 import { CreateVenueRequest } from '../../models/venue/create-venue.model';
 import { UpdateVenueRequest } from '../../models/venue/update-venue.model';
-import { VENUE_ENDPOINTS } from '../../api/endpoints/venue.endpoint';
+import { VENUE_ENDPOINTS } from '../../api/endpoints/event-features/venue.endpoint';
 
 @Injectable({
   providedIn: 'root',

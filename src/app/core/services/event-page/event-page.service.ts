@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
-import { EVENT_PAGE_ENDPOINTS } from '../../api/endpoints/event-page.endpoint';
+import { EVENT_PAGE_ENDPOINTS } from '../../api/endpoints/event-features/event-page.endpoint';
 import { ApiResponse } from '../../models/common/api-response';
 import { EventPageModel } from '../../models/event-page/event-page.model';
 import { CreateEventPageModel } from '../../models/event-page/create-event-page.model';

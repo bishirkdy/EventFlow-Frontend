@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { NavigationItemModel } from '../../models/navigation-item/navigation-item.model';
 import { ApiResponse } from '../../models/common/api-response';
-import { NAVIGATION_ITEM_ENDPOINTS } from '../../api/endpoints/navigation-item.endpoint';
+import { NAVIGATION_ITEM_ENDPOINTS } from '../../api/endpoints/event-features/navigation-item.endpoint';
 import { CreateNavigationItemModel } from '../../models/navigation-item/create-navigation-item';
 import { UpdateNavigationItemModel } from '../../models/navigation-item/update-navigation-item';
 import { NavigationItemByPageModel } from '../../models/navigation-item/navigation-item-bypage.model';
