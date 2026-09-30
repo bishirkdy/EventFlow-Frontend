@@ -9,7 +9,6 @@ import { RegistrationService } from '../../../../../core/services/registration/r
 import { RegistrationModel } from '../../../../../core/models/registration/registration.model';
 import { RegistrationStatus } from '../../../../../core/models/registration/registration.enums';
 
-
 @Component({
   selector: 'app-registration-details',
   standalone: true,
@@ -52,7 +51,8 @@ export class RegistrationDetailsComponent {
     const item = this.registration();
     if (!eventId || !item) return;
 
-    this.service.reject(eventId, item.id, { reason: reason.trim() })
+    this.service
+      .reject(eventId, item.id, { reason: reason.trim() })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
@@ -77,7 +77,10 @@ export class RegistrationDetailsComponent {
   }
 
   private action(
-    request: (eventId: string, registrationId: string) => ReturnType<RegistrationService['approve']>,
+    request: (
+      eventId: string,
+      registrationId: string,
+    ) => ReturnType<RegistrationService['approve']>,
     successMessage: string,
   ): void {
     const eventId = this.eventState.eventId();
@@ -111,7 +114,8 @@ export class RegistrationDetailsComponent {
 
     this.loading.set(true);
 
-    this.service.getById(eventId, registrationId)
+    this.service
+      .getById(eventId, registrationId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {

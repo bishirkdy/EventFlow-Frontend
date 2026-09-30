@@ -1,11 +1,15 @@
-import { Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+} from '@angular/core';
 
 @Component({
-  selector: 'app-qr-code',
+  selector: 'app-registration-qr-code',
   standalone: true,
   templateUrl: './qr-code.html',
-  styleUrl: './qr-code.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QrCodeComponent {
-  readonly label = input('QR Code');
+  readonly value = input.required<string>();
 }

@@ -1,3 +1,37 @@
-<div class="registration-component">
-  <span>{{ label() }}</span>
+<div
+  class="inline-flex items-center gap-3 border px-4 py-3"
+  style="
+    background: var(--surface);
+    border-color: var(--line);
+  "
+>
+  <span
+    class="h-2.5 w-2.5 rounded-full"
+    [style.background-color]="
+      status() === 1
+        ? '#3f7d4a'
+        : status() === 2
+          ? '#a33f32'
+          : status() === 3
+            ? '#756b63'
+            : 'var(--accent)'
+    "
+    aria-hidden="true"
+  ></span>
+
+  <div>
+    <p
+      class="text-[10px] font-extrabold uppercase tracking-[0.15em]"
+      style="color: var(--ink)"
+    >
+      {{ label() }}
+    </p>
+
+    <p
+      class="mt-1 text-xs"
+      style="color: var(--muted)"
+    >
+      {{ description() }}
+    </p>
+  </div>
 </div>

@@ -1,17 +1,356 @@
-<main class="public-registration-page">
-  <header>
-    <p class="eyebrow">EventFlow</p>
-    <h1>Registration Details</h1>
-    <p>Registration information for your event.</p>
-  </header>
+<div
+  class="site min-h-screen"
+  style="background: var(--paper); color: var(--ink)"
+>
+  <main class="mx-auto w-full max-w-5xl px-5 py-12 sm:px-8 lg:py-20">
 
-  @if (loading()) {
-    <div class="state-card">Loading...</div>
-  } @else if (error()) {
-    <div class="state-card error">{{ error() }}</div>
-  } @else {
-    <div class="content-card">
-      <p>Registration Details is ready.</p>
-    </div>
-  }
-</main>
+    @if (loading()) {
+      <section
+        class="border p-10 text-center"
+        style="
+          background: var(--surface);
+          border-color: var(--line);
+        "
+      >
+        <div
+          class="mx-auto h-8 w-8 animate-spin rounded-full border-2"
+          style="
+            border-color: var(--line);
+            border-top-color: var(--accent);
+          "
+        ></div>
+
+        <p
+          class="mt-5 text-sm"
+          style="color: var(--muted)"
+        >
+          Loading registration...
+        </p>
+      </section>
+    }
+
+    @else if (error()) {
+      <section
+        class="border p-8 sm:p-12"
+        style="
+          background: var(--surface);
+          border-color: var(--line);
+        "
+      >
+        <span
+          class="text-[10px] font-extrabold uppercase tracking-[0.2em]"
+          style="color: var(--accent)"
+        >
+          Registration
+        </span>
+
+        <h1
+          class="mt-3 font-serif text-4xl font-medium tracking-[-0.04em]"
+          style="color: var(--ink)"
+        >
+          Registration unavailable
+        </h1>
+
+        <p
+          class="mt-4 text-sm leading-7"
+          style="color: var(--muted)"
+        >
+          {{ error() }}
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button
+            type="button"
+            class="px-6 py-3 text-[11px] font-extrabold uppercase tracking-[0.15em]"
+            style="background: var(--deep); color: #fff"
+            (click)="loadRegistration()"
+          >
+            Try again
+          </button>
+
+          <button
+            type="button"
+            class="border px-6 py-3 text-[11px] font-extrabold uppercase tracking-[0.15em]"
+            style="
+              background: var(--surface);
+              border-color: var(--line);
+              color: var(--ink);
+            "
+            (click)="goToRegistrations()"
+          >
+            My registrations
+          </button>
+        </div>
+      </section>
+    }
+
+    @else if (registration(); as item) {
+      <header class="mb-10">
+        <span
+          class="text-[10px] font-extrabold uppercase tracking-[0.2em]"
+          style="color: var(--accent)"
+        >
+          Registration
+        </span>
+
+        <div
+          class="mt-3 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"
+        >
+          <div>
+            <h1
+              class="font-serif text-4xl font-medium tracking-[-0.05em] sm:text-5xl"
+              style="color: var(--ink)"
+            >
+              {{ item.registrationNumber }}
+            </h1>
+
+            <p
+              class="mt-3 text-sm"
+              style="color: var(--muted)"
+            >
+              Submitted
+              {{ item.registeredAtUtc | date: 'medium' }}
+            </p>
+          </div>
+
+          <app-registration-status
+            [status]="item.status"
+          />
+        </div>
+      </header>
+
+      <div class="grid gap-6 lg:grid-cols-[1fr_360px]">
+
+        <div class="space-y-6">
+
+          <section
+            class="border p-6 sm:p-8"
+            style="
+              background: var(--surface);
+              border-color: var(--line);
+            "
+          >
+            <span
+              class="text-[10px] font-extrabold uppercase tracking-[0.18em]"
+              style="color: var(--accent)"
+            >
+              Participant
+            </span>
+
+            @if (item.participant; as participant) {
+              <div class="mt-6 grid gap-6 sm:grid-cols-2">
+
+                <div>
+                  <p
+                    class="text-[10px] font-extrabold uppercase tracking-[0.12em]"
+                    style="color: var(--muted)"
+                  >
+                    Name
+                  </p>
+
+                  <p
+                    class="mt-2 text-sm"
+                    style="color: var(--ink)"
+                  >
+                    {{ participant.firstName }}
+                    {{ participant.lastName }}
+                  </p>
+                </div>
+
+                <div>
+                  <p
+                    class="text-[10px] font-extrabold uppercase tracking-[0.12em]"
+                    style="color: var(--muted)"
+                  >
+                    Email
+                  </p>
+
+                  <p
+                    class="mt-2 text-sm"
+                    style="color: var(--ink)"
+                  >
+                    {{ participant.email }}
+                  </p>
+                </div>
+
+                @if (participant.phone) {
+                  <div>
+                    <p
+                      class="text-[10px] font-extrabold uppercase tracking-[0.12em]"
+                      style="color: var(--muted)"
+                    >
+                      Phone
+                    </p>
+
+                    <p
+                      class="mt-2 text-sm"
+                      style="color: var(--ink)"
+                    >
+                      {{ participant.phone }}
+                    </p>
+                  </div>
+                }
+
+                @if (participant.organization) {
+                  <div>
+                    <p
+                      class="text-[10px] font-extrabold uppercase tracking-[0.12em]"
+                      style="color: var(--muted)"
+                    >
+                      Organization
+                    </p>
+
+                    <p
+                      class="mt-2 text-sm"
+                      style="color: var(--ink)"
+                    >
+                      {{ participant.organization }}
+                    </p>
+                  </div>
+                }
+
+                @if (participant.designation) {
+                  <div>
+                    <p
+                      class="text-[10px] font-extrabold uppercase tracking-[0.12em]"
+                      style="color: var(--muted)"
+                    >
+                      Designation
+                    </p>
+
+                    <p
+                      class="mt-2 text-sm"
+                      style="color: var(--ink)"
+                    >
+                      {{ participant.designation }}
+                    </p>
+                  </div>
+                }
+
+              </div>
+            }
+
+            @else {
+              <p
+                class="mt-5 text-sm"
+                style="color: var(--muted)"
+              >
+                Participant information is not available yet.
+              </p>
+            }
+          </section>
+
+          @if (item.rejectionReason) {
+            <section
+              class="border p-6 sm:p-8"
+              style="
+                background: var(--surface);
+                border-color: var(--line);
+              "
+            >
+              <span
+                class="text-[10px] font-extrabold uppercase tracking-[0.18em]"
+                style="color: var(--accent)"
+              >
+                Rejection reason
+              </span>
+
+              <p
+                class="mt-4 text-sm leading-7"
+                style="color: var(--ink)"
+              >
+                {{ item.rejectionReason }}
+              </p>
+            </section>
+          }
+
+          @if (item.cancellationReason) {
+            <section
+              class="border p-6 sm:p-8"
+              style="
+                background: var(--surface);
+                border-color: var(--line);
+              "
+            >
+              <span
+                class="text-[10px] font-extrabold uppercase tracking-[0.18em]"
+                style="color: var(--accent)"
+              >
+                Cancellation reason
+              </span>
+
+              <p
+                class="mt-4 text-sm leading-7"
+                style="color: var(--ink)"
+              >
+                {{ item.cancellationReason }}
+              </p>
+            </section>
+          }
+
+        </div>
+
+        <aside>
+          @if (item.ticket; as ticket) {
+            <app-registration-ticket
+              [ticket]="ticket"
+            />
+          }
+
+          @else {
+            <section
+              class="border p-6"
+              style="
+                background: var(--surface);
+                border-color: var(--line);
+              "
+            >
+              <span
+                class="text-[10px] font-extrabold uppercase tracking-[0.18em]"
+                style="color: var(--accent)"
+              >
+                Ticket
+              </span>
+
+              <p
+                class="mt-4 text-sm leading-7"
+                style="color: var(--muted)"
+              >
+                A ticket has not been issued for this registration yet.
+              </p>
+            </section>
+          }
+        </aside>
+
+      </div>
+
+      <div
+        class="mt-8 flex flex-wrap gap-3 border-t pt-8"
+        style="border-color: var(--line)"
+      >
+        <button
+          type="button"
+          class="px-6 py-3 text-[11px] font-extrabold uppercase tracking-[0.15em]"
+          style="background: var(--deep); color: #fff"
+          (click)="goToRegistrations()"
+        >
+          My registrations
+        </button>
+
+        <button
+          type="button"
+          class="border px-6 py-3 text-[11px] font-extrabold uppercase tracking-[0.15em]"
+          style="
+            background: var(--surface);
+            border-color: var(--line);
+            color: var(--ink);
+          "
+          (click)="registerAgain()"
+        >
+          Register again
+        </button>
+      </div>
+    }
+
+  </main>
+</div>

@@ -1,3 +1,31 @@
-<div class="registration-component">
-  <span>{{ label() }}</span>
+<div
+  class="flex flex-col items-center border p-6"
+  style="
+    background: var(--surface);
+    border-color: var(--line);
+  "
+>
+  <div
+    class="flex h-48 w-48 items-center justify-center border"
+    style="
+      background: #fff;
+      border-color: var(--line);
+    "
+  >
+    <p
+      class="px-4 text-center text-xs"
+      style="color: var(--muted)"
+    >
+      QR code
+      <br />
+      {{ value() }}
+    </p>
+  </div>
+
+  <p
+    class="mt-4 text-center text-[10px] font-extrabold uppercase tracking-[0.12em]"
+    style="color: var(--muted)"
+  >
+    Scan this code at the event
+  </p>
 </div>

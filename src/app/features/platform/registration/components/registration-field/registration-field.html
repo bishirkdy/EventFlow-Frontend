@@ -1,3 +1,89 @@
-<div class="registration-component">
-  <span>{{ label() }}</span>
+<div class="space-y-2">
+  @if (!isCheckbox()) {
+    <label
+      [for]="field().fieldKey"
+      class="block text-[11px] font-extrabold uppercase tracking-[0.12em]"
+      style="color: var(--ink)"
+    >
+      {{ field().label }}
+
+      @if (isRequired()) {
+        <span style="color: var(--accent)" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  @if (isTextArea()) {
+    <textarea
+      [id]="field().fieldKey"
+      [formControl]="control()"
+      rows="5"
+      class="w-full resize-none border px-4 py-3 text-sm outline-none transition"
+      style="background: var(--surface); color: var(--ink); border-color: var(--line)"
+    ></textarea>
+  } @else if (isSelect()) {
+    <select
+      [id]="field().fieldKey"
+      [formControl]="control()"
+      class="w-full border bg-transparent px-4 py-3 text-sm outline-none transition"
+      style="background: var(--surface); color: var(--ink); border-color: var(--line)"
+    >
+      <option value="">Select {{ field().label }}</option>
+
+      @for (option of options(); track option) {
+        <option [value]="option">
+          {{ option }}
+        </option>
+      }
+    </select>
+  } @else if (isRadio()) {
+    <div class="space-y-3 pt-1" role="radiogroup" [attr.aria-label]="field().label">
+      @for (option of options(); track option) {
+        <label class="flex cursor-pointer items-center gap-3 text-sm">
+          <input
+            type="radio"
+            [name]="field().fieldKey"
+            [value]="option"
+            [formControl]="control()"
+            class="h-4 w-4"
+            style="accent-color: var(--accent)"
+          />
+
+          <span style="color: var(--ink)">
+            {{ option }}
+          </span>
+        </label>
+      }
+    </div>
+  } @else if (isCheckbox()) {
+    <label class="flex cursor-pointer items-center gap-3 text-sm">
+      <input
+        type="checkbox"
+        [checked]="control().value === 'true'"
+        (change)="setCheckboxValue($any($event.target).checked)"
+        class="h-4 w-4"
+        style="accent-color: var(--accent)"
+      />
+
+      <span style="color: var(--ink)">
+        {{ field().label }}
+
+        @if (isRequired()) {
+          <span style="color: var(--accent)" aria-hidden="true">*</span>
+        }
+      </span>
+    </label>
+  } @else {
+    <input
+      [id]="field().fieldKey"
+      [type]="inputType()"
+      [formControl]="control()"
+      class="w-full border px-4 py-3 text-sm outline-none transition"
+      style="background: var(--surface); color: var(--ink); border-color: var(--line)"
+    />
+  }
+
+  @if (hasError()) {
+    <p class="text-xs" style="color: var(--accent)">{{ field().label }} is required.</p>
+  }
 </div>
