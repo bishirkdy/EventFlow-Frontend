@@ -1,21 +1,19 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastrService } from 'ngx-toastr';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
+import {
+  CapacityMode,
+  RegistrationFieldType,
+} from '../../../../../core/models/registration/registration.enums';
 import { RegistrationFormService } from '../../../../../core/services/registration/registration-form.service';
-import { RegistrationFormFieldModel, UpsertRegistrationFormRequest } from '../../../../../core/models/registration/registration-form.model';
+import {
+  RegistrationFormFieldModel,
+  UpsertRegistrationFormRequest,
+} from '../../../../../core/models/registration/registration-form.model';
 import { EditableField } from '../../../../../core/models/registration/registration-editable-field.model';
-
-
-
-
 
 @Component({
   selector: 'app-registration-form-page',
@@ -24,13 +22,9 @@ import { EditableField } from '../../../../../core/models/registration/registrat
   templateUrl: './registration-form.html',
 })
 export class RegistrationFormPageComponent {
-  protected readonly eventState = inject(
-    OrganizerEventStateService,
-  );
+  protected readonly eventState = inject(OrganizerEventStateService);
 
-  protected readonly formService = inject(
-    RegistrationFormService,
-  );
+  protected readonly formService = inject(RegistrationFormService);
 
   private readonly fb = inject(FormBuilder);
   private readonly toastr = inject(ToastrService);
@@ -45,13 +39,7 @@ export class RegistrationFormPageComponent {
   protected readonly fields = signal<EditableField[]>([]);
 
   protected readonly form = this.fb.nonNullable.group({
-    name: [
-      'Event Registration',
-      [
-        Validators.required,
-        Validators.maxLength(200),
-      ],
-    ],
+    name: ['Event Registration', [Validators.required, Validators.maxLength(200)]],
     description: [''],
     isActive: [true],
     capacityMode: [CapacityMode.Unlimited],
@@ -105,10 +93,7 @@ export class RegistrationFormPageComponent {
   }
 
   protected isLimited(): boolean {
-    return (
-      this.form.controls.capacityMode.value ===
-      CapacityMode.Limited
-    );
+    return this.form.controls.capacityMode.value === CapacityMode.Limited;
   }
 
   protected addField(): void {
@@ -128,29 +113,18 @@ export class RegistrationFormPageComponent {
   }
 
   protected removeField(index: number): void {
-    this.fields.update((items) =>
-      items.filter((_, i) => i !== index),
-    );
+    this.fields.update((items) => items.filter((_, i) => i !== index));
   }
 
-  protected moveField(
-    index: number,
-    direction: -1 | 1,
-  ): void {
+  protected moveField(index: number, direction: -1 | 1): void {
     const target = index + direction;
     const current = [...this.fields()];
 
-    if (
-      target < 0 ||
-      target >= current.length
-    ) {
+    if (target < 0 || target >= current.length) {
       return;
     }
 
-    [current[index], current[target]] = [
-      current[target],
-      current[index],
-    ];
+    [current[index], current[target]] = [current[target], current[index]];
 
     this.fields.set(current);
   }
@@ -168,54 +142,29 @@ export class RegistrationFormPageComponent {
       return;
     }
 
-    if (
-      this.isLimited() &&
-      this.form.controls.capacity.value < 1
-    ) {
+    if (this.isLimited() && this.form.controls.capacity.value < 1) {
       this.form.controls.capacity.markAsTouched();
       return;
     }
 
     const request: UpsertRegistrationFormRequest = {
       name: this.form.controls.name.value.trim(),
-
-      description:
-        this.form.controls.description.value.trim() ||
-        null,
-
-      isActive:
-        this.form.controls.isActive.value,
-
-      capacityMode:
-        this.form.controls.capacityMode.value,
-
-      capacity: this.isLimited()
-        ? this.form.controls.capacity.value
-        : null,
-
-      enableWaitlist:
-        this.form.controls.enableWaitlist.value,
-
-      opensAtUtc: this.toUtc(
-        this.form.controls.opensAtUtc.value,
-      ),
-
-      closesAtUtc: this.toUtc(
-        this.form.controls.closesAtUtc.value,
-      ),
-
-      fields: this.fields().map(
-        (field, index) => ({
-          fieldKey: field.fieldKey.trim(),
-          label: field.label.trim(),
-          fieldType: field.fieldType,
-          isRequired: field.isRequired,
-          displayOrder: index,
-          optionsJson: field.optionsJson,
-          validationJson:
-            field.validationJson,
-        }),
-      ),
+      description: this.form.controls.description.value.trim() || null,
+      isActive: this.form.controls.isActive.value,
+      capacityMode: this.form.controls.capacityMode.value,
+      capacity: this.isLimited() ? this.form.controls.capacity.value : null,
+      enableWaitlist: this.form.controls.enableWaitlist.value,
+      opensAtUtc: this.toUtc(this.form.controls.opensAtUtc.value),
+      closesAtUtc: this.toUtc(this.form.controls.closesAtUtc.value),
+      fields: this.fields().map((field, index) => ({
+        fieldKey: field.fieldKey.trim(),
+        label: field.label.trim(),
+        fieldType: field.fieldType,
+        isRequired: field.isRequired,
+        displayOrder: index,
+        optionsJson: field.optionsJson,
+        validationJson: field.validationJson,
+      })),
     };
 
     this.saving.set(true);
@@ -223,52 +172,29 @@ export class RegistrationFormPageComponent {
 
     this.formService
       .upsert(eventId, request)
-      .pipe(
-        takeUntilDestroyed(
-          this.destroyRef,
-        ),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          if (
-            !response.isSuccess ||
-            !response.data
-          ) {
-            const message =
-              response.message ||
-              'Unable to save registration form.';
+          if (!response.isSuccess || !response.data) {
+            const message = response.message || 'Unable to save registration form.';
 
             this.error.set(message);
             this.toastr.error(message);
             return;
           }
 
-          this.formId.set(
-            response.data.id,
-          );
+          this.formId.set(response.data.id);
 
-          this.applyModel(
-            response.data,
-          );
+          this.applyModel(response.data);
 
-          this.toastr.success(
-            response.message ||
-              'Registration form saved.',
-          );
+          this.toastr.success(response.message || 'Registration form saved.');
         },
 
-        error: (
-          err: {
-            error?: {
-              message?: string;
-            };
-            message?: string;
-          },
-        ) => {
-          const message =
-            err.error?.message ??
-            err.message ??
-            'Unable to save registration form.';
+        error: (err: {
+          error?: { message?: string;};
+          message?: string;
+        }) => {
+          const message = err.error?.message ?? err.message ?? 'Unable to save registration form.';
 
           this.error.set(message);
           this.toastr.error(message);
@@ -297,9 +223,7 @@ export class RegistrationFormPageComponent {
         next: (response) => {
           if (!response.isSuccess) {
             const message =
-              response.errors?.[0] ??
-              response.message ??
-              'Unable to load registration form.';
+              response.errors?.[0] ?? response.message ?? 'Unable to load registration form.';
 
             if (this.isFormNotFoundMessage(message)) {
               this.prepareCreateForm();
@@ -321,16 +245,14 @@ export class RegistrationFormPageComponent {
           this.loading.set(false);
         },
 
-        error: (
-          err: {
-            status?: number;
-            error?: {
-              message?: string;
-              errors?: string[];
-            };
+        error: (err: {
+          status?: number;
+          error?: {
             message?: string;
-          },
-        ) => {
+            errors?: string[];
+          };
+          message?: string;
+        }) => {
           const message =
             err.error?.errors?.[0] ??
             err.error?.message ??
@@ -371,97 +293,60 @@ export class RegistrationFormPageComponent {
     return message.trim().toLowerCase() === 'registration form not found.';
   }
 
-  private applyModel(
-    model: {
-          id: string;
-          name: string;
-          description: string | null;
-          isActive: boolean;
-          capacityMode: CapacityMode;
-          capacity: number | null;
-          enableWaitlist: boolean;
-          opensAtUtc: string | null;
-          closesAtUtc: string | null;
-          fields: RegistrationFormFieldModel[];
-    },
-  ): void {
+  private applyModel(model: {
+    id: string;
+    name: string;
+    description: string | null;
+    isActive: boolean;
+    capacityMode: CapacityMode;
+    capacity: number | null;
+    enableWaitlist: boolean;
+    opensAtUtc: string | null;
+    closesAtUtc: string | null;
+    fields: RegistrationFormFieldModel[];
+  }): void {
     this.form.patchValue({
       name: model.name,
-
-      description:
-        model.description ?? '',
-
-      isActive:
-        model.isActive,
-
-      capacityMode:
-        model.capacityMode,
-
-      capacity:
-        model.capacity ?? 0,
-
-      enableWaitlist:
-        model.enableWaitlist,
-
-      opensAtUtc:
-        this.toLocalDateTime(
-          model.opensAtUtc,
-        ),
-
-      closesAtUtc:
-        this.toLocalDateTime(
-          model.closesAtUtc,
-        ),
+      description: model.description ?? '',
+      isActive: model.isActive,
+      capacityMode: model.capacityMode,
+      capacity: model.capacity ?? 0,
+      enableWaitlist: model.enableWaitlist,
+      opensAtUtc: this.toLocalDateTime(model.opensAtUtc),
+      closesAtUtc: this.toLocalDateTime(model.closesAtUtc),
     });
 
     this.fields.set(
       [...model.fields]
-        .sort(
-          (a, b) =>
-            a.displayOrder -
-            b.displayOrder,
-        )
+        .sort((a, b) => a.displayOrder - b.displayOrder)
         .map((field) => ({
           id: field.id,
           fieldKey: field.fieldKey,
           label: field.label,
           fieldType: field.fieldType,
           isRequired: field.isRequired,
-          optionsJson:
-            field.optionsJson,
-          validationJson:
-            field.validationJson,
+          optionsJson: field.optionsJson,
+          validationJson: field.validationJson,
         })),
     );
   }
 
-  private toUtc(
-    value: string,
-  ): string | null {
+  private toUtc(value: string): string | null {
     if (!value) {
       return null;
     }
 
-    return new Date(
-      value,
-    ).toISOString();
+    return new Date(value).toISOString();
   }
 
-  private toLocalDateTime(
-    value: string | null,
-  ): string {
+  private toLocalDateTime(value: string | null): string {
     if (!value) {
       return '';
     }
 
     const date = new Date(value);
-    const offset =
-      date.getTimezoneOffset() * 60000;
+    const offset = date.getTimezoneOffset() * 60000;
 
-    return new Date(
-      date.getTime() - offset,
-    )
-      .toISOString()
-      .slice(0, 16);
+    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
   }
 }
