@@ -1,36 +1,22 @@
 <div
-  class="inline-flex items-center gap-3 border px-4 py-3"
-  style="
-    background: var(--surface);
-    border-color: var(--line);
-  "
+  class="inline-flex max-w-full items-start gap-3 rounded-2xl border px-4 py-3"
+  [style.background]="tone().background"
+  [style.border-color]="tone().border"
 >
   <span
-    class="h-2.5 w-2.5 rounded-full"
-    [style.background-color]="
-      status() === 1
-        ? '#3f7d4a'
-        : status() === 2
-          ? '#a33f32'
-          : status() === 3
-            ? '#756b63'
-            : 'var(--accent)'
-    "
+    class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
+    [style.background]="tone().color"
     aria-hidden="true"
   ></span>
 
-  <div>
+  <div class="min-w-0">
     <p
-      class="text-[10px] font-extrabold uppercase tracking-[0.15em]"
-      style="color: var(--ink)"
+      class="text-[10px] font-extrabold uppercase tracking-[0.13em]"
+      [style.color]="tone().color"
     >
       {{ label() }}
     </p>
-
-    <p
-      class="mt-1 text-xs"
-      style="color: var(--muted)"
-    >
+    <p class="mt-1 text-xs leading-5" style="color: var(--color-text-secondary)">
       {{ description() }}
     </p>
   </div>

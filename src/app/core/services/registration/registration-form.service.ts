@@ -15,29 +15,20 @@ import { ApiResponse } from '../../models/common/api-response';
 @Injectable({
   providedIn: 'root',
 })
+
 export class RegistrationFormService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  get(
-    eventId: string,
-  ): Observable<ApiResponse<RegistrationFormModel>> {
+  get(eventId: string): Observable<ApiResponse<RegistrationFormModel>> {
     return this.http.get<ApiResponse<RegistrationFormModel>>(
-      this.api.getUrl(
-        REGISTRATION_FORM_ENDPOINTS.byEvent(eventId),
-      ),
+      this.api.getUrl(REGISTRATION_FORM_ENDPOINTS.byEvent(eventId),),
     );
   }
 
-  upsert(
-    eventId: string,
-    request: UpsertRegistrationFormRequest,
-  ): Observable<ApiResponse<RegistrationFormModel>> {
+  upsert(eventId: string, request: UpsertRegistrationFormRequest): Observable<ApiResponse<RegistrationFormModel>> {
     return this.http.put<ApiResponse<RegistrationFormModel>>(
-      this.api.getUrl(
-        REGISTRATION_FORM_ENDPOINTS.byEvent(eventId),
-      ),
-      request,
+      this.api.getUrl(REGISTRATION_FORM_ENDPOINTS.byEvent(eventId)), request,
     );
   }
 }

@@ -1,16 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { RegistrationFormComponent, RegistrationFormSubmit } from '../../../components/registration-form/registration-form';
+
+import { RegistrationFormComponent } from '../../../components/registration-form/registration-form';
 import { RegistrationFormService } from '../../../../../../core/services/registration/registration-form.service';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
 import { RegistrationFormModel } from '../../../../../../core/models/registration/registration-form.model';
-
+import { EventService } from '../../../../../../core/services/event/event.service';
+import { Event } from '../../../../../../core/models/event/event.model';
+import { RegistrationFormSubmit } from '../../../../../../core/models/registration/registration-form-submit.model';
 
 @Component({
   selector: 'app-register',
@@ -24,20 +22,18 @@ export class RegisterComponent {
   private readonly router = inject(Router);
   private readonly registrationFormService = inject(RegistrationFormService);
   private readonly registrationService = inject(RegistrationService);
+  private readonly eventService = inject(EventService);
   private readonly toastr = inject(ToastrService);
 
   protected readonly loading = signal(true);
   protected readonly submitting = signal(false);
   protected readonly error = signal<string | null>(null);
-  protected readonly registrationForm = signal<RegistrationFormModel | null>(
-    null,
-  );
+  protected readonly registrationForm = signal<RegistrationFormModel | null>(null);
+  protected readonly event = signal<Event | null>(null);
 
-  private readonly eventId: string;
+  private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
 
   constructor() {
-    this.eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
-
     if (!this.eventId) {
       this.loading.set(false);
       this.error.set('Event could not be identified.');
@@ -45,6 +41,7 @@ export class RegisterComponent {
     }
 
     this.loadRegistrationForm();
+    this.loadEvent();
   }
 
   protected loadRegistrationForm(): void {
@@ -56,9 +53,7 @@ export class RegisterComponent {
         this.loading.set(false);
 
         if (!response.isSuccess || !response.data) {
-          this.error.set(
-            response.message || 'Registration form is not available.',
-          );
+          this.error.set(response.message || 'Registration form is not available.');
           return;
         }
 
@@ -71,9 +66,17 @@ export class RegisterComponent {
     });
   }
 
-  protected submitRegistration(
-    request: RegistrationFormSubmit,
-  ): void {
+  private loadEvent(): void {
+    this.eventService.getEventById(this.eventId).subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.event.set(response.data);
+        }
+      },
+    });
+  }
+
+  protected submitRegistration(request: RegistrationFormSubmit): void {
     if (this.submitting()) {
       return;
     }
@@ -85,31 +88,17 @@ export class RegisterComponent {
         this.submitting.set(false);
 
         if (!response.isSuccess || !response.data) {
-          this.toastr.error(
-            response.message || 'Registration failed.',
-            'Registration',
-          );
+          this.toastr.error(response.message || 'Registration failed.');
           return;
         }
 
-        this.toastr.success(
-          'Your registration was submitted successfully.',
-          'Registration',
-        );
+        this.toastr.success('Your registration was submitted successfully.');
 
-        this.router.navigate([
-          '/events',
-          this.eventId,
-          'my-registrations',
-        ]);
+        this.router.navigate(['/events', this.eventId, 'my-registrations']);
       },
       error: () => {
         this.submitting.set(false);
-
-        this.toastr.error(
-          'Unable to submit your registration.',
-          'Registration',
-        );
+        this.toastr.error('Unable to submit your registration.');
       },
     });
   }

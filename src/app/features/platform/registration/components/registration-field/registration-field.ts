@@ -5,6 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
 import { RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
 import { RegistrationFormFieldModel } from '../../../../../core/models/registration/registration-form.model';
 
@@ -15,31 +16,21 @@ import { RegistrationFormFieldModel } from '../../../../../core/models/registrat
   templateUrl: './registration-field.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class RegistrationFieldComponent {
   readonly field = input.required<RegistrationFormFieldModel>();
   readonly control = input.required<FormControl<string>>();
 
-  protected readonly fieldType = computed(
-    () => this.field().fieldType,
-  );
-
-  protected readonly isRequired = computed(
-    () => this.field().isRequired,
-  );
-
+  protected readonly fieldType = computed(() => this.field().fieldType);
+  protected readonly isRequired = computed(() => this.field().isRequired);
   protected readonly isTextArea = computed(
     () => this.fieldType() === RegistrationFieldType.TextArea,
   );
-
   protected readonly isSelect = computed(
     () => this.fieldType() === RegistrationFieldType.Select,
   );
-
   protected readonly isRadio = computed(
     () => this.fieldType() === RegistrationFieldType.Radio,
   );
-
   protected readonly isCheckbox = computed(
     () => this.fieldType() === RegistrationFieldType.Checkbox,
   );
@@ -48,16 +39,12 @@ export class RegistrationFieldComponent {
     switch (this.fieldType()) {
       case RegistrationFieldType.Email:
         return 'email';
-
       case RegistrationFieldType.Phone:
         return 'tel';
-
       case RegistrationFieldType.Number:
         return 'number';
-
       case RegistrationFieldType.Date:
         return 'date';
-
       default:
         return 'text';
     }
@@ -88,13 +75,11 @@ export class RegistrationFieldComponent {
 
   protected hasError(): boolean {
     const control = this.control();
-
     return control.invalid && control.touched;
   }
 
   protected setCheckboxValue(checked: boolean): void {
     const control = this.control();
-
     control.setValue(checked ? 'true' : 'false');
     control.markAsDirty();
     control.markAsTouched();

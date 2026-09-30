@@ -1,31 +1,14 @@
-<div
-  class="flex flex-col items-center border p-6"
-  style="
-    background: var(--surface);
-    border-color: var(--line);
-  "
->
-  <div
-    class="flex h-48 w-48 items-center justify-center border"
-    style="
-      background: #fff;
-      border-color: var(--line);
-    "
-  >
-    <p
-      class="px-4 text-center text-xs"
-      style="color: var(--muted)"
-    >
-      QR code
-      <br />
-      {{ value() }}
-    </p>
+<div class="text-center">
+  <div class="mx-auto w-fit rounded-[24px] border p-4 shadow-sm" style="background: #fff; border-color: var(--color-border)">
+    <img
+      [src]="qrUrl()"
+      alt="Ticket QR code"
+      class="h-48 w-48 rounded-xl object-contain"
+      loading="lazy"
+    />
   </div>
 
-  <p
-    class="mt-4 text-center text-[10px] font-extrabold uppercase tracking-[0.12em]"
-    style="color: var(--muted)"
-  >
-    Scan this code at the event
-  </p>
+  <p class="mt-4 text-[10px] font-extrabold uppercase tracking-[0.15em]" style="color: var(--color-text-secondary)">Ticket verification</p>
+  <p class="mx-auto mt-2 max-w-xs break-all font-mono text-[10px] leading-5" style="color: var(--color-text-muted)">{{ shortValue() }}</p>
+  <p class="mt-3 text-xs leading-5" style="color: var(--color-text-secondary)">Show this code to the event team at check-in.</p>
 </div>
