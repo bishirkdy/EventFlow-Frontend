@@ -50,6 +50,14 @@ export const routes: Routes = [
       import('./features/organizer/organizer.routes').then((m) => m.organizerRoutes),
   },
   {
+    path: 'owner/:eventId',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/owner/pages/owner-dashboard/owner-dashboard').then(
+        (m) => m.OwnerDashboard,
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

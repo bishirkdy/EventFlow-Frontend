@@ -1,12 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Event } from '../../../../core/models/event/event.model';
-import { ActivatedRoute, Router } from '@angular/router';
+
+import { Event as EventModel } from '../../../../core/models/event/event.model';
+import { EventTeamMemberModel } from '../../../../core/models/event-role/event-role.model';
+import { EventFeatureModel } from '../../../../core/models/event-feature/event-feature.model';
+
 import { EventService } from '../../../../core/services/event/event.service';
 import { EventRoleService } from '../../../../core/services/event-role/event-role.service';
-import { EventTeamMemberModel } from '../../../../core/models/event-role/event-role.model';
+import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
 
 @Component({
   selector: 'app-owner-dashboard',
@@ -20,15 +23,27 @@ export class OwnerDashboard {
   private readonly router = inject(Router);
   private readonly eventService = inject(EventService);
   private readonly roleService = inject(EventRoleService);
+  private readonly featureService = inject(EventFeatureService);
   private readonly toastr = inject(ToastrService);
 
-  readonly event = signal<Event | null>(null);
+  readonly event = signal<EventModel | null>(null);
+
   readonly team = signal<EventTeamMemberModel[]>([]);
+
+  readonly features = signal<EventFeatureModel[]>([]);
+
   readonly loading = signal(true);
+
   readonly teamLoading = signal(true);
+
+  readonly featuresLoading = signal(true);
+
   readonly assigning = signal(false);
+
   readonly removingUserId = signal<string | null>(null);
+
   readonly organizerEmail = signal('');
+
   readonly isOwner = signal(false);
 
   private readonly eventId = this.route.snapshot.paramMap.get('eventId');
@@ -41,7 +56,7 @@ export class OwnerDashboard {
 
     this.loadEvent(this.eventId);
     this.loadRoles(this.eventId);
-    this.loadTeam(this.eventId);
+    this.loadFeatures(this.eventId);
   }
 
   assignOrganizer(): void {
@@ -57,16 +72,16 @@ export class OwnerDashboard {
       next: (response) => {
         this.assigning.set(false);
         this.organizerEmail.set('');
+
         this.toastr.success(response.message || 'Organizer assigned successfully.');
+
         this.loadTeam(this.eventId!);
       },
+
       error: (error: unknown) => {
         this.assigning.set(false);
-        this.toastr.error(
-          error instanceof Object && 'error' in error
-            ? String((error as { error?: { message?: string } }).error?.message ?? 'Failed to assign organizer.')
-            : 'Failed to assign organizer.',
-        );
+
+        this.toastr.error(this.getErrorMessage(error, 'Failed to assign organizer.'));
       },
     });
   }
@@ -85,9 +100,12 @@ export class OwnerDashboard {
     this.roleService.removeOrganizer(this.eventId, userId).subscribe({
       next: (response) => {
         this.removingUserId.set(null);
+
         this.toastr.success(response.message || 'Organizer removed successfully.');
+
         this.loadTeam(this.eventId!);
       },
+
       error: () => {
         this.removingUserId.set(null);
         this.toastr.error('Failed to remove organizer.');
@@ -105,8 +123,10 @@ export class OwnerDashboard {
         this.event.set(response.data);
         this.loading.set(false);
       },
+
       error: () => {
         this.loading.set(false);
+
         this.toastr.error('Failed to load event.');
       },
     });
@@ -116,26 +136,55 @@ export class OwnerDashboard {
     this.roleService.getMyRoles(eventId).subscribe({
       next: (response) => {
         const roles = response.data ?? [];
-        this.isOwner.set(roles.some((role) => role.roleName === 'Owner'));
 
-        if (this.isOwner()) {
+        const owner = roles.some((role) => role.roleName === 'Owner');
+
+        this.isOwner.set(owner);
+
+        if (owner) {
+          this.loadTeam(eventId);
           return;
         }
 
-        // Existing events created before Owner assignment was introduced can
-        // safely repair their ownership when the authenticated creator opens
-        // the owner dashboard. The backend verifies CreatedBy.
         this.eventService.claimOwner(eventId).subscribe({
           next: () => {
             this.loadRoles(eventId);
-            this.loadTeam(eventId);
           },
-          error: () => void this.router.navigate(['/organizer', eventId, 'overview']),
+
+          error: (error: unknown) => {
+            this.isOwner.set(false);
+
+            this.toastr.error(this.getErrorMessage(error, 'Failed to claim event ownership.'));
+
+            console.error('Claim owner failed:', error);
+          },
         });
       },
+
       error: () => {
         this.isOwner.set(false);
-        void this.router.navigate(['/my-events']);
+
+        this.toastr.error('Unable to verify your event role.');
+      },
+    });
+  }
+  
+  private loadFeatures(eventId: string): void {
+    this.featuresLoading.set(true);
+
+    this.featureService.getFeatures(eventId).subscribe({
+      next: (response) => {
+        const enabledFeatures = (response.data ?? []).filter((feature) => feature.isEnabled);
+
+        this.features.set(enabledFeatures);
+        this.featuresLoading.set(false);
+      },
+
+      error: () => {
+        this.features.set([]);
+        this.featuresLoading.set(false);
+
+        this.toastr.error('Failed to load event features.');
       },
     });
   }
@@ -148,10 +197,27 @@ export class OwnerDashboard {
         this.team.set(response.data ?? []);
         this.teamLoading.set(false);
       },
+
       error: () => {
         this.team.set([]);
         this.teamLoading.set(false);
       },
     });
+  }
+
+  private getErrorMessage(error: unknown, fallback: string): string {
+    if (error && typeof error === 'object' && 'error' in error) {
+      const response = (
+        error as {
+          error?: {
+            message?: string;
+          };
+        }
+      ).error;
+
+      return response?.message || fallback;
+    }
+
+    return fallback;
   }
 }
