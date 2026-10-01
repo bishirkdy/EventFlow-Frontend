@@ -4,4 +4,5 @@ export const EVENT_ENDPOINTS = {
   public: '/v1/events/public',
   byId: (eventId: string) => `/v1/events/${eventId}`,
   publish: (eventId: string) => `/v1/events/${eventId}/publish`,
+  claimOwner: (eventId: string) => `/v1/events/${eventId}/claim-owner`,
 } as const;

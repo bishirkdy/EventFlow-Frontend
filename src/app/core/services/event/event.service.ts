@@ -36,6 +36,13 @@ export class EventService {
     );
   }
 
+  claimOwner(eventId: string): Observable<ApiResponse<null>> {
+    return this.http.post<ApiResponse<null>>(
+      this.api.getUrl(EVENT_ENDPOINTS.claimOwner(eventId)),
+      {},
+    );
+  }
+
   publishEvent(eventId: string): Observable<void> {
     return this.http.post<void>(this.api.getUrl(EVENT_ENDPOINTS.publish(eventId)), {});
   }
