@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -20,12 +20,11 @@ export class CreatePage {
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
 
-  readonly saving = this.fb.nonNullable.control(false);
+  readonly saving = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(150)]],
-    slug: [
-      '',
+    slug: ['',
       [
         Validators.required,
         Validators.maxLength(150),
@@ -48,8 +47,7 @@ export class CreatePage {
       return;
     }
 
-    this.saving.setValue(true);
-
+    this.saving.set(true);
     this.pageService.createPage(eventId, this.form.getRawValue()).subscribe({
       next: (response) => {
         this.toastr.success(response.message);
@@ -58,7 +56,7 @@ export class CreatePage {
       },
 
       error: () => {
-        this.saving.setValue(false);
+        this.saving.set(false);
         this.toastr.error('Failed to create event page.');
       },
     });

@@ -7,11 +7,11 @@ import {
   input,
   output,
 } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { RegistrationFieldComponent } from '../registration-field/registration-field';
-import { CapacityMode } from '../../../../../core/models/registration/registration.enums';
+import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
 import { Event } from '../../../../../core/models/event/event.model';
 import {
   RegistrationFormFieldModel,
@@ -87,10 +87,86 @@ export class RegistrationFormComponent {
       for (const field of fields) {
         this.fieldControls.set(
           field.fieldKey,
-          this.fb.nonNullable.control('', field.isRequired ? [Validators.required] : []),
+          this.fb.nonNullable.control('', this.buildValidators(field)),
         );
       }
     });
+  }
+
+  private buildValidators(field: RegistrationFormFieldModel): ValidatorFn[] {
+    const validators: ValidatorFn[] = [];
+
+    if (field.isRequired) {
+      validators.push(
+        field.fieldType === RegistrationFieldType.Checkbox
+          ? Validators.pattern(/^true$/)
+          : Validators.required,
+      );
+    }
+
+    if (field.fieldType === RegistrationFieldType.Email) {
+      validators.push(Validators.email);
+    }
+
+    const rules = this.parseValidationRules(field.validationJson);
+
+    if (rules.minLength !== undefined) {
+      validators.push(Validators.minLength(rules.minLength));
+    }
+
+    if (rules.maxLength !== undefined) {
+      validators.push(Validators.maxLength(rules.maxLength));
+    }
+
+    if (rules.min !== undefined) {
+      validators.push(Validators.min(rules.min));
+    }
+
+    if (rules.max !== undefined) {
+      validators.push(Validators.max(rules.max));
+    }
+
+    if (rules.pattern) {
+      validators.push(Validators.pattern(rules.pattern));
+    }
+
+    return validators;
+  }
+
+  private parseValidationRules(value: string | null): {
+    minLength?: number;
+    maxLength?: number;
+    min?: number;
+    max?: number;
+    pattern?: string;
+  } {
+    if (!value) {
+      return {};
+    }
+
+    try {
+      const parsed: unknown = JSON.parse(value);
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return {};
+      }
+
+      const rules = parsed as Record<string, unknown>;
+
+      return {
+        minLength: this.toNumber(rules['minLength']),
+        maxLength: this.toNumber(rules['maxLength']),
+        min: this.toNumber(rules['min']),
+        max: this.toNumber(rules['max']),
+        pattern: typeof rules['pattern'] === 'string' ? rules['pattern'] : undefined,
+      };
+    } catch {
+      return {};
+    }
+  }
+
+  private toNumber(value: unknown): number | undefined {
+    return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
   }
 
   protected getFieldControl(field: RegistrationFormFieldModel): FormControl<string> {

@@ -102,7 +102,7 @@ export class RegistrationFormPageComponent {
     this.fields.update((items) => [
       ...items,
       {
-        fieldKey: `field_${Date.now()}`,
+        fieldKey: `field_${Date.now()}_${index}`,
         label: `Custom field ${index}`,
         fieldType: RegistrationFieldType.Text,
         isRequired: false,
@@ -129,6 +129,40 @@ export class RegistrationFormPageComponent {
     this.fields.set(current);
   }
 
+  protected isChoiceField(field: EditableField): boolean {
+    return field.fieldType === RegistrationFieldType.Select || field.fieldType === RegistrationFieldType.Radio;
+  }
+
+  protected hasValidationRules(field: EditableField): boolean {
+    return [
+      RegistrationFieldType.Text,
+      RegistrationFieldType.TextArea,
+      RegistrationFieldType.Email,
+      RegistrationFieldType.Phone,
+      RegistrationFieldType.Number,
+    ].includes(field.fieldType);
+  }
+
+  protected updateFieldOptions(index: number, value: string): void {
+    this.fields.update((items) =>
+      items.map((item, itemIndex) =>
+        itemIndex === index
+          ? { ...item, optionsJson: value.trim() || null }
+          : item,
+      ),
+    );
+  }
+
+  protected updateFieldValidation(index: number, value: string): void {
+    this.fields.update((items) =>
+      items.map((item, itemIndex) =>
+        itemIndex === index
+          ? { ...item, validationJson: value.trim() || null }
+          : item,
+      ),
+    );
+  }
+
   protected save(): void {
     const eventId = this.eventId();
 
@@ -147,6 +181,26 @@ export class RegistrationFormPageComponent {
       return;
     }
 
+    if (
+      this.form.controls.capacityMode.value === CapacityMode.Unlimited &&
+      this.form.controls.enableWaitlist.value
+    ) {
+      this.error.set('Waitlist can only be enabled when capacity is limited.');
+      return;
+    }
+
+    const keys = this.fields().map((field) => field.fieldKey.trim().toLowerCase());
+
+    if (keys.some((key) => !key)) {
+      this.error.set('Every custom field must have a field key.');
+      return;
+    }
+
+    if (new Set(keys).size !== keys.length) {
+      this.error.set('Custom field keys must be unique.');
+      return;
+    }
+
     const request: UpsertRegistrationFormRequest = {
       name: this.form.controls.name.value.trim(),
       description: this.form.controls.description.value.trim() || null,
@@ -157,6 +211,7 @@ export class RegistrationFormPageComponent {
       opensAtUtc: this.toUtc(this.form.controls.opensAtUtc.value),
       closesAtUtc: this.toUtc(this.form.controls.closesAtUtc.value),
       fields: this.fields().map((field, index) => ({
+        id: field.id ?? null,
         fieldKey: field.fieldKey.trim(),
         label: field.label.trim(),
         fieldType: field.fieldType,

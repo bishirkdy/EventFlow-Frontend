@@ -4,6 +4,7 @@ import {
 } from './registration.enums';
 
 export interface RegistrationFormFieldRequest {
+  id?: string | null;
   fieldKey: string;
   label: string;
   fieldType: RegistrationFieldType;

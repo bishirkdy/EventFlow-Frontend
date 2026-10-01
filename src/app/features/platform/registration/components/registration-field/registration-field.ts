@@ -78,6 +78,40 @@ export class RegistrationFieldComponent {
     return control.invalid && control.touched;
   }
 
+  protected errorMessage(): string {
+    const control = this.control();
+
+    if (control.hasError('required')) {
+      return `${this.field().label} is required.`;
+    }
+
+    if (control.hasError('email')) {
+      return `${this.field().label} must be a valid email address.`;
+    }
+
+    if (control.hasError('minlength')) {
+      return `${this.field().label} is too short.`;
+    }
+
+    if (control.hasError('maxlength')) {
+      return `${this.field().label} is too long.`;
+    }
+
+    if (control.hasError('min')) {
+      return `${this.field().label} is below the minimum.`;
+    }
+
+    if (control.hasError('max')) {
+      return `${this.field().label} is above the maximum.`;
+    }
+
+    if (control.hasError('pattern')) {
+      return `${this.field().label} has an invalid format.`;
+    }
+
+    return `${this.field().label} is invalid.`;
+  }
+
   protected setCheckboxValue(checked: boolean): void {
     const control = this.control();
     control.setValue(checked ? 'true' : 'false');

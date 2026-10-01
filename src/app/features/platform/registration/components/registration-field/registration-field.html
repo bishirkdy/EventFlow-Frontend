@@ -101,7 +101,7 @@
 
   @if (hasError()) {
     <p class="text-xs font-medium" style="color: var(--color-error)">
-      {{ field().label }} is required.
+      {{ errorMessage() }}
     </p>
   }
 </div>

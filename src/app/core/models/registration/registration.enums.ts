@@ -17,13 +17,13 @@ export enum CapacityMode {
 }
 
 export enum RegistrationFieldType {
-  Text = 0,
-  TextArea = 1,
-  Email = 2,
-  Phone = 3,
-  Number = 4,
-  Date = 5,
-  Select = 6,
-  Radio = 7,
-  Checkbox = 8,
+  Text = 1,
+  TextArea = 2,
+  Email = 3,
+  Phone = 4,
+  Number = 5,
+  Date = 6,
+  Select = 7,
+  Radio = 8,
+  Checkbox = 9,
 }

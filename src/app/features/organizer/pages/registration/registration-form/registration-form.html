@@ -395,7 +395,7 @@
                       </div>
                     </div>
 
-                    <div class="grid gap-4 md:grid-cols-[1fr_180px]">
+                    <div class="grid gap-4 md:grid-cols-2">
                       <div>
                         <label
                           [for]="'field-label-' + i"
@@ -463,6 +463,35 @@
                       </div>
                     </div>
 
+                    <div>
+                      <label
+                        [for]="'field-key-' + i"
+                        class="block text-xs font-medium text-[#5f5a54]"
+                      >
+                        Field key
+                      </label>
+
+                      <input
+                        [id]="'field-key-' + i"
+                        #fieldKey
+                        [value]="field.fieldKey"
+                        (input)="
+                          fields.update((items) =>
+                            items.map((x, j) =>
+                              j === i
+                                ? { ...x, fieldKey: fieldKey.value }
+                                : x
+                            )
+                          )
+                        "
+                        class="mt-2 w-full border border-[#d8d4cf] bg-white px-3 py-2.5 text-sm text-primary outline-none transition focus:border-primary"
+                      />
+
+                      <p class="mt-1 text-[11px] text-[#918b84]">
+                        Stable key used to identify this field.
+                      </p>
+                    </div>
+
                     <div class="flex items-center gap-2">
                       <input
                         [id]="'field-required-' + i"
@@ -494,6 +523,53 @@
                         Required field
                       </label>
                     </div>
+
+                    @if (isChoiceField(field)) {
+                      <div>
+                        <label
+                          [for]="'field-options-' + i"
+                          class="block text-xs font-medium text-[#5f5a54]"
+                        >
+                          Options JSON
+                        </label>
+
+                        <textarea
+                          [id]="'field-options-' + i"
+                          #fieldOptions
+                          rows="3"
+                          [value]="field.optionsJson ?? ''"
+                          (input)="updateFieldOptions(i, fieldOptions.value)"
+                          class="mt-2 w-full resize-y border border-[#d8d4cf] bg-white px-3 py-2.5 font-mono text-xs text-primary outline-none transition focus:border-primary"
+                        ></textarea>
+                        <p class="mt-1 text-[11px] text-[#918b84]">
+                          Example: ["General", "VIP"]
+                        </p>
+                      </div>
+                    }
+
+                    @if (hasValidationRules(field)) {
+                      <div>
+                        <label
+                          [for]="'field-validation-' + i"
+                          class="block text-xs font-medium text-[#5f5a54]"
+                        >
+                          Validation JSON
+                        </label>
+
+                        <textarea
+                          [id]="'field-validation-' + i"
+                          #fieldValidation
+                          rows="3"
+                          [value]="field.validationJson ?? ''"
+                          (input)="updateFieldValidation(i, fieldValidation.value)"
+                          placeholder='{"minLength": 3, "maxLength": 100}'
+                          class="mt-2 w-full resize-y border border-[#d8d4cf] bg-white px-3 py-2.5 font-mono text-xs text-primary outline-none transition focus:border-primary"
+                        ></textarea>
+                        <p class="mt-1 text-[11px] text-[#918b84]">
+                          Supported: minLength, maxLength, min, max, pattern.
+                        </p>
+                      </div>
+                    }
                   </div>
                 }
               }
