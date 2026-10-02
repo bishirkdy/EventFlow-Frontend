@@ -12,6 +12,9 @@ import {
   Mic2,
   Handshake,
   ClipboardList,
+  ScanLine,
+  UserCog,
+  Bell,
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -31,6 +34,9 @@ export const ORGANIZER_NAVIGATION: OrganizerNavItem[] = [
   { label: 'Speakers', route: 'speakers', icon: Mic2, feature: 'speakers' },
   { label: 'Sponsors', route: 'sponsors', icon: Handshake, feature: 'sponsors' },
   { label: 'Registration', route: 'registration', icon: ClipboardList, feature: 'registration' },
+  { label: 'Attendance', route: 'attendance', icon: ScanLine },
+  { label: 'Attendance Staff', route: 'attendance-staff', icon: UserCog },
+  { label: 'Notifications', route: 'notifications', icon: Bell },
   { label: 'Pages', route: 'pages', icon: FileText },
   { label: 'Navigation', route: 'navigation', icon: Menu },
 ];

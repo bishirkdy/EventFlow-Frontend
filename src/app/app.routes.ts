@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { PublicLayout } from './shared/layouts/public-layout/public-layout';
 import { authGuard } from './core/guards/auth/auth-guard';
+import { eventRoleGuard } from './core/guards/event-role/event-role.guard';
 import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
 
 export const routes: Routes = [
@@ -36,6 +37,11 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'events/:eventId/attendance',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/platform/attendance-history/attendance-history').then(m => m.AttendanceHistoryComponent),
+  },
+  {
     path: 'events/:eventId/:slug',
     loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },
@@ -51,7 +57,7 @@ export const routes: Routes = [
   },
   {
     path: 'owner/:eventId',
-    canActivate: [authGuard],
+    canActivate: [authGuard, eventRoleGuard('Owner')],
     loadComponent: () =>
       import('./features/owner/pages/owner-dashboard/owner-dashboard').then(
         (m) => m.OwnerDashboard,

@@ -1,4 +1,5 @@
 import { eventFeatureGuard } from '../../core/guards/feature/feature.guard';
+import { eventRoleGuard } from '../../core/guards/event-role/event-role.guard';
 import { Routes } from '@angular/router';
 import { OrganizerLayout } from './layout/organizer-layout/organizer-layout';
 import { Overview } from './pages/overview/overview';
@@ -6,6 +7,7 @@ import { Overview } from './pages/overview/overview';
 export const organizerRoutes: Routes = [
   {
     path: ':eventId',
+    canActivate: [eventRoleGuard('Organizer')],
     component: OrganizerLayout,
     children: [
       {
@@ -256,6 +258,11 @@ export const organizerRoutes: Routes = [
           },
         ],
       },
+
+      // Attendance operations
+      { path: 'attendance', loadComponent: () => import('./pages/attendance/attendance').then(m => m.AttendanceComponent) },
+      { path: 'attendance-staff', loadComponent: () => import('./pages/attendance-staff/attendance-staff').then(m => m.AttendanceStaffComponent) },
+      { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications').then(m => m.NotificationsComponent) },
 
       //Registration
       {
