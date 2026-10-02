@@ -1,9 +1,9 @@
 export enum RegistrationStatus {
-  Pending = 0,
-  Approved = 1,
-  Rejected = 2,
-  Cancelled = 3,
-  Waitlisted = 4,
+  Pending = 1,
+  Approved = 2,
+  Rejected = 3,
+  Cancelled = 4,
+  Waitlisted = 5,
 }
 
 export enum ParticipantStatus {

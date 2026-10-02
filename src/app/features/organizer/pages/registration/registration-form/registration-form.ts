@@ -43,7 +43,7 @@ export class RegistrationFormPageComponent {
     description: [''],
     isActive: [true],
     capacityMode: [CapacityMode.Unlimited],
-    capacity: [0, [Validators.min(1)]],
+    capacity: [0],
     enableWaitlist: [false],
     opensAtUtc: [''],
     closesAtUtc: [''],

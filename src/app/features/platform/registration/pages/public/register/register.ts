@@ -94,7 +94,7 @@ export class RegisterComponent {
 
         this.toastr.success('Your registration was submitted successfully.');
 
-        this.router.navigate(['/events', this.eventId, 'my-registrations']);
+        this.router.navigate(['/events', this.eventId, 'registrations', response.data.id]);
       },
       error: () => {
         this.submitting.set(false);

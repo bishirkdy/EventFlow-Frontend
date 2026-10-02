@@ -195,7 +195,7 @@
 
               <!-- Actions -->
               <div class="flex items-center gap-5 lg:justify-end">
-                @if (item.status === 0) {
+                @if (item.status === RegistrationStatus.Pending) {
                   <button
                     type="button"
                     (click)="approve(item, $event)"

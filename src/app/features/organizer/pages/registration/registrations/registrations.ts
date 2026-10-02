@@ -44,6 +44,8 @@ export class RegistrationsComponent {
   protected readonly search = signal('');
   protected readonly statusFilter = signal<RegistrationStatus | null>(null);
 
+  readonly RegistrationStatus = RegistrationStatus;
+  
   protected readonly statuses = [
     {
       value: RegistrationStatus.Pending,
