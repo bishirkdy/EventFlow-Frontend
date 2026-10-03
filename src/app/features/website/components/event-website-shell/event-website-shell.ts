@@ -172,6 +172,11 @@ export class EventWebsiteShell {
     return eventId ? `/events/${eventId}/my-registrations` : "#";
   }
 
+  photosHref(): string {
+    const eventId = this.data().event?.id;
+    return eventId ? `/events/${eventId}/gallery` : "#";
+  }
+
   brandHref(): string {
     const eventId = this.data().event?.id;
     return eventId ? `/events/${eventId}` : '#';

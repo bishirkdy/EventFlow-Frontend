@@ -51,6 +51,18 @@ export const routes: Routes = [
     loadComponent: () => import('./features/platform/attendance-history/attendance-history').then(m => m.AttendanceHistoryComponent),
   },
   {
+    path: 'events/:eventId/gallery',
+    loadComponent: () => import('./features/platform/photos/photo-gallery/photo-gallery').then((m) => m.PhotoGallery),
+  },
+  {
+    path: 'events/:eventId/gallery/my',
+    loadComponent: () => import('./features/platform/photos/face-detection/my-photos/my-photos').then((m) => m.MyPhotos),
+  },
+  {
+    path: 'events/:eventId/gallery/selfie',
+    loadComponent: () => import('./features/platform/photos/face-detection/selfie-capture/selfie-capture').then((m) => m.SelfieCapture),
+  },
+  {
     path: 'events/:eventId/:slug',
     loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },
