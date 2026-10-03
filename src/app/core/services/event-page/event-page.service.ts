@@ -21,6 +21,13 @@ export class EventPageService {
     );
   }
 
+  /** Includes draft pages, only for organizer screens. */
+  getManagePages(eventId: string): Observable<ApiResponse<EventPageModel[]>> {
+    return this.http.get<ApiResponse<EventPageModel[]>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getManagePages(eventId)),
+    );
+  }
+
   createPage(eventId: string, request: CreateEventPageModel): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.createPage(eventId)),
@@ -62,6 +69,21 @@ export class EventPageService {
   getPageById(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
     return this.http.get<ApiResponse<EventPageModel>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPageById(eventId, pageId)),
+    );
+  }
+
+  /** Loads draft pages too, only for organizer screens. */
+  getManagePageById(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
+    return this.http.get<ApiResponse<EventPageModel>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getManagePageById(eventId, pageId)),
+    );
+  }
+
+  /** Makes sure the default pages, sections and navigation exist for the event. */
+  ensureWebsite(eventId: string): Observable<ApiResponse<object | null>> {
+    return this.http.post<ApiResponse<object | null>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.ensureWebsite(eventId)),
+      {},
     );
   }
 

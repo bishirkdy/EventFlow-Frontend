@@ -2,6 +2,9 @@ export const EVENT_PAGE_ENDPOINTS = {
   getPages: (eventId: string) =>
     `/v1/event-page/${eventId}/pages`,
 
+  getManagePages: (eventId: string) =>
+    `/v1/event-page/${eventId}/manage-pages`,
+
   createPage: (eventId: string) =>
     `/v1/event-page/${eventId}/pages`,
 
@@ -20,6 +23,12 @@ export const EVENT_PAGE_ENDPOINTS = {
   getPageById: (eventId: string, pageId: string) =>
     `/v1/event-page/${eventId}/pages/${pageId}`,
 
+  getManagePageById: (eventId: string, pageId: string) =>
+    `/v1/event-page/${eventId}/manage-pages/${pageId}`,
+
   reorderPages: (eventId: string) =>
     `/v1/event-page/${eventId}/pages/reorder`,
+
+  ensureWebsite: (eventId: string) =>
+    `/v1/event-page/${eventId}/ensure-website`,
 } as const;

@@ -21,6 +21,13 @@ export class EventPageSectionService {
     );
   }
 
+  /** Includes hidden sections, only for organizer screens. */
+  getManageSections(pageId: string): Observable<ApiResponse<PageSectionModel[]>> {
+    return this.http.get<ApiResponse<PageSectionModel[]>>(
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getManageSections(pageId)),
+    );
+  }
+
   createSection(pageId: string, request: CreatePageSectionModel): Observable<ApiResponse<string>> {
     const formData = new FormData();
 
