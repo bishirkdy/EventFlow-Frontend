@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../core/services/ui/notification.service';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
@@ -18,7 +18,7 @@ import { finalize } from 'rxjs';
 export class Register {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   readonly Eye = Eye;
   readonly EyeOff = EyeOff;
