@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { EventService } from '../../../core/services/event/event.service';
 import { Event } from '../../../core/models/event/event.model';
@@ -11,9 +11,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './my-events.css',
 })
 export class MyEvents {
-
   events = signal<Event[]>([]);
-  private eventService = inject(EventService)
+  loading = signal(true);
+  private eventService = inject(EventService);
   private platformId = inject(PLATFORM_ID);
   publishing = signal<string | null>(null);
 
@@ -41,13 +41,16 @@ export class MyEvents {
   }
 
   private loadEvents(): void {
+    this.loading.set(true);
     this.eventService.getMyEvents().subscribe({
       next: (response) => {
         const events = response.data;
         this.events.set(events ?? []);
+        this.loading.set(false);
       },
       error: (error: unknown) => {
         console.error('Failed to load events', error);
+        this.loading.set(false);
       },
     });
   }

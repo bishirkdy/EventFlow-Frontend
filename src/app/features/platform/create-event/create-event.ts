@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../core/services/ui/notification.service';
 import { finalize } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
@@ -20,7 +20,7 @@ export class CreateEvent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly eventService = inject(EventService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly eventTypeService = inject(EventTypeService);
 
   readonly loading = signal(false);
