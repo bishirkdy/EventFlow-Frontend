@@ -127,3 +127,56 @@ body {
 }
 
 
+
+.eventflow-toast-host {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10000;
+  display: flex;
+  width: min(28rem, calc(100vw - 2rem));
+  flex-direction: column;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+.eventflow-toast {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0.8rem;
+  background: #ffffff;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.14);
+  color: #202020;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  pointer-events: auto;
+  animation: eventflow-toast-in 180ms ease-out;
+}
+
+.eventflow-toast__content {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.eventflow-toast button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  opacity: 0.65;
+}
+
+.eventflow-toast--success { border-left: 4px solid #16803c; }
+.eventflow-toast--info { border-left: 4px solid #2864c7; }
+.eventflow-toast--warning { border-left: 4px solid #c47a00; }
+.eventflow-toast--error { border-left: 4px solid #c62828; }
+
+@keyframes eventflow-toast-in {
+  from { opacity: 0; transform: translateY(-0.35rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
