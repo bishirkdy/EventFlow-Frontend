@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../../core/services/ui/notification.service';
 
 import { RegistrationFormComponent } from '../../../components/registration-form/registration-form';
 import { RegistrationFormService } from '../../../../../../core/services/registration/registration-form.service';
@@ -23,7 +23,7 @@ export class RegisterComponent {
   private readonly registrationFormService = inject(RegistrationFormService);
   private readonly registrationService = inject(RegistrationService);
   private readonly eventService = inject(EventService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   protected readonly loading = signal(true);
   protected readonly submitting = signal(false);
