@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { Event as EventModel } from '../../../../core/models/event/event.model';
 import { EventTeamMemberModel } from '../../../../core/models/event-role/event-role.model';
@@ -24,7 +24,7 @@ export class OwnerDashboard {
   private readonly eventService = inject(EventService);
   private readonly roleService = inject(EventRoleService);
   private readonly featureService = inject(EventFeatureService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   readonly event = signal<EventModel | null>(null);
 
@@ -75,6 +75,7 @@ export class OwnerDashboard {
 
         this.toastr.success(response.message || 'Organizer assigned successfully.');
 
+        // Stay on Owner Dashboard.
         this.loadTeam(this.eventId!);
       },
 
@@ -168,7 +169,7 @@ export class OwnerDashboard {
       },
     });
   }
-  
+
   private loadFeatures(eventId: string): void {
     this.featuresLoading.set(true);
 
