@@ -7,6 +7,10 @@ import { REGISTRATION_ROUTES } from './features/platform/registration/registrati
 export const routes: Routes = [
   ...REGISTRATION_ROUTES,
   {
+    path: 'photographer/invite/:token',
+    loadComponent: () => import('./features/photographer/invitation/accept-invitation/accept-invitation').then((m) => m.AcceptInvitation),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },

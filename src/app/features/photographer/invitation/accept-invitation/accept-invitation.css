@@ -1,0 +1,31 @@
+.accept-invitation {
+  min-height: 100vh;
+}
+
+.accept-invitation input:focus {
+  outline: none;
+}
+
+.accept-invitation button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.accept-invitation .ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.accept-invitation .ng-invalid.ng-touched:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 640px) {
+  .accept-invitation .flex.gap-3 {
+    flex-direction: column;
+  }
+
+  .accept-invitation .flex.gap-3 button {
+    width: 100%;
+  }
+}
