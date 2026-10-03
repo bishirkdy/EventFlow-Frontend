@@ -1,7 +1,7 @@
 export enum AttendanceScopeType { Event = 1, Section = 2, Session = 3 }
 export enum AttendanceMethod { Qr = 1, Manual = 2 }
 export enum NotificationStatus { Pending = 1, Processing = 2, Sent = 3, Failed = 4 }
-export interface AttendanceStaffModel { id:string; eventId:string; userId:string; scopeType:AttendanceScopeType; scopeId:string|null; isActive:boolean; }
+export interface AttendanceStaffModel { id:string; eventId:string; userId:string; email?:string; scopeType:AttendanceScopeType; scopeId:string|null; isActive:boolean; }
 export interface AttendanceModel { id:string; eventId:string; registrationId:string; participantId:string; sessionId:string|null; staffUserId:string; method:AttendanceMethod; checkedInAtUtc:string; checkedOutAtUtc:string|null; }
 export interface AttendanceDashboardModel { totalParticipants:number; checkedIn:number; checkedOut:number; currentlyInside:number; attendancePercentage:number; }
 export interface NotificationModel { id:string; eventId:string; userId:string|null; recipientEmail:string; subject:string; status:NotificationStatus; attemptCount:number; scheduledAtUtc:string; sentAtUtc:string|null; error:string|null; }
