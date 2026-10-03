@@ -54,4 +54,16 @@ export class AuthService {
   clearCurrentUser(): void {
     this.currentUser.set(null);
   }
+
+  refresh(): Observable<boolean> {
+    return this.http
+    .post<ApiResponse<unknown>>(
+      this.api.getUrl(AUTH_ENDPOINTS.refresh),
+      {},
+    )
+    .pipe(
+      map((response) => response.isSuccess === true),
+      catchError(() => of(false)),
+    );
+}
 }

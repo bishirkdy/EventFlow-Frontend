@@ -1,8 +1,8 @@
-import { HttpInterceptor, HttpInterceptorFn } from "@angular/common/http";
+import { HttpInterceptorFn } from '@angular/common/http';
 
-export const credentialsInterceptor : HttpInterceptorFn = (req , next ) => {
-    const requestWithCredentials = req.clone({
-        withCredentials: true
-    });
-    return next(requestWithCredentials);
-}
+export const credentialsInterceptor: HttpInterceptorFn = (req, next) =>
+  next(
+    req.clone({
+      withCredentials: true,
+    }),
+  );

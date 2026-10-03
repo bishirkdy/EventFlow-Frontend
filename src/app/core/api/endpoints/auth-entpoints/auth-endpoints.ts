@@ -3,4 +3,5 @@ export const AUTH_ENDPOINTS = {
   register: '/v1/auth/register',
   logout: '/v1/auth/logout',
   profile: '/v1/auth/profile',
+  refresh: '/v1/auth/refresh',
 };

@@ -13,7 +13,9 @@ function eventIdFrom(route: ActivatedRouteSnapshot): string | null {
   return null;
 }
 
-export const eventRoleGuard = (requiredRole: 'Owner' | 'Organizer'): CanActivateFn => route => {
+export type UserRole = 'Owner' | 'Organizer' | 'AttentionStaff';
+
+export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn => route => {
   const roles = inject(EventRoleService);
   const router = inject(Router);
   const eventId = eventIdFrom(route);
@@ -24,8 +26,13 @@ export const eventRoleGuard = (requiredRole: 'Owner' | 'Organizer'): CanActivate
       const names = (response.data ?? []).map(x => x.roleName.toLowerCase());
       const allowed = names.includes(requiredRole.toLowerCase());
       if (allowed) return true;
+      const roleMap: Record<string, string> = {
+        owner: '/owner',
+        organizer: '/organizer',
+        attentionstaff: '/',
+      };
       return router.createUrlTree([
-        names.includes('owner') ? '/owner' : names.includes('organizer') ? '/organizer' : '/',
+        roleMap[requiredRole] ?? '/',
         ...(names.includes('owner') || names.includes('organizer') ? [eventId] : []),
       ]);
     }),
