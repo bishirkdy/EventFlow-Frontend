@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
@@ -26,7 +26,7 @@ export class RegistrationsComponent {
 
   private readonly service = inject(RegistrationService);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly eventId = this.eventState.eventId;

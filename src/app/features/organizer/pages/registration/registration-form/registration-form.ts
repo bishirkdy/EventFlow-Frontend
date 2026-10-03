@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import {
@@ -27,7 +27,7 @@ export class RegistrationFormPageComponent {
   protected readonly formService = inject(RegistrationFormService);
 
   private readonly fb = inject(FormBuilder);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly eventId = this.eventState.eventId;
