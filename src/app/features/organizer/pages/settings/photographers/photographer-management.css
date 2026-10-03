@@ -1,0 +1,84 @@
+.photographer-management {
+  min-height: 100vh;
+}
+
+/* Table styles */
+.photographer-management table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.photographer-management th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.photographer-management td {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.photographer-management tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+  .photographer-management tbody tr:hover {
+    background-color: #1f2937;
+  }
+}
+
+/* Status badges */
+.photographer-management .inline-flex {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .photographer-management .overflow-x-auto {
+    overflow-x: auto;
+  }
+
+  .photographer-management table {
+    min-width: 600px;
+  }
+}
+
+/* Status badge colors */
+.photographer-management .bg-amber-100,
+.photographer-management .bg-green-100,
+.photographer-management .bg-red-100,
+.photographer-management .bg-gray-100 {
+  font-weight: 500;
+}
+
+/* Hover effects */
+.photographer-management tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+  .photographer-management tbody tr:hover {
+    background-color: #1f2937;
+  }
+}
+
+/* Button styles */
+.photographer-management button {
+  transition: all 0.2s ease;
+}
+
+.photographer-management button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

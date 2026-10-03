@@ -37,7 +37,26 @@ export const organizerRoutes: Routes = [
         loadComponent: () =>
           import('./pages/event-settings/event-settings').then((m) => m.EventSettings),
       },
-
+      // Photographer Management
+      {
+        path: 'settings/photographers',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/settings/photographers/photographer-management').then(
+                (m) => m.PhotographerManagement
+              ),
+          },
+          {
+            path: 'photos',
+            loadComponent: () =>
+              import('./pages/settings/photographers/photo-moderation/photo-moderation-grid').then(
+                (m) => m.PhotoModerationGrid
+              ),
+          },
+        ],
+      },
       // Website preview
       {
         path: 'preview',
