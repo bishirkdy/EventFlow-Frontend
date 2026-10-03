@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from 'core/services/ui/notification.service';
 import { environment } from 'environments/environment';
@@ -28,7 +28,7 @@ interface ApiResponse<T> {
 @Component({
   selector: 'app-photographer-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './photographer-management.html',
   styleUrl: './photographer-management.css'
 })

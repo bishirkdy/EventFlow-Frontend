@@ -17,6 +17,7 @@ import {
   Bell,
   Users,
   FormInput,
+  Camera,
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -78,6 +79,12 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
     label: 'Communication',
     items: [
       { label: 'Notifications', route: 'notifications', icon: Bell },
+    ],
+  },
+  {
+    label: 'Media',
+    items: [
+      { label: 'Photographers', route: 'settings/photographers', icon: Camera },
     ],
   },
 ];
