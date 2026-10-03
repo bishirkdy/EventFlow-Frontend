@@ -1,10 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
-import {RouterOutlet} from '@angular/router'
-import { AuthService } from './core/services/auth/auth.service';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { LoadingService } from './core/services/ui/loading.service';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
-export class App {}
+export class App {
+  readonly loading = inject(LoadingService).loading;
+}

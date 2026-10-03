@@ -8,9 +8,11 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { provideToastr } from 'ngx-toastr';
 import { AuthService } from './core/services/auth/auth.service';
 import { credentialsInterceptor } from './core/interceptors/credentialsInterceptor';
+import { loadingInterceptor } from './core/interceptors/loadingInterceptor';
+import { authRefreshInterceptor } from './core/interceptors/authRefreshInterceptor';
+import { apiErrorInterceptor } from './core/interceptors/apiErrorInterceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,15 +20,8 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor])),
-    provideToastr({
-      positionClass: 'toast-top-right',
-      timeOut: 3000,
-      preventDuplicates: true,
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: true,
-    }),
+    provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, loadingInterceptor, authRefreshInterceptor, apiErrorInterceptor])),
+
 
     provideAppInitializer(() => {
       const authService = inject(AuthService);
