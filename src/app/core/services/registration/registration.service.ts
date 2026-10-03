@@ -10,6 +10,7 @@ import {
   RegistrationModel,
   RegistrationStatsModel,
 } from '../../models/registration/registration-index';
+import { RegistrationStatus } from '../../models/registration/registration.enums';
 
 import { ApiResponse } from '../../models/common/api-response';
 import {
@@ -78,11 +79,19 @@ export class RegistrationService {
     eventId: string,
     pageNumber = 1,
     pageSize = 20,
+    status?: RegistrationStatus | null,
+    search?: string,
   ): Observable<ApiResponse<PaginatedResponseModel<RegistrationModel>>> {
+    const params = new URLSearchParams({
+      page: String(pageNumber),
+      pageSize: String(pageSize),
+    });
+
+    if (status !== undefined && status !== null) params.set('status', String(status));
+    if (search?.trim()) params.set('search', search.trim());
+
     return this.http.get<ApiResponse<PaginatedResponseModel<RegistrationModel>>>(
-      this.api.getUrl(
-        `${REGISTRATION_ENDPOINTS.collection(eventId)}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-      ),
+      this.api.getUrl(`${REGISTRATION_ENDPOINTS.collection(eventId)}?${params.toString()}`),
     );
   }
 

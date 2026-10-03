@@ -19,12 +19,23 @@ export class ParticipantService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  list(eventId: string, pageNumber = 1, pageSize = 20,
+  list(
+    eventId: string,
+    pageNumber = 1,
+    pageSize = 20,
+    search?: string,
+    status?: number | null,
   ): Observable<ApiResponse<PaginatedResponseModel<ParticipantModel>>> {
+    const params = new URLSearchParams({
+      page: String(pageNumber),
+      pageSize: String(pageSize),
+    });
+
+    if (search?.trim()) params.set('search', search.trim());
+    if (status !== undefined && status !== null) params.set('status', String(status));
+
     return this.http.get<ApiResponse<PaginatedResponseModel<ParticipantModel>>>(
-      this.api.getUrl(
-        `${PARTICIPANT_ENDPOINTS.collection(eventId)}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-      ),
+      this.api.getUrl(`${PARTICIPANT_ENDPOINTS.collection(eventId)}?${params.toString()}`),
     );
   }
 
