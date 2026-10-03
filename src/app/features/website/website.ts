@@ -34,6 +34,11 @@ export class Website implements OnInit {
     this.loadWebsite(eventId);
   }
 
+  retry(): void {
+    const eventId = this.route.snapshot.paramMap.get('eventId');
+    if (eventId) this.loadWebsite(eventId);
+  }
+
   private loadWebsite(eventId: string): void {
     this.loading.set(true);
     this.error.set(null);

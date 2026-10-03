@@ -9,6 +9,13 @@
       @if (error()) {
         <p class="mt-2 text-sm text-black/60">{{ error() }}</p>
       }
+      <button
+        type="button"
+        class="mt-5 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
+        (click)="retry()"
+      >
+        Try again
+      </button>
     </div>
   </main>
 } @else {

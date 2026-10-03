@@ -109,19 +109,19 @@ export class EventWebsiteShell {
     return 'content';
   }
 
-normalizedTitle(value: string | null | undefined): string {
-  const text = value?.trim() ?? '';
+  normalizedTitle(value: string | null | undefined): string {
+    const text = value?.trim() ?? '';
 
-  if (!text) {
-    return '';
+    if (!text) {
+      return '';
+    }
+
+    return text
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/\s+/g, ' ')
+      .replace(/^the\s+/i, '')
+      .trim();
   }
-
-  return text
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/\s+/g, ' ')
-    .replace(/^the\s+/i, '')
-    .trim();
-}
 
   sectionId(sectionType: string | null | undefined, title: string | null | undefined): string {
     const kind = this.sectionKind(sectionType, title);
@@ -133,7 +133,7 @@ normalizedTitle(value: string | null | undefined): string {
   }
 
   imageForVenue(venue: { imageUrl?: string | null }): string | null {
-    return venue.imageUrl?.trim() || null;
+    return venue.imageUrl?.trim() || this.data().images?.[0]?.url || null;
   }
 
   imageForSession(session: { imageUrl?: string | null }): string | null {
@@ -160,6 +160,11 @@ normalizedTitle(value: string | null | undefined): string {
 
   isActive(item: NavigationItemModel): boolean {
     return !!item.pageId && item.pageId === this.page()?.id;
+  }
+
+  registrationHref(): string {
+    const eventId = this.data().event?.id;
+    return eventId ? `/events/${eventId}/register` : "#";
   }
 
   brandHref(): string {
