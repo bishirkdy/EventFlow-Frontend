@@ -14,7 +14,7 @@ describe('MyRegistrationsComponent', () => {
       imports: [MyRegistrationsComponent],
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'event-1' } } } },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: RegistrationService,
           useValue: {

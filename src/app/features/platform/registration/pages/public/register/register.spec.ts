@@ -32,11 +32,11 @@ describe('RegisterComponent', () => {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: { get: () => 'event-1' } } },
         },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: RegistrationFormService, useValue: { get: () => of(response) } },
         { provide: RegistrationService, useValue: { create: () => of(response) } },
         { provide: EventService, useValue: { getEventById: () => of({ ...response, data: null }) } },
-        { provide: ToastrService, useValue: { success: jasmine.createSpy(), error: jasmine.createSpy() } },
+        { provide: ToastrService, useValue: { success: vi.fn(), error: vi.fn() } },
       ],
     }).compileComponents();
 

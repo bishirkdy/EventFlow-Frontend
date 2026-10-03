@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpcomingEvents } from './upcoming-events';
+import { provideComponentTestProviders } from '../../../../testing/component-providers';
 
 describe('UpcomingEvents', () => {
   let component: UpcomingEvents;
@@ -9,6 +10,7 @@ describe('UpcomingEvents', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UpcomingEvents],
+      providers: provideComponentTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(UpcomingEvents);
