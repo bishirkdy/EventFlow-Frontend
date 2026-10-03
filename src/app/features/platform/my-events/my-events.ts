@@ -1,8 +1,9 @@
 import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event/event.service';
+import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { Event } from '../../../core/models/event/event.model';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-my-events',
@@ -14,6 +15,8 @@ export class MyEvents {
   events = signal<Event[]>([]);
   loading = signal(true);
   private eventService = inject(EventService);
+  private roleService = inject(EventRoleService);
+  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   publishing = signal<string | null>(null);
 
@@ -23,6 +26,23 @@ export class MyEvents {
       return;
     }
     this.loadEvents();
+  }
+
+  openEvent(event: Event): void {
+    this.roleService.getMyRoles(event.id).subscribe({
+      next: (response) => {
+        const roles = (response.data ?? []).map(r => r.roleName.toLowerCase());
+
+        if (roles.includes('owner')) {
+          void this.router.navigate(['/owner', event.id]);
+        } else {
+          void this.router.navigate(['/organizer', event.id, 'overview']);
+        }
+      },
+      error: () => {
+        void this.router.navigate(['/organizer', event.id, 'overview']);
+      },
+    });
   }
 
   publishEvent(event: Event): void {

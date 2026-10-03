@@ -128,8 +128,9 @@
                     </button>
                     }
 
-                    <a
-                        [routerLink]="['/organizer', event.id, 'overview']"
+                    <button
+                        type="button"
+                        (click)="openEvent(event)"
                         class="mt-5 block w-full rounded-lg
                                border border-border
                                px-4 py-2.5 text-center text-sm font-medium
@@ -139,7 +140,7 @@
                                hover:bg-(--color-secondary-light)
                                hover:text-(--color-secondary)">
                         Open Event
-                    </a>
+                    </button>
 
                 </div>
             </div>
