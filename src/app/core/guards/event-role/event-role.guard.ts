@@ -24,17 +24,13 @@ export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn => route =
   return roles.getMyRoles(eventId).pipe(
     map(response => {
       const names = (response.data ?? []).map(x => x.roleName.toLowerCase());
-      const allowed = names.includes(requiredRole.toLowerCase());
+      const isOwner = names.includes('owner');
+      const allowed =
+        names.includes(requiredRole.toLowerCase()) ||
+        (requiredRole === 'Organizer' && isOwner);
       if (allowed) return true;
-      const roleMap: Record<string, string> = {
-        owner: '/owner',
-        organizer: '/organizer',
-        attentionstaff: '/',
-      };
-      return router.createUrlTree([
-        roleMap[requiredRole] ?? '/',
-        ...(names.includes('owner') || names.includes('organizer') ? [eventId] : []),
-      ]);
+      if (isOwner) return router.createUrlTree(['/owner', eventId]);
+      return router.createUrlTree(['/']);
     }),
     catchError(() => of(router.createUrlTree(['/']))),
   );
