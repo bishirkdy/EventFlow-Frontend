@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { CreateSectionModel } from '../../../../../core/models/section/create-section.model';
 import { SectionService } from '../../../../../core/services/section/section.service';
@@ -17,7 +17,7 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 export class CreateSection implements OnInit {
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
 

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { NavigationItemService } from '../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { NavigationItemModel } from '../../../../core/models/navigation-item/navigation-item.model';
@@ -14,7 +14,7 @@ export class Navigation implements OnInit {
   private readonly router = inject(Router);
   private readonly service = inject(NavigationItemService);
   private readonly state = inject(OrganizerEventStateService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   readonly items = signal<NavigationItemModel[]>([]);
   readonly loading = signal(false);
   ngOnInit(): void {

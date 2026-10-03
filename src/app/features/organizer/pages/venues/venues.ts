@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { VenueModel } from '../../../../core/models/venue/venue.model';
 import { VenueService } from '../../../../core/services/venue/venue.service';
@@ -16,7 +16,7 @@ export class Venues implements OnInit {
   private readonly venueService = inject(VenueService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
   venues = signal<VenueModel[]>([]);

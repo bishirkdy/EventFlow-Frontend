@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../../core/services/event-page-section/event-page-section.service';
 
@@ -16,7 +16,7 @@ export class CreatePageSection {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly pageSectionService = inject(EventPageSectionService);
 
   private pageId = '';

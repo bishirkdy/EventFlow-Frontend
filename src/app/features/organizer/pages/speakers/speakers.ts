@@ -1,13 +1,13 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { SpeakerModel } from '../../../../core/models/speaker/speaker.model';
 import { SpeakerService } from '../../../../core/services/speaker/speaker.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({ selector:'app-speakers', standalone:true, templateUrl:'./speakers.html', styleUrl:'./speakers.css' })
 export class Speakers implements OnInit {
- private readonly service=inject(SpeakerService); private readonly route=inject(ActivatedRoute); private readonly router=inject(Router); private readonly toastr=inject(ToastrService); private readonly state=inject(OrganizerEventStateService);
+ private readonly service=inject(SpeakerService); private readonly route=inject(ActivatedRoute); private readonly router=inject(Router); private readonly toastr=inject(NotificationService); private readonly state=inject(OrganizerEventStateService);
  speakers=signal<SpeakerModel[]>([]); loading=signal(true); deleting=signal<string|null>(null); eventId='';
  activeCount = computed(() => this.speakers().filter(speaker => speaker.isActive).length);
  organizationCount = computed(() => new Set(this.speakers().map(speaker => speaker.organization?.trim()).filter(Boolean)).size);

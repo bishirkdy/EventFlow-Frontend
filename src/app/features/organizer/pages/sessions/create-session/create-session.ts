@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { CreateSessionModel } from '../../../../../core/models/session/create-session.model';
 import { SectionModel } from '../../../../../core/models/section/section.model';
@@ -24,7 +24,7 @@ export class CreateSession implements OnInit {
   private readonly sessionService = inject(SessionService);
   private readonly sectionService = inject(SectionService);
   private readonly venueService = inject(VenueService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
   eventId = '';

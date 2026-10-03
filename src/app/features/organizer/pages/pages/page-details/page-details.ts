@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../../core/models/event-page/event-page.model';
@@ -23,7 +23,7 @@ export class PageDetails implements OnInit {
   private readonly pageService = inject(EventPageService);
   private readonly navigationItemService = inject(NavigationItemService);
   private readonly eventState = inject(OrganizerEventStateService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   readonly page = signal<EventPageModel | null>(null);
   readonly navigationItem = signal<NavigationItemByPageModel | null>(null);

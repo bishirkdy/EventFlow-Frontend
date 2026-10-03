@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
@@ -22,7 +22,7 @@ export class EditNavigationItem implements OnInit {
   private readonly router = inject(Router);
   private readonly service = inject(NavigationItemService);
   private readonly state = inject(OrganizerEventStateService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly pages = inject(EventPageService);
 
   pageOptions: EventPageModel[] = [];

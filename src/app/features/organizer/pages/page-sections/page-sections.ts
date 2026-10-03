@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../core/services/event-page-section/event-page-section.service';
 import { PageSectionModel } from '../../../../core/models/event-page-section/PageSectionModel';
@@ -14,7 +14,7 @@ import { PageSectionModel } from '../../../../core/models/event-page-section/Pag
 export class PageSections implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly pageSectionService = inject(EventPageSectionService);
 
   readonly sections = signal<PageSectionModel[]>([]);

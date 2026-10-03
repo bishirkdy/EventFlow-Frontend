@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { SessionModel } from '../../../../../core/models/session/session.model';
 import { SessionService } from '../../../../../core/services/session/session.service';
@@ -24,7 +24,7 @@ export class SessionDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly venueService = inject(VenueService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);

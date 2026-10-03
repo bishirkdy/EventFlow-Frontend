@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../../core/services/event-page-section/event-page-section.service';
 import { PageSectionModel } from '../../../../../core/models/event-page-section/PageSectionModel';
@@ -18,7 +18,7 @@ export class EditPageSection implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
   private readonly pageSectionService = inject(EventPageSectionService);
   private readonly eventState = inject(OrganizerEventStateService);
 

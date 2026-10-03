@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../core/models/event-page/event-page.model';
@@ -16,7 +16,7 @@ export class Pages implements OnInit {
   private readonly pageService = inject(EventPageService);
   private readonly eventState = inject(OrganizerEventStateService);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   readonly pages = signal<EventPageModel[]>([]);
   readonly loading = signal(false);

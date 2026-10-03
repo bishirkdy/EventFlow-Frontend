@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
@@ -18,7 +18,7 @@ export class CreatePage {
   private readonly pageService = inject(EventPageService);
   private readonly eventState = inject(OrganizerEventStateService);
   private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   readonly saving = signal(false);
 

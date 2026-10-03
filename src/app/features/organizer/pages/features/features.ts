@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
 import { EventFeatureModel } from '../../../../core/models/event-feature/event-feature.model';
@@ -14,7 +14,7 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 export class Features implements OnInit {
   private readonly eventFeatureService = inject(EventFeatureService);
   private readonly eventState = inject(OrganizerEventStateService);
-  private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(NotificationService);
 
   readonly features = signal<EventFeatureModel[]>([]);
   readonly loading = signal(true);
