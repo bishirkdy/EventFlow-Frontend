@@ -63,6 +63,15 @@ export const routes: Routes = [
     loadComponent: () => import('./features/platform/photos/face-detection/selfie-capture/selfie-capture').then((m) => m.SelfieCapture),
   },
   {
+    path: 'events/:eventId/certificates',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/platform/certificates/my-certificate/my-certificate').then((m) => m.MyCertificate),
+  },
+  {
+    path: 'verify/certificate/:certificateNumber',
+    loadComponent: () => import('./features/platform/certificates/certificate-verify/certificate-verify').then((m) => m.CertificateVerify),
+  },
+  {
     path: 'events/:eventId/:slug',
     loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },

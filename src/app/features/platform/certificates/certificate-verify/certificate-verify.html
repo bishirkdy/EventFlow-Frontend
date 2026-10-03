@@ -1,0 +1,73 @@
+<div class="p-6">
+  <div class="max-w-xl mx-auto">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Certificate Verification</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-1">Check whether a certificate is authentic</p>
+    </div>
+
+    @if (loading()) {
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center text-gray-500 dark:text-gray-400">
+        Verifying certificate...
+      </div>
+    } @else if (result(); as cert) {
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center">
+        @if (cert.isValid) {
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 class="text-lg font-semibold text-green-600 dark:text-green-400">Valid Certificate</h2>
+        } @else {
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 class="text-lg font-semibold text-red-600 dark:text-red-400">Revoked Certificate</h2>
+        }
+
+        <div class="mt-5 space-y-2 text-left">
+          <div class="flex justify-between gap-4 py-2 border-b border-border">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Certificate No.</span>
+            <span class="text-sm font-mono font-medium text-gray-900 dark:text-white">{{ cert.certificateNumber }}</span>
+          </div>
+          <div class="flex justify-between gap-4 py-2 border-b border-border">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Participant</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ cert.participantName }}</span>
+          </div>
+          <div class="flex justify-between gap-4 py-2 border-b border-border">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Event</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ cert.eventName }}</span>
+          </div>
+          <div class="flex justify-between gap-4 py-2 border-b border-border">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Issued</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ formatDate(cert.issuedAtUtc) }}</span>
+          </div>
+          @if (cert.revokedAtUtc) {
+            <div class="flex justify-between gap-4 py-2">
+              <span class="text-sm text-gray-500 dark:text-gray-400">Revoked</span>
+              <span class="text-sm font-medium text-red-600 dark:text-red-400">{{ formatDate(cert.revokedAtUtc) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center">
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+          <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3L13.74 4a2 2 0 00-3.48 0L3.34 16a2 2 0 001.73 3z" />
+          </svg>
+        </div>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Certificate Not Found</h2>
+        <p class="mt-2 text-gray-500 dark:text-gray-400">{{ error() }}</p>
+        <a
+          routerLink="/"
+          class="mt-5 inline-block px-5 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+        >
+          Back to Home
+        </a>
+      </div>
+    }
+  </div>
+</div>

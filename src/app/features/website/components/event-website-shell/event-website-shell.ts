@@ -177,6 +177,11 @@ export class EventWebsiteShell {
     return eventId ? `/events/${eventId}/gallery` : "#";
   }
 
+  certificatesHref(): string {
+    const eventId = this.data().event?.id;
+    return eventId ? `/events/${eventId}/certificates` : "#";
+  }
+
   brandHref(): string {
     const eventId = this.data().event?.id;
     return eventId ? `/events/${eventId}` : '#';
