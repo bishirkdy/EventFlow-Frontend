@@ -11,6 +11,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/photographer/invitation/accept-invitation/accept-invitation').then((m) => m.AcceptInvitation),
   },
   {
+    path: 'photographer',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/photographer/dashboard/photographer-dashboard.routes').then((m) => m.photographerRoutes),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },

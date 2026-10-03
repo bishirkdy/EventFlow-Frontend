@@ -1,0 +1,50 @@
+.photographer-dashboard {
+  min-height: 100vh;
+}
+
+.photographer-dashboard nav {
+  display: flex;
+  border-radius: 0.75rem;
+  background-color: var(--color-muted);
+}
+
+.photographer-dashboard nav a {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  transition: all 0.2s ease;
+}
+
+.photographer-dashboard nav a:hover {
+  color: var(--color-gray-900);
+}
+
+.photographer-dashboard nav a[routerLinkActive] {
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  color: var(--color-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .photographer-dashboard nav a {
+    color: var(--color-gray-400);
+  }
+  .photographer-dashboard nav a:hover {
+    color: var(--color-gray-100);
+  }
+  .photographer-dashboard nav a[routerLinkActive] {
+    background-color: var(--color-gray-800);
+    color: var(--color-primary);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .photographer-dashboard nav {
+    flex-direction: column;
+  }
+  .photographer-dashboard nav a {
+    text-align: center;
+  }
+}

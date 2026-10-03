@@ -1,0 +1,47 @@
+.photo-upload {
+  min-height: 100vh;
+}
+
+.photo-upload .drag-active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.photo-upload .group:hover .opacity-0 {
+  opacity: 1;
+}
+
+.photo-upload input[type="file"] {
+  display: none;
+}
+
+.photo-upload img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Drag and drop styles */
+.photo-upload .border-dashed {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.photo-upload .border-dashed:hover {
+  border-color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 5%, transparent);
+}
+
+.photo-upload .drag-active {
+  border-color: var(--color-primary) !important;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
+}
+
+/* Animation for upload progress */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.photo-upload .animate-spin {
+  animation: spin 1s linear infinite;
+}

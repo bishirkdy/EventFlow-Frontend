@@ -1,0 +1,156 @@
+<div class="photo-upload p-6">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Upload Photos</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">Add photos to the event gallery</p>
+      </div>
+      <button
+        routerLink=".."
+        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Drop Zone -->
+    <div class="border-2 border-dashed border-border rounded-2xl p-8 text-center transition-colors hover:border-primary/50 hover:bg-primary/5"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)"
+         [class.drag-active]="dragActive()">
+      <input
+        type="file"
+        #fileInput
+        accept="image/*"
+        multiple
+        (change)="onFilesSelected($event)"
+        class="hidden"
+        [attr.multiple]="true"
+      >
+
+      @if (dragActive()) {
+        <div class="bg-primary/10 text-primary">
+          <svg class="mx-auto h-12 w-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a1 1 0 011-1h12a1 1 0 110 2H8a1 1 0 01-1-1z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a1 1 0 011-1h2.586a1 1 0 00.707-.293l4.5-4.5a1 1 0 000-1.414l-4.5-4.5A1 1 0 0011 9H8a1 1 0 01-1-1V5a1 1 0 011-1h6a1 1 0 011 1v2h1" />
+          </svg>
+          <p class="mt-2 text-lg font-medium">Drop files here</p>
+        </div>
+      } @else {
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a1 1 0 011-1h12a1 1 0 110 2H8a1 1 0 01-1-1z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a1 1 0 011-1h2.586a1 1 0 00.707-.293l4.5-4.5a1 1 0 000-1.414l-4.5-4.5A1 1 0 0011 9H8a1 1 0 01-1-1V5a1 1 0 011-1h6a1 1 0 011 1v2h1" />
+        </svg>
+        <p class="mt-2 text-lg font-medium text-gray-900 dark:text-white">Drag & drop photos here</p>
+        <p class="mt-1 text-gray-500 dark:text-gray-400">or click to browse</p>
+      }
+
+      <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+        <p>Supports: JPG, PNG, WebP, HEIC • Max 10MB per file • Max 20 files</p>
+      </div>
+
+      <button
+        type="button"
+        (click)="fileInput.click()"
+        class="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-gray-700 dark:text-gray-300 hover:bg-muted transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>Choose Files</span>
+      </button>
+    </div>
+
+    <!-- Selected Files Preview -->
+    @if (photos().length > 0) {
+      <div class="mt-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+          Selected Files ({{ photos().length }})
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          @for (photo of photos(); track photo; let i = $index) {
+            <div class="relative group border border-border rounded-xl overflow-hidden bg-white dark:bg-gray-800">
+              <div class="aspect-square overflow-hidden relative">
+                <img
+                  [src]="getFilePreview(photo)"
+                  [alt]="photo.name"
+                  class="w-full h-full object-cover"
+                >
+                @if (uploading()[i.toString()]) {
+                  <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <div class="text-center text-white">
+                      <svg class="animate-spin mx-auto h-6 w-6" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                      @if (uploadProgress()[i.toString()] > 0) {
+                        <p class="mt-1 text-sm">{{ uploadProgress()[i.toString()] }}%</p>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="p-2">
+                <p class="text-xs text-gray-600 dark:text-gray-400 truncate" [title]="photo.name">{{ photo.name }}</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">{{ formatFileSize(photo.size) }}</p>
+              </div>
+              <button
+                type="button"
+                (click)="removePhoto(i)"
+                class="absolute top-1 right-1 p-1 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                [disabled]="uploading()[i.toString()]"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 mt-6">
+        <button
+          type="button"
+          (click)="uploadPhotos()"
+          [disabled]="photos().length === 0 || isUploading()"
+          class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          @if (isUploading()) {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              Uploading...
+            </span>
+          } @else {
+            Upload All ({{ photos().length }})
+          }
+        </button>
+        <button
+          type="button"
+          (click)="cancelUpload()"
+          [disabled]="isUploading()"
+          class="px-6 py-3 border border-border rounded-lg text-gray-700 dark:text-gray-300 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<input
+  #dragDropInput
+  type="file"
+  accept="image/*"
+  multiple
+  (change)="onFilesSelected($event)"
+  class="hidden"
+>
