@@ -58,7 +58,7 @@ export class EditPage implements OnInit {
 
     this.loading.set(true);
 
-    this.pageService.getPageById(eventId, this.pageId).subscribe({
+    this.pageService.getManagePageById(eventId, this.pageId).subscribe({
       next: (response) => {
         const page = response.data;
         if (!page) {

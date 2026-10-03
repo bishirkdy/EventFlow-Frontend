@@ -61,7 +61,7 @@ export class PageDetails implements OnInit {
   loadPage(): void {
     this.loading.set(true);
 
-    this.pageService.getPageById(this.eventId, this.pageId).subscribe({
+    this.pageService.getManagePageById(this.eventId, this.pageId).subscribe({
       next: (r) => {
         if (!r.data) {
           this.toastr.error('Page not found.');

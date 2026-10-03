@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventService } from '../../../../core/services/event/event.service';
+import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 export class EventDetails {
   private readonly route = inject(ActivatedRoute);
   private readonly eventService = inject(EventService);
+  private readonly toastr = inject(NotificationService);
   private readonly eventState = inject(OrganizerEventStateService);
 
   event = this.eventState.event;
@@ -21,6 +23,7 @@ export class EventDetails {
     const eventId = this.route.parent?.parent?.snapshot.paramMap.get('eventId');
 
     if (!eventId) {
+      this.toastr.error('Event information is missing.');
       return;
     }
 
@@ -32,14 +35,14 @@ export class EventDetails {
       next: (response) => {
         const event = response.data;
         if (!event) {
-          console.error('Event data was not returned.');
+          this.toastr.error('Event details could not be loaded.');
           return;
         }
         this.eventState.setEventId(eventId);
         this.eventState.setEvent(event);
       },
-      error: (error: unknown) => {
-        console.error('Failed to load event details', error);
+      error: () => {
+        this.toastr.error('Failed to load event details.');
       },
     });
   }

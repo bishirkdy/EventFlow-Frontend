@@ -37,7 +37,7 @@ export class Pages implements OnInit {
 
     this.loading.set(true);
 
-    this.pageService.getPages(eventId).subscribe({
+    this.pageService.getManagePages(eventId).subscribe({
       next: (response) => {
         this.pages.set(response.data ?? []);
         this.loading.set(false);

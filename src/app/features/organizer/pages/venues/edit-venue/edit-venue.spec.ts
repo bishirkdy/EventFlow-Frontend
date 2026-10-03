@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditVenue } from './edit-venue';
+import { provideComponentTestProviders } from '../../../../../testing/component-providers';
 
 describe('EditVenue', () => {
   let component: EditVenue;
@@ -9,6 +10,7 @@ describe('EditVenue', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EditVenue],
+      providers: provideComponentTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditVenue);

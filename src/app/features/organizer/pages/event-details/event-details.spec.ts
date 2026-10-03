@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventDetails } from './event-details';
+import { provideComponentTestProviders } from '../../../../testing/component-providers';
 
 describe('EventDetails', () => {
   let component: EventDetails;
@@ -9,6 +10,7 @@ describe('EventDetails', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EventDetails],
+      providers: provideComponentTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventDetails);

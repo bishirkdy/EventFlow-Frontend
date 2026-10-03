@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, Subject } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
@@ -28,6 +29,7 @@ export class RegistrationsComponent {
   private readonly router = inject(Router);
   private readonly toastr = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly filterChanged = new Subject<void>();
 
   protected readonly eventId = this.eventState.eventId;
 
@@ -70,32 +72,29 @@ export class RegistrationsComponent {
   ];
 
   constructor() {
+    this.filterChanged
+      .pipe(debounceTime(250), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.pageNumber.set(1);
+        this.load();
+      });
+
     this.load();
   }
 
   protected filteredRegistrations(): RegistrationModel[] {
-    const query = this.search().trim().toLowerCase();
-    const status = this.statusFilter();
+    return this.registrations();
+  }
 
-    return this.registrations().filter((item) => {
-      const participant = item.participant;
+  protected onSearch(value: string): void {
+    this.search.set(value);
+    this.filterChanged.next();
+  }
 
-      const text = [
-        item.registrationNumber,
-        participant?.firstName,
-        participant?.lastName,
-        participant?.email,
-        participant?.organization,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-
-      const matchesSearch = !query || text.includes(query);
-      const matchesStatus = status === null || item.status === status;
-
-      return matchesSearch && matchesStatus;
-    });
+  protected onStatus(value: string): void {
+    this.statusFilter.set(value === '' ? null : Number(value));
+    this.pageNumber.set(1);
+    this.load();
   }
 
   protected statusLabel(status: RegistrationStatus): string {

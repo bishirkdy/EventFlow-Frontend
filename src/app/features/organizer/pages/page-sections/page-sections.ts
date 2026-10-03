@@ -50,7 +50,7 @@ export class PageSections implements OnInit {
   loadSections(): void {
     this.loading.set(true);
 
-    this.pageSectionService.getSections(this.pageId).subscribe({
+    this.pageSectionService.getManageSections(this.pageId).subscribe({
       next: (response) => {
         this.sections.set(response.data ?? []);
         this.loading.set(false);

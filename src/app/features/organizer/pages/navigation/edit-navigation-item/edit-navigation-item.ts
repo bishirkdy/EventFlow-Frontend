@@ -49,10 +49,10 @@ export class EditNavigationItem implements OnInit {
       return;
     }
 
-    this.pages.getPages(id).subscribe({
+    this.pages.getManagePages(id).subscribe({
       next: (r) => {
-        this.pageOptions = (r.data ?? []).filter(
-          (p) => p.isPublished
+        this.pageOptions = [...(r.data ?? [])].sort(
+          (a, b) => Number(b.isPublished) - Number(a.isPublished),
         );
         this.loadingPages = false;
       },

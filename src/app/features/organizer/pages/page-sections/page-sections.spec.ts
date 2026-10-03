@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageSections } from './page-sections';
+import { provideComponentTestProviders } from '../../../../testing/component-providers';
 
 describe('PageSections', () => {
   let component: PageSections;
@@ -9,6 +10,7 @@ describe('PageSections', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageSections],
+      providers: provideComponentTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(PageSections);

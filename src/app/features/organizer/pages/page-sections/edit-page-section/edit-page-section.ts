@@ -62,10 +62,6 @@ export class EditPageSection implements OnInit {
       currentRoute = currentRoute.parent;
     }
 
-    console.log('Event ID:', this.eventId);
-    console.log('Page ID:', this.pageId);
-    console.log('Section ID:', this.sectionId);
-
     if (!this.pageId || !this.sectionId || !this.eventId) {
       this.toastr.error('Page section information is missing.');
       this.loading.set(false);
@@ -77,7 +73,7 @@ export class EditPageSection implements OnInit {
   loadSection(): void {
     this.loading.set(true);
 
-    this.pageSectionService.getSections(this.pageId).subscribe({
+    this.pageSectionService.getManageSections(this.pageId).subscribe({
       next: (response) => {
         const section = response.data?.find((item) => item.id === this.sectionId);
 

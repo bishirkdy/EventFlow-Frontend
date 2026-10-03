@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateSection } from './update-section';
+import { provideComponentTestProviders } from '../../../../../testing/component-providers';
 
 describe('UpdateSection', () => {
   let component: UpdateSection;
@@ -9,6 +10,7 @@ describe('UpdateSection', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UpdateSection],
+      providers: provideComponentTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(UpdateSection);

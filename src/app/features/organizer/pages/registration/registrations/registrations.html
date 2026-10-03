@@ -86,19 +86,13 @@
             type="search"
             placeholder="Search attendee..."
             [value]="search()"
-            (input)="search.set($any($event.target).value)"
+            (input)="onSearch($any($event.target).value)"
             class="w-full border border-[#d7d3ce] bg-white px-4 py-2.5 text-sm text-[#202020] outline-none placeholder:text-[#99938d] focus:border-[#202020] sm:w-64"
           />
 
           <select
             [value]="statusFilter() ?? ''"
-            (change)="
-              statusFilter.set(
-                $any($event.target).value === ''
-                  ? null
-                  : +$any($event.target).value
-              )
-            "
+            (change)="onStatus($any($event.target).value)"
             class="border border-[#d7d3ce] bg-white px-4 py-2.5 text-sm text-[#202020] outline-none focus:border-[#202020]"
           >
             <option value="">All statuses</option>

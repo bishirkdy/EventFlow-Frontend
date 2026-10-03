@@ -67,6 +67,14 @@ export class RegistrationDetailsComponent {
       });
   }
 
+  protected waitlist(): void {
+    this.action((eventId, id) => this.service.waitlist(eventId, id), 'Registration moved to waitlist.');
+  }
+
+  protected promote(): void {
+    this.action((eventId, id) => this.service.promote(eventId, id), 'Registration promoted.');
+  }
+
   protected cancel(): void {
     if (!window.confirm('Cancel this registration?')) return;
     this.action((eventId, id) => this.service.cancel(eventId, id), 'Registration cancelled.');
