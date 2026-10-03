@@ -57,6 +57,14 @@ export const organizerRoutes: Routes = [
           },
         ],
       },
+      // Certificates
+      {
+        path: 'settings/certificates',
+        loadComponent: () =>
+          import('./pages/settings/certificates/certificate-settings').then(
+            (m) => m.CertificateSettings
+          ),
+      },
       // Website preview
       {
         path: 'preview',
