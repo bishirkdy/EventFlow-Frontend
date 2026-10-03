@@ -167,6 +167,11 @@ export class EventWebsiteShell {
     return eventId ? `/events/${eventId}/register` : "#";
   }
 
+  myRegistrationHref(): string {
+    const eventId = this.data().event?.id;
+    return eventId ? `/events/${eventId}/my-registrations` : "#";
+  }
+
   brandHref(): string {
     const eventId = this.data().event?.id;
     return eventId ? `/events/${eventId}` : '#';

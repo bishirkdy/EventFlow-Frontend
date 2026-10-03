@@ -7,6 +7,11 @@
           <span class="brand-name">{{ event.name }}</span>
         </a>
 
+        <div class="event-actions">
+          <a [href]="registrationHref()" class="event-action event-action--primary">Register</a>
+          <a [href]="myRegistrationHref()" class="event-action">My Registration</a>
+        </div>
+
         @if (navItems().length) {
           <nav class="desktop-nav" aria-label="Event navigation">
             @for (item of navItems(); track item.id) {

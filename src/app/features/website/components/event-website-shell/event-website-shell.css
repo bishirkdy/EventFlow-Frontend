@@ -1139,3 +1139,8 @@
         min-height: 360px
     }
 }
+.event-actions{display:flex;align-items:center;gap:.5rem;margin-left:auto;flex-shrink:0}
+.event-action{display:inline-flex;align-items:center;justify-content:center;padding:.65rem .9rem;border:1px solid currentColor;border-radius:999px;font-size:.78rem;font-weight:600;text-decoration:none;opacity:.82;transition:opacity .2s,transform .2s}
+.event-action:hover{opacity:1;transform:translateY(-1px)}
+.event-action--primary{background:#202020;color:#fff;border-color:#202020}
+@media (max-width: 900px){.event-actions{order:3;width:100%;margin-left:0}.event-action{flex:1}}
