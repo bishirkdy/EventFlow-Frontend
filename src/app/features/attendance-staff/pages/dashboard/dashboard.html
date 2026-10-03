@@ -1,0 +1,23 @@
+<section class="space-y-6">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">Operations</p>
+      <h2 class="mt-1 text-2xl font-semibold tracking-tight">Attendance dashboard</h2>
+      <p class="mt-2 text-sm text-text-secondary">Monitor check-ins and move directly into the scanner.</p>
+    </div>
+    <a [routerLink]="['../scan']" class="inline-flex items-center justify-center bg-primary px-5 py-3 text-sm font-semibold text-white hover:opacity-90">Scan participant QR</a>
+  </div>
+
+  @if (loading()) {
+    <div class="border border-border bg-surface p-10 text-sm text-text-secondary">Loading attendance data...</div>
+  } @else if (!dashboard()) {
+    <div class="border border-border bg-surface p-10 text-sm text-text-secondary">Attendance data is unavailable.</div>
+  } @else {
+    <div class="grid gap-px border border-border bg-border sm:grid-cols-2 xl:grid-cols-4">
+      <div class="bg-surface p-6"><p class="text-sm text-text-secondary">Participants checked in</p><p class="mt-2 text-3xl font-semibold">{{ dashboard()!.checkedIn }}</p></div>
+      <div class="bg-surface p-6"><p class="text-sm text-text-secondary">Currently inside</p><p class="mt-2 text-3xl font-semibold">{{ dashboard()!.currentlyInside }}</p></div>
+      <div class="bg-surface p-6"><p class="text-sm text-text-secondary">Checked out</p><p class="mt-2 text-3xl font-semibold">{{ dashboard()!.checkedOut }}</p></div>
+      <div class="bg-surface p-6"><p class="text-sm text-text-secondary">Attendance</p><p class="mt-2 text-3xl font-semibold">{{ dashboard()!.attendancePercentage | number:'1.0-2' }}%</p></div>
+    </div>
+  }
+</section>

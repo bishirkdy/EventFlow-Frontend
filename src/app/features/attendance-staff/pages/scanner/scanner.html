@@ -1,0 +1,29 @@
+<section class="mx-auto max-w-3xl space-y-6">
+  <div>
+    <p class="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">Check-in</p>
+    <h2 class="mt-1 text-2xl font-semibold tracking-tight">QR scanner</h2>
+    <p class="mt-2 text-sm text-text-secondary">Verify the ticket on the server before recording attendance.</p>
+  </div>
+  <div class="overflow-hidden border border-border bg-black">
+    <video #video class="aspect-video w-full object-cover" playsinline muted></video>
+  </div>
+  <div class="border border-border bg-surface p-5">
+    <div class="flex items-center gap-3">
+      <span class="h-2.5 w-2.5 rounded-full bg-secondary"></span>
+      <p class="text-sm text-text-primary">{{ message() }}</p>
+    </div>
+    <div class="mt-5 flex gap-3">
+      <button type="button" (click)="start()" class="border border-border px-4 py-2.5 text-sm font-medium hover:border-secondary">Start camera</button>
+      @if (status() === 'success' || status() === 'error') {
+        <button type="button" (click)="start()" class="bg-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90">Scan next</button>
+      }
+    </div>
+    <div class="mt-6 border-t border-border pt-5">
+      <label class="text-sm font-medium">Manual QR fallback</label>
+      <div class="mt-2 flex gap-2">
+        <input [value]="manualQr()" (input)="manualQr.set($any($event.target).value)" class="min-w-0 flex-1 border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-secondary" placeholder="Paste QR value" />
+        <button type="button" (click)="verifyManual()" class="bg-secondary px-4 py-2.5 text-sm font-semibold text-white">Verify</button>
+      </div>
+    </div>
+  </div>
+</section>
