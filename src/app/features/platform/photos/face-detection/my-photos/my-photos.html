@@ -1,0 +1,182 @@
+<div class="my-photos min-h-screen bg-background">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Photos of You</h1>
+          <p class="text-gray-600 dark:text-gray-400 mt-1">Find photos you appear in using face recognition</p>
+        </div>
+        <a
+          routerLink="../../gallery"
+          class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Selfie Capture Link -->
+      <div class="mb-6 p-4 bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/800 rounded-xl">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 21a9 9 0 016-12.42 4 4 0 010-8 3 3 0 00-4.472 0 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 4 4 0 006.479-2.235 1 1 0 011.054 1.502z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium text-gray-900 dark:text-white">Face Profile</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ hasFaceProfile() ? 'Face profile saved' : 'Not set up yet' }}
+              </p>
+            </div>
+          </div>
+          <a
+            routerLink="../selfie"
+            class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
+          >
+            {{ hasFaceProfile() ? 'Update Selfie' : 'Take Selfie' }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-border">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Photos</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalPhotos() }}</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-border">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Matched Photos</p>
+          <p class="text-2xl font-bold text-primary">{{ totalMatched() }}</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-border">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Face Profile</p>
+          <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ hasFaceProfile() ? 'Ready' : 'Not Set' }}</p>
+        </div>
+      </div>
+
+      <!-- Find My Photos Button -->
+      @if (!loading() && totalPhotos() > 0 && !matching()) {
+        <div class="mb-6">
+          <button
+            (click)="findMyPhotos()"
+            [disabled]="!hasFaceProfile() || matching()"
+            class="w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            @if (matching()) {
+              <span class="flex items-center justify-center gap-2">
+                <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Scanning...
+              </span>
+            } @else {
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Find My Photos
+              </span>
+            }
+          </button>
+          @if (!hasFaceProfile()) {
+            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+              Please set up your face profile first by taking a selfie.
+            </p>
+          }
+        </div>
+      }
+
+      <!-- Loading State -->
+      @if (loading()) {
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track i) {
+            <div class="aspect-square bg-muted animate-pulse rounded-xl"></div>
+          }
+        </div>
+      } @else if (matching()) {
+        <div class="text-center py-12">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
+            <svg class="animate-spin h-8 w-8" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Scanning photos for your face...</h3>
+          <p class="text-gray-500 dark:text-gray-400">This may take a moment depending on the number of photos</p>
+        </div>
+      } @else if (matchedPhotos().length === 0 && !loading() && !matching()) {
+        @if (hasFaceProfile()) {
+          <div class="text-center py-12">
+            <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No matching photos found</h3>
+            <p class="mt-2 text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+              We couldn't find any photos of you in this event. Try retaking your selfie with better lighting, or check back later when more photos are uploaded.
+            </p>
+            <button
+              (click)="findMyPhotos()"
+              class="mt-4 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            >
+              Scan Again
+            </button>
+          </div>
+        } @else {
+          <div class="text-center py-12">
+            <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 21a9 9 0 016-12.42 4 4 0 010-8 3 3 0 00-4.472 0 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 4 4 0 006.479-2.235 1 1 0 011.054 1.502z" />
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Set Up Face Recognition</h3>
+            <p class="mt-2 text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+              Take a selfie to enable automatic face detection in event photos.
+            </p>
+            <a routerLink="../selfie" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 21a9 9 0 016-12.42 4 4 0 010-8 3 3 0 00-4.472 0 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 3 3 0 000 4.5 4 4 0 006.479-2.235 1 1 0 011.054 1.502z" />
+              </svg>
+              Take Selfie
+            </a>
+          </div>
+        }
+      } @else if (matchedPhotos().length > 0) {
+        <!-- Matched Photos Grid -->
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+            Found {{ matchedPhotos().length }} photo{{ matchedPhotos().length !== 1 ? 's' : '' }} of you
+          </h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          @for (photo of matchedPhotos(); track photo.photoId) {
+            <div class="relative group aspect-square overflow-hidden rounded-xl border border-border bg-white dark:bg-gray-800 hover:shadow-lg transition-shadow cursor-pointer"
+                 (click)="openPhoto(photo)">
+              <img
+                [src]="photo.imageUrl"
+                [alt]="'Matched photo ' + photo.photoId"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              >
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="absolute bottom-3 left-3 right-3 flex justify-between">
+                  <span class="text-white text-sm font-medium px-2 py-1 bg-black/50 rounded">
+                    {{ getConfidenceLabel(photo.confidence) }}
+                  </span>
+                  <span class="text-white text-xs px-2 py-1 bg-black/50 rounded"
+                        [class]="getConfidenceClass(photo.confidence)">
+                    {{ roundConfidence(photo.confidence) }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+  </div>
+</div>

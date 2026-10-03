@@ -1,0 +1,129 @@
+<div class="selfie-capture">
+  <div class="max-w-md mx-auto">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Set Up Face Recognition</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">
+      Take a selfie to enable automatic face detection in event photos.
+      Your selfie is processed locally and never leaves your device.
+    </p>
+
+    @if (hasFaceProfile()) {
+      <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 mb-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-green-800 dark:text-green-300">Face profile saved</p>
+              <p class="text-xs text-green-700 dark:text-green-400">{{ formatDescriptor(faceDescriptor()) }}</p>
+            </div>
+          </div>
+          <button
+            (click)="retakeSelfie()"
+            class="text-sm text-green-700 dark:text-green-400 hover:underline"
+          >
+            Retake
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (!hasFaceProfile()) {
+      <div class="space-y-4">
+        @if (!showCamera()) {
+          <button
+            (click)="startCamera()"
+            [disabled]="capturing() || processing()"
+            class="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 21a9 9 0 016-12.42 4 4 0 010-8 3 3 0 00-4.472 0 3 3 0 000 4.5 3 3 0 01-4.472 0 3 3 0 000 4.5 3 3 0 01-4.472 0 3 3 0 000 4.5 4 4 0 006.479-2.235 1 1 0 011.054 1.502z" />
+            </svg>
+            Take Selfie
+          </button>
+          <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+            This will access your camera to take a selfie for face recognition.
+          </p>
+        }
+
+        @if (showCamera()) {
+          <div class="relative bg-black rounded-xl overflow-hidden">
+            <video
+              #videoElement
+              autoplay
+              playsinline
+              class="w-full aspect-video"
+              aria-label="Camera preview"
+            ></video>
+
+            <canvas
+              #canvasElement
+              class="hidden"
+            ></canvas>
+
+            @if (faceDetected()) {
+              <div class="absolute inset-0 border-2 border-green-500 rounded-xl animate-pulse"></div>
+            } @else {
+              <div class="absolute inset-0 border-2 border-amber-500 rounded-xl"></div>
+            }
+
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="flex justify-between">
+                <span class="px-3 py-1 bg-black/70 text-white text-sm rounded-full">
+                  {{ faceDetected() ? 'Face detected ✓' : 'Position your face in frame' }}
+                </span>
+                <button
+                  (click)="stopCamera()"
+                  class="px-3 py-1 bg-red-600 text-white text-sm rounded-full hover:bg-red-700 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex gap-3">
+            <button
+              (click)="captureSelfie()"
+              [disabled]="capturing() || processing() || !faceDetected()"
+              class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              @if (capturing()) {
+                <span class="flex items-center justify-center gap-2">
+                  <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                  Processing...
+                </span>
+              } @else {
+                Capture Selfie
+              }
+            </button>
+            <button
+              (click)="stopCamera()"
+              class="px-6 py-3 border border-border rounded-lg text-gray-700 dark:text-gray-300 hover:bg-muted transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+
+          @if (error()) {
+            <p class="mt-3 text-sm text-red-600 dark:text-red-400 text-center" role="alert">{{ error() }}</p>
+          }
+        }
+      </div>
+    }
+
+    @if (hasFaceProfile() && !showCamera()) {
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+        You can now find photos of yourself in the "My Photos" section of the gallery.
+      </p>
+    }
+  </div>
+</div>
+
+<canvas #canvasElement class="hidden"></canvas>

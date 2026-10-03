@@ -1,0 +1,84 @@
+.selfie-capture {
+  min-height: 100vh;
+}
+
+.selfie-capture video {
+  max-width: 100%;
+  height: auto;
+}
+
+.selfie-capture canvas {
+  display: none;
+}
+
+/* Camera preview */
+.selfie-capture .relative {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.selfie-capture video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Face detection overlay */
+.selfie-capture .animate-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    border-color: #22c55e;
+  }
+  50% {
+    opacity: 0.7;
+    border-color: #16a34a;
+  }
+}
+
+/* Camera access denied */
+.selfie-capture .camera-error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .selfie-capture .camera-error {
+    background-color: #7f1d1d;
+    border-color: #7f1d1d;
+    color: #fca5a5;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .selfie-capture .flex.gap-3 {
+    flex-direction: column;
+  }
+}
+
+/* Loading spinner */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Face detection status */
+.selfie-capture .animate-pulse {
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
