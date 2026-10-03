@@ -31,6 +31,13 @@ export const organizerRoutes: Routes = [
         ],
       },
 
+      // Event settings
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./pages/event-settings/event-settings').then((m) => m.EventSettings),
+      },
+
       // Website preview
       {
         path: 'preview',
@@ -46,6 +53,7 @@ export const organizerRoutes: Routes = [
       // Sections
       {
         path: 'sections',
+        canActivate: [eventFeatureGuard('sessions')],
         children: [
           {
             path: '',
@@ -74,6 +82,7 @@ export const organizerRoutes: Routes = [
       // Venues
       {
         path: 'venues',
+        canActivate: [eventFeatureGuard('venues')],
         children: [
           {
             path: '',
@@ -158,6 +167,7 @@ export const organizerRoutes: Routes = [
       // Sessions
       {
         path: 'sessions',
+        canActivate: [eventFeatureGuard('sessions')],
         children: [
           {
             path: '',
@@ -267,6 +277,7 @@ export const organizerRoutes: Routes = [
       //Registration
       {
         path: 'registration',
+        canActivate: [eventFeatureGuard('registration')],
         children: [
           {
             path: '',
@@ -292,6 +303,13 @@ export const organizerRoutes: Routes = [
             loadComponent: () =>
               import('./pages/registration/registration-details/registration-details').then(
                 (m) => m.RegistrationDetailsComponent,
+              ),
+          },
+          {
+            path: 'participants',
+            loadComponent: () =>
+              import('./pages/registration/participants/participants').then(
+                (m) => m.ParticipantsComponent,
               ),
           },
         ],

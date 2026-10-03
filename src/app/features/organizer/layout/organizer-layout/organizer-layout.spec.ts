@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OrganizerLayout } from './organizer-layout';
+import { provideComponentTestProviders } from '../../../../testing/component-providers';
 
 describe('OrganizerLayout', () => {
   let component: OrganizerLayout;
@@ -9,6 +10,7 @@ describe('OrganizerLayout', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OrganizerLayout],
+      providers: provideComponentTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(OrganizerLayout);
