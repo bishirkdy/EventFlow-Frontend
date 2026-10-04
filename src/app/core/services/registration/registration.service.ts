@@ -10,6 +10,10 @@ import {
   RegistrationModel,
   RegistrationStatsModel,
 } from '../../models/registration/registration-index';
+import {
+  CertificateAnalyticsModel,
+  RegistrationAnalyticsModel,
+} from '../../models/registration/registration-stats.model';
 import { RegistrationStatus } from '../../models/registration/registration.enums';
 
 import { ApiResponse } from '../../models/common/api-response';
@@ -98,6 +102,23 @@ export class RegistrationService {
   getStats(eventId: string): Observable<ApiResponse<RegistrationStatsModel>> {
     return this.http.get<ApiResponse<RegistrationStatsModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.stats(eventId)),
+    );
+  }
+
+  getRegistrationAnalytics(
+    eventId: string,
+    days = 30,
+  ): Observable<ApiResponse<RegistrationAnalyticsModel>> {
+    return this.http.get<ApiResponse<RegistrationAnalyticsModel>>(
+      this.api.getUrl(REGISTRATION_ENDPOINTS.analytics(eventId, days)),
+    );
+  }
+
+  getCertificateAnalytics(
+    eventId: string,
+  ): Observable<ApiResponse<CertificateAnalyticsModel>> {
+    return this.http.get<ApiResponse<CertificateAnalyticsModel>>(
+      this.api.getUrl(REGISTRATION_ENDPOINTS.certificateAnalytics(eventId)),
     );
   }
 

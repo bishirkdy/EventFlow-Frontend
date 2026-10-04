@@ -14,6 +14,12 @@ export const REGISTRATION_ENDPOINTS = {
   stats: (eventId: string) =>
     `/v1/events/${eventId}/registrations/stats`,
 
+  analytics: (eventId: string, days = 30) =>
+    `/v1/events/${eventId}/registrations/analytics?days=${days}`,
+
+  certificateAnalytics: (eventId: string) =>
+    `/v1/events/${eventId}/certificates/analytics`,
+
   approve: (eventId: string, registrationId: string) =>
     `/v1/events/${eventId}/registrations/${registrationId}/approve`,
 

@@ -5,4 +5,7 @@ export const EVENT_ENDPOINTS = {
   byId: (eventId: string) => `/v1/events/${eventId}`,
   publish: (eventId: string) => `/v1/events/${eventId}/publish`,
   claimOwner: (eventId: string) => `/v1/events/${eventId}/claim-owner`,
+  analyticsOverview: (eventId: string) => `/v1/events/${eventId}/analytics/overview`,
+  analyticsProgramme: (eventId: string) => `/v1/events/${eventId}/analytics/programme`,
+  analyticsContent: (eventId: string) => `/v1/events/${eventId}/analytics/content`,
 } as const;

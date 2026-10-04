@@ -18,3 +18,19 @@ export interface EventTeamMemberModel {
   lastName: string;
   roles: EventTeamRoleModel[];
 }
+
+export interface TeamRoleCountModel {
+  roleId: string;
+  roleName: string;
+  count: number;
+}
+
+export interface TeamAnalyticsModel {
+  totalMembers: number;
+  owners: number;
+  organizers: number;
+  others: number;
+  assignedLast7Days: number;
+  lastAssignedAtUtc: string | null;
+  roleBreakdown: TeamRoleCountModel[];
+}

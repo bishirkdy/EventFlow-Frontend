@@ -8,6 +8,11 @@ import { Event } from '../../models/event/event.model';
 import { EVENT_ENDPOINTS } from '../../api/endpoints/event-entpoints/event-endpoints';
 import { CreateEventRequest } from '../../models/event/create-event/CreateEventRequest';
 import { CreateEventResponse } from '../../models/event/create-event/CreateEventResponse';
+import {
+  ContentAnalyticsModel,
+  EventOverviewAnalyticsModel,
+  ProgrammeAnalyticsModel,
+} from '../../models/event/event-analytics.model';
 
 @Injectable({
   providedIn: 'root',
@@ -59,5 +64,23 @@ export class EventService {
 
   getEventById(eventId: string): Observable<ApiResponse<Event>> {
     return this.http.get<ApiResponse<Event>>(this.api.getUrl(EVENT_ENDPOINTS.byId(eventId)));
+  }
+
+  getOverviewAnalytics(eventId: string): Observable<ApiResponse<EventOverviewAnalyticsModel>> {
+    return this.http.get<ApiResponse<EventOverviewAnalyticsModel>>(
+      this.api.getUrl(EVENT_ENDPOINTS.analyticsOverview(eventId)),
+    );
+  }
+
+  getProgrammeAnalytics(eventId: string): Observable<ApiResponse<ProgrammeAnalyticsModel>> {
+    return this.http.get<ApiResponse<ProgrammeAnalyticsModel>>(
+      this.api.getUrl(EVENT_ENDPOINTS.analyticsProgramme(eventId)),
+    );
+  }
+
+  getContentAnalytics(eventId: string): Observable<ApiResponse<ContentAnalyticsModel>> {
+    return this.http.get<ApiResponse<ContentAnalyticsModel>>(
+      this.api.getUrl(EVENT_ENDPOINTS.analyticsContent(eventId)),
+    );
   }
 }

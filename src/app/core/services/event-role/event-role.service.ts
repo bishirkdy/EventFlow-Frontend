@@ -7,6 +7,7 @@ import { ApiResponse } from '../../models/common/api-response';
 import {
   EventRoleModel,
   EventTeamMemberModel,
+  TeamAnalyticsModel,
 } from '../../models/event-role/event-role.model';
 import { AuthService } from '../auth/auth.service';
 import { EVENT_ROLE_ENDPOINTS } from '../../api/endpoints/event-role/event-role.endpoints';
@@ -50,6 +51,12 @@ export class EventRoleService {
   getTeam(eventId: string): Observable<ApiResponse<EventTeamMemberModel[]>> {
     return this.http.get<ApiResponse<EventTeamMemberModel[]>>(
       this.api.getUrl(EVENT_ROLE_ENDPOINTS.team(eventId)),
+    );
+  }
+
+  getTeamAnalytics(eventId: string): Observable<ApiResponse<TeamAnalyticsModel>> {
+    return this.http.get<ApiResponse<TeamAnalyticsModel>>(
+      this.api.getUrl(EVENT_ROLE_ENDPOINTS.teamAnalytics(eventId)),
     );
   }
 

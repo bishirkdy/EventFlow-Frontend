@@ -67,7 +67,166 @@
 
     <!-- Main -->
     <main class="mx-auto max-w-6xl px-6 py-8 lg:px-8">
-      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
+      <!-- Event analytics (read-only) -->
+      <section class="border border-border bg-surface">
+        <div class="border-b border-border px-6 py-5">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-semibold text-text-primary">Event analytics</h2>
+
+              <p class="mt-1 text-sm text-text-secondary">
+                Read-only overview of how this event is performing.
+              </p>
+            </div>
+
+            @if (analyticsLoading()) {
+              <span class="text-sm text-text-muted">Loading analytics...</span>
+            }
+          </div>
+        </div>
+
+        @if (!analyticsLoading()) {
+          <div class="space-y-6 p-6">
+            @if (!hasAnalytics()) {
+              <p class="text-sm text-text-secondary">No analytics data is available yet.</p>
+            } @else {
+              <!-- KPI cards -->
+              <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Registrations</p>
+                  <p class="mt-2 text-3xl font-bold text-text-primary">
+                    {{ registrationAnalytics()?.total ?? 0 }}
+                  </p>
+                  <p class="mt-1 text-xs text-text-secondary">
+                    {{ registrationAnalytics()?.registeredLast7Days ?? 0 }} in last 7 days
+                  </p>
+                </div>
+
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Approved</p>
+                  <p class="mt-2 text-3xl font-bold text-text-primary">
+                    {{ registrationAnalytics()?.approved ?? 0 }}
+                  </p>
+                  <p class="mt-1 text-xs text-text-secondary">
+                    {{ registrationAnalytics()?.approvalRatePercent ?? 0 }}% approval rate
+                  </p>
+                </div>
+
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Pending / Waitlisted</p>
+                  <p class="mt-2 text-3xl font-bold text-text-primary">
+                    {{ registrationAnalytics()?.pending ?? 0 }} /
+                    {{ registrationAnalytics()?.waitlisted ?? 0 }}
+                  </p>
+                  <p class="mt-1 text-xs text-text-secondary">
+                    {{ registrationAnalytics()?.rejected ?? 0 }} rejected
+                  </p>
+                </div>
+
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Checked in</p>
+                  <p class="mt-2 text-3xl font-bold text-text-primary">
+                    {{ attendanceAnalytics()?.distinctParticipants ?? 0 }}
+                  </p>
+                  <p class="mt-1 text-xs text-text-secondary">
+                    {{ attendanceAnalytics()?.currentlyInside ?? 0 }} currently inside ·
+                    {{ attendanceAnalytics()?.checkOutRatePercent ?? 0 }}% checked out
+                  </p>
+                </div>
+              </div>
+
+              <!-- Trend -->
+              <div class="rounded-2xl border border-border bg-background p-5">
+                <p class="text-sm font-medium text-text-primary">
+                  Registrations — last 14 days
+                </p>
+
+                @if (registrationTrend.length > 0) {
+                  <div class="mt-4 flex h-28 items-end gap-1">
+                    @for (point of registrationTrend; track point.date) {
+                      <div
+                        class="flex-1 rounded-t bg-secondary/70"
+                        [title]="point.date + ': ' + point.total + ' registrations'"
+                        [style.height.%]="(point.total / trendMax) * 100">
+                      </div>
+                    }
+                  </div>
+
+                  <div class="mt-2 flex justify-between text-xs text-text-muted">
+                    <span>{{ registrationTrend[0]?.date }}</span>
+                    <span>{{ registrationTrend[registrationTrend.length - 1]?.date }}</span>
+                  </div>
+                } @else {
+                  <p class="mt-4 text-sm text-text-secondary">No registration trend data.</p>
+                }
+              </div>
+
+              <!-- Programme, content, certificates, team -->
+              <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Programme</p>
+
+                  <div class="mt-2 space-y-1 text-sm text-text-primary">
+                    <p>{{ programmeAnalytics()?.sessionsTotal ?? 0 }} sessions</p>
+                    <p>{{ programmeAnalytics()?.sectionsTotal ?? 0 }} sections</p>
+                    <p>
+                      {{ programmeAnalytics()?.venuesTotal ?? 0 }} venues ·
+                      {{ programmeAnalytics()?.totalVenueCapacity ?? 0 }} seats
+                    </p>
+                    <p>
+                      {{ programmeAnalytics()?.speakersTotal ?? 0 }} speakers ·
+                      {{ programmeAnalytics()?.sponsorsTotal ?? 0 }} sponsors
+                    </p>
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Website content</p>
+
+                  <div class="mt-2 space-y-1 text-sm text-text-primary">
+                    <p>{{ contentAnalytics()?.pagesTotal ?? 0 }} pages ({{ contentAnalytics()?.pagesPublished ?? 0 }} published)</p>
+                    <p>{{ contentAnalytics()?.pageSectionsTotal ?? 0 }} page sections</p>
+                    <p>{{ contentAnalytics()?.photosVisible ?? 0 }} photos live</p>
+                    <p>{{ contentAnalytics()?.featuresEnabled ?? 0 }} features enabled</p>
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Certificates</p>
+
+                  <div class="mt-2 space-y-1 text-sm text-text-primary">
+                    <p>{{ certificateAnalytics()?.totalIssued ?? 0 }} issued</p>
+                    <p>{{ certificateAnalytics()?.active ?? 0 }} active · {{ certificateAnalytics()?.revoked ?? 0 }} revoked</p>
+                    <p>{{ certificateAnalytics()?.issuanceRatePercent ?? 0 }}% of approved registrations</p>
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-border bg-background p-5">
+                  <p class="text-sm text-text-muted">Team</p>
+
+                  <div class="mt-2 space-y-1 text-sm text-text-primary">
+                    <p>{{ teamAnalytics()?.totalMembers ?? 0 }} members</p>
+                    <p>{{ teamAnalytics()?.owners ?? 0 }} owners · {{ teamAnalytics()?.organizers ?? 0 }} organizers</p>
+                    <p>{{ teamAnalytics()?.assignedLast7Days ?? 0 }} joined in last 7 days</p>
+                  </div>
+
+                  @if ((teamAnalytics()?.roleBreakdown?.length ?? 0) > 0) {
+                    <div class="mt-3 flex flex-wrap gap-2">
+                      @for (role of teamAnalytics()?.roleBreakdown ?? []; track role.roleId) {
+                        <span class="border border-border px-2 py-1 text-xs text-text-secondary">
+                          {{ role.roleName }} · {{ role.count }}
+                        </span>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+      <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
         <!-- Left column -->
         <div class="min-w-0 space-y-8">
           <!-- Event visibility -->
