@@ -17,7 +17,7 @@
         @if (navItems().length) {
           <nav class="desktop-nav" aria-label="Event navigation">
             @for (item of navItems(); track item.id) {
-              <a [routerLink]="pageHref(item)" [class.active]="isActive(item)">
+              <a [routerLink]="item.href" [class.active]="item.active">
                 {{ item.label }}
               </a>
             }
@@ -27,7 +27,7 @@
         @if (navItems().length) {
           <nav class="mobile-nav" aria-label="Event navigation">
             @for (item of navItems(); track item.id) {
-              <a [routerLink]="pageHref(item)" [class.active]="isActive(item)">
+              <a [routerLink]="item.href" [class.active]="item.active">
                 {{ item.label }}
               </a>
             }

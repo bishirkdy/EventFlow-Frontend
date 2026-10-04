@@ -1,7 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
-import { NavigationItemModel } from '../../../../core/models/navigation-item/navigation-item.model';
 import { EventPageModel } from '../../../../core/models/event-page/event-page.model';
 
 @Component({
@@ -58,25 +57,56 @@ export class EventWebsiteShell {
   readonly navItems = computed(() => {
     const pages = this.pages();
     const homeId = this.homePage()?.id;
-    const publishedIds = new Set(pages.map(page => page.id));
+    const currentId = this.page()?.id;
+    const linkedPageIds = new Set<string>();
 
-    return this.data().navigationItems
-      .filter(item => {
-        if (!item.isVisible) return false;
-        if (item.pageId && !publishedIds.has(item.pageId)) return false;
+    const hrefFor = (page: EventPageModel | null): string => {
+      const eventId = this.data().event?.id;
+      if (!eventId) return '#';
+      if (!page || page.id === homeId) return `/events/${eventId}`;
+      return `/events/${eventId}/${encodeURIComponent(page.slug)}`;
+    };
 
-        if (item.pageId) {
-          const page = pages.find(candidate => candidate.id === item.pageId);
-          if (page) {
-            const pageValue = `${page.slug} ${page.name} ${page.pageType}`.toLowerCase();
-            if (pageValue.includes('speaker') && !this.hasFeature('speakers')) return false;
-            if ((pageValue.includes('sponsor') || pageValue.includes('partner')) && !this.hasFeature('sponsors')) return false;
-          }
-        }
+    const links: { id: string; label: string; href: string; active: boolean }[] = [];
 
-        return true;
-      })
-      .sort((a, b) => a.displayOrder - b.displayOrder);
+    // Navigation menu items come first, in their configured order.
+    const orderedItems = [...this.data().navigationItems].sort(
+      (a, b) => a.displayOrder - b.displayOrder,
+    );
+
+    for (const item of orderedItems) {
+      if (!item.isVisible) continue;
+
+      const page = item.pageId
+        ? pages.find(candidate => candidate.id === item.pageId) ?? null
+        : null;
+      if (item.pageId && !page) continue;
+      if (page && !this.isPageAvailable(page)) continue;
+      if (page) linkedPageIds.add(page.id);
+
+      links.push({
+        id: `nav-${item.id}`,
+        label: item.label,
+        href: hrefFor(page),
+        active: page ? page.id === currentId : false,
+      });
+    }
+
+    // Every other published page follows in page order, so pages without a
+    // navigation entry still appear in the navbar.
+    for (const page of pages) {
+      if (linkedPageIds.has(page.id)) continue;
+      if (!this.isPageAvailable(page)) continue;
+
+      links.push({
+        id: `page-${page.id}`,
+        label: page.name.trim() || page.slug,
+        href: hrefFor(page),
+        active: page.id === currentId,
+      });
+    }
+
+    return links;
   });
 
   readonly theme = computed(() => {
@@ -146,22 +176,6 @@ export class EventWebsiteShell {
     const text = value?.trim() ?? '';
     if (!text || /lorem ipsum|dummy text/i.test(text)) return fallback;
     return text;
-  }
-
-  pageHref(item: NavigationItemModel): string {
-    const eventId = this.data().event?.id;
-    if (!eventId) return '#';
-
-    const page = this.pages().find(candidate => candidate.id === item.pageId);
-    if (page && page.id !== this.homePage()?.id) {
-      return `/events/${eventId}/${encodeURIComponent(page.slug)}`;
-    }
-
-    return `/events/${eventId}`;
-  }
-
-  isActive(item: NavigationItemModel): boolean {
-    return !!item.pageId && item.pageId === this.page()?.id;
   }
 
   registrationHref(): string {
