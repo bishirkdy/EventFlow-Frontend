@@ -27,6 +27,45 @@ describe('MyEvents', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  function makeEvent(status: 'Published' | 'Draft'): Event {
+    return {
+      id: 'evt-9',
+      name: 'Test Event',
+      description: 'A test event',
+      eventType: 'Conference',
+      status,
+      startDate: '2026-01-01T00:00:00Z',
+      endDate: '2026-01-02T00:00:00Z',
+      images: [],
+    } as unknown as Event;
+  }
+
+  it('shows register, certificate and feedback shortcuts on published cards', () => {
+    component.events.set([makeEvent('Published')]);
+    fixture.detectChanges();
+
+    const links = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
+    ).filter(anchor =>
+      ['Register', 'Certificate', 'Feedback'].includes(anchor.textContent?.trim() ?? ''),
+    );
+
+    expect(links.map(anchor => anchor.getAttribute('href'))).toEqual([
+      '/events/evt-9/register',
+      '/events/evt-9/certificates',
+      '/events/evt-9/feedback',
+    ]);
+  });
+
+  it('keeps participant shortcuts off draft cards', () => {
+    component.events.set([makeEvent('Draft')]);
+    fixture.detectChanges();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).not.toContain('Certificate');
+    expect(text).toContain('Publish Event');
+  });
 });
 
 describe('MyEvents openEvent role routing', () => {
