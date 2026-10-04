@@ -63,6 +63,10 @@ export class OwnerDashboard {
 
   readonly isOwner = signal(false);
 
+  readonly rolesChecked = signal(false);
+
+  readonly claiming = signal(false);
+
   readonly analyticsLoading = signal(true);
 
   readonly overviewAnalytics = signal<EventOverviewAnalyticsModel | null>(null);
@@ -222,31 +226,46 @@ export class OwnerDashboard {
         const owner = roles.some((role) => role.roleName === 'Owner');
 
         this.isOwner.set(owner);
+        this.rolesChecked.set(true);
 
         if (owner) {
           this.loadTeam(eventId);
           return;
         }
 
-        this.eventService.claimOwner(eventId).subscribe({
-          next: () => {
-            this.loadRoles(eventId);
-          },
-
-          error: (error: unknown) => {
-            this.isOwner.set(false);
-
-            this.toastr.error(this.getErrorMessage(error, 'Failed to claim event ownership.'));
-
-            console.error('Claim owner failed:', error);
-          },
-        });
+        // Creators receive the Owner role when the event is created; a missing
+        // role here is an edge case, so ownership is claimed only through the
+        // explicit button below - never silently in the background.
+        this.teamLoading.set(false);
+        this.team.set([]);
       },
 
       error: () => {
         this.isOwner.set(false);
+        this.rolesChecked.set(true);
+        this.teamLoading.set(false);
+        this.team.set([]);
 
         this.toastr.error('Unable to verify your event role.');
+      },
+    });
+  }
+
+  claimOwnership(): void {
+    if (!this.eventId || this.claiming()) return;
+
+    this.claiming.set(true);
+
+    this.eventService.claimOwner(this.eventId).subscribe({
+      next: () => {
+        this.claiming.set(false);
+        this.toastr.success('You now own this event.');
+        this.loadRoles(this.eventId!);
+      },
+
+      error: (error: unknown) => {
+        this.claiming.set(false);
+        this.toastr.error(this.getErrorMessage(error, 'Failed to claim event ownership.'));
       },
     });
   }

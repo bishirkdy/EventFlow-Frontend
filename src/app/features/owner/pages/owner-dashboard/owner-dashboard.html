@@ -359,7 +359,21 @@
           </p>
         </div>
 
-        @if (teamLoading()) {
+        @if (rolesChecked() && !isOwner()) {
+          <div class="px-6 py-10 text-center">
+            <p class="text-sm text-text-secondary">
+              You are not the owner of this event yet. Claim ownership to manage the team.
+            </p>
+            <button
+              type="button"
+              (click)="claimOwnership()"
+              [disabled]="claiming()"
+              class="mt-4 border border-border px-4 py-2.5 text-sm font-medium text-text-primary transition hover:border-secondary disabled:opacity-50"
+            >
+              {{ claiming() ? 'Claiming...' : 'Claim ownership' }}
+            </button>
+          </div>
+        } @else if (teamLoading()) {
           <div class="px-6 py-10 text-sm text-text-secondary">Loading team...</div>
         } @else if (team().length === 0) {
           <div class="px-6 py-10 text-sm text-text-secondary">No team assignments found.</div>
