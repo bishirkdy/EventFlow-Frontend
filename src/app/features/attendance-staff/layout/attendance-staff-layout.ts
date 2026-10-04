@@ -15,8 +15,8 @@ import { ActivatedRoute } from '@angular/router';
             <h1 class="mt-1 text-lg font-semibold">Attendance Staff</h1>
           </div>
           <nav class="flex items-center gap-2 text-sm">
-            <a [routerLink]="['dashboard']" class="rounded-lg border border-border px-3 py-2 hover:border-secondary">Dashboard</a>
-            <a [routerLink]="['scan']" class="rounded-lg bg-primary px-3 py-2 text-white hover:opacity-90">Scan QR</a>
+            <a [routerLink]="['dashboard']" class="border border-border px-3 py-2 hover:border-secondary">Dashboard</a>
+            <a [routerLink]="['scan']" class="bg-primary px-3 py-2 text-white hover:opacity-90">Scan QR</a>
           </nav>
         </div>
       </header>
