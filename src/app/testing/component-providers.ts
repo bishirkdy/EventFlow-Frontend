@@ -19,9 +19,10 @@ const DEFAULT_PARAMS = {
  */
 export function provideComponentTestProviders(
   params: Record<string, string> = DEFAULT_PARAMS,
+  queryParams: Record<string, string> = {},
 ): (Provider | EnvironmentProviders)[] {
   const paramMap = convertToParamMap(params);
-  const queryParamMap = convertToParamMap({});
+  const queryParamMap = convertToParamMap(queryParams);
   const routeStub = {
     paramMap: of(paramMap),
     queryParamMap: of(queryParamMap),
