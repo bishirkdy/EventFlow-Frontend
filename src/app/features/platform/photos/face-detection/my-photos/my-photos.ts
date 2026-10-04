@@ -82,7 +82,10 @@ export class MyPhotos implements OnInit {
         if (response.isSuccess && response.data) {
           this.allPhotos.update(current => [...current, ...response.data.items]);
           if (response.data.hasNextPage) {
+            // Keep the loading state on while subsequent pages stream in;
+            // clearing it here made the counter jump around mid-load.
             this.loadAllPages(eventId, page + 1);
+            return;
           }
         }
         this.loading.set(false);

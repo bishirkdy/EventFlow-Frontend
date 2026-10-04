@@ -34,6 +34,7 @@ export class FeedbackComponent implements OnInit {
   readonly comment = signal('');
   readonly submitting = signal(false);
   readonly submitted = signal(false);
+  readonly loading = signal(true);
 
   readonly sessionList = signal<SessionModel[]>([]);
   readonly speakerList = signal<SpeakerModel[]>([]);
@@ -77,7 +78,10 @@ export class FeedbackComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    if (!this.eventId) return;
+    if (!this.eventId) {
+      this.loading.set(false);
+      return;
+    }
 
     forkJoin({
       sessions: this.sessions.getSessions(this.eventId).pipe(catchError(() => of(null))),
@@ -87,6 +91,7 @@ export class FeedbackComponent implements OnInit {
       this.sessionList.set(sessions?.data ?? []);
       this.speakerList.set(speakers?.data ?? []);
       this.venueList.set(venues?.data ?? []);
+      this.loading.set(false);
     });
   }
 
