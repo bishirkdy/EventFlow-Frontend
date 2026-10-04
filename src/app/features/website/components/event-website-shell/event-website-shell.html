@@ -8,15 +8,10 @@
         </a>
 
         <div class="event-actions">
-          <a
-            [href]="registrationHref()"
-            (click)="onRegister($event)"
-            class="event-action event-action--primary"
-          >
+          <a [routerLink]="registrationHref()" class="event-action event-action--primary">
             Register
           </a>
           <a [routerLink]="photosHref()" class="event-action">Photos</a>
-          <app-user-menu [links]="eventLinks()" />
         </div>
 
         @if (navItems().length) {
@@ -504,12 +499,8 @@
                       }
                     </div>
 
-                    <a
-                      class="rsvp-link"
-                      [href]="registrationHref()"
-                      (click)="onRegister($event)"
-                    >
-                      Register <span>↗</span>
+                    <a class="rsvp-link" [routerLink]="registrationHref()">
+                      Register <span>→</span>
                     </a>
                   </div>
                 </section>
@@ -613,11 +604,7 @@
           <h2>{{ event.name }}</h2>
 
           <a [routerLink]="brandHref()">
-            Back to home <span>↗</span>
-          </a>
-
-          <a routerLink="/" class="footer-site-link">
-            Back to EventFlow <span>↗</span>
+            Back to home <span>→</span>
           </a>
         </div>
 
