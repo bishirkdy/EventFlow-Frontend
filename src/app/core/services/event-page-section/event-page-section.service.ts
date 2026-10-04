@@ -21,6 +21,13 @@ export class EventPageSectionService {
     );
   }
 
+  /** Every published page section of an event, in one request. */
+  getSectionsByEvent(eventId: string): Observable<ApiResponse<PageSectionModel[]>> {
+    return this.http.get<ApiResponse<PageSectionModel[]>>(
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSectionsByEvent(eventId)),
+    );
+  }
+
   /** Includes hidden sections, only for organizer screens. */
   getManageSections(pageId: string): Observable<ApiResponse<PageSectionModel[]>> {
     return this.http.get<ApiResponse<PageSectionModel[]>>(

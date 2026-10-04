@@ -2,6 +2,9 @@ export const PAGE_SECTION_ENDPOINTS = {
   getSections: (pageId: string) =>
     `/v1/page-section/${pageId}/sections`,
 
+  getSectionsByEvent: (eventId: string) =>
+    `/v1/page-section/event/${eventId}/sections`,
+
   getManageSections: (pageId: string) =>
     `/v1/page-section/${pageId}/manage-sections`,
 
