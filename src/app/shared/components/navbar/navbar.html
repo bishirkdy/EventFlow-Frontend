@@ -20,98 +20,11 @@
         >
           Events
         </a>
-
-        <a
-          routerLink="/features"
-          class="text-sm font-medium text-text-secondary transition hover:text-primary"
-        >
-          Features
-        </a>
-
-        <a
-          routerLink="/about"
-          class="text-sm font-medium text-text-secondary transition hover:text-primary"
-        >
-          About
-        </a>
       </div>
 
       <!-- Desktop Actions -->
       <div class="hidden items-center gap-4 md:flex">
-        @if (currentUser(); as user) {
-          <!-- Profile -->
-          <div class="relative">
-            <!-- Avatar -->
-            <button
-              type="button"
-              (click)="toggleProfileMenu()"
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white transition hover:opacity-90"
-              aria-label="Open profile menu"
-            >
-              {{ user.firstName.charAt(0).toUpperCase() }}
-            </button>
-
-            <!-- Profile Popup -->
-            @if (isProfileMenuOpen()) {
-              <div
-                class="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-lg border border-border bg-surface shadow-lg"
-              >
-                <!-- User Info -->
-                <div class="border-b border-border px-4 py-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white"
-                    >
-                      {{ user.firstName.charAt(0).toUpperCase() }}
-                    </div>
-
-                    <div class="min-w-0">
-                      <p class="truncate text-sm font-semibold text-text-primary">
-                        {{ user.firstName }} {{ user.lastName }}
-                      </p>
-
-                      <p class="truncate text-xs text-text-secondary">
-                        {{ user.email }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Menu -->
-                <div class="p-1">
-                  <a
-                    routerLink="/profile"
-                    (click)="closeProfileMenu()"
-                    class="flex items-center rounded-md px-3 py-2.5 text-sm text-text-secondary hover:bg-surface-soft hover:text-primary"
-                  >
-                    Profile
-                  </a>
-
-                  <a
-                    routerLink="/my-events"
-                    (click)="closeProfileMenu()"
-                    class="flex items-center rounded-md px-3 py-2.5 text-sm text-text-secondary hover:bg-surface-soft hover:text-primary"
-                  >
-                    My Events
-                  </a>
-
-                  <button
-                    type="button"
-                    (click)="logout()"
-                    class="flex w-full items-center rounded-md px-3 py-2.5 text-left text-sm text-red-600 hover:bg-red-50"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
-        } @else {
-          <!-- Sign In -->
-          <a routerLink="/login" class="text-sm font-medium text-text-secondary hover:text-primary">
-            Sign In
-          </a>
-        }
+        <app-user-menu />
 
         <!-- Create Event -->
         <a
@@ -150,22 +63,6 @@
             Events
           </a>
 
-          <a
-            routerLink="/features"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
-          >
-            Features
-          </a>
-
-          <a
-            routerLink="/about"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
-          >
-            About
-          </a>
-
           <div class="my-2 border-t border-border"></div>
 
           @if (currentUser(); as user) {
@@ -193,15 +90,7 @@
               (click)="closeMenu()"
               class="rounded-md px-3 py-3 text-sm font-medium text-text-primary hover:bg-surface-soft"
             >
-              Profile
-            </a>
-
-            <a
-              routerLink="/profile"
-              (click)="closeMenu()"
-              class="rounded-md px-3 py-3 text-sm font-medium text-text-primary hover:bg-surface-soft"
-            >
-              Profile
+              My Events
             </a>
 
             <button

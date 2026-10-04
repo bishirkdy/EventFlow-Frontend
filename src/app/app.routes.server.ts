@@ -6,6 +6,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
 
+  {
+    path: 'events',
+    renderMode: RenderMode.Server,
+  },
+
   // Authenticated / personal pages must render on the client: the server has no
   // session cookies, so guards and profile-backed data render the wrong page
   // (login flash, kicked-to-home) into the SSR HTML on hard reload.

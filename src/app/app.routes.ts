@@ -33,6 +33,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/platform/home/home').then((m) => m.Home),
       },
       {
+        path: 'events',
+        loadComponent: () => import('./features/platform/events/events').then((m) => m.Events),
+      },
+      {
         path: 'create-event',
         canActivate: [authGuard],
         loadComponent: () =>
