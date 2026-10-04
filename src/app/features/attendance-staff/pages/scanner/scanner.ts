@@ -42,13 +42,24 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
   readonly manualQr = signal('');
   readonly message = signal('Point the camera at a participant QR code.');
   readonly scopes = signal<StaffScope[]>([]);
+  readonly scopesLoaded = signal(false);
   readonly selectedScope = signal<StaffScope | null>(null);
   readonly eventId = this.route.parent?.parent?.snapshot.paramMap.get('eventId') ?? this.route.parent?.snapshot.paramMap.get('eventId');
   private stream: MediaStream | null = null;
   private frame = 0;
 
   constructor() {
-    this.loadScopes();
+    const existing = this.auth.currentUser();
+    if (existing?.id) {
+      this.loadScopes(existing.id);
+    } else {
+      // On hard reload the session restores asynchronously; wait for it so a
+      // staff member's real assignments are used instead of a fallback scope.
+      this.auth.loadCurrentUser().subscribe(user => {
+        if (user?.id) this.loadScopes(user.id);
+        else this.scopesLoaded.set(true);
+      });
+    }
   }
 
   ngAfterViewInit(): void { void this.start(); }
@@ -103,9 +114,11 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     if (value) void this.verify(value);
   }
 
-  private loadScopes(): void {
-    if (!this.eventId) return;
-    const me = this.auth.currentUser()?.id;
+  private loadScopes(me: string): void {
+    if (!this.eventId) {
+      this.scopesLoaded.set(true);
+      return;
+    }
     forkJoin({
       staff: this.operations.getStaff(this.eventId).pipe(catchError(() => of(null))),
       sections: this.sections.getSections(this.eventId).pipe(catchError(() => of(null))),
@@ -137,10 +150,14 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
       }
       const unique = options.filter((option, index) => options.findIndex(x => x.key === option.key) === index);
       if (unique.length === 0) {
+        // Owners and organizers hold event.team.manage and legitimately scan
+        // event-wide without an assignment row; the server still authorizes
+        // every scan, so unassigned users are rejected there with a clear error.
         unique.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
       }
       this.scopes.set(unique);
       this.selectedScope.update(scope => scope && unique.some(x => x.key === scope.key) ? scope : unique[0]);
+      this.scopesLoaded.set(true);
     });
   }
 
