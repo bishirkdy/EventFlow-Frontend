@@ -92,28 +92,6 @@ export class PhotoManager implements OnInit {
     }
   }
 
-  toggleVisibility(photo: Photo) {
-    const newVisibility = !photo.isVisible;
-    this.http.patch<ApiResponse<object>>(
-      `${environment.apiUrl}/events/${this.eventId()}/photos/${photo.photoId}/visibility`,
-      { isVisible: newVisibility }
-    ).subscribe({
-      next: (response) => {
-        if (response.isSuccess) {
-          this.photos.update(current =>
-            current.map(p => p.photoId === photo.photoId ? { ...p, isVisible: newVisibility } : p)
-          );
-          this.notification.success(newVisibility ? 'Photo approved and made visible.' : 'Photo hidden from gallery.');
-        } else {
-          this.notification.error(response.message || 'Failed to update visibility.');
-        }
-      },
-      error: () => {
-        this.notification.error('Failed to update visibility.');
-      }
-    });
-  }
-
   deletePhoto(photo: Photo) {
     if (!confirm(`Are you sure you want to delete "${photo.imageUrl}"? This action cannot be undone.`)) {
       return;

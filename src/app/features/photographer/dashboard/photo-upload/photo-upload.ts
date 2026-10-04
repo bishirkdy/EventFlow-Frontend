@@ -2,7 +2,9 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
+import { ApiResponse } from '../../../../core/models/common/api-response';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -114,16 +116,18 @@ export class PhotoUpload implements OnInit {
         const formData = new FormData();
         formData.append('image', file);
 
-        // Upload via API (which handles Cloudinary internally)
-        const response = await this.http.post<{ url: string; publicId: string }>(
-          `${environment.apiUrl}/events/${this.eventId()}/photos`,
-          formData
-        ).toPromise();
+        // Upload the file; the API stores it in Cloudinary and records the photo.
+        const response = await firstValueFrom(
+          this.http.post<ApiResponse<{ photoId: string; imageUrl: string; uploadedAt: string }>>(
+            `${environment.apiUrl}/events/${this.eventId()}/photos`,
+            formData
+          )
+        );
 
-        if (response && response.url) {
+        if (response.isSuccess && response.data?.imageUrl) {
           this.notification.success(`${file.name} uploaded successfully.`);
         } else {
-          throw new Error('Upload failed');
+          throw new Error(response.message || 'Upload failed');
         }
       } catch (error) {
         console.error('Upload error:', error);
@@ -150,9 +154,4 @@ export class PhotoUpload implements OnInit {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
-}
-
-interface UploadResponse {
-  url: string;
-  publicId: string;
 }
