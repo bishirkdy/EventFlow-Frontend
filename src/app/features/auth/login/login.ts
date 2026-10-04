@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../core/services/ui/notification.service';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
@@ -17,6 +17,7 @@ import { getApiErrorMessage } from '../../../core/api/api-error';
 export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly toastr = inject(NotificationService);
 
   readonly Eye = Eye;
@@ -44,7 +45,7 @@ export class Login {
       next: () => {
         this.loading.set(false);
         this.toastr.success('Login successful.');
-        this.router.navigate(['/']);
+        this.router.navigateByUrl(this.returnTarget());
       },
 
       error: (err: unknown) => {
@@ -53,5 +54,14 @@ export class Login {
         this.toastr.error(getApiErrorMessage(err, 'Login failed.'));
       },
     });
+  }
+
+  private returnTarget(): string {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    // Only accept same-origin absolute paths to avoid open redirects.
+    if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')) {
+      return returnUrl;
+    }
+    return '/';
   }
 }

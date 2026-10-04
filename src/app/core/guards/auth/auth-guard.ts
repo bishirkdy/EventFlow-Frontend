@@ -18,14 +18,14 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
+  const loginUrl = router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: router.url },
+  });
+
   return authService.loadCurrentUser().pipe(
     map((user) => {
-      return user
-        ? true
-        : router.createUrlTree(['/login']);
+      return user ? true : loginUrl;
     }),
-    catchError(() => {
-      return of(router.createUrlTree(['/login']));
-    }),
+    catchError(() => of(loginUrl)),
   );
 };

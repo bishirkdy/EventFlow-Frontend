@@ -44,11 +44,15 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
 
       const currentRefreshRequest = refreshRequest$;
 
+      const loginUrl = router.createUrlTree(['/login'], {
+        queryParams: { returnUrl: router.url },
+      });
+
       return currentRefreshRequest.pipe(
         switchMap(refreshed => {
           if (!refreshed) {
             auth.clearCurrentUser();
-            void router.navigate(['/login']);
+            void router.navigateByUrl(loginUrl);
             return throwError(() => error);
           }
 
@@ -56,7 +60,7 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
         }),
         catchError(refreshError => {
           auth.clearCurrentUser();
-          void router.navigate(['/login']);
+          void router.navigateByUrl(loginUrl);
           return throwError(() => refreshError);
         }),
       );
