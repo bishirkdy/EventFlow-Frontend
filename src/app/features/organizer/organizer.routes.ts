@@ -300,6 +300,11 @@ export const organizerRoutes: Routes = [
       { path: 'attendance', loadComponent: () => import('./pages/attendance/attendance').then(m => m.AttendanceComponent) },
       { path: 'attendance-staff', loadComponent: () => import('./pages/attendance-staff/attendance-staff').then(m => m.AttendanceStaffComponent) },
       { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications').then(m => m.NotificationsComponent) },
+      {
+        path: 'feedback',
+        canActivate: [eventFeatureGuard('feedback')],
+        loadComponent: () => import('./pages/feedback/feedback').then(m => m.OrganizerFeedbackComponent),
+      },
 
       //Registration
       {

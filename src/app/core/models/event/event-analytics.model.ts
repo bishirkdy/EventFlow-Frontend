@@ -89,6 +89,8 @@ export interface EventOverviewAnalyticsModel {
   navigationItems: number;
   photos: number;
   photosVisible: number;
+  feedbackCount: number;
+  feedbackAverageRating: number;
   featuresEnabled: number;
   daysUntilStart: number;
   daysUntilEnd: number;

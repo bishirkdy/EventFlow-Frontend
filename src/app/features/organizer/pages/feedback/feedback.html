@@ -1,0 +1,113 @@
+<div class="space-y-6">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold">Feedback</h1>
+      <p class="text-sm text-text-muted">Participant feedback for this event.</p>
+    </div>
+    <a
+      [routerLink]="['../']"
+      class="rounded-xl border border-border px-4 py-2 text-sm hover:border-secondary"
+      >Back to overview</a
+    >
+  </div>
+
+  @if (loading()) {
+    <div class="rounded-2xl border border-border bg-background p-10 text-center text-text-muted">
+      Loading feedback...
+    </div>
+  } @else if (!results()) {
+    <div class="rounded-2xl border border-border bg-background p-10 text-center text-text-muted">
+      No feedback data available.
+    </div>
+  } @else {
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="rounded-2xl border border-border bg-background p-5">
+        <p class="text-sm text-text-muted">Responses</p>
+        <p class="mt-2 text-3xl font-bold">{{ results()!.totalCount }}</p>
+      </div>
+      <div class="rounded-2xl border border-border bg-background p-5">
+        <p class="text-sm text-text-muted">Average rating</p>
+        <p class="mt-2 text-3xl font-bold">
+          {{ results()!.totalCount > 0 ? (results()!.averageRating | number: '1.1-1') : '—' }}
+          <span class="text-base font-medium text-text-muted">/ 5</span>
+        </p>
+      </div>
+      <div class="rounded-2xl border border-border bg-background p-5">
+        <p class="text-sm text-text-muted">Targets rated</p>
+        <p class="mt-2 text-3xl font-bold">{{ results()!.targets.length }}</p>
+      </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      <div class="rounded-2xl border border-border bg-background p-5">
+        <p class="text-sm font-medium">Rating distribution</p>
+        <div class="mt-4 space-y-3">
+          @for (bucket of results()!.ratingDistribution; track bucket.rating) {
+            <div class="flex items-center gap-3">
+              <span class="w-10 text-sm text-text-muted">{{ bucket.rating }} ★</span>
+              <div class="h-3 flex-1 overflow-hidden rounded-full bg-surface">
+                <div
+                  class="h-3 rounded-full bg-amber-400"
+                  [style.width.%]="distributionPercent(bucket.count)"
+                ></div>
+              </div>
+              <span class="w-16 text-right text-sm text-text-secondary"
+                >{{ bucket.count }} ({{ distributionPercent(bucket.count) }}%)</span
+              >
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-border bg-background p-5">
+        <p class="text-sm font-medium">By target</p>
+        @if (results()!.targets.length > 0) {
+          <table class="mt-4 w-full text-sm">
+            <thead>
+              <tr class="text-left text-text-muted">
+                <th class="pb-2 font-medium">Type</th>
+                <th class="pb-2 font-medium">Name</th>
+                <th class="pb-2 text-right font-medium">Count</th>
+                <th class="pb-2 text-right font-medium">Avg</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (target of results()!.targets; track target.targetId) {
+                <tr class="border-t border-border">
+                  <td class="py-2 text-text-muted">{{ targetLabels[target.targetType] }}</td>
+                  <td class="py-2">{{ target.targetName }}</td>
+                  <td class="py-2 text-right">{{ target.count }}</td>
+                  <td class="py-2 text-right">{{ target.averageRating | number: '1.1-1' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="mt-4 text-sm text-text-muted">No rated targets yet.</p>
+        }
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-border bg-background p-5">
+      <p class="text-sm font-medium">Recent feedback</p>
+      @if (results()!.recentFeedback.length > 0) {
+        <div class="mt-4 space-y-4">
+          @for (item of results()!.recentFeedback; track item.id) {
+            <div class="border-t border-border pt-4 first:border-t-0 first:pt-0">
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="text-amber-500">{{ '★'.repeat(item.rating) }}<span class="text-text-muted">{{ '★'.repeat(5 - item.rating) }}</span></span>
+                <span class="text-xs text-text-muted">{{ targetLabels[item.targetType] }} · {{ item.targetName }}</span>
+                <span class="text-xs text-text-muted">{{ item.submittedAtUtc | date: 'mediumDate' }}</span>
+              </div>
+              @if (item.comment) {
+                <p class="mt-2 text-sm text-text-secondary">{{ item.comment }}</p>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="mt-4 text-sm text-text-muted">No feedback yet.</p>
+      }
+    </div>
+  }
+</div>

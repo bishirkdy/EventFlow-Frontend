@@ -188,6 +188,7 @@
                     <p>{{ contentAnalytics()?.pageSectionsTotal ?? 0 }} page sections</p>
                     <p>{{ contentAnalytics()?.photosVisible ?? 0 }} photos live</p>
                     <p>{{ contentAnalytics()?.featuresEnabled ?? 0 }} features enabled</p>
+                    <p>{{ overviewAnalytics()?.feedbackCount ?? 0 }} feedback responses (avg {{ overviewAnalytics()?.feedbackCount ? (overviewAnalytics()?.feedbackAverageRating ?? 0).toFixed(1) : '—' }})</p>
                   </div>
                 </div>
 

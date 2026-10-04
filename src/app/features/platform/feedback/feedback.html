@@ -1,0 +1,105 @@
+<section class="mx-auto max-w-2xl space-y-6 p-6">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">EventFlow</p>
+      <h1 class="mt-1 text-2xl font-semibold">Share your feedback</h1>
+      <p class="mt-2 text-sm text-text-secondary">
+        Tell us how the event, sessions, speakers or venues felt. Your feedback helps organizers improve.
+      </p>
+    </div>
+    <a [routerLink]="['/events', eventId]" class="border border-border px-3 py-2 text-sm hover:border-secondary">Back to event</a>
+  </div>
+
+  @if (submitted()) {
+    <div class="rounded-2xl border border-border bg-surface p-8 text-center">
+      <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h2 class="mt-4 text-lg font-semibold">Thank you!</h2>
+      <p class="mt-1 text-sm text-text-secondary">Your feedback has been recorded.</p>
+      <div class="mt-6 flex justify-center gap-3">
+        <button type="button" (click)="reset()" class="border border-border px-4 py-2 text-sm hover:border-secondary">Give more feedback</button>
+        <a [routerLink]="['/events', eventId]" class="bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90">Back to event</a>
+      </div>
+    </div>
+  } @else {
+    <form class="space-y-6 rounded-2xl border border-border bg-surface p-6" (submit)="$event.preventDefault(); submit()">
+      <div>
+        <label class="text-sm font-medium">What is your feedback about?</label>
+        <div class="mt-2 flex flex-wrap gap-2">
+          @for (option of targetTypeOptions(); track option.value) {
+            <button
+              type="button"
+              (click)="selectTargetType(option.value)"
+              class="rounded-full border px-4 py-2 text-sm transition-colors"
+              [class]="targetType() === option.value
+                ? 'border-secondary bg-secondary/10 font-semibold text-text-primary'
+                : 'border-border text-text-secondary hover:border-secondary'">
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (needsTarget()) {
+        <div>
+          <label class="text-sm font-medium">Choose a target</label>
+          <select
+            [value]="targetId() ?? ''"
+            (change)="setTarget($any($event.target).value)"
+            class="mt-2 w-full border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-secondary">
+            <option value="">Select...</option>
+            @for (target of currentTargets(); track target.id) {
+              <option [value]="target.id">{{ target.name }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <div>
+        <label class="text-sm font-medium">Your rating</label>
+        <div class="mt-2 flex gap-2">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <button
+              type="button"
+              (click)="setRating(star)"
+              class="flex h-11 w-11 items-center justify-center rounded-full border text-lg transition-colors"
+              [class]="rating() >= star
+                ? 'border-amber-400 bg-amber-400 text-white'
+                : 'border-border text-text-muted hover:border-amber-300'"
+              [attr.aria-label]="'Rate ' + star + ' stars'">
+              ★
+            </button>
+          }
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-medium">Comments (optional)</label>
+        <textarea
+          rows="4"
+          maxlength="2000"
+          [value]="comment()"
+          (input)="setComment($any($event.target).value)"
+          placeholder="What did you like? What could be better?"
+          class="mt-2 w-full resize-y border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-secondary"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <a [routerLink]="['/events', eventId]" class="border border-border px-4 py-2 text-sm hover:border-secondary">Cancel</a>
+        <button
+          type="submit"
+          [disabled]="!canSubmit()"
+          class="bg-primary px-5 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+          @if (submitting()) {
+            Submitting...
+          } @else {
+            Submit feedback
+          }
+        </button>
+      </div>
+    </form>
+  }
+</section>

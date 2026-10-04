@@ -70,4 +70,8 @@ export class PublicRegistrationDetailsComponent {
   protected registerAgain(): void {
     this.router.navigate(['/events', this.eventId, 'register']);
   }
+
+  protected goToFeedback(): void {
+    this.router.navigate(['/events', this.eventId, 'feedback']);
+  }
 }

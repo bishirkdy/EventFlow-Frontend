@@ -19,6 +19,7 @@ import {
   FormInput,
   Camera,
   Award,
+  MessageSquare,
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -81,6 +82,7 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
     label: 'Communication',
     items: [
       { label: 'Notifications', route: 'notifications', icon: Bell },
+      { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' },
     ],
   },
   {
