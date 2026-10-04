@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { LoginDialog } from './login-dialog';
@@ -61,6 +62,19 @@ describe('LoginDialog', () => {
 
     expect(authService.login).toHaveBeenCalledTimes(1);
     expect(toastr.success).toHaveBeenCalledTimes(1);
+    expect(TestBed.inject(LoginDialogService).isOpen()).toBe(false);
+  });
+
+  it('returns to the guarded page after signing in from the dialog', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    TestBed.inject(LoginDialogService).open('/events/evt-1/register');
+    component.email = 'user@example.com';
+    component.password = 'secret';
+
+    component.submit(validForm);
+
+    expect(navigate).toHaveBeenCalledWith('/events/evt-1/register');
     expect(TestBed.inject(LoginDialogService).isOpen()).toBe(false);
   });
 

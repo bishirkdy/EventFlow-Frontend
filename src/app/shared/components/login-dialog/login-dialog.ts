@@ -1,6 +1,6 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Eye, EyeOff, LucideAngularModule, X } from 'lucide-angular';
 
 import { getApiErrorMessage } from '../../../core/api/api-error';
@@ -17,6 +17,7 @@ export class LoginDialog {
   readonly service = inject(LoginDialogService);
   private readonly authService = inject(AuthService);
   private readonly toastr = inject(NotificationService);
+  private readonly router = inject(Router);
 
   readonly Eye = Eye;
   readonly EyeOff = EyeOff;
@@ -52,7 +53,11 @@ export class LoginDialog {
         this.loading.set(false);
         if (user) {
           this.toastr.success('Login successful.');
+          const returnUrl = this.service.takeReturnUrl();
           this.service.close();
+          if (returnUrl) {
+            void this.router.navigateByUrl(returnUrl);
+          }
         } else {
           this.toastr.error('Login failed.');
         }

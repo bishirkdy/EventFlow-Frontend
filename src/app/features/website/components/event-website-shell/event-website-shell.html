@@ -8,10 +8,15 @@
         </a>
 
         <div class="event-actions">
-          <a [routerLink]="registrationHref()" class="event-action event-action--primary">Register</a>
-          <a [routerLink]="myRegistrationHref()" class="event-action">My Registration</a>
+          <a
+            [href]="registrationHref()"
+            (click)="onRegister($event)"
+            class="event-action event-action--primary"
+          >
+            Register
+          </a>
           <a [routerLink]="photosHref()" class="event-action">Photos</a>
-          <a [routerLink]="certificatesHref()" class="event-action">Certificates</a>
+          <app-user-menu [links]="eventLinks()" />
         </div>
 
         @if (navItems().length) {
@@ -190,12 +195,6 @@
                   } @else {
                     <div class="empty-venue">
                       <span>No venues added yet.</span>
-                      <a
-                        routerLink="/create-event"
-                        class="btn-add-venue"
-                      >
-                        Add Venue
-                      </a>
                     </div>
                   }
                 </section>
@@ -268,12 +267,6 @@
                   } @else {
                     <div class="empty-resource">
                       <span>No sessions added yet.</span>
-                      <a
-                        routerLink="/create-event"
-                        class="btn-add-venue"
-                      >
-                        Add Sessions
-                      </a>
                     </div>
                   }
                 </section>
@@ -513,7 +506,8 @@
 
                     <a
                       class="rsvp-link"
-                      [routerLink]="registrationHref()"
+                      [href]="registrationHref()"
+                      (click)="onRegister($event)"
                     >
                       Register <span>↗</span>
                     </a>
@@ -620,6 +614,10 @@
 
           <a [routerLink]="brandHref()">
             Back to home <span>↗</span>
+          </a>
+
+          <a routerLink="/" class="footer-site-link">
+            Back to EventFlow <span>↗</span>
           </a>
         </div>
 

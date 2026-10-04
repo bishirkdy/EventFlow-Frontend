@@ -1,19 +1,28 @@
-import { Component, computed, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, input } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
 import { NavigationItemModel } from '../../../../core/models/navigation-item/navigation-item.model';
 import { EventPageModel } from '../../../../core/models/event-page/event-page.model';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { LoginDialogService } from '../../../../core/services/ui/login-dialog.service';
+import { UserMenu, UserMenuLink } from '../../../../shared/components/user-menu/user-menu';
 
 @Component({
   selector: 'app-event-website-shell',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, UserMenu],
   templateUrl: './event-website-shell.html',
   styleUrl: './event-website-shell.css',
 })
 export class EventWebsiteShell {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
+
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly loginDialog = inject(LoginDialogService);
+
+  readonly user = this.authService.currentUser;
 
   readonly pages = computed(() =>
     this.data().pages
@@ -169,19 +178,33 @@ export class EventWebsiteShell {
     return eventId ? `/events/${eventId}/register` : "#";
   }
 
-  myRegistrationHref(): string {
+  readonly eventLinks = computed<UserMenuLink[]>(() => {
     const eventId = this.data().event?.id;
-    return eventId ? `/events/${eventId}/my-registrations` : "#";
+    if (!eventId) return [];
+
+    return [
+      { label: 'My registration', url: `/events/${eventId}/my-registrations` },
+      { label: 'Certificate', url: `/events/${eventId}/certificates` },
+      { label: 'Feedback', url: `/events/${eventId}/feedback` },
+    ];
+  });
+
+  onRegister(event: Event): void {
+    event.preventDefault();
+
+    const eventId = this.data().event?.id;
+    if (!eventId) return;
+
+    if (this.user()) {
+      void this.router.navigate(['/events', eventId, 'register']);
+    } else {
+      this.loginDialog.open(this.registrationHref());
+    }
   }
 
   photosHref(): string {
     const eventId = this.data().event?.id;
     return eventId ? `/events/${eventId}/gallery` : "#";
-  }
-
-  certificatesHref(): string {
-    const eventId = this.data().event?.id;
-    return eventId ? `/events/${eventId}/certificates` : "#";
   }
 
   brandHref(): string {
