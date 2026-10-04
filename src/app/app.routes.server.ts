@@ -78,6 +78,11 @@ export const serverRoutes: ServerRoute[] = [
   },
 
   {
+    path: 'my-certificates',
+    renderMode: RenderMode.Client,
+  },
+
+  {
     path: 'organizer/**',
     renderMode: RenderMode.Client,
   },

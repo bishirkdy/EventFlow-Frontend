@@ -14,6 +14,8 @@ export const CERTIFICATE_ENDPOINTS = {
   mine: (eventId: string) =>
     `/v1/events/${eventId}/certificates/my`,
 
+  myAcrossEvents: '/v1/certificates/my',
+
   revoke: (eventId: string, certificateId: string) =>
     `/v1/events/${eventId}/certificates/${certificateId}/revoke`,
 

@@ -66,6 +66,12 @@ export class CertificateService {
     );
   }
 
+  getAllMine(): Observable<ApiResponse<CertificateModel[]>> {
+    return this.http.get<ApiResponse<CertificateModel[]>>(
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.myAcrossEvents),
+    );
+  }
+
   revoke(
     eventId: string,
     certificateId: string,

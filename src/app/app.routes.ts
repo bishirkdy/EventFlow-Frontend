@@ -48,6 +48,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/platform/my-events/my-events').then((m) => m.MyEvents),
       },
+      {
+        path: 'my-certificates',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/platform/certificates/my-certificates/my-certificates').then((m) => m.MyCertificates),
+      },
     ],
   },
   {
