@@ -116,6 +116,53 @@
 
                     </div>
 
+                    <!-- Participant actions -->
+                    @if (event.status === 'Published') {
+
+                    <div
+                        class="mt-5 flex flex-wrap gap-2 border-t
+                               border-border pt-4">
+
+                        <a
+                            [routerLink]="['/events', event.id, 'register']"
+                            class="inline-flex items-center rounded-full
+                                   border border-border px-3 py-1.5
+                                   text-xs font-medium
+                                   text-text-secondary
+                                   transition
+                                   hover:border-(--color-secondary)
+                                   hover:text-(--color-secondary)">
+                            Register
+                        </a>
+
+                        <a
+                            [routerLink]="['/events', event.id, 'certificates']"
+                            class="inline-flex items-center rounded-full
+                                   border border-border px-3 py-1.5
+                                   text-xs font-medium
+                                   text-text-secondary
+                                   transition
+                                   hover:border-(--color-secondary)
+                                   hover:text-(--color-secondary)">
+                            Certificate
+                        </a>
+
+                        <a
+                            [routerLink]="['/events', event.id, 'feedback']"
+                            class="inline-flex items-center rounded-full
+                                   border border-border px-3 py-1.5
+                                   text-xs font-medium
+                                   text-text-secondary
+                                   transition
+                                   hover:border-(--color-secondary)
+                                   hover:text-(--color-secondary)">
+                            Feedback
+                        </a>
+
+                    </div>
+
+                    }
+
                     <!-- Open -->
                     @if (event.status === 'Draft') {
                     <button
