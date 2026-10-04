@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { Router } from '@angular/router';
 import {
   catchError,
@@ -16,6 +17,7 @@ let refreshRequest$: Observable<boolean> | null = null;
 export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
   const isAuthRequest = /\/v1\/auth\/(login|register|refresh|logout)/i.test(req.url);
 
   return next(req).pipe(
@@ -25,6 +27,13 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
         error.status !== 401 ||
         isAuthRequest
       ) {
+        return throwError(() => error);
+      }
+
+      // During SSR there is no session to refresh and redirecting would send
+      // every server rendered page (including the public event website) to
+      // /login. The client takes over after hydration.
+      if (isPlatformServer(platformId)) {
         return throwError(() => error);
       }
 
