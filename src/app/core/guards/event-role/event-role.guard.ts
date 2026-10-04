@@ -13,7 +13,7 @@ function eventIdFrom(route: ActivatedRouteSnapshot): string | null {
   return null;
 }
 
-export type UserRole = 'Owner' | 'Organizer' | 'AttentionStaff';
+export type UserRole = 'Owner' | 'Organizer' | 'Photographer' | 'AttendanceStaff';
 
 export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn => route => {
   const roles = inject(EventRoleService);
@@ -27,7 +27,7 @@ export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn => route =
       const isOwner = names.includes('owner');
       const allowed =
         names.includes(requiredRole.toLowerCase()) ||
-        (requiredRole === 'Organizer' && isOwner);
+        ((requiredRole === 'Organizer' || requiredRole === 'AttendanceStaff') && isOwner);
       if (allowed) return true;
       if (isOwner) return router.createUrlTree(['/owner', eventId]);
       return router.createUrlTree(['/']);
