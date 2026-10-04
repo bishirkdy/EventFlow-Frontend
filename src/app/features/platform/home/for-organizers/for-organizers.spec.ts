@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { ForOrganizers } from './for-organizers';
 
@@ -8,6 +9,7 @@ describe('ForOrganizers', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [provideRouter([])],
       imports: [ForOrganizers],
     }).compileComponents();
 

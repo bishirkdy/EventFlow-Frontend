@@ -2,22 +2,22 @@
   @if (data().event; as event) {
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" [href]="brandHref()" aria-label="Open event home">
+        <a class="brand" [routerLink]="brandHref()" aria-label="Open event home">
           <span class="brand-kicker">{{ event.subType || 'Event' }}</span>
           <span class="brand-name">{{ event.name }}</span>
         </a>
 
         <div class="event-actions">
-          <a [href]="registrationHref()" class="event-action event-action--primary">Register</a>
-          <a [href]="myRegistrationHref()" class="event-action">My Registration</a>
-          <a [href]="photosHref()" class="event-action">Photos</a>
-          <a [href]="certificatesHref()" class="event-action">Certificates</a>
+          <a [routerLink]="registrationHref()" class="event-action event-action--primary">Register</a>
+          <a [routerLink]="myRegistrationHref()" class="event-action">My Registration</a>
+          <a [routerLink]="photosHref()" class="event-action">Photos</a>
+          <a [routerLink]="certificatesHref()" class="event-action">Certificates</a>
         </div>
 
         @if (navItems().length) {
           <nav class="desktop-nav" aria-label="Event navigation">
             @for (item of navItems(); track item.id) {
-              <a [href]="pageHref(item)" [class.active]="isActive(item)">
+              <a [routerLink]="pageHref(item)" [class.active]="isActive(item)">
                 {{ item.label }}
               </a>
             }
@@ -27,7 +27,7 @@
         @if (navItems().length) {
           <nav class="mobile-nav" aria-label="Event navigation">
             @for (item of navItems(); track item.id) {
-              <a [href]="pageHref(item)" [class.active]="isActive(item)">
+              <a [routerLink]="pageHref(item)" [class.active]="isActive(item)">
                 {{ item.label }}
               </a>
             }
@@ -513,7 +513,7 @@
 
                     <a
                       class="rsvp-link"
-                      [href]="registrationHref()"
+                      [routerLink]="registrationHref()"
                     >
                       Register <span>↗</span>
                     </a>
@@ -618,7 +618,7 @@
 
           <h2>{{ event.name }}</h2>
 
-          <a [href]="brandHref()">
+          <a [routerLink]="brandHref()">
             Back to home <span>↗</span>
           </a>
         </div>

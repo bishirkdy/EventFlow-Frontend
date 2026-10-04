@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Button } from "../../../../shared/components/button/button";
 import { AuthService } from '../../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-hero',
-  imports: [Button],
+  imports: [Button, RouterLink],
   templateUrl: './hero.html',
   styleUrl: './hero.css',
 })

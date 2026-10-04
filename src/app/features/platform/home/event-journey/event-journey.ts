@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface JourneyStep {
   number: string;
@@ -9,7 +10,7 @@ interface JourneyStep {
 
 @Component({
   selector: 'app-event-journey',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './event-journey.html',
   styleUrl: './event-journey.css',
 })

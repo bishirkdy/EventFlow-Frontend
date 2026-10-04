@@ -1,4 +1,5 @@
 import { Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
 import { NavigationItemModel } from '../../../../core/models/navigation-item/navigation-item.model';
 import { EventPageModel } from '../../../../core/models/event-page/event-page.model';
@@ -6,6 +7,7 @@ import { EventPageModel } from '../../../../core/models/event-page/event-page.mo
 @Component({
   selector: 'app-event-website-shell',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './event-website-shell.html',
   styleUrl: './event-website-shell.css',
 })

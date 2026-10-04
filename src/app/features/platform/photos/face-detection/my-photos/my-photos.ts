@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 import type { NotificationService as NotificationServiceType } from '../../../../../core/services/ui/notification.service';
@@ -28,7 +28,7 @@ interface ApiResponse<T> {
 @Component({
   selector: 'app-my-photos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './my-photos.html',
   styleUrl: './my-photos.css'
 })

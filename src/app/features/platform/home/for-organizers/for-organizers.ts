@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface OrganizerBenefit {
   number: string;
@@ -8,7 +9,7 @@ interface OrganizerBenefit {
 
 @Component({
   selector: 'app-for-organizers',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './for-organizers.html',
   styleUrl: './for-organizers.css',
 })
