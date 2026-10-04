@@ -1,5 +1,6 @@
 import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event/event.service';
 import { EventRoleService } from '../../../core/services/event-role/event-role.service';
@@ -51,7 +52,10 @@ export class MyEvents {
           this.toastr.error("You don't have access to this event's workspace.");
         }
       },
-      error: () => {
+      error: (err: unknown) => {
+        // 401 is handled by the auth interceptor (refresh or login), so a
+        // second toast here would only add noise.
+        if (err instanceof HttpErrorResponse && err.status === 401) return;
         this.toastr.error("Couldn't open this event. Check your connection and try again.");
       },
     });

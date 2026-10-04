@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 
 import { eventRoleGuard, UserRole } from './event-role.guard';
 import { EventRoleService } from '../../services/event-role/event-role.service';
+import { NotificationService } from '../../services/ui/notification.service';
 
 describe('eventRoleGuard', () => {
   const eventId = 'event-1';
@@ -95,5 +97,37 @@ describe('eventRoleGuard', () => {
     const result = await executeGuard('Organizer');
     expect(result).toBeInstanceOf(UrlTree);
     expect(result.toString()).toBe('/');
+  });
+
+  it('sends expired sessions to login without an error toast', async () => {
+    const spy = TestBed.inject(EventRoleService) as any;
+    spy.getMyRoles.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 401 })),
+    );
+    const notification = TestBed.inject(NotificationService);
+    const errorSpy = vi.spyOn(notification, 'error');
+
+    const result = await executeGuard('Organizer');
+
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(result.toString()).toContain('/login');
+    expect(errorSpy).not.toHaveBeenCalled();
+  });
+
+  it('redirects home with a clear message when the server forbids the role lookup', async () => {
+    const spy = TestBed.inject(EventRoleService) as any;
+    spy.getMyRoles.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 403 })),
+    );
+    const notification = TestBed.inject(NotificationService);
+    const errorSpy = vi.spyOn(notification, 'error');
+
+    const result = await executeGuard('Organizer');
+
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(result.toString()).toBe('/');
+    expect(errorSpy).toHaveBeenCalledWith(
+      "You don't have Organizer access for this event.",
+    );
   });
 });

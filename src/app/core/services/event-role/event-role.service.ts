@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, switchMap, throwError } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { ApiResponse } from '../../models/common/api-response';
@@ -32,13 +32,11 @@ export class EventRoleService {
     return this.authService.loadCurrentUser().pipe(
       switchMap((user) => {
         if (!user) {
-          return of({
-            isSuccess: false,
-            statusCode: 401,
-            message: 'Authentication is required.',
-            data: null,
-            errors: ['Authentication is required.'],
-          } satisfies ApiResponse<EventRoleModel[]>);
+          // A real 401 lets the auth interceptor refresh the session (or send
+          // the user to login) instead of the guard treating it as "no roles".
+          return throwError(
+            () => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }),
+          );
         }
 
         return this.http.get<ApiResponse<EventRoleModel[]>>(
