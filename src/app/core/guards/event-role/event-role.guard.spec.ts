@@ -84,11 +84,9 @@ describe('eventRoleGuard', () => {
     expect(result.toString()).toBe('/');
   });
 
-  it('sends owners to their owner dashboard when the required role does not match', async () => {
+  it('allows the owner on photographer routes', async () => {
     setRoles('Owner');
-    const result = await executeGuard('Photographer');
-    expect(result).toBeInstanceOf(UrlTree);
-    expect(result.toString()).toBe(`/owner/${eventId}`);
+    expect(await executeGuard('Photographer')).toBe(true);
   });
 
   it('redirects home when the role lookup fails', async () => {

@@ -27,7 +27,11 @@ export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn => route =
       const isOwner = names.includes('owner');
       const allowed =
         names.includes(requiredRole.toLowerCase()) ||
-        ((requiredRole === 'Organizer' || requiredRole === 'AttendanceStaff') && isOwner);
+        ((
+          requiredRole === 'Organizer' ||
+          requiredRole === 'AttendanceStaff' ||
+          requiredRole === 'Photographer'
+        ) && isOwner);
       if (allowed) return true;
       if (isOwner) return router.createUrlTree(['/owner', eventId]);
       return router.createUrlTree(['/']);

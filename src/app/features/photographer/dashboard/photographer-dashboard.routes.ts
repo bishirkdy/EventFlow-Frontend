@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { PhotographerDashboard } from './photographer-dashboard';
+import { eventRoleGuard } from '../../../core/guards/event-role/event-role.guard';
 
 export const photographerRoutes: Routes = [
   {
     path: ':eventId',
+    canActivate: [eventRoleGuard('Photographer')],
     children: [
       {
         path: 'photos',
