@@ -1,0 +1,63 @@
+@if (user(); as currentUser) {
+  <div class="relative">
+    <button
+      type="button"
+      (click)="toggle()"
+      class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-primary text-sm font-semibold text-white transition hover:bg-primary-dark"
+      [attr.aria-expanded]="isOpen()"
+      aria-haspopup="menu"
+    >
+      {{ initials }}
+    </button>
+
+    @if (isOpen()) {
+      <div
+        role="menu"
+        class="absolute right-0 top-12 z-50 w-60 overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
+      >
+        <div class="border-b border-border px-4 py-3">
+          <p class="truncate text-sm font-semibold text-text-primary">{{ displayName }}</p>
+          <p class="truncate text-xs text-text-secondary">{{ currentUser.email }}</p>
+        </div>
+
+        <div class="py-1">
+          <a
+            routerLink="/my-events"
+            (click)="isOpen.set(false)"
+            class="block px-4 py-2.5 text-sm text-text-primary transition hover:bg-surface-soft hover:text-primary"
+          >
+            My Events
+          </a>
+
+          @for (link of links(); track link.url) {
+            <a
+              [routerLink]="link.url"
+              (click)="isOpen.set(false)"
+              class="block px-4 py-2.5 text-sm text-text-primary transition hover:bg-surface-soft hover:text-primary"
+            >
+              {{ link.label }}
+            </a>
+          }
+        </div>
+
+        <div class="border-t border-border py-1">
+          <button
+            type="button"
+            (click)="signOut()"
+            class="block w-full cursor-pointer px-4 py-2.5 text-left text-sm text-text-primary transition hover:bg-surface-soft hover:text-primary"
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <button
+    type="button"
+    (click)="signIn()"
+    class="cursor-pointer text-sm font-medium text-text-secondary transition hover:text-primary"
+  >
+    Sign in
+  </button>
+}

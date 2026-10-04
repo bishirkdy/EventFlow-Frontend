@@ -1,0 +1,131 @@
+@if (service.isOpen()) {
+  <div class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+    <div
+      class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+      (click)="service.close()"
+      aria-hidden="true"
+    ></div>
+
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="login-dialog-title"
+      class="relative w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow-2xl"
+    >
+      <button
+        type="button"
+        (click)="service.close()"
+        aria-label="Close sign in"
+        class="absolute right-4 top-4 cursor-pointer rounded-full p-2 text-text-muted transition hover:bg-surface-soft hover:text-text-primary"
+      >
+        <lucide-icon [img]="CloseIcon" [size]="18"></lucide-icon>
+      </button>
+
+      <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+        Welcome back
+      </span>
+
+      <h2
+        id="login-dialog-title"
+        class="mt-3 text-3xl font-bold tracking-[-0.04em] text-text-primary"
+      >
+        Sign in to EventFlow
+      </h2>
+
+      <p class="mt-2 text-sm leading-6 text-text-secondary">
+        Sign in to continue to your events, registrations and certificates.
+      </p>
+
+      <form #loginForm="ngForm" (ngSubmit)="submit(loginForm)" class="mt-6 space-y-4">
+        <div>
+          <label for="dialog-email" class="mb-2 block text-sm font-medium text-text-primary">
+            Email
+          </label>
+
+          <input
+            id="dialog-email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            #dialogEmail="ngModel"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+            email
+            class="h-12 w-full rounded-md border border-border bg-surface px-4 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+          />
+
+          @if (dialogEmail.touched && dialogEmail.invalid) {
+            <p class="mt-1 text-xs text-red-600">Enter a valid email address.</p>
+          }
+        </div>
+
+        <div>
+          <label for="dialog-password" class="mb-2 block text-sm font-medium text-text-primary">
+            Password
+          </label>
+
+          <div class="relative">
+            <input
+              id="dialog-password"
+              name="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              [(ngModel)]="password"
+              #dialogPassword="ngModel"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+              class="h-12 w-full rounded-md border border-border bg-surface px-4 pr-16 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-4 focus:ring-primary-light"
+            />
+
+            <button
+              type="button"
+              (click)="togglePassword()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer px-2 py-1 text-text-muted transition hover:text-text-primary"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              @if (showPassword()) {
+                <lucide-icon [img]="EyeOff" [size]="18"></lucide-icon>
+              } @else {
+                <lucide-icon [img]="Eye" [size]="18"></lucide-icon>
+              }
+            </button>
+          </div>
+
+          @if (dialogPassword.touched && dialogPassword.hasError('required')) {
+            <p class="mt-1 text-xs text-red-600">Password is required.</p>
+          }
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="h-12 w-full cursor-pointer rounded-md bg-primary text-sm font-semibold text-white transition duration-200 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          @if (loading()) {
+            <span class="flex items-center justify-center gap-2">
+              <span
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              ></span>
+              Signing in...
+            </span>
+          } @else {
+            Sign In
+          }
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-text-secondary">
+        Don't have an account?
+
+        <a
+          routerLink="/register"
+          (click)="service.close()"
+          class="font-semibold text-primary hover:text-primary-dark"
+        >
+          Create an account
+        </a>
+      </p>
+    </div>
+  </div>
+}
