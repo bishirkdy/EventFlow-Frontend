@@ -28,6 +28,13 @@ export class EventPageService {
     );
   }
 
+  /** Includes draft pages, for the organizer website preview. */
+  getPreviewPages(eventId: string): Observable<ApiResponse<EventPageModel[]>> {
+    return this.http.get<ApiResponse<EventPageModel[]>>(
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPreviewPages(eventId)),
+    );
+  }
+
   createPage(eventId: string, request: CreateEventPageModel): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.createPage(eventId)),

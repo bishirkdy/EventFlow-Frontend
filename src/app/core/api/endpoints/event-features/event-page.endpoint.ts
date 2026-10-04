@@ -5,6 +5,9 @@ export const EVENT_PAGE_ENDPOINTS = {
   getManagePages: (eventId: string) =>
     `/v1/event-page/${eventId}/manage-pages`,
 
+  getPreviewPages: (eventId: string) =>
+    `/v1/event-page/${eventId}/preview`,
+
   createPage: (eventId: string) =>
     `/v1/event-page/${eventId}/pages`,
 

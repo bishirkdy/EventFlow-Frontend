@@ -13,7 +13,9 @@ export class Preview implements OnInit {
   ngOnInit(): void {
     const eventId = this.route.parent?.snapshot.paramMap.get('eventId');
     if (eventId) {
-      void this.router.navigate(['/events', eventId]);
+      void this.router.navigate(['/events', eventId], {
+        queryParams: { preview: '1' },
+      });
     }
   }
 }

@@ -19,5 +19,9 @@
     </div>
   </main>
 } @else {
-  <app-website-template-selector [data]="data()!" [pageSlug]="pageSlug()" />
+  <app-website-template-selector
+    [data]="data()!"
+    [pageSlug]="pageSlug()"
+    [preview]="preview()"
+  />
 }

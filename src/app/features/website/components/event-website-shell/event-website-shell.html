@@ -1,4 +1,7 @@
 <div class="site" [class]="'theme-' + theme()">
+  @if (preview()) {
+    <div class="preview-banner">Preview — not published yet</div>
+  }
   @if (data().event; as event) {
     <header class="site-header">
       <div class="header-inner">

@@ -13,10 +13,11 @@ import { EventPageModel } from '../../../../core/models/event-page/event-page.mo
 export class EventWebsiteShell {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
+  readonly preview = input(false);
 
   readonly pages = computed(() =>
     this.data().pages
-      .filter(page => page.isPublished)
+      .filter(page => this.preview() || page.isPublished)
       .sort((a, b) => a.displayOrder - b.displayOrder),
   );
 

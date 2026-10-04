@@ -12,4 +12,5 @@ import { EventWebsiteShell } from '../../components/event-website-shell/event-we
 export class EducationTemplate {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
+  readonly preview = input(false);
 }

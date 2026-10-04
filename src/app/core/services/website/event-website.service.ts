@@ -26,15 +26,20 @@ export class EventWebsiteService {
   private readonly speakerService = inject(SpeakerService);
   private readonly sponsorService = inject(SponsorService);
 
-  load(eventId: string): Observable<EventWebsiteData> {
+  load(eventId: string, preview = false): Observable<EventWebsiteData> {
+    const pages$ = preview
+      ? this.eventPageService.getPreviewPages(eventId)
+      : this.eventPageService.getPages(eventId);
+    const pageSections$ = preview
+      ? this.pageSectionService.getSectionsByEventPreview(eventId)
+      : this.pageSectionService.getSectionsByEvent(eventId);
+
     return forkJoin({
       event: this.eventService.getEventById(eventId),
       features: this.eventFeatureService.getFeatures(eventId),
-      pages: this.eventPageService.getPages(eventId),
+      pages: pages$,
       navigationItems: this.navigationItemService.getItems(eventId),
-      pageSections: this.pageSectionService
-        .getSectionsByEvent(eventId)
-        .pipe(map((result) => result.data ?? [])),
+      pageSections: pageSections$.pipe(map((result) => result.data ?? [])),
     }).pipe(
       switchMap((response) => {
         const event = response.event.data ?? null;

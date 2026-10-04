@@ -28,6 +28,13 @@ export class EventPageSectionService {
     );
   }
 
+  /** Includes draft pages' sections, for the organizer website preview. */
+  getSectionsByEventPreview(eventId: string): Observable<ApiResponse<PageSectionModel[]>> {
+    return this.http.get<ApiResponse<PageSectionModel[]>>(
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSectionsByEventPreview(eventId)),
+    );
+  }
+
   /** Includes hidden sections, only for organizer screens. */
   getManageSections(pageId: string): Observable<ApiResponse<PageSectionModel[]>> {
     return this.http.get<ApiResponse<PageSectionModel[]>>(
