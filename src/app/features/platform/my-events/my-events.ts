@@ -35,6 +35,10 @@ export class MyEvents {
 
         if (roles.includes('owner')) {
           void this.router.navigate(['/owner', event.id]);
+        } else if (roles.includes('attendancestaff')) {
+          void this.router.navigate(['/attendance-staff', event.id]);
+        } else if (roles.includes('photographer')) {
+          void this.router.navigate(['/photographer', event.id, 'photos']);
         } else {
           void this.router.navigate(['/organizer', event.id, 'overview']);
         }

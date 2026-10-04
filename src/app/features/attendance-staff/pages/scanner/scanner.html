@@ -8,6 +8,17 @@
     <video #video class="aspect-video w-full object-cover" playsinline muted></video>
   </div>
   <div class="border border-border bg-surface p-5">
+    @if (scopes().length > 1) {
+      <div class="mb-5">
+        <label class="text-sm font-medium">Attendance scope</label>
+        <select [value]="selectedScope()?.key ?? ''" (change)="selectScope($any($event.target).value)" class="mt-2 w-full border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-secondary">
+          @for (scope of scopes(); track scope.key) {
+            <option [value]="scope.key">{{ scope.label }}</option>
+          }
+        </select>
+        <p class="mt-1 text-xs text-text-secondary">Scans are only accepted for the scope assigned to you.</p>
+      </div>
+    }
     <div class="flex items-center gap-3">
       <span class="h-2.5 w-2.5 rounded-full bg-secondary"></span>
       <p class="text-sm text-text-primary">{{ message() }}</p>

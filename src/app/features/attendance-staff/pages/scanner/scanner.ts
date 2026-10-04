@@ -1,7 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { OperationsService } from '../../../../core/services/operations/operations.service';
+import { SectionService } from '../../../../core/services/section/section.service';
+import { SessionService } from '../../../../core/services/session/session.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
+import { AttendanceScopeType } from '../../../../core/models/operations/operations.model';
 
 type ScannerStatus = 'ready' | 'starting' | 'scanning' | 'verifying' | 'success' | 'error';
 
@@ -11,6 +17,13 @@ type BarcodeDetectorLike = {
 
 type BarcodeDetectorConstructorLike = new (options?: { formats?: string[] }) => BarcodeDetectorLike;
 
+export type StaffScope = {
+  key: string;
+  label: string;
+  sectionId: string | null;
+  sessionId: string | null;
+};
+
 @Component({
   selector: 'app-attendance-qr-scanner',
   standalone: true,
@@ -19,19 +32,33 @@ type BarcodeDetectorConstructorLike = new (options?: { formats?: string[] }) => 
 export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly operations = inject(OperationsService);
+  private readonly sections = inject(SectionService);
+  private readonly sessions = inject(SessionService);
+  private readonly auth = inject(AuthService);
   private readonly notify = inject(NotificationService);
   @ViewChild('video', { static: true }) video!: ElementRef<HTMLVideoElement>;
 
   readonly status = signal<ScannerStatus>('ready');
   readonly manualQr = signal('');
   readonly message = signal('Point the camera at a participant QR code.');
+  readonly scopes = signal<StaffScope[]>([]);
+  readonly selectedScope = signal<StaffScope | null>(null);
   readonly eventId = this.route.parent?.parent?.snapshot.paramMap.get('eventId') ?? this.route.parent?.snapshot.paramMap.get('eventId');
   private stream: MediaStream | null = null;
   private frame = 0;
 
+  constructor() {
+    this.loadScopes();
+  }
+
   ngAfterViewInit(): void { void this.start(); }
 
   ngOnDestroy(): void { this.stop(); }
+
+  selectScope(key: string): void {
+    const scope = this.scopes().find(x => x.key === key);
+    if (scope) this.selectedScope.set(scope);
+  }
 
   async start(): Promise<void> {
     if (!this.eventId || this.status() === 'scanning') return;
@@ -76,12 +103,54 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     if (value) void this.verify(value);
   }
 
+  private loadScopes(): void {
+    if (!this.eventId) return;
+    const me = this.auth.currentUser()?.id;
+    forkJoin({
+      staff: this.operations.getStaff(this.eventId).pipe(catchError(() => of(null))),
+      sections: this.sections.getSections(this.eventId).pipe(catchError(() => of(null))),
+      sessions: this.sessions.getSessions(this.eventId).pipe(catchError(() => of(null))),
+    }).subscribe(({ staff, sections, sessions }) => {
+      const mine = (staff?.data ?? []).filter(x => x.isActive && x.userId === me);
+      const sectionNames = new Map((sections?.data ?? []).map(s => [s.id, s.name]));
+      const sessionNames = new Map((sessions?.data ?? []).map(s => [s.id, s.title]));
+      const sessionSections = new Map((sessions?.data ?? []).map(s => [s.id, s.sectionId]));
+      const options: StaffScope[] = [];
+      for (const assignment of mine) {
+        if (assignment.scopeType === AttendanceScopeType.Event) {
+          options.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
+        } else if (assignment.scopeType === AttendanceScopeType.Section && assignment.scopeId) {
+          options.push({
+            key: `section:${assignment.scopeId}`,
+            label: sectionNames.get(assignment.scopeId) ?? 'Section',
+            sectionId: assignment.scopeId,
+            sessionId: null,
+          });
+        } else if (assignment.scopeType === AttendanceScopeType.Session && assignment.scopeId) {
+          options.push({
+            key: `session:${assignment.scopeId}`,
+            label: sessionNames.get(assignment.scopeId) ?? 'Session',
+            sectionId: sessionSections.get(assignment.scopeId) ?? null,
+            sessionId: assignment.scopeId,
+          });
+        }
+      }
+      const unique = options.filter((option, index) => options.findIndex(x => x.key === option.key) === index);
+      if (unique.length === 0) {
+        unique.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
+      }
+      this.scopes.set(unique);
+      this.selectedScope.update(scope => scope && unique.some(x => x.key === scope.key) ? scope : unique[0]);
+    });
+  }
+
   private async verify(value: string): Promise<void> {
     if (!this.eventId || this.status() === 'verifying') return;
     this.stop();
     this.status.set('verifying');
     this.message.set('Verifying ticket and attendance permission...');
-    this.operations.checkInQr(this.eventId, value, null, null).subscribe({
+    const scope = this.selectedScope();
+    this.operations.checkInQr(this.eventId, value, scope?.sectionId ?? null, scope?.sessionId ?? null).subscribe({
       next: response => {
         if (response.isSuccess) {
           this.status.set('success');

@@ -3,6 +3,7 @@ import { PublicLayout } from './shared/layouts/public-layout/public-layout';
 import { authGuard } from './core/guards/auth/auth-guard';
 import { eventRoleGuard } from './core/guards/event-role/event-role.guard';
 import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
+import { AttendanceStaffLayout } from './features/attendance-staff/layout/attendance-staff-layout';
 
 export const routes: Routes = [
   ...REGISTRATION_ROUTES,
@@ -78,6 +79,22 @@ export const routes: Routes = [
   {
     path: 'events/:eventId',
     loadComponent: () => import('./features/website/website').then((m) => m.Website),
+  },
+  {
+    path: 'attendance-staff/:eventId',
+    canActivate: [authGuard, eventRoleGuard('AttendanceStaff')],
+    component: AttendanceStaffLayout,
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/attendance-staff/pages/dashboard/dashboard').then((m) => m.AttendanceStaffDashboard),
+      },
+      {
+        path: 'scan',
+        loadComponent: () => import('./features/attendance-staff/pages/scanner/scanner').then((m) => m.AttendanceQrScanner),
+      },
+    ],
   },
   {
     path: 'organizer',
