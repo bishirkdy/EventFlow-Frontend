@@ -23,11 +23,16 @@ export class WebsiteTemplateSelector {
   readonly pageSlug = input<string | null>(null);
   readonly preview = input(false);
   readonly type = computed(() => {
-    const value = (this.data().event?.eventType ?? '').trim().toLowerCase();
+    const eventType: string | undefined = this.data().event?.eventType;
+    const typeValue = eventType ? eventType.trim() : '';
+    const value = typeValue.toLowerCase();
     if (value.includes('conference')) return 'conference';
     if (value.includes('education') || value.includes('workshop')) return 'education';
     if (value.includes('festival') || value.includes('cultural')) return 'festival';
     if (value.includes('sports') || value.includes('competition')) return 'sports';
+    if (value.includes('wedding') || value.includes('marriage')) return 'wedding';
+    if (value.includes('symposium') || value.includes('summit')) return 'conference';
+    if (value.includes('party') || value.includes('celebration')) return 'festival';
     return 'wedding';
   });
 }
