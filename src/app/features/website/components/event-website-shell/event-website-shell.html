@@ -11,10 +11,14 @@
         </a>
 
         <div class="event-actions">
-          <a [routerLink]="registrationHref()" class="event-action event-action--primary">
-            Register
-          </a>
-          <a [routerLink]="photosHref()" class="event-action">Photos</a>
+          @if (registrationHref() !== '#') {
+            <a [routerLink]="registrationHref()" class="event-action event-action--primary">
+              Register
+            </a>
+          }
+          @if (registrationHref() === '#') {
+            <a [routerLink]="photosHref()" class="event-action">Photos</a>
+          }
         </div>
 
         @if (navItems().length) {
@@ -68,7 +72,7 @@
                         {{ isHomePage() ? 'Welcome' : normalizedTitle(currentPage.name) }}
                       </span>
 
-                      <h2>
+                      <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
                         {{ normalizedTitle(section.title) || event.name }}
                       </h2>
 
@@ -89,20 +93,20 @@
                       }
 
                       @if (isHomePage()) {
-                        <div class="hero-meta">
+                        <div class="hero-meta grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <span>Date</span>
-                            <strong>{{ formatDate(event.startDate) }}</strong>
+                            <span class="text-sm md:text-text-secondary text-text-secondary">Date</span>
+                            <strong class="mt-2 block text-lg md:text-xl">{{ formatDate(event.startDate) }}</strong>
                           </div>
 
                           <div>
-                            <span>Time</span>
-                            <strong>{{ formatTime(event.startDate) }}</strong>
+                            <span class="text-sm md:text-text-secondary text-text-secondary">Time</span>
+                            <strong class="mt-2 block text-lg md:text-xl">{{ formatTime(event.startDate) }}</strong>
                           </div>
 
                           <div>
-                            <span>Time zone</span>
-                            <strong>{{ event.timeZone }}</strong>
+                            <span class="text-sm md:text-text-secondary text-text-secondary">Time zone</span>
+                            <strong class="mt-2 block text-lg md:text-xl">{{ event.timeZone }}</strong>
                           </div>
                         </div>
                       }
@@ -144,7 +148,7 @@
                   </div>
 
                   @if (data().venues.length > 0) {
-                    <div class="venue-grid">
+                    <div class="venue-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       @for (venue of data().venues; track venue.id) {
                         <article class="venue-card">
                           @if (imageForVenue(venue); as image) {
@@ -220,7 +224,7 @@
                     hasFeature('sessions') &&
                     data().sessions.length
                   ) {
-                    <div class="session-list">
+                    <div class="session-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       @for (session of data().sessions; track session.id) {
                         <article class="session-card">
                           @if (imageForSession(session); as image) {
@@ -293,7 +297,7 @@
                       </div>
 
                       @if (data().speakers.length) {
-                        <div class="speaker-grid">
+                        <div class="speaker-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           @for (
                             speaker of data().speakers;
                             track speaker.id
@@ -377,7 +381,7 @@
                       </div>
 
                       @if (data().sponsors.length) {
-                        <div class="sponsor-grid">
+                        <div class="sponsor-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                           @for (
                             sponsor of data().sponsors;
                             track sponsor.id
@@ -459,7 +463,7 @@
                     </div>
 
                     @if (data().images.length) {
-                      <div class="gallery-grid">
+                      <div class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @for (
                           image of data().images;
                           track image.id;
@@ -500,11 +504,13 @@
                           {{ displayDescription(section.content) }}
                         </p>
                       }
-                    </div>
 
-                    <a class="rsvp-link" [routerLink]="registrationHref()">
-                      Register <span>→</span>
-                    </a>
+                      @if (registrationHref() !== '#') {
+                        <a class="rsvp-link" [routerLink]="registrationHref()">
+                          Register <span>→</span>
+                        </a>
+                      }
+                    </div>
                   </div>
                 </section>
               }
@@ -599,23 +605,24 @@
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <div>
-          <span class="brand-kicker">
-            {{ event.eventType || 'Event' }}
-          </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <span class="brand-kicker">
+              {{ event.eventType || 'Event' }}
+            </span>
 
-          <h2>{{ event.name }}</h2>
+            <h2>{{ event.name }}</h2>
 
-          <a [routerLink]="brandHref()">
-            Back to home <span>→</span>
-          </a>
-        </div>
+            <a [routerLink]="brandHref()">
+              Back to home <span>→</span>
+            </a>
+          </div>
 
-        <div class="footer-meta">
-          <span>{{ formatDate(event.startDate) }}</span>
-          <span>{{ event.timeZone }}</span>
+          <div>
+            <span>{{ formatDate(event.startDate) }}</span>
+            <span>{{ event.timeZone }}</span>
+          </div>
         </div>
       </div>
     </footer>
   }
-</div>

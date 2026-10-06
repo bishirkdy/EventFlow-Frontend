@@ -1,13 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../models/common/api-response';
 
-export function getApiErrorMessage(
-  error: unknown,
-  fallback = 'Something went wrong.',
-): string {
+export function getApiErrorMessage(error: unknown, fallback = 'Something went wrong.'): string {
   if (error instanceof HttpErrorResponse) {
-    const response =
-      error.error as Partial<ApiResponse<unknown>> | null | undefined;
+    const response = error.error as Partial<ApiResponse<unknown>> | null | undefined;
 
     if (response?.errors?.length) {
       return response.errors.join(' ');
@@ -27,8 +23,7 @@ export function getApiErrorMessage(
 
 export function getApiErrorErrors(error: unknown): string[] {
   if (error instanceof HttpErrorResponse) {
-    const response =
-      error.error as Partial<ApiResponse<unknown>> | null | undefined;
+    const response = error.error as Partial<ApiResponse<unknown>> | null | undefined;
 
     return response?.errors ?? [];
   }

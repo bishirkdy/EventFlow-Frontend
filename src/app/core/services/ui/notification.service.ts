@@ -2,14 +2,6 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { getApiErrorMessage } from '../../api/api-error';
 
-/**
- * Small SSR-safe notification service.
- *
- * The previous implementation depended directly on ngx-toastr during application
- * bootstrap. ngx-toastr touches browser globals while the SSR bundle is evaluated,
- * which can crash Node before Angular finishes rendering. Keeping the notification
- * boundary here lets the rest of the application stay unaware of that concern.
- */
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly document = inject(DOCUMENT);
@@ -28,9 +20,7 @@ export class NotificationService {
   }
 
   error(error: unknown, fallback = 'Something went wrong.'): void {
-    const message = typeof error === 'string'
-      ? error
-      : getApiErrorMessage(error, fallback);
+    const message = typeof error === 'string' ? error : getApiErrorMessage(error, fallback);
 
     this.show(message, undefined, 'error');
   }
@@ -38,9 +28,7 @@ export class NotificationService {
   clear(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    this.document
-      .querySelectorAll('[data-eventflow-toast]')
-      .forEach(element => element.remove());
+    this.document.querySelectorAll('[data-eventflow-toast]').forEach((element) => element.remove());
   }
 
   private show(

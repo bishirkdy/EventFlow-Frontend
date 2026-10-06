@@ -30,6 +30,7 @@ export class LoginDialog {
   readonly loading = signal(false);
 
   @HostListener('document:keydown.escape')
+
   onEscape(): void {
     if (this.service.isOpen()) {
       this.service.close();
@@ -51,6 +52,7 @@ export class LoginDialog {
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (user) => {
         this.loading.set(false);
+        
         if (user) {
           this.toastr.success('Login successful.');
           const returnUrl = this.service.takeReturnUrl();

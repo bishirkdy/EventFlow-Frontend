@@ -79,8 +79,11 @@ export class Website implements OnInit {
       },
       error: (error: unknown) => {
         console.error('Failed to load event website:', error);
+        // For public events, show error but don't redirect to login
+        // The page will render with minimal information
         this.error.set('Failed to load event website.');
         this.loading.set(false);
+        // Don't set data, allow fallback rendering
       },
     });
   }

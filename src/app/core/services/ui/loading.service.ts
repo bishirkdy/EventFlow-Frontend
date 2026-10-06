@@ -1,7 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 
-/** Central request counter. Local buttons still own their own busy state. */
+// Central loading
 @Injectable({ providedIn: 'root' })
+
 export class LoadingService {
   private readonly activeRequests = signal(0);
   readonly loading = this.activeRequests.asReadonly();

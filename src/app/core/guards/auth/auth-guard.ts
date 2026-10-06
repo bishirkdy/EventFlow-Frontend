@@ -22,10 +22,10 @@ export const authGuard: CanActivateFn = () => {
     queryParams: { returnUrl: router.url },
   });
 
-  return authService.loadCurrentUser().pipe(
-    map((user) => {
-      return user ? true : loginUrl;
-    }),
-    catchError(() => of(loginUrl)),
-  );
+    return authService.loadCurrentUser().pipe(
+      map((user) => {
+        return user ? true : loginUrl;
+      }),
+      catchError(() => of(loginUrl)),
+    );
 };

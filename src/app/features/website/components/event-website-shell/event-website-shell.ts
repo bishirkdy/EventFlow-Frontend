@@ -111,11 +111,16 @@ export class EventWebsiteShell {
   });
 
   readonly theme = computed(() => {
-    const type = (this.data().event?.eventType ?? '').trim().toLowerCase();
+    const eventType: string | undefined = this.data().event?.eventType;
+    const typeValue = eventType ? eventType.trim() : '';
+    const type = typeValue.toLowerCase();
     if (type.includes('conference')) return 'conference';
     if (type.includes('education') || type.includes('workshop')) return 'education';
     if (type.includes('festival') || type.includes('cultural')) return 'festival';
     if (type.includes('sports') || type.includes('competition')) return 'sports';
+    if (type.includes('wedding') || type.includes('marriage')) return 'wedding';
+    if (type.includes('symposium') || type.includes('summit')) return 'conference';
+    if (type.includes('party') || type.includes('celebration')) return 'festival';
     return 'wedding';
   });
 
@@ -181,7 +186,9 @@ export class EventWebsiteShell {
 
   registrationHref(): string {
     const eventId = this.data().event?.id;
-    return eventId ? `/events/${eventId}/register` : "#";
+    return eventId && this.hasFeature('registration')
+      ? `/events/${eventId}/register`
+      : "#";
   }
 
   photosHref(): string {

@@ -1,17 +1,13 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-
 import { LucideAngularModule, Home, Menu, X } from 'lucide-angular';
-
 import { ORGANIZER_NAVIGATION, OrganizerNavGroup } from '../../config/organizer-navigation';
-
 import { EventService } from '../../../../core/services/event/event.service';
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-
 import { Event as EventModel } from '../../../../core/models/event/event.model';
 
 @Component({
@@ -28,12 +24,10 @@ export class OrganizerLayout {
   private readonly pageService = inject(EventPageService);
   private readonly notification = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
+
   navGroups = signal<OrganizerNavGroup[]>([]);
-
   event = signal<EventModel | null>(null);
-
   loading = signal(true);
-
   mobileMenuOpen = signal(false);
 
   // Lucide icons to the template
