@@ -6,16 +6,20 @@ import { EventService } from '../../../core/services/event/event.service';
 import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
 import { Event } from '../../../core/models/event/event.model';
+import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, TruncateWordsPipe],
   templateUrl: './my-events.html',
   styleUrl: './my-events.css',
 })
+
 export class MyEvents {
+
   events = signal<Event[]>([]);
   loading = signal(true);
+  
   private eventService = inject(EventService);
   private roleService = inject(EventRoleService);
   private router = inject(Router);
@@ -45,8 +49,6 @@ export class MyEvents {
         } else if (roles.includes('organizer')) {
           void this.router.navigate(['/organizer', event.id, 'overview']);
         } else if (roles.length > 0) {
-          // Participant-only membership: open the public event site instead of
-          // guessing a staff workspace the role guard would reject.
           void this.router.navigate(['/events', event.id]);
         } else {
           this.toastr.error("You don't have access to this event's workspace.");
