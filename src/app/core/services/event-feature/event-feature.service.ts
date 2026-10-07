@@ -12,6 +12,7 @@ import { EventFeatureModel } from '../../models/event-feature/event-feature.mode
 export class EventFeatureService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
+
   private readonly changedSubject = new Subject<string>();
 
   readonly changed$ = this.changedSubject.asObservable();
@@ -23,23 +24,29 @@ export class EventFeatureService {
   }
 
   enableFeature(eventId: string, featureId: string): Observable<ApiResponse<object>> {
-    return this.http.post<ApiResponse<object>>(
-      this.api.getUrl(EVENT_FEATURE_ENDPOINTS.enable(eventId, featureId)),
-      {},
-    ).pipe(tap(() => this.changedSubject.next(eventId)));
+    return this.http
+      .post<ApiResponse<object>>(
+        this.api.getUrl(EVENT_FEATURE_ENDPOINTS.enable(eventId, featureId)),
+        {},
+      )
+      .pipe(tap(() => this.changedSubject.next(eventId)));
   }
 
   disableFeature(eventId: string, featureId: string): Observable<ApiResponse<object>> {
-    return this.http.post<ApiResponse<object>>(
-      this.api.getUrl(EVENT_FEATURE_ENDPOINTS.disable(eventId, featureId)),
-      {},
-    ).pipe(tap(() => this.changedSubject.next(eventId)));
+    return this.http
+      .post<ApiResponse<object>>(
+        this.api.getUrl(EVENT_FEATURE_ENDPOINTS.disable(eventId, featureId)),
+        {},
+      )
+      .pipe(tap(() => this.changedSubject.next(eventId)));
   }
 
   resetFeatures(eventId: string): Observable<ApiResponse<EventFeatureModel[]>> {
-    return this.http.post<ApiResponse<EventFeatureModel[]>>(
-      this.api.getUrl(EVENT_FEATURE_ENDPOINTS.reset(eventId)),
-      {},
-    ).pipe(tap(() => this.changedSubject.next(eventId)));
+    return this.http
+      .post<ApiResponse<EventFeatureModel[]>>(
+        this.api.getUrl(EVENT_FEATURE_ENDPOINTS.reset(eventId)),
+        {},
+      )
+      .pipe(tap(() => this.changedSubject.next(eventId)));
   }
 }

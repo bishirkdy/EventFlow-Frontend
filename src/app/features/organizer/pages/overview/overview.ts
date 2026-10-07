@@ -20,10 +20,11 @@ import {
 } from '../../../../core/models/registration/registration-stats.model';
 import { AttendanceAnalyticsModel } from '../../../../core/models/operations/operations.model';
 import { TeamAnalyticsModel } from '../../../../core/models/event-role/event-role.model';
+import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 
 @Component({
   selector: 'app-overview',
-  imports: [DatePipe, DecimalPipe, RouterLink],
+  imports: [DatePipe, DecimalPipe, RouterLink , TruncateWordsPipe],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })

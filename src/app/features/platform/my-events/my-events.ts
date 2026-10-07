@@ -14,19 +14,16 @@ import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe
   templateUrl: './my-events.html',
   styleUrl: './my-events.css',
 })
-
 export class MyEvents {
-
   events = signal<Event[]>([]);
   loading = signal(true);
-  
+
   private eventService = inject(EventService);
   private roleService = inject(EventRoleService);
   private router = inject(Router);
   private toastr = inject(NotificationService);
   private platformId = inject(PLATFORM_ID);
   publishing = signal<string | null>(null);
-
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
@@ -38,7 +35,8 @@ export class MyEvents {
   openEvent(event: Event): void {
     this.roleService.getMyRoles(event.id).subscribe({
       next: (response) => {
-        const roles = (response.data ?? []).map(r => r.roleName.toLowerCase());
+        const roles = (response.data ?? []).map((r) => r.roleName.toLowerCase());
+        console.log(roles);
 
         if (roles.includes('owner')) {
           void this.router.navigate(['/owner', event.id]);
@@ -48,6 +46,8 @@ export class MyEvents {
           void this.router.navigate(['/photographer', event.id, 'photos']);
         } else if (roles.includes('organizer')) {
           void this.router.navigate(['/organizer', event.id, 'overview']);
+        } else if (roles.length > 0) {
+          void this.router.navigate(['/events', event.id]);
         } else if (roles.length > 0) {
           void this.router.navigate(['/events', event.id]);
         } else {
@@ -69,7 +69,9 @@ export class MyEvents {
     this.eventService.publishEvent(event.id).subscribe({
       next: () => {
         this.publishing.set(null);
-        this.events.update(items => items.map(item => item.id === event.id ? { ...item, status: 'Published' } : item));
+        this.events.update((items) =>
+          items.map((item) => (item.id === event.id ? { ...item, status: 'Published' } : item)),
+        );
       },
       error: (error: unknown) => {
         console.error('Failed to publish event', error);

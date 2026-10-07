@@ -1,10 +1,8 @@
 <div class="min-h-full bg-background">
-
   @if (event(); as currentEvent) {
     <div class="border-b border-border bg-surface">
-      <div class="mx-auto max-w-7xl px-6 py-6 lg:px-8">
-        <div class="relative overflow-hidden rounded-2xl border border-border">
-
+      <div class="mx-auto px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+        <div class="relative overflow-hidden border border-border">
           <!-- Background -->
           <div class="absolute inset-0">
             @if (currentEvent.images.length > 0) {
@@ -14,323 +12,182 @@
                 class="h-full w-full object-cover"
               />
 
-              <div
-                class="absolute inset-0 bg-primary/70">
-              </div>
-
+              <div class="absolute inset-0 bg-primary/70"></div>
             } @else {
-
               <div class="h-full w-full bg-primary"></div>
             }
           </div>
 
-
-          <!-- Header Content -->
-          <div class="relative px-6 py-8 md:px-8 md:py-10">
-
-            <div class="flex flex-col gap-6 md:flex-row md:items-start">
-
-              <!-- Event Icon -->
-              <div
-                class="flex h-16 w-16 shrink-0 items-center justify-center
-                       overflow-hidden rounded-2xl border-2 border-white/70
-                       bg-surface shadow-sm">
-
-                @if (currentEvent.images.length > 0) {
-
-                  <img
-                    [src]="currentEvent.images[0].url"
-                    [alt]="currentEvent.name"
-                    class="h-full w-full object-cover"
-                  />
-
-                } @else {
-
-                  <span class="text-xl font-semibold text-secondary">
-                    {{ currentEvent.name.charAt(0) }}
-                  </span>
-
-                }
-
-              </div>
-
-
+          <!-- Hero Content -->
+          <div class="relative px-5 py-7 sm:px-7 sm:py-9 lg:px-8 lg:py-10">
+            <div class="flex flex-col gap-6 sm:flex-row sm:items-start">
               <!-- Event Information -->
               <div class="min-w-0 flex-1">
+                <!-- Meta -->
                 <div class="flex flex-wrap items-center gap-2">
                   <span
-                    class="inline-flex items-center gap-1.5 rounded-full
-                           bg-surface/90 px-3 py-1 text-xs font-medium
-                           text-text-primary">
-
+                    class="inline-flex items-center gap-1.5 bg-surface/90 px-3 py-1 text-xs font-medium text-text-primary"
+                  >
                     <span
                       class="h-1.5 w-1.5 rounded-full"
                       [class.bg-green-500]="currentEvent.status === 'Published'"
                       [class.bg-orange-500]="currentEvent.status === 'Draft'"
-                      [class.bg-red-500]="currentEvent.status === 'Cancelled'">
-                    </span>
+                      [class.bg-red-500]="currentEvent.status === 'Cancelled'"
+                    ></span>
 
                     {{ currentEvent.status }}
-
                   </span>
 
-                  <span class="text-xs text-white/80">
-                    ·
-                  </span>
+                  <span class="text-xs text-white/60">·</span>
 
                   <span class="text-xs text-white/80">
                     {{ currentEvent.eventType }}
                   </span>
 
                   @if (currentEvent.subType) {
-
-                    <span class="text-xs text-white/80">
-                      · {{ currentEvent.subType }}
-                    </span>
-
+                    <span class="text-xs text-white/80"> · {{ currentEvent.subType }} </span>
                   }
-
                 </div>
-
 
                 <!-- Name -->
                 <h1
-                  class="mt-3 text-3xl font-bold tracking-tight text-white
-                         md:text-4xl">
-
+                  class="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl"
+                >
                   {{ currentEvent.name }}
-
                 </h1>
 
-
                 <!-- Description -->
-                <p
-                  class="mt-3 max-w-3xl text-sm leading-6 text-white/85">
-
-                  {{ currentEvent.description || 'No description added.' }}
-
+                <p class="mt-3 max-w-3xl text-sm leading-6 text-white/85">
+                  {{
+                    currentEvent.description
+                      ? (currentEvent.description | truncateWords)
+                      : 'No description added.'
+                  }}
                 </p>
-
 
                 <!-- Dates -->
                 <div
-                  class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2
-                         text-sm text-white/85">
-
+                  class="mt-5 flex flex-col gap-2 text-sm text-white/85 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"
+                >
                   <div class="flex items-center gap-2">
-
-                    <span class="font-medium text-white">
-                      Start
-                    </span>
+                    <span class="font-medium text-white"> Start </span>
 
                     <span>
-                      {{ currentEvent.startDate | date:'medium' }}
+                      {{ currentEvent.startDate | date: 'medium' }}
                     </span>
-
                   </div>
 
-                  <span class="hidden text-white/50 sm:block">
-                    →
-                  </span>
+                  <span class="hidden text-white/50 sm:block"> → </span>
 
                   <div class="flex items-center gap-2">
-
-                    <span class="font-medium text-white">
-                      End
-                    </span>
+                    <span class="font-medium text-white"> End </span>
 
                     <span>
-                      {{ currentEvent.endDate | date:'medium' }}
+                      {{ currentEvent.endDate | date: 'medium' }}
                     </span>
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
-
-    <!-- Event Navigation -->
+    <!-- Navigation -->
     <div class="border-b border-border bg-surface">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-
-        <nav class="flex gap-6 overflow-x-auto">
+      <div class="mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="flex gap-5 overflow-x-auto sm:gap-6">
           <a
             routerLink="."
-            class="border-b-2 border-secondary px-1 py-4
-                   text-sm font-medium text-text-primary
-                   whitespace-nowrap">
-
+            class="shrink-0 border-b-2 border-secondary px-1 py-4 text-sm font-medium text-text-primary whitespace-nowrap"
+          >
             Overview
-
           </a>
 
           <a
             routerLink="../event/details"
-            class="border-b-2 border-transparent px-1 py-4
-                   text-sm font-medium text-text-secondary
-                   transition hover:border-border
-                   hover:text-text-primary whitespace-nowrap">
-
+            class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-text-secondary whitespace-nowrap transition hover:border-border hover:text-text-primary"
+          >
             Details
-
           </a>
 
           <a
             routerLink="../sessions"
-            class="border-b-2 border-transparent px-1 py-4
-                   text-sm font-medium text-text-secondary
-                   transition hover:border-border
-                   hover:text-text-primary whitespace-nowrap">
-
+            class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-text-secondary whitespace-nowrap transition hover:border-border hover:text-text-primary"
+          >
             Sessions
-
           </a>
 
           <a
             routerLink="../venues"
-            class="border-b-2 border-transparent px-1 py-4
-                   text-sm font-medium text-text-secondary
-                   transition hover:border-border
-                   hover:text-text-primary whitespace-nowrap">
-
+            class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-text-secondary whitespace-nowrap transition hover:border-border hover:text-text-primary"
+          >
             Venues
-
           </a>
 
           <a
             routerLink="../registration/registrations"
-            class="border-b-2 border-transparent px-1 py-4
-                   text-sm font-medium text-text-secondary
-                   transition hover:border-border
-                   hover:text-text-primary whitespace-nowrap">
-
+            class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-text-secondary whitespace-nowrap transition hover:border-border hover:text-text-primary"
+          >
             Registrations
-
           </a>
 
           <a
             routerLink="../settings"
-            class="border-b-2 border-transparent px-1 py-4
-                   text-sm font-medium text-text-secondary
-                   transition hover:border-border
-                   hover:text-text-primary whitespace-nowrap">
-
+            class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-text-secondary whitespace-nowrap transition hover:border-border hover:text-text-primary"
+          >
             Settings
-
           </a>
-
         </nav>
-
       </div>
-
     </div>
 
+    <!-- MAIN CONTENT -->
+    <div class="mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <div class="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <main class="min-w-0 space-y-6">
+          <section class="overflow-hidden border border-border bg-surface">
+            <div class="grid sm:grid-cols-3">
+              <!-- Event Type -->
+              <div class="border-b border-border p-5 lg:border-r lg:border-b-0">
+                <p class="text-sm text-text-muted">Event Type</p>
 
-    <!-- Main Content -->
+                <p class="mt-2 truncate text-xl font-semibold text-text-primary">
+                  {{ currentEvent.eventType }}
+                </p>
+              </div>
 
-    <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8">
+              <!-- Start Date -->
+              <div class="border-b border-border p-5 sm:border-r lg:border-b-0">
+                <p class="text-sm text-text-muted">Starts</p>
 
-      <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
+                <p class="mt-2 text-xl font-semibold text-text-primary">
+                  {{ currentEvent.startDate | date: 'mediumDate' }}
+                </p>
+              </div>
 
+              <!-- Timezone -->
+              <div class="p-5">
+                <p class="text-sm text-text-muted">Time Zone</p>
 
-        <!-- Left -->
-        <main class="min-w-0">
-          <div
-            class="grid overflow-hidden rounded-2xl border border-border
-                   bg-surface sm:grid-cols-2 lg:grid-cols-4">
-
-            <!-- Status -->
-            <div
-              class="border-b border-border p-5
-                     sm:border-r lg:border-b-0">
-
-              <p class="text-sm text-text-muted">
-                Status
-              </p>
-
-              <p class="mt-2 text-xl font-semibold text-text-primary">
-                {{ currentEvent.status }}
-              </p>
-
+                <p
+                  class="mt-2 truncate text-xl font-semibold text-text-primary"
+                  [title]="currentEvent.timeZone"
+                >
+                  {{ currentEvent.timeZone }}
+                </p>
+              </div>
             </div>
+          </section>
 
-
-            <!-- Event Type -->
+          <!-- EVENT ANALYTICS -->
+          <section class="overflow-hidden border border-border bg-surface">
             <div
-              class="border-b border-border p-5
-                     lg:border-r lg:border-b-0">
-
-              <p class="text-sm text-text-muted">
-                Event Type
-              </p>
-
-              <p class="mt-2 truncate text-xl font-semibold text-text-primary">
-                {{ currentEvent.eventType }}
-              </p>
-
-            </div>
-
-
-            <!-- Start Date -->
-            <div
-              class="border-b border-border p-5
-                     sm:border-r lg:border-b-0">
-
-              <p class="text-sm text-text-muted">
-                Starts
-              </p>
-
-              <p class="mt-2 text-xl font-semibold text-text-primary">
-                {{ currentEvent.startDate | date:'mediumDate' }}
-              </p>
-
-            </div>
-
-
-            <!-- Timezone -->
-            <div class="p-5">
-
-              <p class="text-sm text-text-muted">
-                Time Zone
-              </p>
-
-              <p
-                class="mt-2 truncate text-xl font-semibold text-text-primary"
-                [title]="currentEvent.timeZone">
-
-                {{ currentEvent.timeZone }}
-
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <!-- Event Analytics -->
-          <section
-            class="mt-6 rounded-2xl border border-border
-                   bg-surface">
-
-            <div
-              class="flex flex-wrap items-center justify-between gap-4
-                     border-b border-border px-6 py-5">
-
+              class="flex flex-col gap-3 border-b border-border px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+            >
               <div>
-                <h2 class="text-lg font-semibold text-text-primary">
-                  Event Analytics
-                </h2>
+                <h2 class="text-lg font-semibold text-text-primary">Event Analytics</h2>
 
                 <p class="mt-1 text-sm text-text-secondary">
                   Insights across registrations, attendance, programme, content and team.
@@ -338,73 +195,83 @@
               </div>
 
               @if (analyticsLoading()) {
-                <span class="text-sm text-text-muted">Loading analytics…</span>
+                <span class="text-sm text-text-muted"> Loading analytics… </span>
               }
-
             </div>
 
             @if (!analyticsLoading()) {
-              <div class="px-6 py-6 space-y-8">
-
+              <div class="space-y-8 px-5 py-6 sm:px-6">
                 @if (!hasAnalytics()) {
-                  <p class="text-sm text-text-secondary">
-                    No analytics data is available yet.
-                  </p>
+                  <p class="text-sm text-text-secondary">No analytics data is available yet.</p>
                 } @else {
-
-                  <!-- KPI cards -->
                   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Registrations -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Registrations</p>
+
                       <p class="mt-2 text-3xl font-bold text-text-primary">
                         {{ registrationAnalytics()?.total ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
-                        {{ registrationAnalytics()?.registeredLast7Days ?? 0 }} in last 7 days ·
-                        {{ registrationAnalytics()?.registeredToday ?? 0 }} today
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
+                        {{ registrationAnalytics()?.registeredLast7Days ?? 0 }}
+                        in last 7 days ·<br />
+                        {{ registrationAnalytics()?.registeredToday ?? 0 }}
+                        today
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Approved -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Approved</p>
+
                       <p class="mt-2 text-3xl font-bold text-text-primary">
                         {{ registrationAnalytics()?.approved ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
-                        {{ registrationAnalytics()?.approvalRatePercent ?? 0 }}% approval rate ·
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
+                        {{ registrationAnalytics()?.approvalRatePercent ?? 0 }}% approval rate ·<br />
                         avg {{ registrationAnalytics()?.avgApprovalHours ?? 0 }}h to approve
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Pending / Waitlisted -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Pending / Waitlisted</p>
+
                       <p class="mt-2 text-3xl font-bold text-text-primary">
-                        {{ registrationAnalytics()?.pending ?? 0 }} /
+                        {{ registrationAnalytics()?.pending ?? 0 }}
+                        /
                         {{ registrationAnalytics()?.waitlisted ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
-                        {{ registrationAnalytics()?.rejected ?? 0 }} rejected ·
-                        {{ registrationAnalytics()?.cancelled ?? 0 }} cancelled
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
+                        {{ registrationAnalytics()?.rejected ?? 0 }}
+                        rejected ·<br />
+                        {{ registrationAnalytics()?.cancelled ?? 0 }}
+                        cancelled
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Checked In -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Checked In</p>
+
                       <p class="mt-2 text-3xl font-bold text-text-primary">
                         {{ attendanceAnalytics()?.distinctParticipants ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
-                        {{ attendanceAnalytics()?.currentlyInside ?? 0 }} currently inside ·
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
+                        {{ attendanceAnalytics()?.currentlyInside ?? 0 }}
+                        currently inside ·<br />
                         {{ attendanceAnalytics()?.checkOutRatePercent ?? 0 }}% checked out
                       </p>
                     </div>
                   </div>
 
-                  <!-- Charts row -->
                   <div class="grid gap-4 lg:grid-cols-2">
-
-                    <!-- Registration trend -->
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Registration Trend -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">
                         Registrations — last 14 days
                       </p>
@@ -415,13 +282,16 @@
                             <div
                               class="flex-1 rounded-t bg-secondary/70 transition hover:bg-secondary"
                               [title]="point.date + ': ' + point.total + ' registrations'"
-                              [style.height.%]="(point.total / trendMax) * 100">
-                            </div>
+                              [style.height.%]="(point.total / trendMax) * 100"
+                            ></div>
                           }
                         </div>
 
                         <div class="mt-2 flex justify-between text-xs text-text-muted">
-                          <span>{{ registrationTrend[0]?.date }}</span>
+                          <span>
+                            {{ registrationTrend[0]?.date }}
+                          </span>
+
                           <span>
                             {{ registrationTrend[registrationTrend.length - 1]?.date }}
                           </span>
@@ -432,57 +302,105 @@
 
                       @if (registrationAnalytics()?.peakDay; as peak) {
                         <p class="mt-3 text-xs text-text-secondary">
-                          Peak day: <span class="font-semibold text-text-primary">{{ peak.date }}</span>
+                          Peak day:
+                          <span class="font-semibold text-text-primary">
+                            {{ peak.date }}
+                          </span>
                           with {{ peak.total }} registrations.
                         </p>
                       }
 
-                      <!-- Status split -->
+                      <!-- Status Split -->
                       @if ((registrationAnalytics()?.total ?? 0) > 0) {
                         <div class="mt-4">
                           <div class="flex h-3 overflow-hidden rounded-full bg-border">
                             <div
                               class="bg-green-500"
-                              [style.width.%]="((registrationAnalytics()?.approved ?? 0) / (registrationAnalytics()?.total ?? 1)) * 100">
-                            </div>
+                              [style.width.%]="
+                                ((registrationAnalytics()?.approved ?? 0) /
+                                  (registrationAnalytics()?.total ?? 1)) *
+                                100
+                              "
+                            ></div>
+
                             <div
                               class="bg-amber-400"
-                              [style.width.%]="((registrationAnalytics()?.pending ?? 0) / (registrationAnalytics()?.total ?? 1)) * 100">
-                            </div>
+                              [style.width.%]="
+                                ((registrationAnalytics()?.pending ?? 0) /
+                                  (registrationAnalytics()?.total ?? 1)) *
+                                100
+                              "
+                            ></div>
+
                             <div
                               class="bg-sky-400"
-                              [style.width.%]="((registrationAnalytics()?.waitlisted ?? 0) / (registrationAnalytics()?.total ?? 1)) * 100">
-                            </div>
+                              [style.width.%]="
+                                ((registrationAnalytics()?.waitlisted ?? 0) /
+                                  (registrationAnalytics()?.total ?? 1)) *
+                                100
+                              "
+                            ></div>
+
                             <div
                               class="bg-red-400"
-                              [style.width.%]="((registrationAnalytics()?.rejected ?? 0) / (registrationAnalytics()?.total ?? 1)) * 100">
-                            </div>
+                              [style.width.%]="
+                                ((registrationAnalytics()?.rejected ?? 0) /
+                                  (registrationAnalytics()?.total ?? 1)) *
+                                100
+                              "
+                            ></div>
                           </div>
 
-                          <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-secondary">
-                            <span><span class="inline-block h-2 w-2 rounded-full bg-green-500"></span> Approved</span>
-                            <span><span class="inline-block h-2 w-2 rounded-full bg-amber-400"></span> Pending</span>
-                            <span><span class="inline-block h-2 w-2 rounded-full bg-sky-400"></span> Waitlisted</span>
-                            <span><span class="inline-block h-2 w-2 rounded-full bg-red-400"></span> Rejected</span>
+                          <div
+                            class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-secondary"
+                          >
+                            <span>
+                              <span
+                                class="mr-1 inline-block h-2 w-2 rounded-full bg-green-500"
+                              ></span>
+                              Approved
+                            </span>
+
+                            <span>
+                              <span
+                                class="mr-1 inline-block h-2 w-2 rounded-full bg-amber-400"
+                              ></span>
+                              Pending
+                            </span>
+
+                            <span>
+                              <span
+                                class="mr-1 inline-block h-2 w-2 rounded-full bg-sky-400"
+                              ></span>
+                              Waitlisted
+                            </span>
+
+                            <span>
+                              <span
+                                class="mr-1 inline-block h-2 w-2 rounded-full bg-red-400"
+                              ></span>
+                              Rejected
+                            </span>
                           </div>
                         </div>
                       }
                     </div>
 
-                    <!-- Attendance rhythm -->
-                    <div class="rounded-2xl border border-border bg-background p-5">
-                      <p class="text-sm font-medium text-text-primary">
-                        Check-ins by hour (UTC)
-                      </p>
+                    <!-- Attendance Rhythm -->
+                    <div class="border border-border bg-background p-5">
+                      <p class="text-sm font-medium text-text-primary">Check-ins by hour</p>
 
                       @if ((attendanceAnalytics()?.checkInsByHour?.length ?? 0) > 0) {
                         <div class="mt-4 flex h-32 items-end gap-0.5">
-                          @for (bucket of attendanceAnalytics()?.checkInsByHour ?? []; track bucket.hour) {
+                          @for (
+                            bucket of attendanceAnalytics()?.checkInsByHour ?? [];
+                            track bucket.hour
+                          ) {
                             <div
                               class="flex-1 rounded-t bg-secondary/60 transition hover:bg-secondary"
                               [title]="bucket.hour + ':00 — ' + bucket.count + ' check-ins'"
-                              [style.height.%]="(bucket.count / hourlyMax) * 100">
-                            </div>
+                              [style.height.%]="(bucket.count / hourlyMax) * 100"
+                            ></div>
                           }
                         </div>
 
@@ -495,122 +413,161 @@
                         <p class="mt-4 text-sm text-text-secondary">No attendance data yet.</p>
                       }
 
-                      <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                      <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <p class="text-xs text-text-muted">Total check-ins</p>
-                          <p class="font-semibold text-text-primary">
+
+                          <p class="mt-1 font-semibold text-text-primary">
                             {{ attendanceAnalytics()?.totalCheckIns ?? 0 }}
                           </p>
                         </div>
+
                         <div>
                           <p class="text-xs text-text-muted">Peak hour</p>
-                          <p class="font-semibold text-text-primary">
-                            @if (attendanceAnalytics()?.peakHour !== null && attendanceAnalytics()?.peakHour !== undefined) {
-                              {{ attendanceAnalytics()?.peakHour }}:00
-                              ({{ attendanceAnalytics()?.peakHourCheckIns }})
+
+                          <p class="mt-1 font-semibold text-text-primary">
+                            @if (
+                              attendanceAnalytics()?.peakHour !== null &&
+                              attendanceAnalytics()?.peakHour !== undefined
+                            ) {
+                              {{ attendanceAnalytics()?.peakHour }}:00 ({{
+                                attendanceAnalytics()?.peakHourCheckIns
+                              }})
                             } @else {
                               —
                             }
                           </p>
                         </div>
+
                         <div>
                           <p class="text-xs text-text-muted">Avg dwell time</p>
-                          <p class="font-semibold text-text-primary">
-                            {{ attendanceAnalytics()?.avgDwellMinutes ?? 0 | number: '1.0-0' }} min
+
+                          <p class="mt-1 font-semibold text-text-primary">
+                            {{ attendanceAnalytics()?.avgDwellMinutes ?? 0 | number: '1.0-0' }}
+                            min
                           </p>
                         </div>
+
                         <div>
                           <p class="text-xs text-text-muted">Check-in method</p>
-                          <p class="font-semibold text-text-primary">
-                            {{ attendanceAnalytics()?.qrCheckIns ?? 0 }} QR ·
-                            {{ attendanceAnalytics()?.manualCheckIns ?? 0 }} Manual
+
+                          <p class="mt-1 font-semibold text-text-primary">
+                            {{ attendanceAnalytics()?.qrCheckIns ?? 0 }}
+                            QR ·
+                            {{ attendanceAnalytics()?.manualCheckIns ?? 0 }}
+                            Manual
                           </p>
                         </div>
+
                         <div>
                           <p class="text-xs text-text-muted">Sessions covered</p>
-                          <p class="font-semibold text-text-primary">
+
+                          <p class="mt-1 font-semibold text-text-primary">
                             {{ attendanceAnalytics()?.sessionsCovered ?? 0 }}
                           </p>
                         </div>
+
                         <div>
                           <p class="text-xs text-text-muted">Staff active</p>
-                          <p class="font-semibold text-text-primary">
+
+                          <p class="mt-1 font-semibold text-text-primary">
                             {{ attendanceAnalytics()?.activeStaff ?? 0 }}
                           </p>
                         </div>
                       </div>
                     </div>
-
                   </div>
 
-                  <!-- Programme + content -->
-                  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
-                    <div class="rounded-2xl border border-border bg-background p-4">
+                  <!-- PROGRAMME + CONTENT -->
+                  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                    <!-- Sessions -->
+                    <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Sessions</p>
+
                       <p class="mt-1 text-2xl font-bold text-text-primary">
                         {{ programmeAnalytics()?.sessionsTotal ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
                         {{ programmeAnalytics()?.totalSessionHours ?? 0 }}h scheduled
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-4">
+                    <!-- Sections -->
+                    <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Sections</p>
+
                       <p class="mt-1 text-2xl font-bold text-text-primary">
                         {{ programmeAnalytics()?.sectionsTotal ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
                         {{ programmeAnalytics()?.sectionsActive ?? 0 }} active
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-4">
+                    <!-- Venues -->
+                    <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Venues</p>
+
                       <p class="mt-1 text-2xl font-bold text-text-primary">
                         {{ programmeAnalytics()?.venuesTotal ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
                         {{ programmeAnalytics()?.totalVenueCapacity ?? 0 }} seats
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-4">
+                    <!-- Speakers -->
+                    <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Speakers</p>
+
                       <p class="mt-1 text-2xl font-bold text-text-primary">
                         {{ programmeAnalytics()?.speakersTotal ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
                         {{ programmeAnalytics()?.speakerCoveragePercent ?? 0 }}% session coverage
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-4">
+                    <!-- Sponsors -->
+                    <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Sponsors</p>
+
                       <p class="mt-1 text-2xl font-bold text-text-primary">
                         {{ programmeAnalytics()?.sponsorsTotal ?? 0 }}
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
                         {{ programmeAnalytics()?.sponsorsActive ?? 0 }} active
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-4">
+                    <!-- Website -->
+                    <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Website</p>
+
                       <p class="mt-1 text-2xl font-bold text-text-primary">
-                        {{ contentAnalytics()?.pagesTotal ?? 0 }} pages
+                        {{ contentAnalytics()?.pagesTotal ?? 0 }}
+                        pages
                       </p>
-                      <p class="mt-1 text-xs text-text-secondary">
-                        {{ contentAnalytics()?.pagesPublished ?? 0 }} published ·
-                        {{ contentAnalytics()?.navigationItemsVisible ?? 0 }} nav links
+
+                      <p class="mt-1 min-h-8 text-xs leading-4 text-text-secondary">
+                        {{ contentAnalytics()?.pagesPublished ?? 0 }}
+                        published ·<br />
+
+                        {{ contentAnalytics()?.navigationItemsVisible ?? 0 }}
+                        nav links
                       </p>
                     </div>
                   </div>
 
-                  <!-- Team, certificates, media -->
-                  <div class="grid gap-4 lg:grid-cols-3">
-
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                  <!-- TEAM / CERTIFICATES / MEDIA / FEEDBACK -->
+                  <div class="grid gap-4 lg:grid-cols-2">
+                    <!-- Team -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Team</p>
 
                       <div class="mt-3 grid grid-cols-3 gap-3 text-center">
@@ -618,27 +575,33 @@
                           <p class="text-2xl font-bold text-text-primary">
                             {{ teamAnalytics()?.totalMembers ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Members</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
                             {{ teamAnalytics()?.owners ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Owners</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
                             {{ teamAnalytics()?.organizers ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Organizers</p>
                         </div>
                       </div>
 
                       @if ((teamAnalytics()?.roleBreakdown?.length ?? 0) > 0) {
-                        <div class="mt-3 flex flex-wrap gap-2">
+                        <div class="mt-4 flex flex-wrap gap-2">
                           @for (role of teamAnalytics()?.roleBreakdown ?? []; track role.roleId) {
                             <span
-                              class="border border-border px-2 py-1 text-xs text-text-secondary">
+                              class="rounded-lg border border-border px-2 py-1 text-xs text-text-secondary"
+                            >
                               {{ role.roleName }} · {{ role.count }}
                             </span>
                           }
@@ -646,7 +609,8 @@
                       }
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Certificates -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Certificates</p>
 
                       <div class="mt-3 grid grid-cols-3 gap-3 text-center">
@@ -654,29 +618,37 @@
                           <p class="text-2xl font-bold text-text-primary">
                             {{ certificateAnalytics()?.totalIssued ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Issued</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
                             {{ certificateAnalytics()?.active ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Active</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
                             {{ certificateAnalytics()?.revoked ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Revoked</p>
                         </div>
                       </div>
 
-                      <p class="mt-3 text-xs text-text-secondary">
+                      <p class="mt-4 text-xs text-text-secondary">
                         {{ certificateAnalytics()?.issuanceRatePercent ?? 0 }}% of approved
-                        registrations · {{ certificateAnalytics()?.uniqueRecipients ?? 0 }} recipients
+                        registrations ·
+                        {{ certificateAnalytics()?.uniqueRecipients ?? 0 }}
+                        recipients
                       </p>
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Media -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Media &amp; Content</p>
 
                       <div class="mt-3 grid grid-cols-3 gap-3 text-center">
@@ -684,31 +656,39 @@
                           <p class="text-2xl font-bold text-text-primary">
                             {{ contentAnalytics()?.photosVisible ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Photos live</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
                             {{ contentAnalytics()?.photosPendingApproval ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Pending</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
                             {{ contentAnalytics()?.featuresEnabled ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Features on</p>
                         </div>
                       </div>
 
                       @if ((contentAnalytics()?.sectionsByPage?.length ?? 0) > 0) {
-                        <p class="mt-3 text-xs text-text-secondary">
-                          {{ contentAnalytics()?.pageSectionsTotal ?? 0 }} page sections across
-                          {{ contentAnalytics()?.sectionsByPage?.length }} pages
+                        <p class="mt-4 text-xs text-text-secondary">
+                          {{ contentAnalytics()?.pageSectionsTotal ?? 0 }}
+                          page sections across
+                          {{ contentAnalytics()?.sectionsByPage?.length }}
+                          pages
                         </p>
                       }
                     </div>
 
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <!-- Feedback -->
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Feedback</p>
 
                       <div class="mt-3 grid grid-cols-2 gap-3 text-center">
@@ -716,324 +696,268 @@
                           <p class="text-2xl font-bold text-text-primary">
                             {{ overviewAnalytics()?.feedbackCount ?? 0 }}
                           </p>
+
                           <p class="text-xs text-text-muted">Responses</p>
                         </div>
+
                         <div>
                           <p class="text-2xl font-bold text-text-primary">
-                            {{ overviewAnalytics()?.feedbackCount ? (overviewAnalytics()?.feedbackAverageRating ?? 0).toFixed(1) : '—' }}
+                            {{
+                              overviewAnalytics()?.feedbackCount
+                                ? (overviewAnalytics()?.feedbackAverageRating ?? 0).toFixed(1)
+                                : '—'
+                            }}
                           </p>
+
                           <p class="text-xs text-text-muted">Avg rating</p>
                         </div>
                       </div>
 
-                      <p class="mt-3 text-xs text-text-secondary">
-                        <a routerLink="../feedback" class="hover:underline">View feedback results</a>
+                      <p class="mt-4 text-xs text-text-secondary">
+                        <a routerLink="../feedback" class="text-secondary hover:underline">
+                          View feedback results
+                        </a>
                       </p>
                     </div>
-
                   </div>
 
+                  <!-- REJECTION REASONS -->
                   @if ((registrationAnalytics()?.topRejectionReasons?.length ?? 0) > 0) {
-                    <div class="rounded-2xl border border-border bg-background p-5">
+                    <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Top rejection reasons</p>
 
-                      <div class="mt-3 space-y-2">
-                        @for (reason of registrationAnalytics()?.topRejectionReasons ?? []; track reason.reason) {
+                      <div class="mt-4 space-y-3">
+                        @for (
+                          reason of registrationAnalytics()?.topRejectionReasons ?? [];
+                          track reason.reason
+                        ) {
                           <div class="flex items-center justify-between gap-4 text-sm">
-                            <span class="truncate text-text-secondary">{{ reason.reason }}</span>
-                            <span class="font-semibold text-text-primary">{{ reason.count }}</span>
+                            <span class="min-w-0 truncate text-text-secondary">
+                              {{ reason.reason }}
+                            </span>
+
+                            <span class="shrink-0 font-semibold text-text-primary">
+                              {{ reason.count }}
+                            </span>
                           </div>
                         }
                       </div>
                     </div>
                   }
-
                 }
-
               </div>
             }
-
           </section>
 
-
-          <!-- About Event -->
-          <section
-            class="mt-6 rounded-2xl border border-border
-                   bg-surface">
-
-            <div class="border-b border-border px-6 py-5">
-
-              <h2 class="text-lg font-semibold text-text-primary">
-                About Event
-              </h2>
-
-              <p class="mt-1 text-sm text-text-secondary">
-                Overview of your event and its purpose.
-              </p>
-
-            </div>
-
-            <div class="px-6 py-6">
-
-              <p
-                class="text-sm leading-7 text-text-secondary">
-
-                {{ currentEvent.description || 'No description added.' }}
-
-              </p>
-
-            </div>
-
-          </section>
-
-
-          <!-- Schedule -->
-          <section
-            class="mt-6 rounded-2xl border border-border
-                   bg-surface">
-
-            <div class="border-b border-border px-6 py-5">
-
-              <h2 class="text-lg font-semibold text-text-primary">
-                Event Schedule
-              </h2>
-
-              <p class="mt-1 text-sm text-text-secondary">
-                When your event starts and ends.
-              </p>
-
-            </div>
-
-
-            <div class="grid sm:grid-cols-2">
-
-              <!-- Start -->
-              <div class="border-b border-border p-6 sm:border-r">
-
-                <p class="text-xs font-medium uppercase tracking-wide
-                          text-text-muted">
-
-                  Start Date
-
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-text-primary">
-
-                  {{ currentEvent.startDate | date:'medium' }}
-
-                </p>
-
-              </div>
-
-
-              <!-- End -->
-              <div class="p-6">
-
-                <p class="text-xs font-medium uppercase tracking-wide
-                          text-text-muted">
-
-                  End Date
-
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-text-primary">
-
-                  {{ currentEvent.endDate | date:'medium' }}
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </section>
-
-
-          <!-- Event Image Gallery -->
+          <!-- EVENT IMAGES -->
           @if (currentEvent.images.length > 0) {
+            <section class="overflow-hidden border border-border bg-surface">
+              <div class="border-b border-border px-5 py-5 sm:px-6">
+                <h2 class="text-lg font-semibold text-text-primary">Event Images</h2>
 
-            <section
-              class="mt-6 rounded-2xl border border-border
-                     bg-surface">
-
-              <div class="border-b border-border px-6 py-5">
-
-                <h2 class="text-lg font-semibold text-text-primary">
-                  Event Images
-                </h2>
-
-                <p class="mt-1 text-sm text-text-secondary">
-                  Images associated with this event.
-                </p>
-
+                <p class="mt-1 text-sm text-text-secondary">Images associated with this event.</p>
               </div>
 
-
-              <div class="grid gap-3 p-6 sm:grid-cols-2 lg:grid-cols-3">
-
+              <div class="grid gap-3 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
                 @for (image of currentEvent.images; track image.id) {
-
-                  <div
-                    class="group overflow-hidden rounded-xl
-                           border border-border bg-background">
-
+                  <div class="group overflow-hidden rounded-xl border border-border bg-background">
                     <img
                       [src]="image.url"
                       [alt]="currentEvent.name"
-                      class="aspect-video w-full object-cover
-                             transition duration-300
-                             group-hover:scale-105"
+                      class="aspect-video w-full object-cover transition duration-300 group-hover:scale-105"
                     />
-
                   </div>
-
                 }
-
               </div>
-
             </section>
-
           }
-
         </main>
 
+        <!-- RIGHT SIDEBAR -->
 
-        <!-- Right Sidebar -->
+        <aside class="min-w-0 space-y-6 xl:sticky xl:top-6">
+          <section class="overflow-hidden border border-border bg-surface">
+            <div class="border-b border-border px-5 py-5">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <h2 class="font-semibold text-text-primary">Event Schedule</h2>
 
-        <aside class="space-y-6">
+                  <p class="mt-1 text-xs leading-5 text-text-secondary">
+                    Event start and end time.
+                  </p>
+                </div>
 
-          <!-- Event Information -->
-          <section
-            class="rounded-2xl border border-border
-                   bg-surface">
-
-            <div class="border-b border-border px-5 py-4">
-
-              <h2 class="font-semibold text-text-primary">
-                Event Information
-              </h2>
-
+                <div
+                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary-light text-secondary"
+                >
+                  <svg
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6.75 3v2.25M17.25 3v2.25M3.75 9.75h16.5M5.25 5.25h13.5a2.25 2.25 0 012.25 2.25v11.25a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18.75V7.5a2.25 2.25 0 012.25-2.25z"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
 
+            <div class="divide-y divide-border">
+              <!-- Start -->
+              <div class="px-5 py-5">
+                <div class="flex items-start gap-3">
+                  <div
+                    class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary-light text-secondary"
+                  >
+                    <svg
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path stroke-linecap="round" d="M12 7v5l3 2" />
+                    </svg>
+                  </div>
+
+                  <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+                      Start Date
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold leading-6 text-text-primary">
+                      {{ currentEvent.startDate | date: 'medium' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-5 py-5">
+                <div class="flex items-start gap-3">
+                  <div
+                    class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary-light text-secondary"
+                  >
+                    <svg
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path stroke-linecap="round" d="M12 7v5l3 2" />
+                    </svg>
+                  </div>
+
+                  <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+                      End Date
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold leading-6 text-text-primary">
+                      {{ currentEvent.endDate | date: 'medium' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- EVENT INFORMATION -->
+
+          <section class="overflow-hidden border border-border bg-surface">
+            <div class="border-b border-border px-5 py-5">
+              <h2 class="font-semibold text-text-primary">Event Information</h2>
+
+              <p class="mt-1 text-xs text-text-secondary">General information about this event.</p>
+            </div>
 
             <div class="divide-y divide-border">
-
               <!-- Sub Type -->
               <div class="px-5 py-4">
-
-                <p class="text-xs text-text-muted">
-                  Sub Type
-                </p>
+                <p class="text-xs text-text-muted">Sub Type</p>
 
                 <p class="mt-1 text-sm font-medium text-text-primary">
                   {{ currentEvent.subType || 'Not specified' }}
                 </p>
-
               </div>
-
 
               <!-- Timezone -->
               <div class="px-5 py-4">
+                <p class="text-xs text-text-muted">Time Zone</p>
 
-                <p class="text-xs text-text-muted">
-                  Time Zone
-                </p>
-
-                <p
-                  class="mt-1 wrap-break-word text-sm font-medium
-                         text-text-primary">
-
+                <p class="mt-1 wrap-break-word text-sm font-medium text-text-primary">
                   {{ currentEvent.timeZone }}
-
                 </p>
-
               </div>
-
 
               <!-- Created -->
               <div class="px-5 py-4">
-
-                <p class="text-xs text-text-muted">
-                  Created
-                </p>
+                <p class="text-xs text-text-muted">Created</p>
 
                 <p class="mt-1 text-sm font-medium text-text-primary">
-                  {{ currentEvent.createdAt | date:'mediumDate' }}
+                  {{ currentEvent.createdAt | date: 'mediumDate' }}
                 </p>
-
               </div>
-
 
               <!-- Updated -->
               @if (currentEvent.updatedAt) {
-
                 <div class="px-5 py-4">
-
-                  <p class="text-xs text-text-muted">
-                    Last Updated
-                  </p>
+                  <p class="text-xs text-text-muted">Last Updated</p>
 
                   <p class="mt-1 text-sm font-medium text-text-primary">
-                    {{ currentEvent.updatedAt | date:'mediumDate' }}
+                    {{ currentEvent.updatedAt | date: 'mediumDate' }}
                   </p>
-
                 </div>
-
               }
+            </div>
+          </section>
 
+          <!-- ABOUT EVENT -->
+          <section class="overflow-hidden border border-border bg-surface">
+            <div class="border-b border-border px-5 py-5 sm:px-6">
+              <h2 class="text-lg font-semibold text-text-primary">About Event</h2>
+
+              <p class="mt-1 text-sm text-text-secondary">
+                Overview of your event and its purpose.
+              </p>
             </div>
 
+            <div class="px-5 py-6 sm:px-6">
+              <p class="text-sm leading-7 text-text-secondary">
+                {{ currentEvent.description || 'No description added.' }}
+              </p>
+            </div>
           </section>
 
+          <!-- CREATED BY -->
 
-          <!-- Created By -->
-          <section
-            class="rounded-2xl border border-border
-                   bg-surface p-5">
+          <section class="border border-border bg-surface p-5">
+            <p class="text-xs font-medium uppercase tracking-wide text-text-muted">Created By</p>
 
-            <p class="text-xs font-medium uppercase tracking-wide
-                      text-text-muted">
-
-              Created By
-
-            </p>
-
-            <p
-              class="mt-2 break-all text-xs leading-5
-                     text-text-secondary">
-
+            <p class="mt-2 break-all text-sm leading-6 text-text-secondary">
               {{ currentEvent.createdByName }}
-
             </p>
-
           </section>
-
         </aside>
-
       </div>
-
     </div>
-
   } @else {
-
-    <!-- Loading -->
-    <div class="flex min-h-125 items-center justify-center">
-
+    <!-- LOADING -->
+    <div class="flex min-h-125 items-center justify-center px-4">
       <div class="text-center">
-
         <div
-          class="mx-auto h-8 w-8 animate-spin rounded-full
-                 border-2 border-border border-t-secondary">
-        </div>
+          class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-border border-t-secondary"
+        ></div>
 
-        <p class="mt-4 text-sm text-text-secondary">
-          Loading event...
-        </p>
-
+        <p class="mt-4 text-sm text-text-secondary">Loading event...</p>
       </div>
-
     </div>
-
   }
-
 </div>

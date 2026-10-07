@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { LucideAngularModule, Home, Menu, X } from 'lucide-angular';
+import { LucideAngularModule, Home, Menu, X, LucideAlignHorizontalJustifyStart } from 'lucide-angular';
 import { ORGANIZER_NAVIGATION, OrganizerNavGroup } from '../../config/organizer-navigation';
 import { EventService } from '../../../../core/services/event/event.service';
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
@@ -9,13 +9,15 @@ import { EventPageService } from '../../../../core/services/event-page/event-pag
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../core/models/event/event.model';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-organizer-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule , TitleCasePipe],
   templateUrl: './organizer-layout.html',
   styleUrl: './organizer-layout.css',
 })
+
 export class OrganizerLayout {
   private readonly organizerEventState = inject(OrganizerEventStateService);
   private readonly route = inject(ActivatedRoute);
@@ -27,11 +29,13 @@ export class OrganizerLayout {
 
   navGroups = signal<OrganizerNavGroup[]>([]);
   event = signal<EventModel | null>(null);
+  
   loading = signal(true);
   mobileMenuOpen = signal(false);
 
   // Lucide icons to the template
   readonly homeIcon = Home;
+  readonly home = LucideAlignHorizontalJustifyStart
   readonly menuIcon = Menu;
   readonly closeIcon = X;
 
@@ -45,7 +49,6 @@ export class OrganizerLayout {
       });
 
     // Re-run whenever the event in the URL changes,
-    // otherwise switching events keeps the previous event in memory.
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => this.loadEvent(params.get('eventId')));
@@ -90,7 +93,7 @@ export class OrganizerLayout {
   }
 
   // Creates the default pages, page sections and navigation items
-  // for events that were created before they existed. It is idempotent.
+  // for events that were created before they existed
   private setupWebsite(eventId: string): void {
     this.pageService.ensureWebsite(eventId).subscribe({
       error: () => {
@@ -104,28 +107,10 @@ export class OrganizerLayout {
       next: (response) => {
         const features = response.data ?? [];
 
-        /*
-         * Create a Set containing the codes
-         * of all enabled features.
-         *
-         * Example:
-         * {
-         *   'schedule',
-         *   'sessions',
-         *   'venues',
-         *   'gallery'
-         * }
-         */
         const enabledFeatures = new Set(
           features.filter((feature) => feature.isEnabled).map((feature) => feature.featureCode),
         );
 
-        /*
-         * Show:
-         *
-         * 1. Items without a feature requirement
-         * 2. Items whose required feature is enabled
-         */
         const visibleGroups = ORGANIZER_NAVIGATION
           .map((group) => ({
             ...group,
@@ -140,8 +125,7 @@ export class OrganizerLayout {
       },
 
       error: () => {
-        // If feature loading fails, show only navigation items
-        // that don't depend on a feature.
+
         this.showFallbackNavigation();
         this.loading.set(false);
       },
