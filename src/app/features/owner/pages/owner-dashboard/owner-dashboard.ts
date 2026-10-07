@@ -3,7 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-
+import { getApiErrorMessage } from '../../../../core/api/api-error';
 import { Event as EventModel } from '../../../../core/models/event/event.model';
 import { EventTeamMemberModel } from '../../../../core/models/event-role/event-role.model';
 import { EventFeatureModel } from '../../../../core/models/event-feature/event-feature.model';
@@ -44,29 +44,17 @@ export class OwnerDashboard {
   private readonly toastr = inject(NotificationService);
 
   readonly event = signal<EventModel | null>(null);
-
   readonly team = signal<EventTeamMemberModel[]>([]);
-
   readonly features = signal<EventFeatureModel[]>([]);
-
   readonly loading = signal(true);
-
   readonly teamLoading = signal(true);
-
   readonly featuresLoading = signal(true);
-
   readonly assigning = signal(false);
-
   readonly removingUserId = signal<string | null>(null);
-
   readonly organizerEmail = signal('');
-
   readonly isOwner = signal(false);
-
   readonly rolesChecked = signal(false);
-
   readonly claiming = signal(false);
-
   readonly analyticsLoading = signal(true);
 
   readonly overviewAnalytics = signal<EventOverviewAnalyticsModel | null>(null);
@@ -105,16 +93,17 @@ export class OwnerDashboard {
         this.assigning.set(false);
         this.organizerEmail.set('');
 
-        this.toastr.success(response.message || 'Organizer assigned successfully.');
+        this.toastr.success(response.message || 'Organizer assigned successfully');
 
         // Stay on Owner Dashboard.
-        this.loadTeam(this.eventId!);
+        if (this.eventId) {
+          this.loadTeam(this.eventId);
+        }
       },
 
       error: (error: unknown) => {
         this.assigning.set(false);
-
-        this.toastr.error(this.getErrorMessage(error, 'Failed to assign organizer.'));
+        this.toastr.error(getApiErrorMessage(error, 'Failed to assign organizer.'));
       },
     });
   }
@@ -133,9 +122,7 @@ export class OwnerDashboard {
     this.roleService.removeOrganizer(this.eventId, userId).subscribe({
       next: (response) => {
         this.removingUserId.set(null);
-
         this.toastr.success(response.message || 'Organizer removed successfully.');
-
         this.loadTeam(this.eventId!);
       },
 
@@ -154,27 +141,13 @@ export class OwnerDashboard {
     this.analyticsLoading.set(true);
 
     forkJoin({
-      overview: this.eventService
-        .getOverviewAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      programme: this.eventService
-        .getProgrammeAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      content: this.eventService
-        .getContentAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      registrations: this.registrationService
-        .getRegistrationAnalytics(eventId, 30)
-        .pipe(catchError(() => of(null))),
-      certificates: this.registrationService
-        .getCertificateAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      attendance: this.operationsService
-        .attendanceAnalytics(eventId, 30)
-        .pipe(catchError(() => of(null))),
-      team: this.roleService
-        .getTeamAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
+      overview: this.eventService.getOverviewAnalytics(eventId).pipe(catchError(() => of(null))),
+      programme: this.eventService.getProgrammeAnalytics(eventId).pipe(catchError(() => of(null))),
+      content: this.eventService.getContentAnalytics(eventId).pipe(catchError(() => of(null))),
+      registrations: this.registrationService.getRegistrationAnalytics(eventId, 30).pipe(catchError(() => of(null))),
+      certificates: this.registrationService.getCertificateAnalytics(eventId).pipe(catchError(() => of(null))),
+      attendance: this.operationsService.attendanceAnalytics(eventId, 30).pipe(catchError(() => of(null))),
+      team: this.roleService.getTeamAnalytics(eventId).pipe(catchError(() => of(null))),
     }).subscribe((results) => {
       this.overviewAnalytics.set(results.overview?.data ?? null);
       this.programmeAnalytics.set(results.programme?.data ?? null);
@@ -233,9 +206,6 @@ export class OwnerDashboard {
           return;
         }
 
-        // Creators receive the Owner role when the event is created; a missing
-        // role here is an edge case, so ownership is claimed only through the
-        // explicit button below - never silently in the background.
         this.teamLoading.set(false);
         this.team.set([]);
       },
@@ -265,7 +235,7 @@ export class OwnerDashboard {
 
       error: (error: unknown) => {
         this.claiming.set(false);
-        this.toastr.error(this.getErrorMessage(error, 'Failed to claim event ownership.'));
+        this.toastr.error(getApiErrorMessage(error, 'Failed to claim event ownership.'));
       },
     });
   }
@@ -304,21 +274,5 @@ export class OwnerDashboard {
         this.teamLoading.set(false);
       },
     });
-  }
-
-  private getErrorMessage(error: unknown, fallback: string): string {
-    if (error && typeof error === 'object' && 'error' in error) {
-      const response = (
-        error as {
-          error?: {
-            message?: string;
-          };
-        }
-      ).error;
-
-      return response?.message || fallback;
-    }
-
-    return fallback;
   }
 }

@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoadingService } from './core/services/ui/loading.service';
 import { LoginDialog } from './shared/components/login-dialog/login-dialog';
+import { LoadingService } from './core/services/ui/loading.service';
+// import { NgxSpinnerComponent, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,16 @@ import { LoginDialog } from './shared/components/login-dialog/login-dialog';
   styleUrl: './app.css',
 })
 export class App {
-  readonly loading = inject(LoadingService).loading;
-}
+  // private readonly loadingService = inject(LoadingService);
+//   private readonly spinner = inject(NgxSpinnerService);
+
+//   constructor() {
+//     effect(() => {
+//       if (this.loadingService.loading()) {
+//         this.spinner.show();
+//       } else {
+//         this.spinner.hide();
+//       }
+//     });
+//   }
+ }

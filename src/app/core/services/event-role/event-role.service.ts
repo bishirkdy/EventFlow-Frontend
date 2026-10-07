@@ -15,6 +15,7 @@ import { EVENT_ROLE_ENDPOINTS } from '../../api/endpoints/event-role/event-role.
 @Injectable({
   providedIn: 'root',
 })
+
 export class EventRoleService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
