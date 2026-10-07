@@ -60,14 +60,14 @@ export class EventWebsiteService {
           ? this.venueService.getVenues(eventId).pipe(map((result) => result.data ?? []))
           : of([]);
         const speakers$ = enabled.has('speakers')
-          ? this.speakerService.getSpeakers(eventId).pipe(
-              map((result) => (result.data ?? []).filter((speaker) => speaker.isActive)),
-            )
+          ? this.speakerService
+              .getSpeakers(eventId)
+              .pipe(map((result) => (result.data ?? []).filter((speaker) => speaker.isActive)))
           : of([]);
         const sponsors$ = enabled.has('sponsors')
-          ? this.sponsorService.getSponsors(eventId).pipe(
-              map((result) => (result.data ?? []).filter((sponsor) => sponsor.isActive)),
-            )
+          ? this.sponsorService
+              .getSponsors(eventId)
+              .pipe(map((result) => (result.data ?? []).filter((sponsor) => sponsor.isActive)))
           : of([]);
 
         return forkJoin({

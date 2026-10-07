@@ -1,17 +1,33 @@
 <div class="min-h-screen bg-background p-6 md:p-8">
   @if (event(); as currentEvent) {
-    <div class="mx-auto max-w-6xl">
-      <div class="mb-6">
-        <h1 class="text-2xl font-semibold text-text-primary">
-          {{ currentEvent.name }}
-        </h1>
-        <p class="mt-1 text-sm text-text-secondary">
-          Event details and overview
-        </p>
+    <div class="w-full">
+
+      <!-- Header -->
+      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold text-text-primary">
+            {{ currentEvent.name }}
+          </h1>
+
+          <p class="mt-1 text-sm text-text-secondary">
+            Event details and overview
+          </p>
+        </div>
+
+        @if (currentEvent.status !== 'Published') {
+          <button
+            type="button"
+            (click)="publishEvent()"
+            [disabled]="publishing"
+            class="bg-secondary hover:bg-white hover:text-secondary hover:border-secondary border duration-200 ease-in-out px-5 py-2.5 cursor-pointer text-sm font-medium text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {{ publishing ? 'Publishing...' : 'Publish Event' }}
+          </button>
+        }
       </div>
 
       @if (currentEvent.images.length > 0) {
-        <div class="mb-6 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+        <div class="mb-6 overflow-hidden border border-border bg-surface shadow-sm">
           <img
             [src]="currentEvent.images[0].url"
             [alt]="currentEvent.name"
@@ -21,43 +37,52 @@
       }
 
       <div class="grid gap-4 md:grid-cols-2">
-        <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Event Name</p>
-          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.name }}</p>
+          <p class="mt-1 font-medium text-text-primary">
+            {{ currentEvent.name }}
+          </p>
         </div>
 
-        <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Event Type</p>
-          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.eventType }}</p>
+          <p class="mt-1 font-medium text-text-primary">
+            {{ currentEvent.eventType }}
+          </p>
         </div>
 
-        <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Start Date</p>
           <p class="mt-1 font-medium text-text-primary">
-            {{ currentEvent.startDate | date:'medium' }}
+            {{ currentEvent.startDate | date: 'medium' }}
           </p>
         </div>
 
-        <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">End Date</p>
           <p class="mt-1 font-medium text-text-primary">
-            {{ currentEvent.endDate | date:'medium' }}
+            {{ currentEvent.endDate | date: 'medium' }}
           </p>
         </div>
 
-        <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Timezone</p>
-          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.timeZone }}</p>
+          <p class="mt-1 font-medium text-text-primary">
+            {{ currentEvent.timeZone }}
+          </p>
         </div>
 
-        <div class="rounded-xl border border-border bg-surface p-5">
+        <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Status</p>
-          <p class="mt-1 font-medium text-text-primary">{{ currentEvent.status }}</p>
+          <p class="mt-1 font-medium text-text-primary">
+            {{ currentEvent.status }}
+          </p>
         </div>
 
         @if (currentEvent.description) {
-          <div class="rounded-xl border border-border bg-surface p-5 md:col-span-2">
+          <div class="border border-border bg-surface p-5 md:col-span-2">
             <p class="text-sm text-text-muted">Description</p>
+
             <p class="mt-1 whitespace-pre-line text-sm leading-6 text-text-primary">
               {{ currentEvent.description }}
             </p>
@@ -66,8 +91,10 @@
       </div>
     </div>
   } @else {
-    <div class="mx-auto max-w-6xl rounded-xl border border-border bg-surface p-10 text-center">
-      <p class="text-sm text-text-secondary">Loading event...</p>
+    <div class="border border-border bg-surface p-10 text-center">
+      <p class="text-sm text-text-secondary">
+        Loading event...
+      </p>
     </div>
   }
 </div>

@@ -12,5 +12,5 @@ import { EventWebsiteShell } from '../../components/event-website-shell/event-we
 export class ConferenceTemplate {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
-  readonly preview = input(false);
+  readonly preview = input<boolean>(false);
 }

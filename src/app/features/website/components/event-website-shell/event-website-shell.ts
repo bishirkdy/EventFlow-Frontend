@@ -13,22 +13,27 @@ import { EventPageModel } from '../../../../core/models/event-page/event-page.mo
 export class EventWebsiteShell {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
-  readonly preview = input(false);
+  readonly preview = input<boolean>(false);
 
   readonly pages = computed(() =>
-    this.data().pages
-      .filter(page => this.preview() || page.isPublished)
+    this.data()
+      .pages.filter((page) => this.preview() || page.isPublished)
       .sort((a, b) => a.displayOrder - b.displayOrder),
   );
 
   /* Finds the website Home page. */
   readonly homePage = computed<EventPageModel | null>(() => {
     const pages = this.pages();
-    return pages.find(page =>
-      page.slug.trim().toLowerCase() === 'home' ||
-      page.name.trim().toLowerCase() === 'home' ||
-      page.pageType.trim().toLowerCase() === 'home',
-    ) ?? pages[0] ?? null;
+    return (
+      pages.find(
+        (page) =>
+          page.slug.trim().toLowerCase() === 'home' ||
+          page.name.trim().toLowerCase() === 'home' ||
+          page.pageType.trim().toLowerCase() === 'home',
+      ) ??
+      pages[0] ??
+      null
+    );
   });
 
   readonly page = computed<EventPageModel | null>(() => {
@@ -36,13 +41,41 @@ export class EventWebsiteShell {
     const pages = this.pages();
 
     if (!slug) return this.homePage();
-    return pages.find(page => page.slug.trim().toLowerCase() === slug && this.isPageAvailable(page)) ?? this.homePage();
+    return (
+      pages.find((page) => page.slug.trim().toLowerCase() === slug && this.isPageAvailable(page)) ??
+      this.homePage()
+    );
   });
 
   private isPageAvailable(page: EventPageModel): boolean {
     const value = `${page.slug} ${page.name} ${page.pageType}`.trim().toLowerCase();
-    if (value.includes('speaker')) return this.hasFeature('speakers');
-    if (value.includes('sponsor') || value.includes('partner')) return this.hasFeature('sponsors');
+
+    // Registration and Gallery are handled separately.
+    if (
+      value.includes('registration') ||
+      value.includes('register') ||
+      value.includes('gallery') ||
+      value.includes('photo')
+    ) {
+      return false;
+    }
+
+    if (value.includes('speaker')) {
+      return this.hasFeature('speakers');
+    }
+
+    if (value.includes('sponsor') || value.includes('partner')) {
+      return this.hasFeature('sponsors');
+    }
+
+    if (value.includes('venue')) {
+      return this.hasFeature('venues');
+    }
+
+    if (value.includes('schedule') || value.includes('session')) {
+      return this.hasFeature('schedule');
+    }
+
     return true;
   }
 
@@ -50,8 +83,8 @@ export class EventWebsiteShell {
     const pageId = this.page()?.id;
     if (!pageId) return [];
 
-    return this.data().pageSections
-      .filter(section => section.pageId === pageId && section.isVisible)
+    return this.data()
+      .pageSections.filter((section) => section.pageId === pageId && section.isVisible)
       .sort((a, b) => a.displayOrder - b.displayOrder);
   });
 
@@ -79,7 +112,7 @@ export class EventWebsiteShell {
       if (!item.isVisible) continue;
 
       const page = item.pageId
-        ? pages.find(candidate => candidate.id === item.pageId) ?? null
+        ? (pages.find((candidate) => candidate.id === item.pageId) ?? null)
         : null;
       if (item.pageId && !page) continue;
       if (page && !this.isPageAvailable(page)) continue;
@@ -128,7 +161,8 @@ export class EventWebsiteShell {
 
   hasFeature(code: string): boolean {
     return this.data().features.some(
-      feature => feature.isEnabled && feature.featureCode.trim().toLowerCase() === code.trim().toLowerCase(),
+      (feature) =>
+        feature.isEnabled && feature.featureCode.trim().toLowerCase() === code.trim().toLowerCase(),
     );
   }
 
@@ -139,10 +173,25 @@ export class EventWebsiteShell {
 
     if (type === 'hero' || value.includes('hero')) return 'hero';
     if (type === 'venue' || value.includes('venue') || value.includes('location')) return 'venue';
-    if (type === 'schedule' || type === 'sessions' || value.includes('schedule') || value.includes('programme') || value.includes('program') || value.includes('session')) return 'schedule';
+    if (
+      type === 'schedule' ||
+      type === 'sessions' ||
+      value.includes('schedule') ||
+      value.includes('programme') ||
+      value.includes('program') ||
+      value.includes('session')
+    )
+      return 'schedule';
     if (type === 'speakers' || value.includes('speaker')) return 'speakers';
-    if (type === 'sponsors' || value.includes('sponsor') || value.includes('partner')) return 'sponsors';
-    if (type === 'gallery' || type === 'image-gallery' || value.includes('gallery') || value.includes('photo')) return 'gallery';
+    if (type === 'sponsors' || value.includes('sponsor') || value.includes('partner'))
+      return 'sponsors';
+    if (
+      type === 'gallery' ||
+      type === 'image-gallery' ||
+      value.includes('gallery') ||
+      value.includes('photo')
+    )
+      return 'gallery';
     if (type === 'rsvp' || value.includes('rsvp') || value.includes('registration')) return 'rsvp';
     return 'content';
   }
@@ -167,7 +216,9 @@ export class EventWebsiteShell {
   }
 
   imageForSection(imageUrl: string | null | undefined, index: number): string | null {
-    return imageUrl || this.data().images[index % Math.max(this.data().images.length, 1)]?.url || null;
+    return (
+      imageUrl || this.data().images[index % Math.max(this.data().images.length, 1)]?.url || null
+    );
   }
 
   imageForVenue(venue: { imageUrl?: string | null }): string | null {
@@ -186,14 +237,12 @@ export class EventWebsiteShell {
 
   registrationHref(): string {
     const eventId = this.data().event?.id;
-    return eventId && this.hasFeature('registration')
-      ? `/events/${eventId}/register`
-      : "#";
+    return eventId && this.hasFeature('registration') ? `/events/${eventId}/register` : '#';
   }
 
   photosHref(): string {
     const eventId = this.data().event?.id;
-    return eventId ? `/events/${eventId}/gallery` : "#";
+    return eventId && this.hasFeature('gallery') ? `/events/${eventId}/gallery` : '#';
   }
 
   brandHref(): string {
@@ -206,7 +255,10 @@ export class EventWebsiteShell {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
     return new Intl.DateTimeFormat('en-IN', {
-      day: '2-digit', month: 'long', year: 'numeric', timeZone: this.data().event?.timeZone,
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      timeZone: this.data().event?.timeZone,
     }).format(date);
   }
 
@@ -215,7 +267,9 @@ export class EventWebsiteShell {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return '';
     return new Intl.DateTimeFormat('en-IN', {
-      hour: 'numeric', minute: '2-digit', timeZone: this.data().event?.timeZone,
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: this.data().event?.timeZone,
     }).format(date);
   }
 
@@ -224,7 +278,11 @@ export class EventWebsiteShell {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
     return new Intl.DateTimeFormat('en-IN', {
-      day: '2-digit', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: this.data().event?.timeZone,
+      day: '2-digit',
+      month: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: this.data().event?.timeZone,
     }).format(date);
   }
 }

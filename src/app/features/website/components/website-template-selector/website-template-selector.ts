@@ -21,11 +21,13 @@ import { WeddingTemplate } from '../../templates/wedding/wedding-template';
 export class WebsiteTemplateSelector {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
-  readonly preview = input(false);
+  readonly preview = input<boolean>(false);
+
   readonly type = computed(() => {
     const eventType: string | undefined = this.data().event?.eventType;
     const typeValue = eventType ? eventType.trim() : '';
     const value = typeValue.toLowerCase();
+    
     if (value.includes('conference')) return 'conference';
     if (value.includes('education') || value.includes('workshop')) return 'education';
     if (value.includes('festival') || value.includes('cultural')) return 'festival';

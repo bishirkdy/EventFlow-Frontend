@@ -45,14 +45,14 @@ export const organizerRoutes: Routes = [
             path: '',
             loadComponent: () =>
               import('./pages/settings/photographers/photographer-management').then(
-                (m) => m.PhotographerManagement
+                (m) => m.PhotographerManagement,
               ),
           },
           {
             path: 'photos',
             loadComponent: () =>
               import('./pages/settings/photographers/photo-moderation/photo-moderation-grid').then(
-                (m) => m.PhotoModerationGrid
+                (m) => m.PhotoModerationGrid,
               ),
           },
         ],
@@ -62,7 +62,7 @@ export const organizerRoutes: Routes = [
         path: 'settings/certificates',
         loadComponent: () =>
           import('./pages/settings/certificates/certificate-settings').then(
-            (m) => m.CertificateSettings
+            (m) => m.CertificateSettings,
           ),
       },
       // Website preview
@@ -297,13 +297,28 @@ export const organizerRoutes: Routes = [
       },
 
       // Attendance operations
-      { path: 'attendance', loadComponent: () => import('./pages/attendance/attendance').then(m => m.AttendanceComponent) },
-      { path: 'attendance-staff', loadComponent: () => import('./pages/attendance-staff/attendance-staff').then(m => m.AttendanceStaffComponent) },
-      { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications').then(m => m.NotificationsComponent) },
+      {
+        path: 'attendance',
+        loadComponent: () =>
+          import('./pages/attendance/attendance').then((m) => m.AttendanceComponent),
+      },
+      {
+        path: 'attendance-staff',
+        loadComponent: () =>
+          import('./pages/attendance-staff/attendance-staff').then(
+            (m) => m.AttendanceStaffComponent,
+          ),
+      },
+      {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./pages/notifications/notifications').then((m) => m.NotificationsComponent),
+      },
       {
         path: 'feedback',
         canActivate: [eventFeatureGuard('feedback')],
-        loadComponent: () => import('./pages/feedback/feedback').then(m => m.OrganizerFeedbackComponent),
+        loadComponent: () =>
+          import('./pages/feedback/feedback').then((m) => m.OrganizerFeedbackComponent),
       },
 
       //Registration

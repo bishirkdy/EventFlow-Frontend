@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EventService } from '../../../../core/services/event/event.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-event-details',
@@ -17,6 +18,7 @@ export class EventDetails {
   private readonly toastr = inject(NotificationService);
   private readonly eventState = inject(OrganizerEventStateService);
 
+  publishing = false;
   event = this.eventState.event;
 
   ngOnInit(): void {
@@ -45,5 +47,35 @@ export class EventDetails {
         this.toastr.error('Failed to load event details.');
       },
     });
+  }
+
+  publishEvent(): void {
+    const eventId = this.event()?.id;
+
+    if (!eventId || this.publishing) {
+      return;
+    }
+
+    this.publishing = true;
+
+    this.eventService
+      .publishEvent(eventId)
+      .pipe(
+        finalize(() => {
+          this.publishing = false;
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.toastr.success('Event published successfully.');
+        },
+        error: () => {
+          this.toastr.error('Failed to publish event.');
+          this.publishing = false;
+        },
+        complete: () => {
+          this.publishing = false;
+        },
+      });
   }
 }

@@ -1,6 +1,6 @@
 <div class="site" [class]="'theme-' + theme()">
   @if (preview()) {
-    <div class="preview-banner">Preview — not published yet</div>
+    <div class="preview-banner">Preview</div>
   }
   @if (data().event; as event) {
     <header class="site-header">
@@ -16,7 +16,7 @@
               Register
             </a>
           }
-          @if (registrationHref() === '#') {
+          @if (photosHref() !== '#') {
             <a [routerLink]="photosHref()" class="event-action">Photos</a>
           }
         </div>
@@ -55,17 +55,10 @@
         }
 
         @if (pageSections().length) {
-          @for (
-            section of pageSections();
-            track section.id;
-            let sectionIndex = $index
-          ) {
+          @for (section of pageSections(); track section.id; let sectionIndex = $index) {
             @switch (sectionKind(section.sectionType, section.title)) {
               @case ('hero') {
-                <section
-                  class="hero-section"
-                  [id]="sectionId(section.sectionType, section.title)"
-                >
+                <section class="hero-section" [id]="sectionId(section.sectionType, section.title)">
                   <div class="hero-inner">
                     <div class="hero-copy">
                       <span class="hero-kicker">
@@ -76,53 +69,47 @@
                         {{ normalizedTitle(section.title) || event.name }}
                       </h2>
 
-                      @if (
-                        displayDescription(
-                          section.content,
-                          event.description || ''
-                        )
-                      ) {
+                      @if (displayDescription(section.content, event.description || '')) {
                         <p>
-                          {{
-                            displayDescription(
-                              section.content,
-                              event.description || ''
-                            )
-                          }}
+                          {{ displayDescription(section.content, event.description || '') }}
                         </p>
                       }
 
                       @if (isHomePage()) {
                         <div class="hero-meta grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <span class="text-sm md:text-text-secondary text-text-secondary">Date</span>
-                            <strong class="mt-2 block text-lg md:text-xl">{{ formatDate(event.startDate) }}</strong>
+                            <span class="text-sm md:text-text-secondary text-text-secondary"
+                              >Date</span
+                            >
+                            <strong class="mt-2 block text-lg md:text-xl">{{
+                              formatDate(event.startDate)
+                            }}</strong>
                           </div>
 
                           <div>
-                            <span class="text-sm md:text-text-secondary text-text-secondary">Time</span>
-                            <strong class="mt-2 block text-lg md:text-xl">{{ formatTime(event.startDate) }}</strong>
+                            <span class="text-sm md:text-text-secondary text-text-secondary"
+                              >Time</span
+                            >
+                            <strong class="mt-2 block text-lg md:text-xl">{{
+                              formatTime(event.startDate)
+                            }}</strong>
                           </div>
 
                           <div>
-                            <span class="text-sm md:text-text-secondary text-text-secondary">Time zone</span>
-                            <strong class="mt-2 block text-lg md:text-xl">{{ event.timeZone }}</strong>
+                            <span class="text-sm md:text-text-secondary text-text-secondary"
+                              >Time zone</span
+                            >
+                            <strong class="mt-2 block text-lg md:text-xl">{{
+                              event.timeZone
+                            }}</strong>
                           </div>
                         </div>
                       }
                     </div>
 
-                    @if (
-                      imageForSection(section.imageUrl, sectionIndex);
-                      as image
-                    ) {
+                    @if (imageForSection(section.imageUrl, sectionIndex); as image) {
                       <figure class="hero-media">
-                        <img
-                          [src]="image"
-                          [alt]="
-                            normalizedTitle(section.title) || event.name
-                          "
-                        />
+                        <img [src]="image" [alt]="normalizedTitle(section.title) || event.name" />
                       </figure>
                     }
                   </div>
@@ -153,11 +140,7 @@
                         <article class="venue-card">
                           @if (imageForVenue(venue); as image) {
                             <figure class="venue-image">
-                              <img
-                                [src]="image"
-                                [alt]="venue.name"
-                                loading="lazy"
-                              />
+                              <img [src]="image" [alt]="venue.name" loading="lazy" />
                             </figure>
                           } @else {
                             <div class="venue-image venue-image--empty">
@@ -182,10 +165,7 @@
                               </p>
                             }
 
-                            @if (
-                              displayDescription(venue.description);
-                              as description
-                            ) {
+                            @if (displayDescription(venue.description); as description) {
                               <p class="venue-description">
                                 {{ description }}
                               </p>
@@ -203,10 +183,7 @@
               }
 
               @case ('schedule') {
-                <section
-                  class="resource-section schedule-section"
-                  id="schedule"
-                >
+                <section class="resource-section schedule-section" id="schedule">
                   <div class="section-intro">
                     <div>
                       <span class="section-index">01</span>
@@ -220,20 +197,13 @@
                     }
                   </div>
 
-                  @if (
-                    hasFeature('sessions') &&
-                    data().sessions.length
-                  ) {
+                  @if (hasFeature('sessions') && data().sessions.length) {
                     <div class="session-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       @for (session of data().sessions; track session.id) {
                         <article class="session-card">
                           @if (imageForSession(session); as image) {
                             <figure class="session-image">
-                              <img
-                                [src]="image"
-                                [alt]="session.title"
-                                loading="lazy"
-                              />
+                              <img [src]="image" [alt]="session.title" loading="lazy" />
                             </figure>
                           }
 
@@ -253,13 +223,9 @@
                               <span>{{ session.sessionType }}</span>
                             }
 
-                            @if (
-                              displayDescription(session.description)
-                            ) {
+                            @if (displayDescription(session.description)) {
                               <p>
-                                {{
-                                  displayDescription(session.description)
-                                }}
+                                {{ displayDescription(session.description) }}
                               </p>
                             }
                           </div>
@@ -280,9 +246,7 @@
                     <div class="people-inner">
                       <div class="section-intro">
                         <div>
-                          <span class="section-index">
-                            01 / PEOPLE
-                          </span>
+                          <span class="section-index"> 01 / PEOPLE </span>
 
                           <h2>
                             {{ normalizedTitle(section.title) || 'Speakers' }}
@@ -297,11 +261,10 @@
                       </div>
 
                       @if (data().speakers.length) {
-                        <div class="speaker-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          @for (
-                            speaker of data().speakers;
-                            track speaker.id
-                          ) {
+                        <div
+                          class="speaker-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                        >
+                          @for (speaker of data().speakers; track speaker.id) {
                             <article class="speaker-card">
                               <div class="speaker-image">
                                 @if (speaker.imageUrl) {
@@ -324,18 +287,10 @@
 
                                 <h3>{{ speaker.name }}</h3>
 
-                                @if (
-                                  speaker.designation ||
-                                  speaker.organization
-                                ) {
+                                @if (speaker.designation || speaker.organization) {
                                   <p class="speaker-role">
-                                    {{
-                                      speaker.designation || 'Speaker'
-                                    }}{{
-                                      speaker.organization
-                                        ? ' · ' + speaker.organization
-                                        : ''
-                                    }}
+                                    {{ speaker.designation || 'Speaker'
+                                    }}{{ speaker.organization ? ' · ' + speaker.organization : '' }}
                                   </p>
                                 }
 
@@ -350,9 +305,7 @@
                         </div>
                       } @else {
                         <div class="empty-resource">
-                          <span>
-                            Speaker profiles will appear here.
-                          </span>
+                          <span> Speaker profiles will appear here. </span>
                         </div>
                       }
                     </div>
@@ -381,11 +334,10 @@
                       </div>
 
                       @if (data().sponsors.length) {
-                        <div class="sponsor-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                          @for (
-                            sponsor of data().sponsors;
-                            track sponsor.id
-                          ) {
+                        <div
+                          class="sponsor-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+                        >
+                          @for (sponsor of data().sponsors; track sponsor.id) {
                             <article class="sponsor-card">
                               <div class="sponsor-level">
                                 {{ sponsor.sponsorLevel }}
@@ -406,24 +358,14 @@
                               <div class="sponsor-body">
                                 <h3>{{ sponsor.name }}</h3>
 
-                                @if (
-                                  displayDescription(sponsor.description)
-                                ) {
+                                @if (displayDescription(sponsor.description)) {
                                   <p>
-                                    {{
-                                      displayDescription(
-                                        sponsor.description
-                                      )
-                                    }}
+                                    {{ displayDescription(sponsor.description) }}
                                   </p>
                                 }
 
                                 @if (sponsor.websiteUrl) {
-                                  <a
-                                    [href]="sponsor.websiteUrl"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
+                                  <a [href]="sponsor.websiteUrl" target="_blank" rel="noreferrer">
                                     Visit partner ↗
                                   </a>
                                 }
@@ -433,9 +375,7 @@
                         </div>
                       } @else {
                         <div class="empty-resource">
-                          <span>
-                            Partner profiles will appear here.
-                          </span>
+                          <span> Partner profiles will appear here. </span>
                         </div>
                       }
                     </div>
@@ -463,16 +403,11 @@
                     </div>
 
                     @if (data().images.length) {
-                      <div class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @for (
-                          image of data().images;
-                          track image.id;
-                          let imageIndex = $index
-                        ) {
-                          <figure
-                            class="gallery-item"
-                            [class.featured]="imageIndex === 0"
-                          >
+                      <div
+                        class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                      >
+                        @for (image of data().images; track image.id; let imageIndex = $index) {
+                          <figure class="gallery-item" [class.featured]="imageIndex === 0">
                             <img
                               [src]="image.url"
                               [alt]="image.originalFileName || event.name"
@@ -493,10 +428,7 @@
                       <span class="section-index">RSVP</span>
 
                       <h2>
-                        {{
-                          normalizedTitle(section.title) ||
-                            'We hope you can join us.'
-                        }}
+                        {{ normalizedTitle(section.title) || 'We hope you can join us.' }}
                       </h2>
 
                       @if (displayDescription(section.content)) {
@@ -536,16 +468,11 @@
                       }
                     </div>
 
-                    @if (
-                      imageForSection(section.imageUrl, sectionIndex);
-                      as image
-                    ) {
+                    @if (imageForSection(section.imageUrl, sectionIndex); as image) {
                       <figure class="detail-media">
                         <img
                           [src]="image"
-                          [alt]="
-                            normalizedTitle(section.title) || event.name
-                          "
+                          [alt]="normalizedTitle(section.title) || event.name"
                           loading="lazy"
                         />
                       </figure>
@@ -592,10 +519,7 @@
 
             @if (imageForSection(null, 0); as image) {
               <figure class="hero-media">
-                <img
-                  [src]="image"
-                  [alt]="event.name"
-                />
+                <img [src]="image" [alt]="event.name" />
               </figure>
             }
           </div>
@@ -613,9 +537,7 @@
 
             <h2>{{ event.name }}</h2>
 
-            <a [routerLink]="brandHref()">
-              Back to home <span>→</span>
-            </a>
+            <a [routerLink]="brandHref()"> Back to home <span>→</span> </a>
           </div>
 
           <div>
@@ -626,3 +548,4 @@
       </div>
     </footer>
   }
+</div>

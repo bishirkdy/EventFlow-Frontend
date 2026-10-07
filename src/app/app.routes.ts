@@ -9,12 +9,18 @@ export const routes: Routes = [
   ...REGISTRATION_ROUTES,
   {
     path: 'photographer/invite/:token',
-    loadComponent: () => import('./features/photographer/invitation/accept-invitation/accept-invitation').then((m) => m.AcceptInvitation),
+    loadComponent: () =>
+      import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
+        (m) => m.AcceptInvitation,
+      ),
   },
   {
     path: 'photographer',
     canActivate: [authGuard],
-    loadChildren: () => import('./features/photographer/dashboard/photographer-dashboard.routes').then((m) => m.photographerRoutes),
+    loadChildren: () =>
+      import('./features/photographer/dashboard/photographer-dashboard.routes').then(
+        (m) => m.photographerRoutes,
+      ),
   },
   {
     path: 'login',
@@ -52,40 +58,59 @@ export const routes: Routes = [
         path: 'my-certificates',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/platform/certificates/my-certificates/my-certificates').then((m) => m.MyCertificates),
+          import('./features/platform/certificates/my-certificates/my-certificates').then(
+            (m) => m.MyCertificates,
+          ),
       },
     ],
   },
   {
     path: 'events/:eventId/attendance',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/platform/attendance-history/attendance-history').then(m => m.AttendanceHistoryComponent),
+    loadComponent: () =>
+      import('./features/platform/attendance-history/attendance-history').then(
+        (m) => m.AttendanceHistoryComponent,
+      ),
   },
   {
     path: 'events/:eventId/gallery',
-    loadComponent: () => import('./features/platform/photos/photo-gallery/photo-gallery').then((m) => m.PhotoGallery),
+    loadComponent: () =>
+      import('./features/platform/photos/photo-gallery/photo-gallery').then((m) => m.PhotoGallery),
   },
   {
     path: 'events/:eventId/gallery/my',
-    loadComponent: () => import('./features/platform/photos/face-detection/my-photos/my-photos').then((m) => m.MyPhotos),
+    loadComponent: () =>
+      import('./features/platform/photos/face-detection/my-photos/my-photos').then(
+        (m) => m.MyPhotos,
+      ),
   },
   {
     path: 'events/:eventId/gallery/selfie',
-    loadComponent: () => import('./features/platform/photos/face-detection/selfie-capture/selfie-capture').then((m) => m.SelfieCapture),
+    loadComponent: () =>
+      import('./features/platform/photos/face-detection/selfie-capture/selfie-capture').then(
+        (m) => m.SelfieCapture,
+      ),
   },
   {
     path: 'events/:eventId/certificates',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/platform/certificates/my-certificate/my-certificate').then((m) => m.MyCertificate),
+    loadComponent: () =>
+      import('./features/platform/certificates/my-certificate/my-certificate').then(
+        (m) => m.MyCertificate,
+      ),
   },
   {
     path: 'events/:eventId/feedback',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/platform/feedback/feedback').then((m) => m.FeedbackComponent),
+    loadComponent: () =>
+      import('./features/platform/feedback/feedback').then((m) => m.FeedbackComponent),
   },
   {
     path: 'verify/certificate/:certificateNumber',
-    loadComponent: () => import('./features/platform/certificates/certificate-verify/certificate-verify').then((m) => m.CertificateVerify),
+    loadComponent: () =>
+      import('./features/platform/certificates/certificate-verify/certificate-verify').then(
+        (m) => m.CertificateVerify,
+      ),
   },
   {
     path: 'events/:eventId/:slug',
@@ -103,11 +128,17 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/attendance-staff/pages/dashboard/dashboard').then((m) => m.AttendanceStaffDashboard),
+        loadComponent: () =>
+          import('./features/attendance-staff/pages/dashboard/dashboard').then(
+            (m) => m.AttendanceStaffDashboard,
+          ),
       },
       {
         path: 'scan',
-        loadComponent: () => import('./features/attendance-staff/pages/scanner/scanner').then((m) => m.AttendanceQrScanner),
+        loadComponent: () =>
+          import('./features/attendance-staff/pages/scanner/scanner').then(
+            (m) => m.AttendanceQrScanner,
+          ),
       },
     ],
   },
