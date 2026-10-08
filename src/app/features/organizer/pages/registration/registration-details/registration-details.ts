@@ -8,6 +8,7 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 import { RegistrationService } from '../../../../../core/services/registration/registration.service';
 import { RegistrationModel } from '../../../../../core/models/registration/registration.model';
 import { RegistrationStatus } from '../../../../../core/models/registration/registration.enums';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-registration-details',
@@ -68,7 +69,10 @@ export class RegistrationDetailsComponent {
   }
 
   protected waitlist(): void {
-    this.action((eventId, id) => this.service.waitlist(eventId, id), 'Registration moved to waitlist.');
+    this.action(
+      (eventId, id) => this.service.waitlist(eventId, id),
+      'Registration moved to waitlist.',
+    );
   }
 
   protected promote(): void {
@@ -112,8 +116,14 @@ export class RegistrationDetailsComponent {
   }
 
   private load(): void {
-    const eventId = this.eventState.eventId();
-    const registrationId = this.route.snapshot.paramMap.get('registrationId');
+    const eventId = this.eventState.eventId() ?? this.route.snapshot.paramMap.get('eventId');
+    const registrationId = this.route.parent?.snapshot?.paramMap?.get('registrationId') ||
+      this.route.pathFromRoot
+        .map((route) => route.snapshot.paramMap.get('registrationId'))
+        .filter(Boolean)[0];
+
+    console.log('eventId:', eventId);
+    console.log('registrationId:', registrationId);
 
     if (!eventId || !registrationId) {
       this.error.set('Registration could not be identified.');
@@ -124,19 +134,29 @@ export class RegistrationDetailsComponent {
 
     this.service
       .getById(eventId, registrationId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: (response) => {
+          console.log('DETAIL RESPONSE:', response);
+
           if (!response.isSuccess || !response.data) {
             this.error.set(response.message || 'Unable to load registration.');
             return;
           }
+
           this.registration.set(response.data);
+
+          console.log('REGISTRATION:', this.registration());
         },
+
         error: (err: { error?: { message?: string }; message?: string }) => {
+          console.error('DETAIL ERROR:', err);
+
           this.error.set(err.error?.message ?? err.message ?? 'Unable to load registration.');
         },
-        complete: () => this.loading.set(false),
       });
   }
 }

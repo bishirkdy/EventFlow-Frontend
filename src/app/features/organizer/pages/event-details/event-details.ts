@@ -5,6 +5,7 @@ import { EventService } from '../../../../core/services/event/event.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { finalize } from 'rxjs';
+import { ParticipantStatus } from '@/core/models/registration/registration.enums';
 
 @Component({
   selector: 'app-event-details',
@@ -17,12 +18,17 @@ export class EventDetails {
   private readonly eventService = inject(EventService);
   private readonly toastr = inject(NotificationService);
   private readonly eventState = inject(OrganizerEventStateService);
+  protected readonly participantStatus = ParticipantStatus;
 
   publishing = false;
   event = this.eventState.event;
 
   ngOnInit(): void {
-    const eventId = this.route.parent?.parent?.snapshot.paramMap.get('eventId');
+    const eventId =
+      this.route.snapshot.paramMap.get('eventId') ||
+      this.route.pathFromRoot
+        .map((route) => route.snapshot.paramMap.get('eventId'))
+        .filter(Boolean)[0];
 
     if (!eventId) {
       this.toastr.error('Event information is missing.');

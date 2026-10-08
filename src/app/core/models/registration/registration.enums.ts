@@ -7,8 +7,8 @@ export enum RegistrationStatus {
 }
 
 export enum ParticipantStatus {
-  Active = 0,
-  Cancelled = 1,
+  Active = 1,
+  Cancelled = 2,
 }
 
 export enum CapacityMode {

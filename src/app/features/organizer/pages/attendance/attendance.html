@@ -1,1 +1,89 @@
-<div class="space-y-6 p-6"><div><h2 class="text-2xl font-semibold">Attendance Dashboard</h2><p class="text-sm text-text-muted">Event check-in and check-out operations.</p></div>@if(dashboard();as d){<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><div class="rounded-2xl border border-border bg-surface p-5"><p class="text-sm text-text-muted">Checked in</p><p class="mt-2 text-3xl font-bold">{{d.checkedIn}}</p></div><div class="rounded-2xl border border-border bg-surface p-5"><p class="text-sm text-text-muted">Checked out</p><p class="mt-2 text-3xl font-bold">{{d.checkedOut}}</p></div><div class="rounded-2xl border border-border bg-surface p-5"><p class="text-sm text-text-muted">Currently inside</p><p class="mt-2 text-3xl font-bold">{{d.currentlyInside}}</p></div><div class="rounded-2xl border border-border bg-surface p-5"><p class="text-sm text-text-muted">Attendance</p><p class="mt-2 text-3xl font-bold">{{d.attendancePercentage | number:'1.0-1'}}%</p></div></div>}<div class="rounded-2xl border border-border bg-surface p-6"><h3 class="text-lg font-semibold">QR Check-in</h3><div class="mt-4 flex flex-col gap-3 sm:flex-row"><input class="min-h-11 flex-1 rounded-xl border border-border bg-background px-4" [ngModel]="qr()" (ngModelChange)="qr.set($event)" placeholder="Scan or paste ticket QR value"/><button class="rounded-xl bg-secondary px-5 py-3 font-semibold text-white" (click)="checkIn()">Verify & Check In</button><button class="rounded-xl border border-border px-5 py-3" (click)="camera()">{{scanning()?'Opening…':'Camera'}}</button></div></div></div>
+<div class="space-y-6 p-6">
+  <div>
+    <h2 class="text-2xl font-semibold">Attendance Dashboard</h2>
+    <p class="text-sm text-text-muted">Event check-in and check-out operations.</p>
+  </div>
+
+  @if (dashboard(); as d) {
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="border border-border bg-surface p-5">
+        <p class="text-sm text-text-muted">Checked in</p>
+        <p class="mt-2 text-3xl font-bold">{{ d.checkedIn }}</p>
+      </div>
+
+      <div class="border border-border bg-surface p-5">
+        <p class="text-sm text-text-muted">Checked out</p>
+        <p class="mt-2 text-3xl font-bold">{{ d.checkedOut }}</p>
+      </div>
+
+      <div class="border border-border bg-surface p-5">
+        <p class="text-sm text-text-muted">Currently inside</p>
+        <p class="mt-2 text-3xl font-bold">{{ d.currentlyInside }}</p>
+      </div>
+
+      <div class="border border-border bg-surface p-5">
+        <p class="text-sm text-text-muted">Attendance</p>
+        <p class="mt-2 text-3xl font-bold">{{ d.attendancePercentage | number: '1.0-1' }}%</p>
+      </div>
+    </div>
+  }
+
+  <div class="border border-border bg-surface p-6">
+    <h3 class="text-lg font-semibold">QR Check-in</h3>
+
+    <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+      <input
+        class="min-h-11 flex-1 border border-border bg-background px-4"
+        [ngModel]="qr()"
+        (ngModelChange)="qr.set($event)"
+        placeholder="Scan or paste ticket QR value"
+      />
+
+      <button
+        class="bg-primary cursor-pointer hover:bg-white hover:text-primary hover:border-primary border px-5 py-3 font-semibold text-white"
+        (click)="checkIn()"
+      >
+        Verify & Check In
+      </button>
+
+      <button class="border border-border px-5 py-3" (click)="camera()">
+        Camera
+      </button>
+    </div>
+  </div>
+  <!-- Camera preview / QR scanner -->
+@if (scanning()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-lg border border-border bg-surface p-5">
+
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-semibold">Scan QR Code</h3>
+          <p class="text-sm text-text-muted">
+            Point your camera at the ticket QR code.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="border border-border px-3 py-2"
+          (click)="closeCamera()"
+        >
+          Close
+        </button>
+      </div>
+
+      <div class="mt-5 overflow-hidden border border-border bg-black">
+        <video
+          #qrVideo
+          class="h-auto w-full"
+          autoplay
+          muted
+          playsinline
+        ></video>
+      </div>
+
+    </div>
+  </div>
+}
+</div>

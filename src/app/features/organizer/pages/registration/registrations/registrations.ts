@@ -21,7 +21,6 @@ import {
   imports: [DatePipe],
   templateUrl: './registrations.html',
 })
-
 export class RegistrationsComponent {
   protected readonly eventState = inject(OrganizerEventStateService);
 
@@ -47,7 +46,7 @@ export class RegistrationsComponent {
   protected readonly statusFilter = signal<RegistrationStatus | null>(null);
 
   readonly RegistrationStatus = RegistrationStatus;
-  
+
   protected readonly statuses = [
     {
       value: RegistrationStatus.Pending,
@@ -83,7 +82,22 @@ export class RegistrationsComponent {
   }
 
   protected filteredRegistrations(): RegistrationModel[] {
-    return this.registrations();
+    const search = this.search().trim().toLowerCase();
+    const status = this.statusFilter();
+
+    return this.registrations().filter((item) => {
+      const matchesSearch =
+        !search ||
+        `${item.participant?.firstName ?? ''} ${item.participant?.lastName ?? ''}`
+          .toLowerCase()
+          .includes(search) ||
+        (item.participant?.email ?? '').toLowerCase().includes(search) ||
+        item.registrationNumber.toLowerCase().includes(search);
+
+      const matchesStatus = status === null || item.status === status;
+
+      return matchesSearch && matchesStatus;
+    });
   }
 
   protected onSearch(value: string): void {
@@ -263,6 +277,7 @@ export class RegistrationsComponent {
           }
 
           const data = response.data;
+          console.log(response.data);
 
           if (!data) {
             this.registrations.set([]);

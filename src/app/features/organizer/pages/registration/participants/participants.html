@@ -79,7 +79,7 @@
                   <td class="px-5 py-4">{{ item.organization || '—' }}</td>
                   <td class="px-5 py-4">
                     <span class="rounded-full bg-secondary-light px-2.5 py-1 text-xs font-medium text-secondary">
-                      {{ item.status === 0 ? 'Active' : 'Cancelled' }}
+                      {{ item.status === participantStatus.Active ? 'Active' : 'Cancelled' }}
                     </span>
                   </td>
                   <td class="px-5 py-4 text-right text-secondary">View →</td>

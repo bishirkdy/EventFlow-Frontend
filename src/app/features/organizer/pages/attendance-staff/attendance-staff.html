@@ -1,1 +1,182 @@
-<div class="space-y-6 p-6"><div><h2 class="text-2xl font-semibold">Attendance Staff</h2><p class="text-sm text-text-muted">Assign staff to an event, section, or session.</p></div><div class="grid gap-3 rounded-2xl border border-border bg-surface p-5 md:grid-cols-4"><input class="rounded-xl border border-border bg-background px-4 py-3" [(ngModel)]="email" placeholder="Staff email"/><select class="rounded-xl border border-border bg-background px-4 py-3" [(ngModel)]="scopeType"><option [ngValue]="1">Event</option><option [ngValue]="2">Section</option><option [ngValue]="3">Session</option></select><input class="rounded-xl border border-border bg-background px-4 py-3" [(ngModel)]="scopeId" placeholder="Section / Session ID"/><button class="rounded-xl bg-secondary px-5 py-3 font-semibold text-white" (click)="assign()">Assign Staff</button></div><div class="overflow-hidden rounded-2xl border border-border bg-surface"><table class="min-w-full text-sm"><thead class="border-b border-border bg-background"><tr><th class="px-4 py-3 text-left">Email</th><th class="px-4 py-3 text-left">Scope</th><th class="px-4 py-3 text-left">Scope ID</th><th></th></tr></thead><tbody>@for(x of staff();track x.id){<tr class="border-b border-border"><td class="px-4 py-3">{{x.email || x.userId}}</td><td class="px-4 py-3">{{x.scopeType}}</td><td class="px-4 py-3">{{x.scopeId||'Event'}}</td><td class="px-4 py-3 text-right"><button class="text-red-600" (click)="revoke(x)">Revoke</button></td></tr>}</tbody></table></div></div>
+<div class="space-y-6 p-6">
+  <!-- Header -->
+  <div>
+    <h2 class="text-2xl font-semibold text-text-primary">Attendance Staff</h2>
+
+    <p class="text-sm text-text-muted">Assign staff to an event, section, or session.</p>
+  </div>
+
+  <!-- Assignment -->
+  <div class="grid gap-3 border border-border bg-surface p-5 md:grid-cols-4">
+    <!-- Email -->
+    <input
+      type="email"
+      class="min-h-11 border border-border bg-background px-4 py-3"
+      [(ngModel)]="email"
+      placeholder="Staff email"
+    />
+
+    <!-- Scope -->
+    <select
+      class="min-h-11 border border-border bg-background px-4 py-3"
+      [(ngModel)]="scopeType"
+      (ngModelChange)="onScopeTypeChange()"
+    >
+      <option [ngValue]="1">Event</option>
+      <option [ngValue]="2">Section</option>
+      <option [ngValue]="3">Session</option>
+    </select>
+
+    <!-- Scope selection -->
+    @if (scopeType === 1) {
+      <div
+        class="flex min-h-11 items-center border border-border bg-background px-4 text-sm text-text-muted"
+      >
+        Entire Event
+      </div>
+    } @else {
+      <button
+        type="button"
+        class="min-h-11 border border-border bg-background px-4 py-3 text-left text-sm text-text-primary hover:bg-surface"
+        (click)="openScopePopup()"
+      >
+        {{ selectedScopeName() || (scopeType === 2 ? 'Select Section' : 'Select Session') }}
+      </button>
+    }
+
+    <!-- Assign -->
+    <button
+      type="button"
+      class="min-h-11 bg-primary hover:bg-white hover:text-primary hover:border-primary border cursor-pointer px-5 py-3 font-semibold text-white disabled:opacity-50"
+      [disabled]="assigning()"
+      (click)="assign()"
+    >
+      {{ assigning() ? 'Assigning...' : 'Assign Staff' }}
+    </button>
+  </div>
+
+  <!-- Staff table -->
+  <div class="overflow-x-auto border border-border bg-surface">
+    <table class="min-w-full text-sm">
+      <thead class="border-b border-border bg-background">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold">Email</th>
+
+          <th class="px-4 py-3 text-left font-semibold">Scope</th>
+
+          <th class="px-4 py-3 text-left font-semibold">Scope ID</th>
+
+          <th class="px-4 py-3 text-right"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (x of staff(); track x.id) {
+          <tr class="border-b border-border last:border-b-0">
+            <td class="px-4 py-3">
+              {{ x.email || x.userId }}
+            </td>
+
+            <td class="px-4 py-3">
+              {{ scopeLabel(x.scopeType) }}
+            </td>
+
+            <td class="px-4 py-3">
+              {{ x.scopeId || 'Event' }}
+            </td>
+
+            <td class="px-4 py-3 text-right">
+              <button type="button" class="text-red-600 hover:text-red-700" (click)="revoke(x)">
+                Revoke
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="px-4 py-10 text-center text-sm text-text-muted">
+              No attendance staff assigned.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Backdrop -->
+@if (scopePopupOpen()) {
+  <div class="fixed inset-0 z-40 bg-black/40" (click)="closeScopePopup()"></div>
+
+  <!-- Modal -->
+  <div class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="pointer-events-auto w-full max-w-lg border border-border bg-surface shadow-xl">
+      <!-- Modal header -->
+      <div class="flex items-center justify-between border-b border-border px-5 py-4">
+        <div>
+          <h3 class="text-lg font-semibold text-text-primary">
+            {{ scopeType === 2 ? 'Select Section' : 'Select Session' }}
+          </h3>
+
+          <p class="mt-1 text-sm text-text-muted">
+            Select the scope for this attendance staff member.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="text-2xl leading-none text-text-muted hover:text-text-primary"
+          (click)="closeScopePopup()"
+        >
+          ×
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="max-h-96 overflow-y-auto p-3">
+        @if (loadingScopes()) {
+          <div class="px-4 py-10 text-center text-sm text-text-muted">Loading...</div>
+        } @else if (scopeType === 2) {
+          @for (section of sections(); track section.id) {
+            <button
+              type="button"
+              class="block w-full cursor-pointer border-b border-border px-4 py-4 text-left last:border-b-0 hover:bg-background"
+              (click)="selectSection(section)"
+            >
+              <p class="font-medium text-text-primary">
+                {{ section.name }}
+              </p>
+
+              @if (section.description) {
+                <p class="mt-1 text-xs text-text-muted">
+                  {{ section.description }}
+                </p>
+              }
+            </button>
+          } @empty {
+            <div class="px-4 py-10 text-center text-sm text-text-muted">No sections available.</div>
+          }
+        } @else {
+          @for (session of sessions(); track session.id) {
+            <button
+              type="button"
+              class="block w-full cursor-pointer border-b border-border px-4 py-4 text-left last:border-b-0 hover:bg-background"
+              (click)="selectSession(session)"
+            >
+              <p class="font-medium text-text-primary">
+                {{ session.title }}
+              </p>
+
+              @if (session.description) {
+                <p class="mt-1 text-xs text-text-muted">
+                  {{ session.description }}
+                </p>
+              }
+            </button>
+          } @empty {
+            <div class="px-4 py-10 text-center text-sm text-text-muted">No sessions available.</div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+}

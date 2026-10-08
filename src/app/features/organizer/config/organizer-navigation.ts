@@ -68,7 +68,7 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
       { label: 'Registration Management', route: 'registration/registrations', icon: ClipboardList, feature: 'registration' },
       { label: 'Form Builder', route: 'registration/form', icon: FormInput, feature: 'registration' },
       { label: 'Participants', route: 'registration/participants', icon: Users, feature: 'registration' },
-      { label: 'Certificates', route: 'settings/certificates', icon: Award, feature: 'registration' },
+      // { label: 'Certificates', route: 'settings/certificates', icon: Award, feature: 'registration' },
     ],
   },
   {
@@ -78,13 +78,13 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
       { label: 'Attendance Staff', route: 'attendance-staff', icon: UserCog },
     ],
   },
-  {
-    label: 'Communication',
-    items: [
-      { label: 'Notifications', route: 'notifications', icon: Bell },
-      { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' },
-    ],
-  },
+  // {
+  //   label: 'Communication',
+  //   items: [
+  //     // { label: 'Notifications', route: 'notifications', icon: Bell },
+  //     // { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' },
+  //   ],
+  // },
   {
     label: 'Media',
     items: [
