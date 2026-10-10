@@ -64,6 +64,13 @@ export class RegistrationService {
     );
   }
 
+  getByIdForOrganizer(eventId: string, registrationId: string,
+  ): Observable<ApiResponse<RegistrationModel>> {
+    return this.http.get<ApiResponse<RegistrationModel>>(
+      this.api.getUrl(REGISTRATION_ENDPOINTS.organizerById(eventId, registrationId)),
+    );
+  }
+
   getForManagement(
     eventId: string,
     registrationId: string,
@@ -114,9 +121,7 @@ export class RegistrationService {
     );
   }
 
-  getCertificateAnalytics(
-    eventId: string,
-  ): Observable<ApiResponse<CertificateAnalyticsModel>> {
+  getCertificateAnalytics(eventId: string): Observable<ApiResponse<CertificateAnalyticsModel>> {
     return this.http.get<ApiResponse<CertificateAnalyticsModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.certificateAnalytics(eventId)),
     );

@@ -20,9 +20,7 @@
 
           <div class="text-center">
             <p class="text-sm font-semibold text-text-primary">Loading your events</p>
-            <p class="mt-1 text-xs text-text-muted">
-              Fetching your registered events...
-            </p>
+            <p class="mt-1 text-xs text-text-muted">Fetching your registered events...</p>
           </div>
         </div>
       </div>
@@ -30,17 +28,12 @@
 
     <!-- Empty -->
     @else if (events().length === 0) {
-      <div
-        class="mt-8 flex min-h-72 flex-col items-center justify-center px-6 py-16 text-center"
-      >
-  
-        <h2 class="mt-5 text-lg font-semibold text-text-primary">
-          No registered events
-        </h2>
+      <div class="mt-8 flex min-h-72 flex-col items-center justify-center px-6 py-16 text-center">
+        <h2 class="mt-5 text-lg font-semibold text-text-primary">No registered events</h2>
 
         <p class="mt-2 max-w-md text-sm text-text-secondary">
-          You haven't registered for any events yet. Explore available events and
-          register to see them here
+          You haven't registered for any events yet. Explore available events and register to see
+          them here
         </p>
 
         <a
@@ -50,10 +43,7 @@
           Explore Events
         </a>
       </div>
-    }
-
-    <!-- Events -->
-    @else {
+    } @else {
       <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         @for (event of events(); track event.id) {
           <div
@@ -68,19 +58,14 @@
                   class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               } @else {
-                <div
-                  class="flex h-full w-full items-center justify-center bg-background-secondary"
-                >
-                  <span class="text-sm text-text-muted">
-                    No image
-                  </span>
+                <div class="flex h-full w-full items-center justify-center bg-background-secondary">
+                  <span class="text-sm text-text-muted"> No image </span>
                 </div>
               }
             </div>
 
             <!-- Event Content -->
             <div class="flex flex-1 flex-col p-5">
-              <!-- Type / Status -->
               <div class="flex items-start justify-between gap-3">
                 <span
                   class="border border-secondary bg-secondary-light px-3 py-1 text-xs font-medium text-secondary"
@@ -107,12 +92,10 @@
               <!-- Description -->
               @if (event.description) {
                 <p class="mt-2 line-clamp-2 min-h-10 text-sm text-text-secondary">
-                  {{ event.description | truncateWords:50 }}
+                  {{ event.description | truncateWords: 50 }}
                 </p>
               } @else {
-                <p class="mt-2 min-h-10 text-sm text-text-muted">
-                  No description available.
-                </p>
+                <p class="mt-2 min-h-10 text-sm text-text-muted">No description available.</p>
               }
 
               <!-- Date -->
@@ -128,34 +111,26 @@
                 </p>
               </div>
 
-              <!-- Actions -->
               <div class="mt-auto">
-                @if (event.status === 'Published') {
+                @if (event.status === 'Published' && isEligibleForParticipantActions(event.id)) {
                   <div class="mt-5 flex flex-wrap gap-2 border-t border-border pt-4">
                     <a
-                      [routerLink]="['/events', event.id, 'register']"
-                      class="inline-flex items-center border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition hover:border-secondary hover:text-secondary"
+                      [routerLink]="registrationLink(event.id)"
+                      class="rounded-md border px-3 py-2"
                     >
-                      Registration
+                      {{ isRegistered(event.id) ? 'My Registration' : 'Register' }}
                     </a>
 
-                    <a
-                      [routerLink]="['/events', event.id, 'certificates']"
-                      class="inline-flex items-center border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition hover:border-secondary hover:text-secondary"
-                    >
-                      Certificate
-                    </a>
-
-                    <a
-                      [routerLink]="['/events', event.id, 'feedback']"
-                      class="inline-flex items-center border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition hover:border-secondary hover:text-secondary"
-                    >
-                      Feedback
-                    </a>
+                    @if (isRegistered(event.id)) {
+                      <a
+                        [routerLink]="['/events', event.id, 'feedback']"
+                        class="rounded-md border px-3 py-2"
+                      >
+                        Feedback
+                      </a>
+                    }
                   </div>
                 }
-
-                <!-- Open Event -->
                 <button
                   type="button"
                   (click)="openEvent(event)"

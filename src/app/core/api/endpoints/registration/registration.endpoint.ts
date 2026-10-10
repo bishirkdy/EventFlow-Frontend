@@ -5,6 +5,9 @@ export const REGISTRATION_ENDPOINTS = {
   byId: (eventId: string, registrationId: string) =>
     `/v1/events/${eventId}/registrations/${registrationId}`,
 
+  organizerById: (eventId: string, registrationId: string) =>
+  `/v1/events/${eventId}/registrations/organizer/${registrationId}`,
+
   manage: (eventId: string, registrationId: string) =>
     `/v1/events/${eventId}/registrations/${registrationId}/manage`,
 

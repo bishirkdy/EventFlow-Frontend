@@ -23,7 +23,6 @@ export class EventRoleService {
 
   getMyRoles(eventId: string): Observable<ApiResponse<EventRoleModel[]>> {
     const currentUser = this.authService.currentUser();
-
     if (currentUser) {
       return this.http.get<ApiResponse<EventRoleModel[]>>(
         this.api.getUrl(EVENT_ROLE_ENDPOINTS.myRoles(eventId, currentUser.id)),

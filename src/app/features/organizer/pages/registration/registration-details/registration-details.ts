@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,7 +16,7 @@ import { finalize } from 'rxjs';
   imports: [DatePipe],
   templateUrl: './registration-details.html',
 })
-export class RegistrationDetailsComponent {
+export class RegistrationDetailsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly eventState = inject(OrganizerEventStateService);
@@ -30,7 +30,7 @@ export class RegistrationDetailsComponent {
 
   protected readonly status = RegistrationStatus;
 
-  constructor() {
+  ngOnInit(): void {
     this.load();
   }
 
@@ -89,10 +89,7 @@ export class RegistrationDetailsComponent {
   }
 
   private action(
-    request: (
-      eventId: string,
-      registrationId: string,
-    ) => ReturnType<RegistrationService['approve']>,
+    request: (eventId: string,registrationId: string,) => ReturnType<RegistrationService['approve']>,
     successMessage: string,
   ): void {
     const eventId = this.eventState.eventId();
@@ -117,13 +114,11 @@ export class RegistrationDetailsComponent {
 
   private load(): void {
     const eventId = this.eventState.eventId() ?? this.route.snapshot.paramMap.get('eventId');
-    const registrationId = this.route.parent?.snapshot?.paramMap?.get('registrationId') ||
+    const registrationId =
+      this.route.parent?.snapshot?.paramMap?.get('registrationId') ||
       this.route.pathFromRoot
         .map((route) => route.snapshot.paramMap.get('registrationId'))
         .filter(Boolean)[0];
-
-    console.log('eventId:', eventId);
-    console.log('registrationId:', registrationId);
 
     if (!eventId || !registrationId) {
       this.error.set('Registration could not be identified.');
@@ -133,23 +128,19 @@ export class RegistrationDetailsComponent {
     this.loading.set(true);
 
     this.service
-      .getById(eventId, registrationId)
+      .getByIdForOrganizer(eventId, registrationId)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.loading.set(false)),
       )
       .subscribe({
         next: (response) => {
-          console.log('DETAIL RESPONSE:', response);
-
           if (!response.isSuccess || !response.data) {
             this.error.set(response.message || 'Unable to load registration.');
             return;
           }
 
           this.registration.set(response.data);
-
-          console.log('REGISTRATION:', this.registration());
         },
 
         error: (err: { error?: { message?: string }; message?: string }) => {
