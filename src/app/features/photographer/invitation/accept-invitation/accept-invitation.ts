@@ -13,6 +13,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './accept-invitation.html',
   styleUrl: './accept-invitation.css'
 })
+
 export class AcceptInvitation implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -50,26 +51,39 @@ export class AcceptInvitation implements OnInit {
     this.http.get<ApiResponse<InvitationData>>(`${environment.apiUrl}/invitations/${token}`)
       .subscribe({
         next: (response) => {
-          if (response.isSuccess && response.data) {
+          if (response.isSuccess && response.data && response.data.status === 1 && response.data.eventName && response.data.email && response.data.eventId) {
             this.invitation.set(response.data);
             this.loading.set(false);
+          } else if (response.isSuccess && response.data) {
+            this.loading.set(false);
+            this.notification.error('This invitation is no longer active.');
+            this.router.navigate(['/']);
           } else {
             this.loading.set(false);
             this.notification.error('Invalid or expired invitation link.');
-            this.router.navigate(['/']);
+            this.router.navigate(['/login'], {
+              queryParams: { returnUrl: this.router.url },
+            });
           }
         },
         error: () => {
           this.loading.set(false);
           this.notification.error('Invalid or expired invitation link.');
-          this.router.navigate(['/']);
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: this.router.url },
+          });
         }
       });
   }
 
   onExistingAccount() {
-    this.step.set('register');
-    // Pre-fill email from invitation
+    const eventId = this.invitation()?.eventId;
+    this.router.navigate(['/login'], {
+      queryParams: {
+        returnUrl: eventId ? `/photographer/${eventId}/photos` : '/photographer',
+        email: this.invitation()?.email,
+      },
+    });
   }
 
   onSubmit() {

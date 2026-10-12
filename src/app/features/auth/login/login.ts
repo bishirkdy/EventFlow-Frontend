@@ -26,6 +26,13 @@ export class Login {
   email = '';
   password = '';
 
+  ngOnInit(): void {
+    const loginEmail = this.route.snapshot.queryParamMap.get('email');
+    if (loginEmail) {
+      this.email = loginEmail;
+    }
+  }
+
   readonly showPassword = signal(false);
   readonly loading = signal(false);
 
