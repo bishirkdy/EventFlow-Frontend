@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { UserProfile } from '../../../../core/models/common/user-profile';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -20,12 +22,14 @@ export class AcceptInvitation implements OnInit {
   private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
   private readonly notification = inject(NotificationService);
+  private readonly authService = inject(AuthService);
 
   readonly token = signal<string>('');
   readonly invitation = signal<InvitationData | null>(null);
   readonly loading = signal(true);
   readonly accepting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly authUser = signal<UserProfile | null>(null);
   readonly step = signal<'validate' | 'register' | 'complete'>('validate');
 
   readonly registerForm = this.fb.nonNullable.group({
@@ -45,7 +49,20 @@ export class AcceptInvitation implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.authUser.set(this.authService.currentUser());
+    if (!this.authUser()) {
+      this.authService.loadCurrentUser().subscribe((user) => {
+        this.authUser.set(user);
+      });
+    }
+  }
+
+  emailsMatch(): boolean {
+    const user = this.authUser();
+    const invitation = this.invitation();
+    return !!user && !!invitation && user.email.toLowerCase() === invitation.email.toLowerCase();
+  }
 
   private validateInvitation(token: string) {
     this.loading.set(true);
@@ -111,12 +128,45 @@ export class AcceptInvitation implements OnInit {
   }
 
   onExistingAccount() {
-    const eventId = this.invitation()?.eventId;
     this.router.navigate(['/login'], {
       queryParams: {
-        returnUrl: eventId ? `/photographer/${eventId}/photos` : '/photographer',
-        email: this.invitation()?.email,
+        returnUrl: this.router.url,
+        email: this.invitation()?.email ?? undefined,
       },
+    });
+  }
+
+  acceptForExistingUser() {
+    const user = this.authUser();
+    const invitation = this.invitation();
+    if (!user || !invitation || !this.emailsMatch()) {
+      return;
+    }
+
+    this.accepting.set(true);
+
+    this.http.post<ApiResponse<AcceptInvitationResponse>>(
+      `${environment.apiUrl}/v1/invitations/${this.token()}/accept`,
+      {
+        password: 'invitation-accept',
+        userName: user.userName,
+        firstName: user.firstName || user.userName,
+        lastName: user.lastName || 'User'
+      }
+    ).subscribe({
+      next: (response) => {
+        this.accepting.set(false);
+        if (response.isSuccess) {
+          this.notification.success('Invitation accepted! You are now a photographer for this event.');
+          this.navigateToDashboard();
+        } else {
+          this.notification.error(response.message || 'Failed to accept invitation.');
+        }
+      },
+      error: (error) => {
+        this.accepting.set(false);
+        this.notification.error(error.error?.message || 'Failed to accept invitation.');
+      }
     });
   }
 

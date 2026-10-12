@@ -63,28 +63,75 @@
           </div>
 
           @if (step() === 'validate') {
-            <div class="space-y-4">
-              <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
-                This invitation is for <strong>{{ inv.email }}</strong>.
-                Do you already have an account with this email?
-              </p>
-              <div class="flex gap-3">
-                <button
-                  type="button"
-                  (click)="onExistingAccount()"
-                  class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Yes, I have an account
-                </button>
-                <button
-                  type="button"
-                  (click)="step.set('register')"
-                  class="flex-1 border border-border text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-muted transition-colors"
-                >
-                  No, create new account
-                </button>
+            @if (authUser(); as user) {
+              @if (emailsMatch()) {
+                <div class="space-y-4">
+                  <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                    You are logged in as <strong>{{ user.email }}</strong>.
+                    Accept the invitation to start working on this event.
+                  </p>
+                  <button
+                    type="button"
+                    (click)="acceptForExistingUser()"
+                    [disabled]="accepting()"
+                    class="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    @if (accepting()) {
+                      Accepting invitation...
+                    } @else {
+                      Accept Invitation & Continue
+                    }
+                  </button>
+                </div>
+              } @else {
+                <div class="space-y-4">
+                  <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                    This invitation is for <strong>{{ inv.email }}</strong>,
+                    but you are logged in as <strong>{{ user.email }}</strong>.
+                    Please log in with the invited account.
+                  </p>
+                  <div class="flex gap-3">
+                    <button
+                      type="button"
+                      (click)="goToLogin()"
+                      class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                    >
+                      Switch Account
+                    </button>
+                    <button
+                      type="button"
+                      (click)="goHome()"
+                      class="flex-1 border border-border text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-muted transition-colors"
+                    >
+                      Go Home
+                    </button>
+                  </div>
+                </div>
+              }
+            } @else {
+              <div class="space-y-4">
+                <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                  This invitation is for <strong>{{ inv.email }}</strong>.
+                  Do you already have an account with this email?
+                </p>
+                <div class="flex gap-3">
+                  <button
+                    type="button"
+                    (click)="onExistingAccount()"
+                    class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    Yes, I have an account
+                  </button>
+                  <button
+                    type="button"
+                    (click)="step.set('register')"
+                    class="flex-1 border border-border text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-muted transition-colors"
+                  >
+                    No, create new account
+                  </button>
+                </div>
               </div>
-            </div>
+            }
           }
 
           @if (step() === 'register') {
