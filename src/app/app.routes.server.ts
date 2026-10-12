@@ -103,6 +103,11 @@ export const serverRoutes: ServerRoute[] = [
   },
 
   {
+    path: 'photographer-invitation/**',
+    renderMode: RenderMode.Client,
+  },
+
+  {
     path: '**',
     renderMode: RenderMode.Server,
   },

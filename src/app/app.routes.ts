@@ -8,7 +8,7 @@ import { AttendanceStaffLayout } from './features/attendance-staff/layout/attend
 export const routes: Routes = [
   ...REGISTRATION_ROUTES,
   {
-    path: 'photographer/invite/:token',
+    path: 'photographer-invitation/:token',
     loadComponent: () =>
       import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
         (m) => m.AcceptInvitation,
