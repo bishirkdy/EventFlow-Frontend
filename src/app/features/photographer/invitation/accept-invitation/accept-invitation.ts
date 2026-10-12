@@ -48,7 +48,7 @@ export class AcceptInvitation implements OnInit {
 
   private validateInvitation(token: string) {
     this.loading.set(true);
-    this.http.get<ApiResponse<InvitationData>>(`${environment.apiUrl}/invitations/${token}`)
+    this.http.get<ApiResponse<InvitationData>>(`${environment.apiUrl}/v1/invitations/${token}`)
       .subscribe({
         next: (response) => {
           if (response.isSuccess && response.data && response.data.status === 1 && response.data.eventName && response.data.email && response.data.eventId) {
@@ -96,7 +96,7 @@ export class AcceptInvitation implements OnInit {
     const formValue = this.registerForm.getRawValue();
 
     this.http.post<ApiResponse<AcceptInvitationResponse>>(
-      `${environment.apiUrl}/invitations/${this.token()}/accept`,
+      `${environment.apiUrl}/v1/invitations/${this.token()}/accept`,
       {
         password: formValue.password,
         userName: formValue.userName,
