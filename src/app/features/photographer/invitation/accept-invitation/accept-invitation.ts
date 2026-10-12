@@ -25,6 +25,7 @@ export class AcceptInvitation implements OnInit {
   readonly invitation = signal<InvitationData | null>(null);
   readonly loading = signal(true);
   readonly accepting = signal(false);
+  readonly errorMessage = signal<string | null>(null);
   readonly step = signal<'validate' | 'register' | 'complete'>('validate');
 
   readonly registerForm = this.fb.nonNullable.group({
@@ -48,32 +49,65 @@ export class AcceptInvitation implements OnInit {
 
   private validateInvitation(token: string) {
     this.loading.set(true);
+    this.errorMessage.set(null);
     this.http.get<ApiResponse<InvitationData>>(`${environment.apiUrl}/v1/invitations/${token}`)
       .subscribe({
         next: (response) => {
-          if (response.isSuccess && response.data && response.data.status === 1 && response.data.eventName && response.data.email && response.data.eventId) {
-            this.invitation.set(response.data);
-            this.loading.set(false);
-          } else if (response.isSuccess && response.data) {
-            this.loading.set(false);
-            this.notification.error('This invitation is no longer active.');
-            this.router.navigate(['/']);
-          } else {
-            this.loading.set(false);
-            this.notification.error('Invalid or expired invitation link.');
-            this.router.navigate(['/login'], {
-              queryParams: { returnUrl: this.router.url },
-            });
+          this.loading.set(false);
+          const data = response.data;
+
+          if (!response.isSuccess || !data || !data.email || !data.eventId) {
+            this.errorMessage.set('Invalid invitation link. Please use the link from your email.');
+            return;
+          }
+
+          // Keep data so login can deep-link back to the event dashboard.
+          this.invitation.set(data);
+
+          if (data.status === 1) {
+            this.errorMessage.set('This invitation has already been accepted. Please log in to continue.');
+            return;
+          }
+
+          if (data.status === 2) {
+            this.errorMessage.set('This invitation has been revoked. Please contact the event organizer.');
+            return;
+          }
+
+          // Pending = 0 is the only state that can be accepted.
+          if (data.status !== 0) {
+            this.errorMessage.set('This invitation is no longer active.');
+            return;
+          }
+
+          if (data.expiresAt && new Date(data.expiresAt).getTime() < Date.now()) {
+            this.errorMessage.set('This invitation has expired. Please ask the event organizer for a new one.');
+            return;
           }
         },
         error: () => {
           this.loading.set(false);
-          this.notification.error('Invalid or expired invitation link.');
-          this.router.navigate(['/login'], {
-            queryParams: { returnUrl: this.router.url },
-          });
+          this.errorMessage.set('Invalid invitation link. Please use the link from your email.');
         }
       });
+  }
+
+  goToLogin() {
+    const invitation = this.invitation();
+    const returnUrl =
+      invitation && invitation.status === 1
+        ? `/photographer/${invitation.eventId}/photos`
+        : this.router.url;
+    this.router.navigate(['/login'], {
+      queryParams: {
+        returnUrl,
+        email: invitation?.email ?? undefined,
+      },
+    });
+  }
+
+  goHome() {
+    this.router.navigate(['/']);
   }
 
   onExistingAccount() {
