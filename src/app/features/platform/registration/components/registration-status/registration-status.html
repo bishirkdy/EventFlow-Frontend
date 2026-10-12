@@ -1,5 +1,5 @@
 <div
-  class="inline-flex max-w-full items-start gap-3 rounded-2xl border px-4 py-3"
+  class="inline-flex max-w-full items-center justify-center gap-3 px-4 py-3"
   [style.background]="tone().background"
   [style.border-color]="tone().border"
 >
@@ -9,15 +9,10 @@
     aria-hidden="true"
   ></span>
 
-  <div class="min-w-0">
-    <p
-      class="text-[10px] font-extrabold uppercase tracking-[0.13em]"
+  <p
+      class="text-[12px] font-extrabold uppercase tracking-[0.13em]"
       [style.color]="tone().color"
     >
       {{ label() }}
     </p>
-    <p class="mt-1 text-xs leading-5" style="color: var(--color-text-secondary)">
-      {{ description() }}
-    </p>
-  </div>
 </div>

@@ -1,11 +1,6 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { RegistrationStatusComponent } from '../../../components/registration-status/registration-status';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
@@ -14,11 +9,12 @@ import { RegistrationModel } from '../../../../../../core/models/registration/re
 @Component({
   selector: 'app-my-registrations',
   standalone: true,
-  imports: [DatePipe, RegistrationStatusComponent],
+  imports: [DatePipe, RegistrationStatusComponent , RouterLink],
   templateUrl: './my-registrations.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MyRegistrationsComponent {
+
+export class MyRegistrationsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly registrationService = inject(RegistrationService);
@@ -29,7 +25,7 @@ export class MyRegistrationsComponent {
 
   private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
 
-  constructor() {
+  ngOnInit() {
     if (!this.eventId) {
       this.loading.set(false);
       this.error.set('Event could not be identified.');

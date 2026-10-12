@@ -1,81 +1,124 @@
-<div class="min-h-screen" style="background: var(--color-background); color: var(--color-text-primary)">
-  <main class="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8 lg:py-16">
-    <header class="flex flex-col gap-7 border-b pb-8 sm:flex-row sm:items-end sm:justify-between" style="border-color: var(--color-border)">
+<div class="min-h-screen bg-background p-6 md:p-8">
+  <main class="mx-auto w-full max-w-6xl">
+    <header class="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <div class="flex items-center gap-3">
-          <span class="h-1.5 w-1.5 rounded-full" style="background: var(--color-primary)"></span>
-          <span class="text-[10px] font-extrabold uppercase tracking-[0.2em]" style="color: var(--color-primary)">Registration</span>
-        </div>
-        <h1 class="mt-4 font-serif text-4xl font-medium tracking-[-0.05em] sm:text-5xl" style="color: var(--color-text-primary)">My registrations</h1>
-        <p class="mt-4 max-w-2xl text-sm leading-7" style="color: var(--color-text-secondary)">Keep track of your place, participant details, and ticket information.</p>
+        <span class="text-xs font-semibold uppercase tracking-wider text-secondary">
+          Registration
+        </span>
+
+        <h1 class="mt-3 text-2xl font-semibold text-text-primary sm:text-3xl">
+          My Registrations
+        </h1>
+
+        <p class="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
+          Manage your registration details and check your registration status.
+        </p>
       </div>
 
       <button
         type="button"
-        class="rounded-xl border px-5 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em] transition hover:-translate-y-0.5"
-        style="background: var(--color-surface); color: var(--color-text-primary); border-color: var(--color-border)"
-        (click)="registerAgain()"
+        class="inline-flex items-center justify-center border border-secondary cursor-pointer bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+        routerLink="/"
       >
-        Register again
+        Go to Home
       </button>
     </header>
 
     @if (loading()) {
-      <section class="grid min-h-[420px] place-items-center">
-        <div class="text-center">
-          <div class="mx-auto h-9 w-9 animate-spin rounded-full border-2" style="border-color: var(--color-border); border-top-color: var(--color-primary)"></div>
-          <p class="mt-5 text-sm" style="color: var(--color-text-secondary)">Loading your registrations...</p>
+      <section class="mt-8 flex min-h-64 items-center justify-center border border-border bg-surface">
+        <div class="flex flex-col items-center gap-4">
+          <div
+            class="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-secondary"
+            role="status"
+            aria-label="Loading registrations"
+          ></div>
+
+          <p class="text-sm text-text-secondary">
+            Loading your registrations...
+          </p>
         </div>
       </section>
-    } @else if (error()) {
-      <section class="mx-auto mt-10 max-w-xl rounded-3xl border p-8 text-center shadow-sm" style="background: var(--color-surface); border-color: var(--color-border)">
-        <div class="mx-auto grid h-12 w-12 place-items-center rounded-full" style="background: var(--color-primary-light); color: var(--color-primary)">!</div>
-        <h2 class="mt-5 font-serif text-3xl tracking-[-0.04em]" style="color: var(--color-text-primary)">We couldn't load your registrations</h2>
-        <p class="mt-3 text-sm leading-7" style="color: var(--color-text-secondary)">{{ error() }}</p>
-        <button type="button" class="mt-7 rounded-xl px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.15em]" style="background: var(--color-primary); color: #fff" (click)="loadRegistrations()">Try again</button>
+    }
+
+    @else if (error()) {
+      <section class="mt-8 border border-border bg-surface px-6 py-12 text-center">
+        <h2 class="text-xl font-semibold text-text-primary">
+          Unable to load registrations
+        </h2>
+
+        <p class="mt-2 text-sm text-text-secondary">
+          {{ error() }}
+        </p>
+
+        <button
+          type="button"
+          class="mt-5 inline-flex items-center justify-center border border-secondary bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white hover:text-secondary"
+          (click)="loadRegistrations()"
+        >
+          Try Again
+        </button>
       </section>
-    } @else if (registrations().length === 0) {
-      <section class="mx-auto mt-12 max-w-2xl rounded-[28px] border p-10 text-center sm:p-14" style="background: var(--color-surface); border-color: var(--color-border)">
-        <div class="mx-auto grid h-16 w-16 place-items-center rounded-full" style="background: var(--color-primary-light); color: var(--color-primary)">
-          <span class="text-xl">✦</span>
-        </div>
-        <h2 class="mt-6 font-serif text-3xl tracking-[-0.04em] sm:text-4xl" style="color: var(--color-text-primary)">Nothing here yet</h2>
-        <p class="mx-auto mt-4 max-w-md text-sm leading-7" style="color: var(--color-text-secondary)">You haven't submitted a registration for this event. When you do, it will appear here.</p>
-        <button type="button" class="mt-8 rounded-xl px-7 py-3.5 text-[10px] font-extrabold uppercase tracking-[0.15em]" style="background: var(--color-primary); color: #fff" (click)="registerAgain()">Start registration</button>
+    }
+
+    @else if (registrations().length === 0) {
+      <section class="mt-8 flex min-h-72 flex-col items-center justify-center border border-border bg-surface px-6 py-12 text-center">
+        <h2 class="text-xl font-semibold text-text-primary">
+          No registrations yet
+        </h2>
+
+        <p class="mt-2 max-w-md text-sm leading-6 text-text-secondary">
+          You haven't registered for this event yet. Start your registration to see your details here.
+        </p>
+
+        <button
+          type="button"
+          class="mt-6 inline-flex items-center justify-center border border-secondary bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white hover:text-secondary"
+          (click)="registerAgain()"
+        >
+          Start Registration
+        </button>
       </section>
-    } @else {
-      <section class="mt-10 grid gap-4">
+    }
+
+    @else {
+      <section class="mt-8 grid gap-4">
         @for (registration of registrations(); track registration.id) {
-          <article class="group rounded-[24px] border p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg sm:p-6" style="background: var(--color-surface); border-color: var(--color-border)">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <article
+            class="border border-border bg-surface p-5 transition-colors hover:border-secondary sm:p-6"
+          >
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-3">
-                  <span class="rounded-full px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.12em]" style="background: var(--color-surface-soft); color: var(--color-text-secondary)">Registration</span>
-                  <span class="font-mono text-xs" style="color: var(--color-text-muted)">{{ registration.registrationNumber }}</span>
+
+                  <span class="break-all font-mono text-xs text-text-muted">
+                    {{ registration.registrationNumber }}
+                  </span>
                 </div>
 
-                <h2 class="mt-4 text-lg font-semibold tracking-tight" style="color: var(--color-text-primary)">
+                <h2 class="mt-4 text-lg font-semibold text-text-primary">
                   @if (registration.participant; as participant) {
                     {{ participant.firstName }} {{ participant.lastName }}
                   } @else {
-                    Registration submitted
+                    Registration Submitted
                   }
                 </h2>
 
-                <p class="mt-1 text-sm" style="color: var(--color-text-secondary)">
+                <p class="mt-1 text-sm text-text-secondary">
                   Submitted {{ registration.registeredAtUtc | date: 'mediumDate' }}
                 </p>
               </div>
 
-              <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <app-registration-status [status]="registration.status" />
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <app-registration-status
+                  [status]="registration.status"
+                />
+
                 <button
                   type="button"
-                  class="rounded-xl border px-5 py-3 text-[10px] font-extrabold uppercase tracking-[0.13em] transition group-hover:border-[var(--color-primary)] group-hover:text-[var(--color-primary)]"
-                  style="background: var(--color-surface); color: var(--color-text-primary); border-color: var(--color-border)"
+                  class="inline-flex items-center justify-center border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:border-secondary hover:bg-secondary hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                   (click)="openRegistration(registration.id)"
                 >
-                  View details <span class="ml-2">→</span>
+                  View Details
                 </button>
               </div>
             </div>

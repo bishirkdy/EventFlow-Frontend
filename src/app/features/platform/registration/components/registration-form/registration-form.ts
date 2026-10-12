@@ -17,12 +17,10 @@ import {
 } from '@angular/forms';
 
 import { RegistrationFieldComponent } from '../registration-field/registration-field';
-
 import {
   CapacityMode,
   RegistrationFieldType,
 } from '../../../../../core/models/registration/registration.enums';
-
 import { Event } from '../../../../../core/models/event/event.model';
 
 import {
@@ -31,15 +29,12 @@ import {
 } from '../../../../../core/models/registration/registration-form.model';
 
 import { RegistrationFormSubmit } from '../../../../../core/models/registration/registration-form-submit.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-form',
   standalone: true,
-  imports: [
-    DatePipe,
-    ReactiveFormsModule,
-    RegistrationFieldComponent,
-  ],
+  imports: [DatePipe, ReactiveFormsModule, RegistrationFieldComponent],
   templateUrl: './registration-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -49,11 +44,10 @@ export class RegistrationFormComponent {
   readonly event = input<Event | null>(null);
 
   readonly submitting = input(false);
-
   readonly submitted = output<RegistrationFormSubmit>();
 
   private readonly fb = inject(FormBuilder);
-
+  private readonly router = inject(Router);
   protected readonly form = this.fb.nonNullable.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
@@ -63,22 +57,16 @@ export class RegistrationFormComponent {
     designation: [''],
   });
 
-  protected readonly fieldControls =
-    new Map<string, FormControl<string>>();
+  protected readonly fieldControls = new Map<string, FormControl<string>>();
 
   protected readonly fields = computed(() =>
-    [...this.registrationForm().fields].sort(
-      (a, b) => a.displayOrder - b.displayOrder,
-    ),
+    [...this.registrationForm().fields].sort((a, b) => a.displayOrder - b.displayOrder),
   );
 
   protected readonly remainingPlaces = computed(() => {
     const form = this.registrationForm();
 
-    if (
-      form.capacityMode !== CapacityMode.Limited ||
-      form.capacity === null
-    ) {
+    if (form.capacityMode !== CapacityMode.Limited || form.capacity === null) {
       return null;
     }
 
@@ -88,11 +76,7 @@ export class RegistrationFormComponent {
   protected readonly heroImage = computed(() => {
     const images = this.event()?.images ?? [];
 
-    return (
-      [...images]
-        .sort((a, b) => a.displayOrder - b.displayOrder)
-        .at(0)?.url ?? null
-    );
+    return [...images].sort((a, b) => a.displayOrder - b.displayOrder).at(0)?.url ?? null;
   });
 
   protected readonly eventDate = computed(() => {
@@ -108,27 +92,20 @@ export class RegistrationFormComponent {
     };
   });
 
-  constructor() {
-    effect(() => {
-      const fields = this.registrationForm().fields;
+  private readonly fieldsEffect = effect(() => {
+    const fields = this.registrationForm().fields;
 
-      this.fieldControls.clear();
+    this.fieldControls.clear();
 
-      for (const field of fields) {
-        this.fieldControls.set(
-          field.fieldKey,
-          this.fb.nonNullable.control(
-            '',
-            this.buildValidators(field),
-          ),
-        );
-      }
-    });
-  }
+    for (const field of fields) {
+      this.fieldControls.set(
+        field.fieldKey,
+        this.fb.nonNullable.control('', this.buildValidators(field)),
+      );
+    }
+  });
 
-  private buildValidators(
-    field: RegistrationFormFieldModel,
-  ): ValidatorFn[] {
+  private buildValidators(field: RegistrationFormFieldModel): ValidatorFn[] {
     const validators: ValidatorFn[] = [];
 
     if (field.isRequired) {
@@ -143,20 +120,14 @@ export class RegistrationFormComponent {
       validators.push(Validators.email);
     }
 
-    const rules = this.parseValidationRules(
-      field.validationJson,
-    );
+    const rules = this.parseValidationRules(field.validationJson);
 
     if (rules.minLength !== undefined) {
-      validators.push(
-        Validators.minLength(rules.minLength),
-      );
+      validators.push(Validators.minLength(rules.minLength));
     }
 
     if (rules.maxLength !== undefined) {
-      validators.push(
-        Validators.maxLength(rules.maxLength),
-      );
+      validators.push(Validators.maxLength(rules.maxLength));
     }
 
     if (rules.min !== undefined) {
@@ -168,17 +139,13 @@ export class RegistrationFormComponent {
     }
 
     if (rules.pattern) {
-      validators.push(
-        Validators.pattern(rules.pattern),
-      );
+      validators.push(Validators.pattern(rules.pattern));
     }
 
     return validators;
   }
 
-  private parseValidationRules(
-    value: string | null,
-  ): {
+  private parseValidationRules(value: string | null): {
     minLength?: number;
     maxLength?: number;
     min?: number;
@@ -192,11 +159,7 @@ export class RegistrationFormComponent {
     try {
       const parsed: unknown = JSON.parse(value);
 
-      if (
-        !parsed ||
-        typeof parsed !== 'object' ||
-        Array.isArray(parsed)
-      ) {
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
         return {};
       }
 
@@ -207,10 +170,7 @@ export class RegistrationFormComponent {
         maxLength: this.toNumber(rules['maxLength']),
         min: this.toNumber(rules['min']),
         max: this.toNumber(rules['max']),
-        pattern:
-          typeof rules['pattern'] === 'string'
-            ? rules['pattern']
-            : undefined,
+        pattern: typeof rules['pattern'] === 'string' ? rules['pattern'] : undefined,
       };
     } catch {
       return {};
@@ -218,35 +178,22 @@ export class RegistrationFormComponent {
   }
 
   private toNumber(value: unknown): number | undefined {
-    return typeof value === 'number' && Number.isFinite(value)
-      ? value
-      : undefined;
+    return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
   }
 
-  protected getFieldControl(
-    field: RegistrationFormFieldModel,
-  ): FormControl<string> {
+  protected getFieldControl(field: RegistrationFormFieldModel): FormControl<string> {
     return this.fieldControls.get(field.fieldKey)!;
   }
 
   protected submit(): void {
-    const dynamicControls = [
-      ...this.fieldControls.values(),
-    ];
+    const dynamicControls = [...this.fieldControls.values()];
 
-    const hasInvalidDynamicField = dynamicControls.some(
-      (control) => control.invalid,
-    );
+    const hasInvalidDynamicField = dynamicControls.some((control) => control.invalid);
 
-    if (
-      this.form.invalid ||
-      hasInvalidDynamicField
-    ) {
+    if (this.form.invalid || hasInvalidDynamicField) {
       this.form.markAllAsTouched();
 
-      dynamicControls.forEach((control) =>
-        control.markAsTouched(),
-      );
+      dynamicControls.forEach((control) => control.markAsTouched());
 
       return;
     }
@@ -258,9 +205,7 @@ export class RegistrationFormComponent {
     const answers: Record<string, string> = {};
 
     for (const field of this.fields()) {
-      const control = this.fieldControls.get(
-        field.fieldKey,
-      );
+      const control = this.fieldControls.get(field.fieldKey);
 
       if (control) {
         answers[field.id] = control.value;
@@ -274,11 +219,16 @@ export class RegistrationFormComponent {
       lastName: value.lastName.trim(),
       email: value.email.trim(),
       phone: value.phone.trim() || null,
-      organization:
-        value.organization.trim() || null,
-      designation:
-        value.designation.trim() || null,
+      organization: value.organization.trim() || null,
+      designation: value.designation.trim() || null,
       answers,
     });
+  }
+
+  backToRegistration(): void {
+    const eventId = this.event()?.id;
+    if (!eventId) return;
+
+    this.router.navigate(['/events', eventId, 'my-registrations']);
   }
 }

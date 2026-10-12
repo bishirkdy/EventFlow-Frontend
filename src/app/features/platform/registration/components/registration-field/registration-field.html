@@ -1,13 +1,9 @@
 <div class="space-y-2.5">
   @if (!isCheckbox()) {
-    <label
-      [for]="field().fieldKey"
-      class="block text-[11px] font-bold tracking-[-0.01em]"
-      style="color: var(--color-text-primary)"
-    >
+    <label [for]="field().fieldKey" class="block text-sm font-medium text-text-primary">
       {{ field().label }}
       @if (isRequired()) {
-        <span style="color: var(--color-primary)" aria-hidden="true"> *</span>
+        <span class="text-secondary" aria-hidden="true">*</span>
       }
     </label>
   }
@@ -17,25 +13,13 @@
       [id]="field().fieldKey"
       [formControl]="control()"
       rows="4"
-      class="w-full resize-none rounded-xl border px-4 py-3.5 text-sm outline-none transition focus:ring-2"
-      style="
-        background: var(--color-surface);
-        color: var(--color-text-primary);
-        border-color: var(--color-border);
-        --tw-ring-color: var(--color-primary-light);
-      "
+      class="w-full resize-y border border-border bg-surface px-3 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-secondary focus:ring-1 focus:ring-secondary"
     ></textarea>
   } @else if (isSelect()) {
     <select
       [id]="field().fieldKey"
       [formControl]="control()"
-      class="w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition focus:ring-2"
-      style="
-        background: var(--color-surface);
-        color: var(--color-text-primary);
-        border-color: var(--color-border);
-        --tw-ring-color: var(--color-primary-light);
-      "
+      class="w-full border border-border bg-surface px-3 py-2.5 text-sm text-text-primary outline-none transition focus:border-secondary focus:ring-1 focus:ring-secondary"
     >
       <option value="">Select {{ field().label }}</option>
       @for (option of options(); track option) {
@@ -43,44 +27,36 @@
       }
     </select>
   } @else if (isRadio()) {
-    <div
-      class="grid gap-2.5"
-      role="radiogroup"
-      [attr.aria-label]="field().label"
-    >
+    <div class="grid gap-2" role="radiogroup" [attr.aria-label]="field().label">
       @for (option of options(); track option) {
         <label
-          class="flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm transition hover:bg-[var(--color-surface-soft)]"
-          style="border-color: var(--color-border)"
+          class="flex cursor-pointer items-center gap-3 border border-border bg-surface px-3 py-3 text-sm transition-colors hover:border-secondary hover:bg-tertiary/10"
         >
           <input
             type="radio"
             [name]="field().fieldKey"
             [value]="option"
             [formControl]="control()"
-            class="h-4 w-4"
-            style="accent-color: var(--color-primary)"
+            class="h-4 w-4 accent-secondary"
           />
-          <span style="color: var(--color-text-primary)">{{ option }}</span>
+          <span class="text-text-primary">{{ option }}</span>
         </label>
       }
     </div>
   } @else if (isCheckbox()) {
     <label
-      class="flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3.5 text-sm transition hover:bg-[var(--color-surface-soft)]"
-      style="border-color: var(--color-border)"
+      class="flex cursor-pointer items-start gap-3 border border-border bg-surface px-3 py-3 text-sm transition-colors hover:border-secondary hover:bg-tertiary/10"
     >
       <input
         type="checkbox"
         [checked]="control().value === 'true'"
         (change)="setCheckboxValue($any($event.target).checked)"
-        class="mt-0.5 h-4 w-4 shrink-0"
-        style="accent-color: var(--color-primary)"
+        class="mt-0.5 h-4 w-4 shrink-0 accent-secondary"
       />
-      <span style="color: var(--color-text-primary)">
+      <span class="text-text-primary">
         {{ field().label }}
         @if (isRequired()) {
-          <span style="color: var(--color-primary)" aria-hidden="true"> *</span>
+          <span class="text-secondary" aria-hidden="true">*</span>
         }
       </span>
     </label>
@@ -89,18 +65,12 @@
       [id]="field().fieldKey"
       [type]="inputType()"
       [formControl]="control()"
-      class="w-full rounded-xl border px-4 py-3.5 text-sm outline-none transition focus:ring-2"
-      style="
-        background: var(--color-surface);
-        color: var(--color-text-primary);
-        border-color: var(--color-border);
-        --tw-ring-color: var(--color-primary-light);
-      "
+      class="w-full border border-border bg-surface px-3 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-secondary focus:ring-1 focus:ring-secondary"
     />
   }
 
   @if (hasError()) {
-    <p class="text-xs font-medium" style="color: var(--color-error)">
+    <p class="text-xs font-medium text-red-600">
       {{ errorMessage() }}
     </p>
   }

@@ -10,7 +10,6 @@ import {
 } from '@angular/forms';
 
 import { RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
-
 import { RegistrationFormFieldModel } from '../../../../../core/models/registration/registration-form.model';
 
 @Component({
@@ -20,12 +19,10 @@ import { RegistrationFormFieldModel } from '../../../../../core/models/registrat
   templateUrl: './registration-field.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationFieldComponent {
-  readonly field =
-    input.required<RegistrationFormFieldModel>();
 
-  readonly control =
-    input.required<FormControl<string>>();
+export class RegistrationFieldComponent {
+  readonly field = input.required<RegistrationFormFieldModel>();
+  readonly control = input.required<FormControl<string>>();
 
   protected readonly fieldType = computed(
     () => this.field().fieldType,

@@ -1,109 +1,250 @@
-<section class="mx-auto max-w-2xl space-y-6 p-6">
-  <div class="flex items-start justify-between gap-4">
-    <div>
-      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">EventFlow</p>
-      <h1 class="mt-1 text-2xl font-semibold">Share your feedback</h1>
-      <p class="mt-2 text-sm text-text-secondary">
-        Tell us how the event, sessions, speakers or venues felt. Your feedback helps organizers improve.
-      </p>
-    </div>
-    <a [routerLink]="['/events', eventId]" class="border border-border px-3 py-2 text-sm hover:border-secondary">Back to event</a>
-  </div>
-
-  @if (submitted()) {
-    <div class="rounded-2xl border border-border bg-surface p-8 text-center">
-      <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
-      <h2 class="mt-4 text-lg font-semibold">Thank you!</h2>
-      <p class="mt-1 text-sm text-text-secondary">Your feedback has been recorded.</p>
-      <div class="mt-6 flex justify-center gap-3">
-        <button type="button" (click)="reset()" class="border border-border px-4 py-2 text-sm hover:border-secondary">Give more feedback</button>
-        <a [routerLink]="['/events', eventId]" class="bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90">Back to event</a>
-      </div>
-    </div>
-  } @else if (loading()) {
-    <div class="rounded-2xl border border-border bg-surface p-6 text-sm text-text-secondary">
-      Loading feedback options...
-    </div>
-  } @else {
-    <form class="space-y-6 rounded-2xl border border-border bg-surface p-6" (submit)="$event.preventDefault(); submit()">
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 lg:p-6"
+  (click)="closeFeedbackPopup()"
+>
+  <section
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="feedback-title"
+    class="flex h-dvh w-full min-h-0 flex-col overflow-hidden bg-surface lg:h-[90dvh] lg:max-w-4xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <header
+      class="flex shrink-0 items-center justify-between gap-4 border-b border-border bg-surface px-5 py-4 md:px-8"
+    >
       <div>
-        <label class="text-sm font-medium">What is your feedback about?</label>
-        <div class="mt-2 flex flex-wrap gap-2">
-          @for (option of targetTypeOptions(); track option.value) {
-            <button
-              type="button"
-              (click)="selectTargetType(option.value)"
-              class="rounded-full border px-4 py-2 text-sm transition-colors"
-              [class]="targetType() === option.value
-                ? 'border-secondary bg-secondary/10 font-semibold text-text-primary'
-                : 'border-border text-text-secondary hover:border-secondary'">
-              {{ option.label }}
-            </button>
-          }
-        </div>
+        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">EventFlow</p>
+
+        <h2 id="feedback-title" class="mt-1 text-xl font-semibold text-text-primary md:text-2xl">
+          Share your feedback
+        </h2>
+
+        <p class="mt-1 hidden text-sm text-text-secondary sm:block">
+          Tell us all about the event you attended. Your feedback helps organizers improve future events.
+        </p>
       </div>
 
-      @if (needsTarget()) {
-        <div>
-          <label class="text-sm font-medium">Choose a target</label>
-          <select
-            [value]="targetId() ?? ''"
-            (change)="setTarget($any($event.target).value)"
-            class="mt-2 w-full border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-secondary">
-            <option value="">Select...</option>
-            @for (target of currentTargets(); track target.id) {
-              <option [value]="target.id">{{ target.name }}</option>
+      <button
+        type="button"
+        aria-label="Close feedback popup"
+        (click)="closeFeedbackPopup()"
+        class="flex h-10 w-10 shrink-0 items-center justify-center border cursor-pointer border-border text-2xl text-text-secondary transition-colors hover:border-secondary hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+      >
+        <lucide-icon [img]="X" [size]="20"></lucide-icon>
+      </button>
+    </header>
+
+    <main class="min-h-0 flex-1 overflow-y-auto">
+      <div class="mx-auto w-full max-w-2xl p-4 md:p-8">
+        @if (submitted()) {
+          <!-- Success state -->
+          <div class="border border-border bg-surface p-8 text-center md:p-12">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center border border-green-200 bg-green-50 text-2xl font-semibold text-green-700"
+              aria-hidden="true"
+            >
+              ✓
+            </div>
+
+            <h3 class="mt-5 text-xl font-semibold text-text-primary">Thank you!</h3>
+
+            <p class="mt-2 text-sm text-text-secondary">
+              Your feedback has been recorded. Your input helps organizers improve future events.
+            </p>
+
+            <div class="mt-7 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                (click)="reset()"
+                class="border border-border px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:border-secondary"
+              >
+                Give more feedback
+              </button>
+
+              <button
+                type="button"
+                (click)="closeFeedbackPopup()"
+                class="border border-primary bg-primary px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        } @else if (loading()) {
+          <!-- Loading state -->
+          <div
+            class="flex min-h-64 flex-col items-center justify-center border border-border bg-surface p-8 text-center"
+          >
+            <div
+              class="h-8 w-8 animate-spin border-2 rounded-full border-border border-t-secondary"
+              role="status"
+              aria-label="Loading feedback options"
+            ></div>
+
+            <p class="mt-4 text-sm font-medium text-text-primary">Loading feedback options...</p>
+
+            <p class="mt-1 text-sm text-text-secondary">Please wait while we prepare your form.</p>
+          </div>
+        } @else {
+          <!-- Feedback form -->
+          <form
+            class="space-y-7 border border-border bg-surface p-5 md:p-8"
+            (submit)="$event.preventDefault(); submit()"
+          >
+            <div>
+              <h3 class="text-lg font-semibold text-text-primary">Tell us about your experience</h3>
+
+              <p class="mt-1 text-sm text-text-secondary">
+                Select a category, rate your experience, and optionally leave a comment.
+              </p>
+            </div>
+
+            <!-- Feedback target type -->
+            <fieldset>
+              <legend class="text-sm font-medium text-text-primary">
+                What is your feedback about?
+              </legend>
+
+              <div class="mt-3 flex flex-wrap gap-2">
+                @for (option of targetTypeOptions(); track option.value) {
+                  <button
+                    type="button"
+                    (click)="selectTargetType(option.value)"
+                    [attr.aria-pressed]="targetType() === option.value"
+                    class="border px-4 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                    [class]="
+                      targetType() === option.value
+                        ? 'border-secondary bg-secondary/10 font-semibold text-text-primary'
+                        : 'border-border text-text-secondary hover:border-secondary'
+                    "
+                  >
+                    {{ option.label }}
+                  </button>
+                }
+              </div>
+            </fieldset>
+
+            @if (needsTarget()) {
+              <div>
+                <label for="feedback-target" class="text-sm font-medium text-text-primary">
+                  Choose a target
+                </label>
+
+                <select
+                  id="feedback-target"
+                  [value]="targetId() ?? ''"
+                  (change)="setTarget($any($event.target).value)"
+                  required
+                  class="mt-2 w-full border border-border bg-background px-3 py-3 text-sm text-text-primary outline-none transition-colors focus:border-secondary focus:ring-1 focus:ring-secondary"
+                >
+                  <option value="">Select a target...</option>
+
+                  @for (target of currentTargets(); track target.id) {
+                    <option [value]="target.id">
+                      {{ target.name }}
+                    </option>
+                  }
+                </select>
+
+                @if (currentTargets().length === 0) {
+                  <p class="mt-2 text-sm text-text-muted">
+                    No targets are available for this category.
+                  </p>
+                }
+              </div>
             }
-          </select>
-        </div>
-      }
 
-      <div>
-        <label class="text-sm font-medium">Your rating</label>
-        <div class="mt-2 flex gap-2">
-          @for (star of [1, 2, 3, 4, 5]; track star) {
-            <button
-              type="button"
-              (click)="setRating(star)"
-              class="flex h-11 w-11 items-center justify-center rounded-full border text-lg transition-colors"
-              [class]="rating() >= star
-                ? 'border-amber-400 bg-amber-400 text-white'
-                : 'border-border text-text-muted hover:border-amber-300'"
-              [attr.aria-label]="'Rate ' + star + ' stars'">
-              ★
-            </button>
-          }
-        </div>
-      </div>
+            <!-- Rating -->
+            <fieldset>
+              <legend class="text-sm font-medium text-text-primary">
+                Your rating
+                <span class="text-error">*</span>
+              </legend>
 
-      <div>
-        <label class="text-sm font-medium">Comments (optional)</label>
-        <textarea
-          rows="4"
-          maxlength="2000"
-          [value]="comment()"
-          (input)="setComment($any($event.target).value)"
-          placeholder="What did you like? What could be better?"
-          class="mt-2 w-full resize-y border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-secondary"></textarea>
-      </div>
+              <p class="mt-1 text-sm text-text-secondary">How would you rate your experience?</p>
 
-      <div class="flex justify-end gap-3">
-        <a [routerLink]="['/events', eventId]" class="border border-border px-4 py-2 text-sm hover:border-secondary">Cancel</a>
-        <button
-          type="submit"
-          [disabled]="!canSubmit()"
-          class="bg-primary px-5 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
-          @if (submitting()) {
-            Submitting...
-          } @else {
-            Submit feedback
-          }
-        </button>
+              <div class="mt-3 flex flex-wrap items-center gap-2">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <button
+                    type="button"
+                    (click)="setRating(star)"
+                    [attr.aria-label]="'Rate ' + star + ' out of 5 stars'"
+                    [attr.aria-pressed]="rating() === star"
+                    class="flex h-12 w-12 items-center justify-center border text-2xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                    [class]="
+                      rating() >= star
+                        ? 'border-amber-400 bg-amber-400 text-white'
+                        : 'border-border text-text-muted hover:border-amber-400 hover:text-amber-500'
+                    "
+                  >
+                    ★
+                  </button>
+                }
+
+                @if (rating() > 0) {
+                  <span class="ml-2 text-sm font-medium text-text-secondary">
+                    {{ rating() }} / 5
+                  </span>
+                }
+              </div>
+
+              @if (rating() === 0) {
+                <p class="mt-2 text-xs text-text-muted">Select a star rating to continue.</p>
+              }
+            </fieldset>
+
+            <!-- Comments -->
+            <div>
+              <div class="flex items-center justify-between gap-3">
+                <label for="feedback-comment" class="text-sm font-medium text-text-primary">
+                  Comments
+                </label>
+
+                <span class="text-xs text-text-muted"> Optional </span>
+              </div>
+
+              <textarea
+                id="feedback-comment"
+                rows="5"
+                maxlength="500"
+                [value]="comment()"
+                (input)="setComment($any($event.target).value)"
+                placeholder="What did you like? What could be improved?"
+                class="mt-2 w-full resize-y border border-border bg-background px-3 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-secondary focus:ring-1 focus:ring-secondary"
+              ></textarea>
+
+              <p class="mt-1 text-right text-xs text-text-muted">
+                {{ comment().length }} / 500 characters
+              </p>
+            </div>
+
+            <div
+              class="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end"
+            >
+              <button
+                type="button"
+                (click)="closeFeedbackPopup()"
+                class="border border-border px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:border-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                [disabled]="!canSubmit()"
+                class="border border-primary bg-primary px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                @if (submitting()) {
+                  Submitting feedback...
+                } @else {
+                  Submit feedback
+                }
+              </button>
+            </div>
+          </form>
+        }
       </div>
-    </form>
-  }
-</section>
+    </main>
+  </section>
+</div>

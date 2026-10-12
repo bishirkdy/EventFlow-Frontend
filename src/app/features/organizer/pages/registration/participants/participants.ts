@@ -31,6 +31,8 @@ export class ParticipantsComponent {
   readonly page = signal(1);
   readonly totalPages = signal(1);
 
+  readonly participantStatus = ParticipantStatus;
+
   protected readonly statuses = [
     {
       value: ParticipantStatus.Active,

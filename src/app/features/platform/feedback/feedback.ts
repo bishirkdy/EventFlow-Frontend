@@ -1,5 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, OnInit, inject, signal, computed, input, output } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { FeedbackService } from '../../../core/services/feedback/feedback.service';
@@ -11,22 +10,23 @@ import { FeedbackTargetType } from '../../../core/models/feedback/feedback.model
 import { SessionModel } from '../../../core/models/session/session.model';
 import { SpeakerModel } from '../../../core/models/speaker/speaker.model';
 import { VenueModel } from '../../../core/models/venue/venue.model';
+import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-feedback',
   standalone: true,
-  imports: [RouterLink],
+  imports: [LucideAngularModule],
   templateUrl: './feedback.html',
 })
 export class FeedbackComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
   private readonly feedbackService = inject(FeedbackService);
   private readonly sessions = inject(SessionService);
   private readonly speakers = inject(SpeakerService);
   private readonly venues = inject(VenueService);
   private readonly notify = inject(NotificationService);
 
-  readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
+  readonly eventId = input.required<string>();
+  readonly closed = output<void>();
 
   readonly targetType = signal<FeedbackTargetType>(FeedbackTargetType.Event);
   readonly targetId = signal<string | null>(null);
@@ -39,6 +39,12 @@ export class FeedbackComponent implements OnInit {
   readonly sessionList = signal<SessionModel[]>([]);
   readonly speakerList = signal<SpeakerModel[]>([]);
   readonly venueList = signal<VenueModel[]>([]);
+
+  readonly X = X;
+
+  closeFeedbackPopup(): void {
+    this.closed.emit();
+  }
 
   readonly targetTypeOptions = computed(() => {
     const options: Array<{ value: FeedbackTargetType; label: string }> = [
@@ -59,11 +65,11 @@ export class FeedbackComponent implements OnInit {
   readonly currentTargets = computed(() => {
     switch (this.targetType()) {
       case FeedbackTargetType.Session:
-        return this.sessionList().map(x => ({ id: x.id, name: x.title }));
+        return this.sessionList().map((x) => ({ id: x.id, name: x.title }));
       case FeedbackTargetType.Speaker:
-        return this.speakerList().map(x => ({ id: x.id, name: x.name }));
+        return this.speakerList().map((x) => ({ id: x.id, name: x.name }));
       case FeedbackTargetType.Venue:
-        return this.venueList().map(x => ({ id: x.id, name: x.name }));
+        return this.venueList().map((x) => ({ id: x.id, name: x.name }));
       default:
         return [];
     }
@@ -71,22 +77,21 @@ export class FeedbackComponent implements OnInit {
 
   readonly needsTarget = computed(() => this.targetType() !== FeedbackTargetType.Event);
   readonly canSubmit = computed(
-    () =>
-      !this.submitting() &&
-      this.rating() >= 1 &&
-      (!this.needsTarget() || !!this.targetId()),
+    () => !this.submitting() && this.rating() >= 1 && (!this.needsTarget() || !!this.targetId()),
   );
 
   ngOnInit(): void {
-    if (!this.eventId) {
+    const eventId = this.eventId();
+
+    if (!eventId) {
       this.loading.set(false);
       return;
     }
 
     forkJoin({
-      sessions: this.sessions.getSessions(this.eventId).pipe(catchError(() => of(null))),
-      speakers: this.speakers.getSpeakers(this.eventId).pipe(catchError(() => of(null))),
-      venues: this.venues.getVenues(this.eventId).pipe(catchError(() => of(null))),
+      sessions: this.sessions.getSessions(eventId).pipe(catchError(() => of(null))),
+      speakers: this.speakers.getSpeakers(eventId).pipe(catchError(() => of(null))),
+      venues: this.venues.getVenues(eventId).pipe(catchError(() => of(null))),
     }).subscribe(({ sessions, speakers, venues }) => {
       this.sessionList.set(sessions?.data ?? []);
       this.speakerList.set(speakers?.data ?? []);
@@ -94,7 +99,6 @@ export class FeedbackComponent implements OnInit {
       this.loading.set(false);
     });
   }
-
   selectTargetType(value: number): void {
     this.targetType.set(value as FeedbackTargetType);
     this.targetId.set(null);
@@ -124,14 +128,14 @@ export class FeedbackComponent implements OnInit {
 
     this.submitting.set(true);
     this.feedbackService
-      .submit(this.eventId, {
+      .submit(this.eventId(), {
         targetType: this.targetType(),
-        targetId: this.needsTarget() ? this.targetId() : this.eventId,
+        targetId: this.needsTarget() ? this.targetId() : this.eventId(),
         rating: this.rating(),
         comment: this.comment().trim() || null,
       })
       .subscribe({
-        next: response => {
+        next: (response) => {
           this.submitting.set(false);
           if (response.isSuccess) {
             this.submitted.set(true);
@@ -140,7 +144,7 @@ export class FeedbackComponent implements OnInit {
             this.notify.error(response.message || 'Unable to submit feedback.');
           }
         },
-        error: error => {
+        error: (error) => {
           this.submitting.set(false);
           const message =
             error?.error?.message ||

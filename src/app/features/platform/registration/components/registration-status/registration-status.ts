@@ -33,22 +33,6 @@ export class RegistrationStatusComponent {
     }
   });
 
-  protected readonly description = computed(() => {
-    switch (this.status()) {
-      case RegistrationStatus.Pending:
-        return 'Your registration is awaiting approval.';
-      case RegistrationStatus.Approved:
-        return 'Your place at the event is confirmed.';
-      case RegistrationStatus.Rejected:
-        return 'This registration was not approved.';
-      case RegistrationStatus.Cancelled:
-        return 'This registration is no longer active.';
-      case RegistrationStatus.Waitlisted:
-        return 'You are in the event waitlist.';
-      default:
-        return 'Registration status is unavailable.';
-    }
-  });
 
   protected readonly tone = computed(() => {
     switch (this.status()) {

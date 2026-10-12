@@ -19,8 +19,4 @@ export class QrCodeComponent {
       `https://quickchart.io/qr?size=360&margin=2&text=${encodeURIComponent(this.value())}`,
   );
 
-  protected readonly shortValue = computed(() => {
-    const value = this.value();
-    return value.length <= 28 ? value : `${value.slice(0, 12)}…${value.slice(-12)}`;
-  });
 }

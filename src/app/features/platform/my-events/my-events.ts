@@ -9,10 +9,11 @@ import { NotificationService } from '../../../core/services/ui/notification.serv
 
 import { Event } from '../../../core/models/event/event.model';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
+import { FeedbackComponent } from '../feedback/feedback';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink, TruncateWordsPipe],
+  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent],
   templateUrl: './my-events.html',
   styleUrl: './my-events.css',
 })
@@ -30,6 +31,10 @@ export class MyEvents implements OnInit {
   private readonly registeredEventIds = signal<string[]>([]);
   private readonly restrictedEventIds = signal<string[]>([]);
   private readonly rolesLoadedEventIds = signal<string[]>([]);
+  private readonly registrationIds = signal<Record<string, string>>({});
+
+  readonly showFeedbackPopup = signal(false);
+  readonly feedbackEventId = signal<string | null>(null);
 
   private readonly restrictedRoles = [
     'owner',
@@ -110,7 +115,6 @@ export class MyEvents implements OnInit {
         this.rolesLoadedEventIds.update((ids) => (ids.includes(eventId) ? ids : [...ids, eventId]));
       },
       error: (error: unknown) => {
-        // Keep actions hidden when role information cannot be verified.
         console.error(`Failed to load roles for event ${eventId}`, error);
       },
     });
@@ -122,9 +126,16 @@ export class MyEvents implements OnInit {
         const registrations = response.data ?? [];
 
         if (registrations.length > 0) {
+          const registration = registrations[0];
+
           this.registeredEventIds.update((ids) =>
             ids.includes(eventId) ? ids : [...ids, eventId],
           );
+
+          this.registrationIds.update((ids) => ({
+            ...ids,
+            [eventId]: registration.id,
+          }));
         }
       },
       error: (error: unknown) => {
@@ -143,9 +154,27 @@ export class MyEvents implements OnInit {
     );
   }
 
+  getRegistrationId(eventId: string): string {
+    return this.registrationIds()[eventId] ?? '';
+  }
+
   registrationLink(eventId: string): string[] {
-    return this.isRegistered(eventId)
-      ? ['/events', eventId, 'my-registration']
-      : ['/events', eventId, 'register'];
+    if (this.isRegistered(eventId)) {
+      const registrationId = this.getRegistrationId(eventId);
+
+      return ['/events', eventId, 'registrations', registrationId];
+    }
+
+    return ['/events', eventId, 'register'];
+  }
+
+  openFeedbackPopup(eventId: string): void {
+    this.feedbackEventId.set(eventId);
+    this.showFeedbackPopup.set(true);
+  }
+
+  closeFeedbackPopup(): void {
+    this.showFeedbackPopup.set(false);
+    this.feedbackEventId.set(null);
   }
 }

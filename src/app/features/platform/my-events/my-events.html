@@ -113,28 +113,29 @@
 
               <div class="mt-auto">
                 @if (event.status === 'Published' && isEligibleForParticipantActions(event.id)) {
-                  <div class="mt-5 flex flex-wrap gap-2 border-t border-border pt-4">
+                  <div class="mt-5 flex flex-wrap gap-3 border-t border-border pt-4">
                     <a
                       [routerLink]="registrationLink(event.id)"
-                      class="rounded-md border px-3 py-2"
+                      class="flex-1 items-center justify-center hover:bg-white border hover:border-secondary hover:text-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                     >
                       {{ isRegistered(event.id) ? 'My Registration' : 'Register' }}
                     </a>
-
                     @if (isRegistered(event.id)) {
-                      <a
-                        [routerLink]="['/events', event.id, 'feedback']"
-                        class="rounded-md border px-3 py-2"
+                      <button
+                        type="button"
+                        (click)="openFeedbackPopup(event.id)"
+                        class="flex-1 items-center justify-center cursor-pointer border border-border px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-tertiary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                       >
                         Feedback
-                      </a>
+                      </button>
                     }
                   </div>
                 }
+
                 <button
                   type="button"
                   (click)="openEvent(event)"
-                  class="mt-3 block w-full border border-secondary bg-secondary hover:bg-white cursor-pointer hover:text-secondary hover:border-secondary hover:bg-secondary-dark px-4 py-2.5 text-center text-sm font-medium text-white transition"
+                  class="mt-3 block w-full border cursor-pointer hover:bg-white hover:text-secondary border-secondary bg-secondary px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                 >
                   Open Event
                 </button>
@@ -145,4 +146,10 @@
       </div>
     }
   </div>
+
+  @if (showFeedbackPopup()) {
+    @if (feedbackEventId(); as selectedEventId) {
+      <app-feedback [eventId]="selectedEventId" (closed)="closeFeedbackPopup()" />
+    }
+  }
 </div>

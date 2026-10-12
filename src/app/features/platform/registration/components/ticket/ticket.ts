@@ -11,7 +11,7 @@ import { QrCodeComponent } from '../qr-code/qr-code';
 @Component({
   selector: 'app-registration-ticket',
   standalone: true,
-  imports: [DatePipe, QrCodeComponent],
+  imports: [ QrCodeComponent],
   templateUrl: './ticket.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

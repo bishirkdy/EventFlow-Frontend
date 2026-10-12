@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../../core/services/ui/notification.service';
 
@@ -17,7 +17,9 @@ import { RegistrationFormSubmit } from '../../../../../../core/models/registrati
   templateUrl: './register.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent {
+
+export class RegisterComponent implements OnInit {
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly registrationFormService = inject(RegistrationFormService);
@@ -33,7 +35,7 @@ export class RegisterComponent {
 
   private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
 
-  constructor() {
+  ngOnInit(): void {
     if (!this.eventId) {
       this.loading.set(false);
       this.error.set('Event could not be identified.');
@@ -93,7 +95,6 @@ export class RegisterComponent {
         }
 
         this.toastr.success('Your registration was submitted successfully.');
-
         this.router.navigate(['/events', this.eventId, 'registrations', response.data.id]);
       },
       error: () => {

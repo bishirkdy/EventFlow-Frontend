@@ -1,25 +1,21 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistrationStatusComponent } from '../../../components/registration-status/registration-status';
 import { TicketComponent } from '../../../components/ticket/ticket';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
 import { RegistrationModel } from '../../../../../../core/models/registration/registration.model';
+import { FeedbackComponent } from '@/features/platform/feedback/feedback';
 
 @Component({
   selector: 'app-public-registration-details',
   standalone: true,
-  imports: [DatePipe, RegistrationStatusComponent, TicketComponent],
+  imports: [DatePipe, RegistrationStatusComponent, TicketComponent, FeedbackComponent],
   templateUrl: './registration-details.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PublicRegistrationDetailsComponent {
+export class PublicRegistrationDetailsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly registrationService = inject(RegistrationService);
@@ -31,7 +27,10 @@ export class PublicRegistrationDetailsComponent {
   private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
   private readonly registrationId = this.route.snapshot.paramMap.get('registrationId') ?? '';
 
-  constructor() {
+  protected readonly showFeedbackPopup = signal(false);
+  protected readonly feedbackEventId = signal<string | null>(null);
+
+  ngOnInit() {
     if (!this.eventId || !this.registrationId) {
       this.loading.set(false);
       this.error.set('Registration could not be identified.');
@@ -70,8 +69,13 @@ export class PublicRegistrationDetailsComponent {
   protected registerAgain(): void {
     this.router.navigate(['/events', this.eventId, 'register']);
   }
-
   protected goToFeedback(): void {
-    this.router.navigate(['/events', this.eventId, 'feedback']);
+    this.feedbackEventId.set(this.eventId);
+    this.showFeedbackPopup.set(true);
+  }
+
+  protected closeFeedbackPopup(): void {
+    this.showFeedbackPopup.set(false);
+    this.feedbackEventId.set(null);
   }
 }
