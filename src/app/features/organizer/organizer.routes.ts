@@ -40,23 +40,20 @@ export const organizerRoutes: Routes = [
       // Photographer Management
       {
         path: 'settings/photographers',
-        children: [
-          {
-            path: '',
-            loadComponent: () =>
-              import('./pages/settings/photographers/photographer-management').then(
-                (m) => m.PhotographerManagement,
-              ),
-          },
-          {
-            path: 'photos',
-            loadComponent: () =>
-              import('./pages/settings/photographers/photo-moderation/photo-moderation-grid').then(
-                (m) => m.PhotoModerationGrid,
-              ),
-          },
-        ],
+
+        loadComponent: () =>
+          import('./pages/settings/photographers/photographer-management').then(
+            (m) => m.PhotographerManagement,
+          ),
       },
+      {
+        path: 'settings/photos',
+        loadComponent: () =>
+          import('./pages/settings/photographers/photo-moderation/photo-moderation-grid').then(
+            (m) => m.PhotoModerationGrid,
+          ),
+      },
+
       // Certificates
       // {
       //   path: 'settings/certificates',

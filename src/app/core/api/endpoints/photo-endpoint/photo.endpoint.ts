@@ -4,4 +4,7 @@ export const PHOTO_ENDPOINTS = {
 
   deletePhoto: (eventId: string, photoId: string) =>
     `/v1/events/${encodeURIComponent(eventId)}/photos/${encodeURIComponent(photoId)}`,
+
+  toggleVisibility: (eventId: string, photoId: string) =>
+    `/v1/events/${encodeURIComponent(eventId)}/photos/${encodeURIComponent(photoId)}/visibility`,
 } as const;

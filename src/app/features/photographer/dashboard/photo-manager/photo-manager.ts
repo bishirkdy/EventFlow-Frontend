@@ -76,24 +76,26 @@ export class PhotoManager implements OnInit {
   loadPhotos(): void {
     this.loading.set(true);
 
-    this.photoService
-      .getPhotos(this.eventId(), this.currentPage(), this.pageSize(), false)
-      .subscribe({
-        next: (response) => {
-          if (response.isSuccess && response.data) {
-            this.photos.set(response.data.items);
-            this.totalCount.set(response.data.totalCount);
-          } else {
-            this.notification.error(response.message || 'Failed to load photos.');
-          }
+    this.photoService.getPhotos(this.eventId(), this.currentPage(), this.pageSize()).subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.photos.set(response.data.items);
+          this.totalCount.set(response.data.totalCount);
+        } else {
+          this.photos.set([]);
+          this.totalCount.set(0);
+          this.notification.error(response.message || 'Failed to load photos.');
+        }
 
-          this.loading.set(false);
-        },
-        error: () => {
-          this.loading.set(false);
-          this.notification.error('Failed to load photos.');
-        },
-      });
+        this.loading.set(false);
+      },
+      error: () => {
+        this.photos.set([]);
+        this.totalCount.set(0);
+        this.loading.set(false);
+        this.notification.error('Failed to load photos.');
+      },
+    });
   }
 
   onPageChange(page: number): void {

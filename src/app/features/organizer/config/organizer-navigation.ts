@@ -65,9 +65,24 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
   {
     label: 'Registration',
     items: [
-      { label: 'Registration Management', route: 'registration/registrations', icon: ClipboardList, feature: 'registration' },
-      { label: 'Form Builder', route: 'registration/form', icon: FormInput, feature: 'registration' },
-      { label: 'Participants', route: 'registration/participants', icon: Users, feature: 'registration' },
+      {
+        label: 'Registration Management',
+        route: 'registration/registrations',
+        icon: ClipboardList,
+        feature: 'registration',
+      },
+      {
+        label: 'Form Builder',
+        route: 'registration/form',
+        icon: FormInput,
+        feature: 'registration',
+      },
+      {
+        label: 'Participants',
+        route: 'registration/participants',
+        icon: Users,
+        feature: 'registration',
+      },
       // { label: 'Certificates', route: 'settings/certificates', icon: Award, feature: 'registration' },
     ],
   },
@@ -89,6 +104,7 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
     label: 'Media',
     items: [
       { label: 'Photographers', route: 'settings/photographers', icon: Camera },
+      { label: 'Photo Moderation', route: 'settings/photos', icon: Eye },
     ],
   },
 ];

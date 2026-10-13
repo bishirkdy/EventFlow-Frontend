@@ -25,12 +25,17 @@ export class PhotoService {
     );
   }
 
-  getPhotos(eventId: string,page: number,pageSize: number, visibleOnly = false,
+  getPhotos(
+    eventId: string,
+    page: number,
+    pageSize: number,
+    visibleOnly?: boolean,
   ): Observable<ApiResponse<PaginatedResponseModel<Photo>>> {
-    const params = new HttpParams()
-      .set('page', page)
-      .set('pageSize', pageSize)
-      .set('visibleOnly', visibleOnly);
+    let params = new HttpParams().set('page', page).set('pageSize', pageSize);
+
+    if (visibleOnly !== undefined) {
+      params = params.set('visibleOnly', visibleOnly);
+    }
 
     return this.http.get<ApiResponse<PaginatedResponseModel<Photo>>>(
       `${this.apiUrl}${PHOTO_ENDPOINTS.getPhotos(eventId)}`,
@@ -41,6 +46,17 @@ export class PhotoService {
   deletePhoto(eventId: string, photoId: string): Observable<ApiResponse<object>> {
     return this.http.delete<ApiResponse<object>>(
       `${this.apiUrl}${PHOTO_ENDPOINTS.deletePhoto(eventId, photoId)}`,
+    );
+  }
+
+  toggleVisibility(
+    eventId: string,
+    photoId: string,
+    isVisible: boolean,
+  ): Observable<ApiResponse<object>> {
+    return this.http.patch<ApiResponse<object>>(
+      `${this.apiUrl}${PHOTO_ENDPOINTS.toggleVisibility(eventId, photoId)}`,
+      { isVisible },
     );
   }
 }
