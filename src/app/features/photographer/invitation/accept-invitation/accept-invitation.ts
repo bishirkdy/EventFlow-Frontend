@@ -1,237 +1,357 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { AuthService } from '../../../../core/services/auth/auth.service';
-import { UserProfile } from '../../../../core/models/common/user-profile';
-import { environment } from '../../../../../environments/environment';
+
+import { AuthService } from '@/core/services/auth/auth.service';
+import { NotificationService } from '@/core/services/ui/notification.service';
+import { PhotographerInvitationService } from '@/core/services/photographer/photographer-invitation.service';
+
+import { UserProfile } from '@/core/models/common/user-profile';
+import { InvitationData } from '@/core/models/photographer/photograher-invitation.model';
 
 @Component({
   selector: 'app-accept-invitation',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './accept-invitation.html',
-  styleUrl: './accept-invitation.css'
+  styleUrl: './accept-invitation.css',
 })
-
 export class AcceptInvitation implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly http = inject(HttpClient);
-  private readonly notification = inject(NotificationService);
   private readonly authService = inject(AuthService);
+  private readonly notification = inject(NotificationService);
+  private readonly invitationService = inject(
+    PhotographerInvitationService,
+  );
 
-  readonly token = signal<string>('');
+  readonly token = signal('');
   readonly invitation = signal<InvitationData | null>(null);
+  readonly authUser = signal<UserProfile | null>(null);
+
   readonly loading = signal(true);
   readonly accepting = signal(false);
   readonly errorMessage = signal<string | null>(null);
-  readonly authUser = signal<UserProfile | null>(null);
-  readonly step = signal<'validate' | 'register' | 'complete'>('validate');
+
+  readonly step = signal<'validate' | 'register' | 'complete'>(
+    'validate',
+  );
 
   readonly registerForm = this.fb.nonNullable.group({
-    userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+    userName: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(100),
+      ],
+    ],
     password: ['', [Validators.required, Validators.minLength(8)]],
     firstName: ['', [Validators.required, Validators.maxLength(100)]],
-    lastName: ['', [Validators.required, Validators.maxLength(100)]]
+    lastName: ['', [Validators.required, Validators.maxLength(100)]],
   });
 
-  constructor() {
-    effect(() => {
-      const token = this.route.snapshot.paramMap.get('token');
-      if (token) {
-        this.token.set(token);
-        this.validateInvitation(token);
-      }
+  private invitationValidated = false;
+  private authenticationChecked = false;
+  private redirectStarted = false;
+
+  ngOnInit(): void {
+    const token = this.route.snapshot.paramMap.get('token');
+
+    if (!token) {
+      this.loading.set(false);
+      this.errorMessage.set(
+        'The invitation link is missing its token.',
+      );
+      return;
+    }
+
+    this.token.set(token);
+
+    // Both operations can complete in either order.
+    this.loadCurrentUser();
+    this.validateInvitation(token);
+  }
+
+  private loadCurrentUser(): void {
+    const currentUser = this.authService.currentUser();
+
+    if (currentUser) {
+      this.authUser.set(currentUser);
+      this.authenticationChecked = true;
+      this.handleInvitationAfterAuthentication();
+      return;
+    }
+
+    this.authService.loadCurrentUser().subscribe({
+      next: (user) => {
+        this.authUser.set(user);
+        this.authenticationChecked = true;
+        this.handleInvitationAfterAuthentication();
+      },
+      error: () => {
+        this.authUser.set(null);
+        this.authenticationChecked = true;
+        this.handleInvitationAfterAuthentication();
+      },
     });
   }
 
-  ngOnInit() {
-    this.authUser.set(this.authService.currentUser());
-    if (!this.authUser()) {
-      this.authService.loadCurrentUser().subscribe((user) => {
-        this.authUser.set(user);
-      });
+  private validateInvitation(token: string): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.invitationService.getByToken(token).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+
+        const invitation = response.data;
+
+        if (!response.isSuccess || !invitation) {
+          this.errorMessage.set(
+            response.message || 'Invalid invitation link.',
+          );
+          return;
+        }
+
+        this.invitation.set(invitation);
+        this.invitationValidated = true;
+
+        // Revoked invitation.
+        if (invitation.status === 2) {
+          this.errorMessage.set(
+            'This invitation has been revoked. Please contact the event organizer.',
+          );
+          return;
+        }
+
+        // Only pending and accepted invitations can continue.
+        if (invitation.status !== 0 && invitation.status !== 1) {
+          this.errorMessage.set(
+            'This invitation is no longer active.',
+          );
+          return;
+        }
+
+        // Expiration applies to pending invitations.
+        if (
+          invitation.status === 0 &&
+          invitation.expiresAt &&
+          new Date(invitation.expiresAt).getTime() < Date.now()
+        ) {
+          this.errorMessage.set(
+            'This invitation has expired. Please ask the event organizer for a new one.',
+          );
+          return;
+        }
+
+        this.handleInvitationAfterAuthentication();
+      },
+      error: () => {
+        this.loading.set(false);
+        this.errorMessage.set(
+          'Unable to validate this invitation. It may be invalid or expired.',
+        );
+      },
+    });
+  }
+
+  private handleInvitationAfterAuthentication(): void {
+    if (
+      !this.invitationValidated ||
+      !this.authenticationChecked ||
+      this.redirectStarted
+    ) {
+      return;
     }
+
+    const invitation = this.invitation();
+
+    // Only accepted invitations use this automatic redirect.
+    if (!invitation || invitation.status !== 1) {
+      return;
+    }
+
+    if (!invitation.eventId) {
+      this.errorMessage.set(
+        'Event ID is missing from the invitation.',
+      );
+      return;
+    }
+
+    const returnUrl =
+      `/photographer/${invitation.eventId}/photos`;
+
+    const user = this.authUser();
+
+    if (user) {
+      if (!this.emailsMatch()) {
+        this.errorMessage.set(
+          'Please log in with the email address that received this invitation.',
+        );
+        return;
+      }
+
+      this.redirectStarted = true;
+      void this.router.navigateByUrl(returnUrl);
+      return;
+    }
+
+    // Preserve the destination before navigating away to login.
+    this.redirectStarted = true;
+
+    void this.router.navigate(['/login'], {
+      queryParams: {
+        returnUrl,
+        email: invitation.email,
+      },
+    });
+  }
+
+  private isInvitationEmailMatchingUser(): boolean {
+    const userEmail = this.authUser()?.email;
+    const invitationEmail = this.invitation()?.email;
+
+    return (
+      !!userEmail &&
+      !!invitationEmail &&
+      userEmail.trim().toLowerCase() ===
+        invitationEmail.trim().toLowerCase()
+    );
   }
 
   emailsMatch(): boolean {
-    const user = this.authUser();
-    const invitation = this.invitation();
-    return !!user && !!invitation && user.email.toLowerCase() === invitation.email.toLowerCase();
+    return this.isInvitationEmailMatchingUser();
   }
 
-  private validateInvitation(token: string) {
-    this.loading.set(true);
-    this.errorMessage.set(null);
-    this.http.get<ApiResponse<InvitationData>>(`${environment.apiUrl}/v1/invitations/${token}`)
-      .subscribe({
-        next: (response) => {
-          this.loading.set(false);
-          const data = response.data;
-
-          if (!response.isSuccess || !data || !data.email || !data.eventId) {
-            this.errorMessage.set('Invalid invitation link. Please use the link from your email.');
-            return;
-          }
-
-          // Keep data so login can deep-link back to the event dashboard.
-          this.invitation.set(data);
-
-          if (data.status === 1) {
-            this.errorMessage.set('This invitation has already been accepted. Please log in to continue.');
-            return;
-          }
-
-          if (data.status === 2) {
-            this.errorMessage.set('This invitation has been revoked. Please contact the event organizer.');
-            return;
-          }
-
-          // Pending = 0 is the only state that can be accepted.
-          if (data.status !== 0) {
-            this.errorMessage.set('This invitation is no longer active.');
-            return;
-          }
-
-          if (data.expiresAt && new Date(data.expiresAt).getTime() < Date.now()) {
-            this.errorMessage.set('This invitation has expired. Please ask the event organizer for a new one.');
-            return;
-          }
-        },
-        error: () => {
-          this.loading.set(false);
-          this.errorMessage.set('Invalid invitation link. Please use the link from your email.');
-        }
-      });
+  onExistingAccount(): void {
+    this.goToLogin();
   }
 
-  goToLogin() {
+  goToLogin(): void {
     const invitation = this.invitation();
-    const returnUrl =
-      invitation && invitation.status === 1
-        ? `/photographer/${invitation.eventId}/photos`
-        : this.router.url;
-    this.router.navigate(['/login'], {
+
+    if (!invitation?.eventId) {
+      this.errorMessage.set(
+        'Event ID is missing from the invitation.',
+      );
+      return;
+    }
+
+    void this.router.navigate(['/login'], {
       queryParams: {
-        returnUrl,
-        email: invitation?.email ?? undefined,
+        returnUrl: `/photographer/${invitation.eventId}/photos`,
+        email: invitation.email,
       },
     });
   }
 
-  goHome() {
-    this.router.navigate(['/']);
-  }
-
-  onExistingAccount() {
-    this.router.navigate(['/login'], {
-      queryParams: {
-        returnUrl: this.router.url,
-        email: this.invitation()?.email ?? undefined,
-      },
-    });
-  }
-
-  acceptForExistingUser() {
+  acceptForExistingUser(): void {
     const user = this.authUser();
     const invitation = this.invitation();
-    if (!user || !invitation || !this.emailsMatch()) {
+
+    if (
+      !user ||
+      !invitation ||
+      !this.emailsMatch() ||
+      this.accepting()
+    ) {
       return;
     }
 
     this.accepting.set(true);
 
-    this.http.post<ApiResponse<AcceptInvitationResponse>>(
-      `${environment.apiUrl}/v1/invitations/${this.token()}/accept`,
-      {
-        password: 'invitation-accept',
-        userName: user.userName,
-        firstName: user.firstName || user.userName,
-        lastName: user.lastName || 'User'
-      }
-    ).subscribe({
-      next: (response) => {
-        this.accepting.set(false);
-        if (response.isSuccess) {
-          this.notification.success('Invitation accepted! You are now a photographer for this event.');
+    this.invitationService
+      .acceptForExistingUser(this.token())
+      .subscribe({
+        next: (response) => {
+          this.accepting.set(false);
+
+          if (!response.isSuccess) {
+            this.notification.error(
+              response.message || 'Failed to accept invitation.',
+            );
+            return;
+          }
+
+          this.notification.success(
+            'Invitation accepted successfully.',
+          );
+
           this.navigateToDashboard();
-        } else {
-          this.notification.error(response.message || 'Failed to accept invitation.');
-        }
-      },
-      error: (error) => {
-        this.accepting.set(false);
-        this.notification.error(error.error?.message || 'Failed to accept invitation.');
-      }
-    });
+        },
+        error: (error) => {
+          this.accepting.set(false);
+          this.notification.error(
+            error.error?.message ||
+              'Failed to accept invitation.',
+          );
+        },
+      });
   }
 
-  onSubmit() {
-    if (this.registerForm.invalid) {
+  onSubmit(): void {
+    if (this.registerForm.invalid || this.accepting()) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
     this.accepting.set(true);
-    const formValue = this.registerForm.getRawValue();
 
-    this.http.post<ApiResponse<AcceptInvitationResponse>>(
-      `${environment.apiUrl}/v1/invitations/${this.token()}/accept`,
-      {
-        password: formValue.password,
-        userName: formValue.userName,
-        firstName: formValue.firstName,
-        lastName: formValue.lastName
-      }
-    ).subscribe({
-      next: (response) => {
-        this.accepting.set(false);
-        if (response.isSuccess) {
+    this.invitationService
+      .acceptWithNewAccount(
+        this.token(),
+        this.registerForm.getRawValue(),
+      )
+      .subscribe({
+        next: (response) => {
+          this.accepting.set(false);
+
+          if (!response.isSuccess) {
+            this.notification.error(
+              response.message || 'Failed to accept invitation.',
+            );
+            return;
+          }
+
           this.step.set('complete');
-          this.notification.success('Account created successfully! You are now a photographer for this event.');
-        } else {
-          this.notification.error(response.message || 'Failed to accept invitation.');
-        }
-      },
-      error: (error) => {
-        this.accepting.set(false);
-        this.notification.error(error.error?.message || 'Failed to accept invitation.');
-      }
-    });
+
+          this.notification.success(
+            'Account created successfully!',
+          );
+        },
+        error: (error) => {
+          this.accepting.set(false);
+          this.notification.error(
+            error.error?.message ||
+              'Failed to accept invitation.',
+          );
+        },
+      });
   }
 
-  navigateToDashboard() {
-    const invitation = this.invitation();
-    if (invitation) {
-      this.router.navigate(['/photographer', invitation.eventId, 'photos']);
-    } else {
-      this.router.navigate(['/']);
+  navigateToDashboard(): void {
+    const eventId = this.invitation()?.eventId;
+
+    if (eventId) {
+      void this.router.navigate([
+        '/photographer',
+        eventId,
+        'photos',
+      ]);
+      return;
     }
+
+    this.goHome();
   }
-}
 
-interface InvitationData {
-  invitationId: string;
-  eventId: string;
-  eventName: string;
-  email: string;
-  roleName: string;
-  expiresAt: string;
-  status: number;
-}
-
-interface AcceptInvitationResponse {
-  userId: string;
-  invitationId: string;
-}
-
-interface ApiResponse<T> {
-  isSuccess: boolean;
-  statusCode: number;
-  message: string;
-  data: T | null;
+  goHome(): void {
+    void this.router.navigate(['/']);
+  }
 }

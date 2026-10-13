@@ -3,7 +3,7 @@ import { AcceptInvitation } from './accept-invitation';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
@@ -55,5 +55,30 @@ describe('AcceptInvitation', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('preserves the event photos page as returnUrl when switching accounts', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.invitation.set({ ...mockInvitation, status: 1 });
+    component.goToLogin();
+
+    expect(navigate).toHaveBeenCalledWith(['/login'], {
+      queryParams: {
+        returnUrl: '/photographer/event-1/photos',
+        email: 'test@example.com',
+      },
+    });
+  });
+
+  it('goes to the event photos page after the invitation is accepted', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.invitation.set({ ...mockInvitation, status: 1 });
+    component.navigateToDashboard();
+
+    expect(navigate).toHaveBeenCalledWith(['/photographer', 'event-1', 'photos']);
   });
 });

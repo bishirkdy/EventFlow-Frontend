@@ -42,8 +42,8 @@ describe('authGuard', () => {
     return { routerStub };
   }
 
-  const executeGuard = (): unknown =>
-    TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
+  const executeGuard = (state: unknown = { url: '/my-events' }): unknown =>
+    TestBed.runInInjectionContext(() => authGuard({} as any, state as any));
 
   it('lets a signed-in user through without a profile round-trip', () => {
     const { routerStub } = setup({ user });

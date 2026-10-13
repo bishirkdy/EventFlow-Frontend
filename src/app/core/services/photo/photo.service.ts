@@ -1,0 +1,46 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+import { ApiResponse } from '../../models/common/api-response';
+import { environment } from '../../../../environments/environment';
+import { PHOTO_ENDPOINTS } from '@/core/api/endpoints/photo-endpoint/photo.endpoint';
+import { UploadedPhoto } from '@/core/models/photographer/uploaded-photo.model';
+import { PaginatedResponseModel } from '@/core/models/registration/paginated-response.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PhotoService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
+
+  uploadPhoto(eventId: string, file: File): Observable<ApiResponse<UploadedPhoto>> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    return this.http.post<ApiResponse<UploadedPhoto>>(
+      `${this.apiUrl}${PHOTO_ENDPOINTS.uploadPhoto(eventId)}`,
+      formData,
+    );
+  }
+
+  getPhotos(eventId: string,page: number,pageSize: number, visibleOnly = false,
+  ): Observable<ApiResponse<PaginatedResponseModel<Photo>>> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('pageSize', pageSize)
+      .set('visibleOnly', visibleOnly);
+
+    return this.http.get<ApiResponse<PaginatedResponseModel<Photo>>>(
+      `${this.apiUrl}${PHOTO_ENDPOINTS.getPhotos(eventId)}`,
+      { params },
+    );
+  }
+
+  deletePhoto(eventId: string, photoId: string): Observable<ApiResponse<object>> {
+    return this.http.delete<ApiResponse<object>>(
+      `${this.apiUrl}${PHOTO_ENDPOINTS.deletePhoto(eventId, photoId)}`,
+    );
+  }
+}

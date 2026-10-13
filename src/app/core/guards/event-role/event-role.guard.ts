@@ -24,7 +24,7 @@ function isTransient(err: unknown): boolean {
 export type UserRole = 'Owner' | 'Organizer' | 'Photographer' | 'AttendanceStaff';
 
 export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn =>
-  (route) => {
+  (route, state) => {
     const roles = inject(EventRoleService);
     const router = inject(Router);
     const notification = inject(NotificationService);
@@ -55,10 +55,15 @@ export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn =>
         // The session expired: go to login (without an error toast) so the user
         // is refreshed or signed in and returned to this page.
         if (err instanceof HttpErrorResponse && err.status === 401) {
+          // `state.url` is the page being activated. `router.url` is still the
+          // *previous* page while a navigation is in flight (and '/' before the
+          // first one), which is how `/login?returnUrl=%2F` — or a returnUrl
+          // pointing back at /login — was produced from here.
+          const returnUrl = state?.url;
           return of(
-            router.createUrlTree(['/login'], {
-              queryParams: { returnUrl: router.url },
-            }),
+            returnUrl
+              ? router.createUrlTree(['/login'], { queryParams: { returnUrl } })
+              : router.createUrlTree(['/login']),
           );
         }
 

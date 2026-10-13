@@ -1,107 +1,183 @@
-<div class="accept-invitation min-h-screen bg-background flex items-center justify-center px-4 py-12">
-  <div class="w-full max-w-md">
+<div class="min-h-screen bg-background px-4 py-12 flex items-center justify-center">
+  <div class="w-full max-w-lg">
     <!-- Loading State -->
     @if (loading()) {
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mx-auto mb-4"></div>
-        <p class="text-gray-600 dark:text-gray-400">Validating invitation...</p>
-      </div>
-    } @else if (errorMessage()) {
-      <!-- Error State -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 mb-4">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      <section class="bg-surface border border-border p-8 text-center shadow-sm">
+        <div
+          class="mx-auto mb-5 h-10 w-10 border-4 rounded-full border-primary border-t-transparent animate-spin"
+        ></div>
+
+        <h1 class="text-xl font-semibold text-text-primary">Photographer Invitation</h1>
+
+        <p class="mt-2 text-sm text-text-secondary">Validating your invitation...</p>
+      </section>
+    }
+
+    @else if (errorMessage()) {
+      <section class="bg-surface border border-border p-8 text-center shadow-sm">
+        <div
+          class="mx-auto mb-5 flex h-14 w-14 items-center justify-center border border-red-200 bg-red-50 text-red-600"
+        >
+          <span class="text-2xl font-semibold">!</span>
         </div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Photographer Invitation</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-4">{{ errorMessage() }}</p>
-        <div class="flex gap-3 mt-8">
+
+        <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">Invitation</p>
+
+        <h1 class="text-2xl font-semibold text-text-primary">Unable to continue</h1>
+
+        <p class="mt-3 text-sm leading-6 text-text-secondary">
+          {{ errorMessage() }}
+        </p>
+
+        <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
             type="button"
             (click)="goToLogin()"
-            class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            class="bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
           >
             Go to Login
           </button>
+
           <button
             type="button"
             (click)="goHome()"
-            class="flex-1 border border-border text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-muted transition-colors"
+            class="border border-border bg-surface px-5 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-background"
           >
             Go Home
           </button>
         </div>
-      </div>
-    } @else {
-      <!-- Invitation Card -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h16M8 12l-4 4m0 0l4 4M8 12l4-4" />
-            </svg>
-          </div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Photographer Invitation</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-2">You've been invited to join as a photographer</p>
+      </section>
+    }
+
+    @else if (invitation(); as inv) {
+      <section class="overflow-hidden border border-border bg-surface shadow-sm">
+        <!-- Header -->
+        <div class="border-b border-border px-6 py-8 text-center sm:px-8"> 
+
+          <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">
+            EventFlow · Team Invitation
+          </p>
+
+          <h1 class="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
+            Photographer Invitation
+          </h1>
+
+          <p class="mx-auto mt-3 max-w-sm text-sm leading-6 text-text-secondary">
+            You've been invited to join an event as a photographer. Review your invitation and
+            continue below.
+          </p>
         </div>
 
-        @if (invitation(); as inv) {
-          <div class="border border-border rounded-xl p-4 mb-6 bg-muted/30">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-medium text-gray-700 dark:text-gray-300">Event</span>
-              <span class="font-semibold text-gray-900 dark:text-white">{{ inv.eventName || 'Invited event' }}</span>
-            </div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-medium text-gray-700 dark:text-gray-300">Role</span>
-              <span class="font-semibold text-primary">{{ inv.roleName }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="font-medium text-gray-700 dark:text-gray-300">Email</span>
-              <span class="font-semibold text-gray-900 dark:text-white">{{ inv.email }}</span>
+        <div class="p-6 sm:p-8">
+          <div class="mb-7 border border-border bg-background p-5">
+            <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-text-secondary">
+              Invitation Details
+            </p>
+
+            <div class="space-y-4">
+              <div class="flex items-start justify-between gap-4">
+                <span class="text-sm text-text-secondary">Event</span>
+                <span class="max-w-[65%] text-right text-sm font-semibold text-text-primary">
+                  {{ inv.eventName || 'Invited event' }}
+                </span>
+              </div>
+
+              <div class="flex items-start justify-between gap-4">
+                <span class="text-sm text-text-secondary">Role</span>
+                <span
+                  class="border border-primary/20 bg-primary-light px-2 py-1 text-xs font-semibold text-primary"
+                >
+                  {{ inv.roleName }}
+                </span>
+              </div>
+
+              <div class="flex items-start justify-between gap-4">
+                <span class="text-sm text-text-secondary">Email</span>
+                <span
+                  class="max-w-[65%] break-all text-right text-sm font-medium text-text-primary"
+                >
+                  {{ inv.email }}
+                </span>
+              </div>
+
+              @if (inv.expiresAt) {
+                <div class="flex items-start justify-between gap-4 border-t border-border pt-4">
+                  <span class="text-sm text-text-secondary">Expires</span>
+                  <span class="text-right text-sm text-text-primary">
+                    {{ inv.expiresAt | date: 'mediumDate' }}
+                  </span>
+                </div>
+              }
             </div>
           </div>
 
           @if (step() === 'validate') {
+            <!-- Existing User -->
             @if (authUser(); as user) {
               @if (emailsMatch()) {
-                <div class="space-y-4">
-                  <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
-                    You are logged in as <strong>{{ user.email }}</strong>.
-                    Accept the invitation to start working on this event.
-                  </p>
+                <div class="space-y-5">
+                  <div>
+                    <h2 class="text-lg font-semibold text-text-primary">Welcome back</h2>
+
+                    <p class="mt-2 text-sm leading-6 text-text-secondary">
+                      You're signed in as
+                      <span class="font-semibold text-text-primary">{{ user.email }}</span
+                      >. Accept the invitation to join this event.
+                    </p>
+                  </div>
+
+                  <div class="border border-border bg-background p-4">
+                    <p class="text-xs font-medium uppercase tracking-wider text-text-secondary">
+                      Signed-in account
+                    </p>
+                    <p class="mt-1 break-all text-sm font-medium text-text-primary">
+                      {{ user.email }}
+                    </p>
+                  </div>
+
                   <button
                     type="button"
                     (click)="acceptForExistingUser()"
                     [disabled]="accepting()"
-                    class="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="flex w-full items-center justify-center gap-2 bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     @if (accepting()) {
+                      <span
+                        class="h-4 w-4 animate-spin border-2 border-white border-t-transparent"
+                      ></span>
                       Accepting invitation...
                     } @else {
-                      Accept Invitation & Continue
+                      Accept Invitation
                     }
                   </button>
                 </div>
               } @else {
-                <div class="space-y-4">
-                  <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
-                    This invitation is for <strong>{{ inv.email }}</strong>,
-                    but you are logged in as <strong>{{ user.email }}</strong>.
-                    Please log in with the invited account.
-                  </p>
-                  <div class="flex gap-3">
+                <div class="space-y-5">
+                  <div>
+                    <h2 class="text-lg font-semibold text-text-primary">Account mismatch</h2>
+
+                    <p class="mt-2 text-sm leading-6 text-text-secondary">
+                      This invitation belongs to
+                      <span class="font-semibold text-text-primary">{{ inv.email }}</span
+                      >, but you're signed in as
+                      <span class="font-semibold text-text-primary">{{ user.email }}</span
+                      >. Sign in using the invited account.
+                    </p>
+                  </div>
+
+                  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button
                       type="button"
                       (click)="goToLogin()"
-                      class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                      class="bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
                     >
                       Switch Account
                     </button>
+
                     <button
                       type="button"
                       (click)="goHome()"
-                      class="flex-1 border border-border text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-muted transition-colors"
+                      class="border border-border px-4 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-background"
                     >
                       Go Home
                     </button>
@@ -109,129 +185,235 @@
                 </div>
               }
             } @else {
-              <div class="space-y-4">
-                <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
-                  This invitation is for <strong>{{ inv.email }}</strong>.
-                  Do you already have an account with this email?
-                </p>
-                <div class="flex gap-3">
-                  <button
-                    type="button"
-                    (click)="onExistingAccount()"
-                    class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    Yes, I have an account
-                  </button>
-                  <button
-                    type="button"
-                    (click)="step.set('register')"
-                    class="flex-1 border border-border text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-muted transition-colors"
-                  >
-                    No, create new account
-                  </button>
+              <div class="space-y-5">
+                <div>
+                  <h2 class="text-lg font-semibold text-text-primary">
+                    Continue with your account
+                  </h2>
+
+                  <p class="mt-2 text-sm leading-6 text-text-secondary">
+                    The invitation is assigned to
+                    <span class="font-semibold text-text-primary">{{ inv.email }}</span
+                    >. Choose how you'd like to continue.
+                  </p>
                 </div>
+
+                <button
+                  type="button"
+                  (click)="onExistingAccount()"
+                  class="w-full border border-border px-5 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-background"
+                >
+                  I already have an account
+                </button>
+
+                <button
+                  type="button"
+                  (click)="step.set('register')"
+                  class="w-full bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+                >
+                  Create a New Account
+                </button>
+
+                <p class="text-center text-xs leading-5 text-text-secondary">
+                  Create an account using the email address associated with this invitation.
+                </p>
               </div>
             }
           }
 
+          <!-- Registration Form -->
           @if (step() === 'register') {
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+            <div class="mb-6">
+              <h2 class="text-lg font-semibold text-text-primary">Create your account</h2>
+
+              <p class="mt-2 text-sm leading-6 text-text-secondary">
+                Complete your details to accept the photographer invitation.
+              </p>
+            </div>
+
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+              <!-- Invitation Email -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                <label class="mb-2 block text-sm font-medium text-text-primary">
+                  Invitation Email
+                </label>
+
                 <input
+                  type="email"
+                  [value]="inv.email"
+                  readonly
+                  class="w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary outline-none"
+                />
+
+                <p class="mt-1 text-xs text-text-secondary">
+                  This email is linked to your invitation.
+                </p>
+              </div>
+
+              <!-- Username -->
+              <div>
+                <label for="userName" class="mb-2 block text-sm font-medium text-text-primary">
+                  Username
+                </label>
+
+                <input
+                  id="userName"
                   type="text"
                   formControlName="userName"
-                  class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  placeholder="Enter username"
+                  autocomplete="username"
+                  placeholder="Enter your username"
+                  class="w-full border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-secondary/70 focus:border-primary"
                 />
-                @if (registerForm.get('userName')?.invalid && registerForm.get('userName')?.touched) {
-                  <p class="mt-1 text-sm text-red-500">Username is required (3-100 characters)</p>
+
+                @if (
+                  registerForm.controls.userName.touched && registerForm.controls.userName.invalid
+                ) {
+                  <p class="mt-1 text-xs text-red-600">
+                    Username is required and must contain 3–100 characters.
+                  </p>
                 }
               </div>
 
+              <!-- Password -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                <label for="password" class="mb-2 block text-sm font-medium text-text-primary">
+                  Password
+                </label>
+
                 <input
+                  id="password"
                   type="password"
                   formControlName="password"
-                  class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  placeholder="Enter password (min 8 characters)"
+                  autocomplete="new-password"
+                  placeholder="At least 8 characters"
+                  class="w-full border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-secondary/70 focus:border-primary"
                 />
-                @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-                  <p class="mt-1 text-sm text-red-500">Password must be at least 8 characters</p>
+
+                @if (
+                  registerForm.controls.password.touched && registerForm.controls.password.invalid
+                ) {
+                  <p class="mt-1 text-xs text-red-600">
+                    Password must contain at least 8 characters.
+                  </p>
                 }
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
-                <input
-                  type="text"
-                  formControlName="firstName"
-                  class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  placeholder="Enter first name"
-                />
-                @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
-                  <p class="mt-1 text-sm text-red-500">First name is required</p>
-                }
+              <!-- First and Last Name -->
+              <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label for="firstName" class="mb-2 block text-sm font-medium text-text-primary">
+                    First Name
+                  </label>
+
+                  <input
+                    id="firstName"
+                    type="text"
+                    formControlName="firstName"
+                    autocomplete="given-name"
+                    placeholder="First name"
+                    class="w-full border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-secondary/70 focus:border-primary"
+                  />
+
+                  @if (
+                    registerForm.controls.firstName.touched &&
+                    registerForm.controls.firstName.invalid
+                  ) {
+                    <p class="mt-1 text-xs text-red-600">First name is required.</p>
+                  }
+                </div>
+
+                <div>
+                  <label for="lastName" class="mb-2 block text-sm font-medium text-text-primary">
+                    Last Name
+                  </label>
+
+                  <input
+                    id="lastName"
+                    type="text"
+                    formControlName="lastName"
+                    autocomplete="family-name"
+                    placeholder="Last name"
+                    class="w-full border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition-colors placeholder:text-text-secondary/70 focus:border-primary"
+                  />
+
+                  @if (
+                    registerForm.controls.lastName.touched && registerForm.controls.lastName.invalid
+                  ) {
+                    <p class="mt-1 text-xs text-red-600">Last name is required.</p>
+                  }
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
-                <input
-                  type="text"
-                  formControlName="lastName"
-                  class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  placeholder="Enter last name"
-                />
-                @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
-                  <p class="mt-1 text-sm text-red-500">Last name is required</p>
-                }
-              </div>
-
+              <!-- Submit -->
               <button
                 type="submit"
                 [disabled]="registerForm.invalid || accepting()"
-                class="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="flex w-full items-center justify-center gap-2 bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
               >
                 @if (accepting()) {
-                  <span class="flex items-center justify-center gap-2">
-                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                    Creating account...
-                  </span>
+                  <span
+                    class="h-4 w-4 animate-spin border-2 border-white border-t-transparent"
+                  ></span>
+                  Creating account...
                 } @else {
                   Create Account & Accept Invitation
                 }
               </button>
 
-              <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-                By creating an account, you agree to our Terms of Service and Privacy Policy.
+              <button
+                type="button"
+                (click)="step.set('validate')"
+                [disabled]="accepting()"
+                class="w-full px-5 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary disabled:opacity-50"
+              >
+                Back
+              </button>
+
+              <p class="text-center text-xs leading-5 text-text-secondary">
+                By creating an account, you agree to the applicable terms and privacy policy.
               </p>
             </form>
           }
 
+          <!-- Completed State -->
           @if (step() === 'complete') {
-            <div class="text-center py-8">
-              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-4">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+            <div class="py-5 text-center">
+              <div
+                class="mx-auto mb-5 flex h-14 w-14 items-center justify-center border border-secondary/20 bg-secondary-light text-secondary"
+              >
+                <span class="text-2xl font-semibold">✓</span>
               </div>
-              <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Account Created!</h2>
-              <p class="text-gray-600 dark:text-gray-400 mb-6">You are now a photographer for <strong>{{ inv.eventName || 'this event' }}</strong>.</p>
+
+              <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-secondary">
+                Invitation Accepted
+              </p>
+
+              <h2 class="text-2xl font-semibold text-text-primary">You're all set</h2>
+
+              <p class="mx-auto mt-3 max-w-sm text-sm leading-6 text-text-secondary">
+                You are now a photographer for
+                <span class="font-semibold text-text-primary">{{
+                  inv.eventName || 'this event'
+                }}</span
+                >. You can continue to your photographer dashboard.
+              </p>
+
               <button
                 type="button"
                 (click)="navigateToDashboard()"
-                class="bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                class="mt-7 w-full bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
               >
                 Go to Photographer Dashboard
               </button>
             </div>
           }
-        }
-      </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t border-border bg-background px-6 py-4 text-center">
+          <p class="text-xs text-text-secondary">EventFlow · Photographer Workspace</p>
+        </div>
+      </section>
     }
   </div>
 </div>

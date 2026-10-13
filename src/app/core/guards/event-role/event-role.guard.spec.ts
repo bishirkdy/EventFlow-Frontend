@@ -20,9 +20,9 @@ describe('eventRoleGuard', () => {
     };
   }
 
-  async function executeGuard(requiredRole: UserRole, eventIdValue: string | null = eventId): Promise<any> {
+  async function executeGuard(requiredRole: UserRole, eventIdValue: string | null = eventId, state: any = {}): Promise<any> {
     const result: any = TestBed.runInInjectionContext(() =>
-      eventRoleGuard(requiredRole)(makeRoute(eventIdValue), {} as any),
+      eventRoleGuard(requiredRole)(makeRoute(eventIdValue), state),
     );
     if (result instanceof UrlTree || typeof result === 'boolean') return result;
     return await firstValueFrom(result as Observable<any>);
@@ -112,6 +112,19 @@ describe('eventRoleGuard', () => {
     expect(result).toBeInstanceOf(UrlTree);
     expect(result.toString()).toContain('/login');
     expect(errorSpy).not.toHaveBeenCalled();
+  });
+
+  it('uses the url being activated as the login returnUrl', async () => {
+    const spy = TestBed.inject(EventRoleService) as any;
+    spy.getMyRoles.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 401 })),
+    );
+
+    const result = await executeGuard('Photographer', eventId, {
+      url: '/photographer/7/photos',
+    });
+
+    expect(result.toString()).toBe('/login?returnUrl=%2Fphotographer%2F7%2Fphotos');
   });
 
   it('redirects home with a clear message when the server forbids the role lookup', async () => {
