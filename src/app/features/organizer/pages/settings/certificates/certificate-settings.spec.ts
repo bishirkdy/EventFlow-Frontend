@@ -4,6 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { NotificationService } from 'core/services/ui/notification.service';
+import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 
 describe('CertificateSettings', () => {
   let component: CertificateSettings;
@@ -35,6 +36,12 @@ describe('CertificateSettings', () => {
             error: vi.fn(),
           },
         },
+        {
+          provide: OrganizerEventStateService,
+          useValue: {
+            eventId: () => 'event-1',
+          },
+        },
       ],
     }).compileComponents();
 
@@ -57,6 +64,11 @@ describe('CertificateSettings', () => {
         requireApprovedRegistration: true,
         minAttendancePercent: null,
         updatedAtUtc: null,
+        templateMode: 'Classic',
+        templateFields: [],
+        backgroundImageUrl: null,
+        backgroundImageWidth: 0,
+        backgroundImageHeight: 0,
       },
       errors: null,
     });
@@ -89,6 +101,15 @@ describe('CertificateSettings', () => {
     component.form.title = '   ';
     component.saveSettings();
     expect(notification.error).toHaveBeenCalledWith('Certificate title is required.');
+  });
+
+  it('should reject image template mode without a background image', () => {
+    const notification = TestBed.inject(NotificationService) as any;
+    component.templateMode.set('ImageTemplate');
+    component.saveSettings();
+    expect(notification.error).toHaveBeenCalledWith(
+      'Upload a certificate image before using the image template.'
+    );
   });
 
   it('should toggle eligibility selection', () => {

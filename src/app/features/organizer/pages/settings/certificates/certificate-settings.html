@@ -1,293 +1,720 @@
-<div class="certificate-settings p-6">
-  <div class="max-w-5xl mx-auto">
+<div class="certificate-settings min-h-screen bg-background p-4 sm:p-6">
+  <div class="mx-auto max-w-7xl space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Certificates</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Configure, preview and issue participation certificates</p>
+        <h1 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Certificates
+        </h1>
+
+        <p class="mt-2 max-w-2xl text-sm leading-6 text-text-secondary">
+          Configure certificate templates, review participant eligibility, and issue certificates.
+        </p>
       </div>
+
       <button
+        type="button"
         (click)="refreshAll()"
-        class="px-4 py-2.5 bg-white dark:bg-gray-800 border border-border rounded-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+        class="inline-flex items-center justify-center gap-2 border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
       >
+        <lucide-icon [img]="RefreshCw" [size]="16" />
         Refresh
+      </button>
+    </header>
+
+    <!-- Tabs -->
+    <div class="flex gap-1 border-b border-border">
+      <button
+        type="button"
+        (click)="activeTab.set('design')"
+        [class.border-b-2]="activeTab() === 'design'"
+        [class.border-primary]="activeTab() === 'design'"
+        [class.text-text-primary]="activeTab() === 'design'"
+        [class.font-semibold]="activeTab() === 'design'"
+        [class.text-text-secondary]="activeTab() !== 'design'"
+        class="px-4 py-2.5 text-sm transition-colors hover:text-text-primary"
+      >
+        Design
+      </button>
+      <button
+        type="button"
+        (click)="activeTab.set('issue')"
+        [class.border-b-2]="activeTab() === 'issue'"
+        [class.border-primary]="activeTab() === 'issue'"
+        [class.text-text-primary]="activeTab() === 'issue'"
+        [class.font-semibold]="activeTab() === 'issue'"
+        [class.text-text-secondary]="activeTab() !== 'issue'"
+        class="px-4 py-2.5 text-sm transition-colors hover:text-text-primary"
+      >
+        Issue
       </button>
     </div>
 
-    <!-- Settings -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-6 mb-6">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Certificate Settings</h2>
+    @if (activeTab() === 'design') {
+    <!-- Certificate Settings -->
+    <section class="overflow-hidden border border-border bg-surface">
+      <div class="border-b border-border px-5 py-4 sm:px-6">
+        <h2 class="text-base font-semibold text-text-primary">Certificate Design</h2>
+        <p class="mt-1 text-sm text-text-secondary">
+          Customize the certificate details, appearance, and layout template.
+        </p>
+      </div>
 
       @if (loadingSettings()) {
-        <div class="py-6 text-center text-gray-500 dark:text-gray-400">Loading settings...</div>
+        <div class="flex flex-col items-center justify-center gap-3 px-6 py-12">
+          <div class="h-7 w-7 animate-spin border-2 border-border border-t-primary"></div>
+          <p class="text-sm text-text-secondary">Loading certificate settings...</p>
+        </div>
       } @else {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-            <input
-              type="text"
-              [(ngModel)]="form.title"
-              placeholder="Certificate of Participation"
-              class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-            >
-          </div>
+        <div class="space-y-6 p-5 sm:p-6">
+          <!-- Certificate Details -->
+          <div>
+            <h3 class="mb-4 text-sm font-semibold text-text-primary">Certificate details</h3>
 
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtitle</label>
-            <input
-              type="text"
-              [(ngModel)]="form.subtitle"
-              placeholder="Optional subtitle"
-              class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-            >
-          </div>
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div>
+                <label
+                  for="certificateTitle"
+                  class="mb-2 block text-sm font-medium text-text-primary"
+                >
+                  Certificate title
+                </label>
+                <input
+                  id="certificateTitle"
+                  type="text"
+                  [(ngModel)]="form.title"
+                  placeholder="Certificate of Participation"
+                  class="w-full border border-border bg-background px-3.5 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-secondary/70 focus:border-primary focus:ring-2 focus:ring-primary/15"
+                />
+              </div>
 
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Signatory name</label>
-            <input
-              type="text"
-              [(ngModel)]="form.signatoryName"
-              placeholder="Jane Organizer"
-              class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-            >
-          </div>
+              <div>
+                <label
+                  for="certificateSubtitle"
+                  class="mb-2 block text-sm font-medium text-text-primary"
+                >
+                  Subtitle
+                  <span class="ml-1 font-normal text-text-secondary">(Optional)</span>
+                </label>
+                <input
+                  id="certificateSubtitle"
+                  type="text"
+                  [(ngModel)]="form.subtitle"
+                  placeholder="e.g. In recognition of your achievement"
+                  class="w-full border border-border bg-background px-3.5 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-secondary/70 focus:border-primary focus:ring-2 focus:ring-primary/15"
+                />
+              </div>
 
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Signatory title</label>
-            <input
-              type="text"
-              [(ngModel)]="form.signatoryTitle"
-              placeholder="Event Director"
-              class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-            >
-          </div>
+              <div>
+                <label for="signatoryName" class="mb-2 block text-sm font-medium text-text-primary">
+                  Signatory name
+                </label>
+                <input
+                  id="signatoryName"
+                  type="text"
+                  [(ngModel)]="form.signatoryName"
+                  placeholder="Jane Organizer"
+                  class="w-full border border-border bg-background px-3.5 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-secondary/70 focus:border-primary focus:ring-2 focus:ring-primary/15"
+                />
+              </div>
 
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Theme color</label>
-            <div class="flex items-center gap-3">
-              <input
-                type="color"
-                [(ngModel)]="form.themeColor"
-                class="h-10 w-14 border border-border rounded-lg bg-white dark:bg-gray-700 cursor-pointer"
-              >
-              <input
-                type="text"
-                [(ngModel)]="form.themeColor"
-                class="flex-1 px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-              >
+              <div>
+                <label
+                  for="signatoryTitle"
+                  class="mb-2 block text-sm font-medium text-text-primary"
+                >
+                  Signatory designation
+                </label>
+                <input
+                  id="signatoryTitle"
+                  type="text"
+                  [(ngModel)]="form.signatoryTitle"
+                  placeholder="Event Director"
+                  class="w-full border border-border bg-background px-3.5 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-secondary/70 focus:border-primary focus:ring-2 focus:ring-primary/15"
+                />
+              </div>
             </div>
           </div>
 
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Minimum attendance %</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              [(ngModel)]="form.minAttendancePercent"
-              placeholder="No requirement"
-              class="w-full px-4 py-2.5 border border-border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-            >
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave empty to skip the attendance check.</p>
+          <div class="border-t border-border"></div>
+
+          <!-- Appearance -->
+          <div>
+            <h3 class="mb-4 text-sm font-semibold text-text-primary">Appearance</h3>
+
+            <div class="max-w-xl">
+              <label for="themeColor" class="mb-2 block text-sm font-medium text-text-primary">
+                Theme color
+              </label>
+
+              <div class="flex items-center gap-3">
+                <input
+                  id="themeColorPicker"
+                  type="color"
+                  [(ngModel)]="form.themeColor"
+                  aria-label="Choose certificate theme color"
+                  class="h-11 w-14 shrink-0 cursor-pointer border border-border bg-surface p-1"
+                />
+
+                <input
+                  id="themeColor"
+                  type="text"
+                  [(ngModel)]="form.themeColor"
+                  placeholder="#B5473A"
+                  maxlength="7"
+                  class="min-w-0 flex-1 border border-border bg-background px-3.5 py-2.5 font-mono text-sm text-text-primary outline-none transition placeholder:text-text-secondary/70 focus:border-primary focus:ring-2 focus:ring-primary/15"
+                />
+
+                <div
+                  class="h-10 w-10 shrink-0 border border-border"
+                  [style.backgroundColor]="form.themeColor"
+                  title="Selected theme color"
+                ></div>
+              </div>
+
+              <p class="mt-2 text-xs leading-5 text-text-secondary">
+                Used for certificate accents and decorative elements.
+              </p>
+            </div>
           </div>
 
-          <div class="md:col-span-2">
-            <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
-              <input
-                type="checkbox"
-                [(ngModel)]="form.requireApprovedRegistration"
-                class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-              >
-              Require approved registration
-            </label>
-          </div>
-        </div>
+          <div class="border-t border-border"></div>
 
-        <div class="mt-5 flex justify-end">
-          <button
-            (click)="saveSettings()"
-            [disabled]="savingSettings()"
-            class="px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          <!-- Template editor -->
+          <div>
+            <app-certificate-template-editor
+              [eventId]="eventId()"
+              [mode]="templateMode()"
+              [fields]="templateFields()"
+              [imageUrl]="backgroundImageUrl()"
+              [imageWidth]="backgroundImageWidth()"
+              [imageHeight]="backgroundImageHeight()"
+              [title]="form.title"
+              [subtitle]="form.subtitle"
+              [signatoryName]="form.signatoryName"
+              [signatoryTitle]="form.signatoryTitle"
+              (modeChange)="templateMode.set($event)"
+              (fieldsChange)="templateFields.set($event)"
+              (imageChanged)="onTemplateImageChanged($event)"
+            />
+          </div>
+
+          <!-- Save Settings -->
+          <div
+            class="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-end"
           >
-            @if (savingSettings()) {
-              Saving...
-            } @else {
-              Save Settings
-            }
-          </button>
+            <button
+              type="button"
+              (click)="previewPdf()"
+              [disabled]="previewing()"
+              class="inline-flex items-center justify-center gap-2 border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (previewing()) {
+                <div class="h-4 w-4 animate-spin border-2 border-border border-t-primary"></div>
+                Generating preview...
+              } @else {
+                <lucide-icon [img]="Eye" [size]="16" />
+                Preview PDF
+              }
+            </button>
+
+            <button
+              type="button"
+              (click)="saveSettings()"
+              [disabled]="savingSettings()"
+              class="inline-flex items-center justify-center gap-2 bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (savingSettings()) {
+                <div class="h-4 w-4 animate-spin border-2 border-white/40 border-t-white"></div>
+                Saving...
+              } @else {
+                <lucide-icon [img]="Save" [size]="16" />
+                Save Design
+              }
+            </button>
+          </div>
         </div>
       }
-    </div>
+    </section>
+    }
 
-    <!-- Eligibility -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-border mb-6">
-      <div class="p-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
-        <div>
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Eligibility Preview</h2>
-          @if (eligibility(); as summary) {
-            <div class="flex items-center gap-2 mt-2 flex-wrap">
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                {{ summary.totalRegistrations }} registrations
-              </span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                {{ summary.eligibleCount }} eligible
-              </span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-                {{ summary.alreadyIssuedCount }} already issued
-              </span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-                {{ summary.ineligibleCount }} ineligible
-              </span>
-            </div>
-          }
+    @if (activeTab() === 'issue') {
+    <!-- Eligibility Requirements -->
+    <section class="overflow-hidden border border-border bg-surface">
+      <div class="border-b border-border px-5 py-4 sm:px-6">
+        <h2 class="text-base font-semibold text-text-primary">Eligibility Requirements</h2>
+        <p class="mt-1 text-sm text-text-secondary">
+          Control which participants can receive certificates.
+        </p>
+      </div>
+
+      @if (loadingSettings()) {
+        <div class="flex flex-col items-center justify-center gap-3 px-6 py-12">
+          <div class="h-7 w-7 animate-spin border-2 border-border border-t-primary"></div>
+          <p class="text-sm text-text-secondary">Loading certificate settings...</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button
-            (click)="loadEligibility()"
-            [disabled]="loadingEligibility()"
-            class="px-4 py-2 bg-white dark:bg-gray-700 border border-border rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50 transition-colors"
-          >
-            @if (loadingEligibility()) {
-              Loading...
-            } @else {
-              Load Preview
+      } @else {
+        <div class="space-y-6 p-5 sm:p-6">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div>
+              <label for="minAttendance" class="mb-2 block text-sm font-medium text-text-primary">
+                Minimum attendance
+              </label>
+
+              <div class="relative">
+                <input
+                  id="minAttendance"
+                  type="number"
+                  min="0"
+                  max="100"
+                  [(ngModel)]="form.minAttendancePercent"
+                  placeholder="No minimum"
+                  class="w-full border border-border bg-background px-3.5 py-2.5 pr-10 text-sm text-text-primary outline-none transition placeholder:text-text-secondary/70 focus:border-primary focus:ring-2 focus:ring-primary/15"
+                />
+                <span
+                  class="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm text-text-secondary"
+                >
+                  %
+                </span>
+              </div>
+
+              <p class="mt-2 text-xs leading-5 text-text-secondary">
+                Leave empty if attendance is not required.
+              </p>
+            </div>
+
+            <div class="flex items-start">
+              <label
+                class="flex w-full cursor-pointer items-start gap-3 border border-border bg-background p-4 transition-colors hover:bg-muted/40"
+              >
+                <input
+                  type="checkbox"
+                  [(ngModel)]="form.requireApprovedRegistration"
+                  class="mt-0.5 h-4 w-4 shrink-0 border-border accent-primary focus:ring-primary"
+                />
+
+                <span>
+                  <span class="block text-sm font-medium text-text-primary">
+                    Require approved registration
+                  </span>
+                  <span class="mt-1 block text-xs leading-5 text-text-secondary">
+                    Only participants with approved registrations can receive certificates.
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex justify-end border-t border-border pt-5">
+            <button
+              type="button"
+              (click)="saveSettings()"
+              [disabled]="savingSettings()"
+              class="inline-flex items-center justify-center gap-2 bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (savingSettings()) {
+                <div class="h-4 w-4 animate-spin border-2 border-white/40 border-t-white"></div>
+                Saving...
+              } @else {
+                <lucide-icon [img]="Save" [size]="16" />
+                Save Requirements
+              }
+            </button>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Eligibility Preview -->
+    <section class="overflow-hidden border border-border bg-surface">
+      <!-- Section Header -->
+      <div class="space-y-4 border-b border-border p-5 sm:p-6">
+        <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div>
+            <h2 class="text-base font-semibold text-text-primary">Eligibility Preview</h2>
+            <p class="mt-1 text-sm text-text-secondary">
+              Review eligible participants before generating certificates.
+            </p>
+
+            @if (eligibility(); as summary) {
+              <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div class="border border-border bg-background p-3">
+                  <p class="text-xs text-text-secondary">Registrations</p>
+                  <p class="mt-1 text-xl font-semibold text-text-primary">
+                    {{ summary.totalRegistrations }}
+                  </p>
+                </div>
+
+                <div class="border border-border bg-background p-3">
+                  <p class="text-xs text-text-secondary">Eligible</p>
+                  <p class="mt-1 text-xl font-semibold text-emerald-600">
+                    {{ summary.eligibleCount }}
+                  </p>
+                </div>
+
+                <div class="border border-border bg-background p-3">
+                  <p class="text-xs text-text-secondary">Already issued</p>
+                  <p class="mt-1 text-xl font-semibold text-amber-600">
+                    {{ summary.alreadyIssuedCount }}
+                  </p>
+                </div>
+
+                <div class="border border-border bg-background p-3">
+                  <p class="text-xs text-text-secondary">Ineligible</p>
+                  <p class="mt-1 text-xl font-semibold text-red-600">
+                    {{ summary.ineligibleCount }}
+                  </p>
+                </div>
+              </div>
             }
-          </button>
-          <button
-            (click)="generateAllEligible()"
-            [disabled]="generating() || !eligibility()"
-            class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
-          >
-            @if (generating()) {
-              Generating...
-            } @else {
-              Generate All Eligible
-            }
-          </button>
-          <button
-            (click)="generateSelected()"
-            [disabled]="generating() || selected().size === 0"
-            class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50 transition-colors"
-          >
-            Generate Selected ({{ selected().size }})
-          </button>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap xl:justify-end">
+            <button
+              type="button"
+              (click)="loadEligibility()"
+              [disabled]="loadingEligibility()"
+              class="inline-flex items-center justify-center gap-2 border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (loadingEligibility()) {
+                <div class="h-4 w-4 animate-spin border-2 border-border border-t-primary"></div>
+                Loading...
+              } @else {
+                <lucide-icon [img]="ClipboardCheck" [size]="16" />
+                Load Preview
+              }
+            </button>
+
+            <button
+              type="button"
+              (click)="generateAllEligible()"
+              [disabled]="generating() || !eligibility()"
+              class="inline-flex items-center justify-center gap-2 bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (generating()) {
+                <div class="h-4 w-4 animate-spin border-2 border-white/40 border-t-white"></div>
+                Generating...
+              } @else {
+                <lucide-icon [img]="FileCheck" [size]="16" />
+                Generate All Eligible
+              }
+            </button>
+
+            <button
+              type="button"
+              (click)="generateSelected()"
+              [disabled]="generating() || selected().size === 0"
+              class="inline-flex items-center justify-center gap-2 border border-emerald-600/30 bg-emerald-600/10 px-4 py-2.5 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-600/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <lucide-icon [img]="CheckSquare" [size]="16" />
+              Generate Selected ({{ selected().size }})
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- Eligibility Content -->
       @if (loadingEligibility()) {
-        <div class="p-8 text-center text-gray-500 dark:text-gray-400">Computing eligibility...</div>
-      } @else if (eligibility(); as summary) {
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-muted/50">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-10"></th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Participant</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Registration</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Attendance</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Eligibility</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border">
-              @for (item of summary.items; track item.registrationId) {
-                <tr class="hover:bg-muted/50">
-                  <td class="px-4 py-3">
-                    <input
-                      type="checkbox"
-                      [checked]="isSelected(item.registrationId)"
-                      [disabled]="!item.eligible"
-                      (change)="toggleSelected(item.registrationId)"
-                      class="h-4 w-4 rounded border-border text-primary focus:ring-primary disabled:opacity-40"
-                    >
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="font-medium text-gray-900 dark:text-white">{{ item.participantName || item.registrationNumber }}</div>
-                    @if (item.email) {
-                      <div class="text-xs text-gray-500 dark:text-gray-400">{{ item.email }}</div>
-                    }
-                  </td>
-                  <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ item.registrationNumber }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ item.registrationStatus }}</td>
-                  <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                    @if (item.attendancePercent !== null) {
-                      {{ item.attendancePercent }}%
-                    } @else {
-                      —
-                    }
-                  </td>
-                  <td class="px-4 py-3 text-sm">
-                    @if (item.alreadyIssued) {
-                      <span class="text-amber-600 dark:text-amber-400">Already issued</span>
-                    } @else if (item.eligible) {
-                      <span class="text-green-600 dark:text-green-400">Eligible</span>
-                    } @else {
-                      <span class="text-red-600 dark:text-red-400">{{ item.reasons.join(' ') }}</span>
-                    }
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+        <div class="flex flex-col items-center justify-center gap-3 px-6 py-14">
+          <div class="h-8 w-8 animate-spin border-2 border-border border-t-primary"></div>
+          <p class="text-sm text-text-secondary">Computing participant eligibility...</p>
         </div>
+      } @else if (eligibility(); as summary) {
+        @if (summary.items.length === 0) {
+          <div class="flex flex-col items-center px-6 py-14 text-center">
+            <div
+              class="mb-3 flex h-12 w-12 items-center justify-center bg-muted text-text-secondary"
+            >
+              <lucide-icon [img]="Users" [size]="22" />
+            </div>
+            <h3 class="text-sm font-semibold text-text-primary">No registrations found</h3>
+            <p class="mt-1 max-w-sm text-sm text-text-secondary">
+              There are no participants to evaluate for certificate eligibility.
+            </p>
+          </div>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-212.5 text-left">
+              <thead class="bg-muted/40">
+                <tr>
+                  <th class="w-12 px-5 py-3.5">
+                    <span class="sr-only">Select participant</span>
+                  </th>
+                  <th
+                    class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                  >
+                    Participant
+                  </th>
+                  <th
+                    class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                  >
+                    Registration
+                  </th>
+                  <th
+                    class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                  >
+                    Attendance
+                  </th>
+                  <th
+                    class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                  >
+                    Eligibility
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-border">
+                @for (item of summary.items; track item.registrationId) {
+                  <tr class="transition-colors hover:bg-muted/30">
+                    <td class="px-5 py-4">
+                      <input
+                        type="checkbox"
+                        [checked]="isSelected(item.registrationId)"
+                        [disabled]="!item.eligible || item.alreadyIssued"
+                        (change)="toggleSelected(item.registrationId)"
+                        [attr.aria-label]="
+                          'Select ' + (item.participantName || item.registrationNumber)
+                        "
+                        class="h-4 w-4 border-border accent-primary focus:ring-primary disabled:cursor-not-allowed disabled:opacity-40"
+                      />
+                    </td>
+
+                    <td class="px-4 py-4">
+                      <div class="font-medium text-text-primary">
+                        {{ item.participantName || item.registrationNumber }}
+                      </div>
+                      @if (item.email) {
+                        <div class="mt-1 text-xs text-text-secondary">
+                          {{ item.email }}
+                        </div>
+                      }
+                    </td>
+
+                    <td class="px-4 py-4">
+                      <span class="font-mono text-xs text-text-secondary">
+                        {{ item.registrationNumber }}
+                      </span>
+                    </td>
+
+                    <td class="px-4 py-4">
+                      <span
+                        class="inline-flex items-center border border-border bg-background px-2.5 py-1 text-xs font-medium text-text-secondary"
+                      >
+                        {{ item.registrationStatus }}
+                      </span>
+                    </td>
+
+                    <td class="px-4 py-4">
+                      @if (item.attendancePercent !== null) {
+                        <div class="flex items-center gap-3">
+                          <div class="h-1.5 w-16 overflow-hidden bg-muted">
+                            <div
+                              class="h-full bg-primary transition-all"
+                              [style.width.%]="Math.min(100, Math.max(0, item.attendancePercent))"
+                            ></div>
+                          </div>
+                          <span class="text-sm font-medium text-text-primary">
+                            {{ item.attendancePercent }}%
+                          </span>
+                        </div>
+                      } @else {
+                        <span class="text-sm text-text-secondary">—</span>
+                      }
+                    </td>
+
+                    <td class="px-4 py-4">
+                      @if (item.alreadyIssued) {
+                        <span
+                          class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600"
+                        >
+                          <lucide-icon [img]="CircleAlert" [size]="14" />
+                          Already issued
+                        </span>
+                      } @else if (item.eligible) {
+                        <span
+                          class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600"
+                        >
+                          <lucide-icon [img]="CircleCheck" [size]="14" />
+                          Eligible
+                        </span>
+                      } @else {
+                        <div
+                          class="flex max-w-xs items-start gap-1.5 text-xs leading-5 text-red-600"
+                        >
+                          <lucide-icon [img]="CircleX" [size]="14" class="mt-0.5 shrink-0" />
+                          <span>{{ item.reasons.join(' ') }}</span>
+                        </div>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="flex flex-col gap-2 border-t border-border bg-background/50 px-5 py-3 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <p class="text-xs text-text-secondary">
+              Select eligible participants to generate certificates in bulk.
+            </p>
+            <p class="text-xs font-medium text-text-secondary">
+              {{ summary.items.length }} participants
+            </p>
+          </div>
+        }
       } @else {
-        <div class="p-8 text-center text-gray-500 dark:text-gray-400">
-          Click "Load Preview" to check which participants are eligible for a certificate.
+        <div class="flex flex-col items-center px-6 py-14 text-center">
+          <div
+            class="mb-4 flex h-14 w-14 items-center justify-center border border-border bg-background text-text-secondary"
+          >
+            <lucide-icon [img]="ClipboardList" [size]="25" />
+          </div>
+          <h3 class="text-sm font-semibold text-text-primary">Preview eligibility</h3>
+          <p class="mt-1 max-w-md text-sm leading-6 text-text-secondary">
+            Load the preview to see which participants meet your certificate requirements before
+            issuing certificates.
+          </p>
+          <button
+            type="button"
+            (click)="loadEligibility()"
+            [disabled]="loadingEligibility()"
+            class="mt-5 inline-flex items-center gap-2 bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90 disabled:opacity-50"
+          >
+            <lucide-icon [img]="ClipboardCheck" [size]="16" />
+            Load Eligibility Preview
+          </button>
         </div>
       }
-    </div>
+    </section>
 
-    <!-- Issued -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-border">
-      <div class="p-4 border-b border-border">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Issued Certificates</h2>
+    <!-- Issued Certificates -->
+    <section class="overflow-hidden border border-border bg-surface">
+      <div
+        class="flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+      >
+        <div>
+          <h2 class="text-base font-semibold text-text-primary">Issued Certificates</h2>
+          <p class="mt-1 text-sm text-text-secondary">
+            View, download, and manage previously issued certificates.
+          </p>
+        </div>
+
+        <span
+          class="inline-flex w-fit items-center gap-2 border border-border bg-background px-3 py-1.5 text-xs font-medium text-text-secondary"
+        >
+          <lucide-icon [img]="FileBadge" [size]="15" />
+          {{ issued().length }} certificates
+        </span>
       </div>
 
       @if (loadingIssued()) {
-        <div class="p-8 text-center text-gray-500 dark:text-gray-400">Loading certificates...</div>
+        <div class="flex flex-col items-center justify-center gap-3 px-6 py-14">
+          <div class="h-8 w-8 animate-spin border-2 border-border border-t-primary"></div>
+          <p class="text-sm text-text-secondary">Loading issued certificates...</p>
+        </div>
       } @else if (issued().length === 0) {
-        <div class="p-8 text-center text-gray-500 dark:text-gray-400">No certificates issued yet.</div>
+        <div class="flex flex-col items-center px-6 py-14 text-center">
+          <div class="mb-3 flex h-12 w-12 items-center justify-center bg-muted text-text-secondary">
+            <lucide-icon [img]="FileBadge" [size]="22" />
+          </div>
+          <h3 class="text-sm font-semibold text-text-primary">No certificates issued</h3>
+          <p class="mt-1 max-w-sm text-sm text-text-secondary">
+            Certificates will appear here after you generate them for eligible participants.
+          </p>
+        </div>
       } @else {
         <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-muted/50">
+          <table class="w-full min-w-190 text-left">
+            <thead class="bg-muted/40">
               <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Certificate No.</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Participant</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Issued</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                <th
+                  class="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                >
+                  Certificate number
+                </th>
+                <th
+                  class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                >
+                  Participant
+                </th>
+                <th
+                  class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                >
+                  Issued date
+                </th>
+                <th
+                  class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
+
             <tbody class="divide-y divide-border">
               @for (certificate of issued(); track certificate.id) {
-                <tr class="hover:bg-muted/50">
-                  <td class="px-4 py-3 text-sm font-mono text-gray-900 dark:text-white">{{ certificate.certificateNumber }}</td>
-                  <td class="px-4 py-3">
-                    <div class="font-medium text-gray-900 dark:text-white">{{ certificate.participantName }}</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ certificate.participantEmail }}</div>
+                <tr class="transition-colors hover:bg-muted/30">
+                  <td class="px-5 py-4">
+                    <span class="font-mono text-xs font-medium text-text-primary">
+                      {{ certificate.certificateNumber }}
+                    </span>
                   </td>
-                  <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ formatDate(certificate.issuedAtUtc) }}</td>
-                  <td class="px-4 py-3">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="statusClass(certificate.status)">
+
+                  <td class="px-4 py-4">
+                    <div class="font-medium text-text-primary">
+                      {{ certificate.participantName }}
+                    </div>
+                    <div class="mt-1 text-xs text-text-secondary">
+                      {{ certificate.participantEmail }}
+                    </div>
+                  </td>
+
+                  <td class="px-4 py-4 text-sm text-text-secondary">
+                    {{ formatDate(certificate.issuedAtUtc) }}
+                  </td>
+
+                  <td class="px-4 py-4">
+                    <span
+                      class="inline-flex items-center border px-2.5 py-1 text-xs font-medium"
+                      [class]="statusClass(certificate.status)"
+                    >
                       {{ certificate.status }}
                     </span>
                   </td>
-                  <td class="px-4 py-3">
-                    <div class="flex items-center gap-2">
-                      <button
-                        (click)="download(certificate)"
-                        class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-                      >
-                        Download
-                      </button>
+
+                  <td class="px-5 py-4">
+                    <div class="flex items-center justify-end gap-2">
                       @if (certificate.status !== 'Revoked') {
                         <button
-                          (click)="revoke(certificate)"
-                          class="text-xs px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                          type="button"
+                          (click)="download(certificate)"
+                          class="inline-flex items-center gap-1.5 border border-border bg-surface px-3 py-2 text-xs font-medium text-text-primary transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
                         >
+                          <lucide-icon [img]="Download" [size]="14" />
+                          Download
+                        </button>
+
+                        <button
+                          type="button"
+                          (click)="revoke(certificate)"
+                          class="inline-flex items-center gap-1.5 border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500/20"
+                        >
+                          <lucide-icon [img]="Ban" [size]="14" />
                           Revoke
                         </button>
+                      } @else {
+                        <span class="text-xs text-text-secondary">Download unavailable</span>
                       }
                     </div>
                   </td>
@@ -297,6 +724,7 @@
           </table>
         </div>
       }
-    </div>
+    </section>
+    }
   </div>
 </div>

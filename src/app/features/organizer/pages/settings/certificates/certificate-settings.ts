@@ -8,7 +8,28 @@ import {
   CertificateEligibilityModel,
   CertificateModel,
   CertificateSettingsModel,
+  CertificateTemplateFieldModel,
+  CertificateTemplateMode,
 } from 'core/models/registration/certificate.model';
+import {
+  RefreshCw,
+  Save,
+  ClipboardCheck,
+  FileCheck,
+  CheckSquare,
+  Users,
+  CircleAlert,
+  CircleCheck,
+  CircleX,
+  ClipboardList,
+  FileBadge,
+  Download,
+  Ban,
+  Eye,
+  LucideAngularModule,
+} from 'lucide-angular';
+import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
+import { CertificateTemplateEditor } from './template-editor/template-editor';
 
 interface SettingsForm {
   title: string;
@@ -23,7 +44,7 @@ interface SettingsForm {
 @Component({
   selector: 'app-certificate-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, CertificateTemplateEditor],
   templateUrl: './certificate-settings.html',
   styleUrl: './certificate-settings.css',
 })
@@ -31,6 +52,7 @@ export class CertificateSettings implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly certificateService = inject(CertificateService);
   private readonly notification = inject(NotificationService);
+  private readonly eventState = inject(OrganizerEventStateService)
 
   readonly eventId = signal('');
   readonly settings = signal<CertificateSettingsModel | null>(null);
@@ -43,6 +65,31 @@ export class CertificateSettings implements OnInit {
   readonly loadingEligibility = signal(false);
   readonly loadingIssued = signal(true);
   readonly generating = signal(false);
+  readonly previewing = signal(false);
+
+  readonly activeTab = signal<'design' | 'issue'>('design');
+  readonly templateMode = signal<CertificateTemplateMode>('Classic');
+  readonly templateFields = signal<CertificateTemplateFieldModel[]>([]);
+  readonly backgroundImageUrl = signal<string | null>(null);
+  readonly backgroundImageWidth = signal(0);
+  readonly backgroundImageHeight = signal(0);
+
+  readonly RefreshCw = RefreshCw;
+  readonly Save = Save;
+  readonly ClipboardCheck = ClipboardCheck;
+  readonly FileCheck = FileCheck;
+  readonly CheckSquare = CheckSquare;
+  readonly Users = Users;
+  readonly CircleAlert = CircleAlert;
+  readonly CircleCheck = CircleCheck;
+  readonly CircleX = CircleX;
+  readonly ClipboardList = ClipboardList;
+  readonly FileBadge = FileBadge;
+  readonly Download = Download;
+  readonly Ban = Ban;
+  readonly Eye = Eye;
+
+  readonly Math = Math;
 
   form: SettingsForm = {
     title: 'Certificate of Participation',
@@ -55,9 +102,7 @@ export class CertificateSettings implements OnInit {
   };
 
   ngOnInit(): void {
-    const eventId =
-      this.route.parent?.snapshot.paramMap.get('eventId') ||
-      this.route.snapshot.paramMap.get('eventId');
+    const eventId = this.eventState.eventId()
 
     if (eventId) {
       this.eventId.set(eventId);
@@ -81,6 +126,7 @@ export class CertificateSettings implements OnInit {
             requireApprovedRegistration: response.data.requireApprovedRegistration,
             minAttendancePercent: response.data.minAttendancePercent,
           };
+          this.applyTemplateFromSettings(response.data);
         }
         this.loadingSettings.set(false);
       },
@@ -106,6 +152,21 @@ export class CertificateSettings implements OnInit {
       return;
     }
 
+    const templateMode = this.templateMode();
+    const templateFields = this.templateFields();
+
+    if (templateMode === 'ImageTemplate') {
+      if (!this.backgroundImageUrl()) {
+        this.notification.error('Upload a certificate image before using the image template.');
+        return;
+      }
+
+      if (templateFields.length === 0) {
+        this.notification.error('Place at least one field on the certificate image.');
+        return;
+      }
+    }
+
     this.savingSettings.set(true);
     this.certificateService
       .updateSettings(this.eventId(), {
@@ -116,6 +177,8 @@ export class CertificateSettings implements OnInit {
         themeColor: this.form.themeColor.trim() || '#2563EB',
         requireApprovedRegistration: this.form.requireApprovedRegistration,
         minAttendancePercent: this.form.minAttendancePercent,
+        templateMode,
+        templateFields,
       })
       .subscribe({
         next: (response) => {
@@ -132,6 +195,35 @@ export class CertificateSettings implements OnInit {
           this.notification.error('Failed to save certificate settings.');
         },
       });
+  }
+
+  onTemplateImageChanged(settings: CertificateSettingsModel): void {
+    this.settings.set(settings);
+    this.applyTemplateFromSettings(settings);
+  }
+
+  previewPdf(): void {
+    this.previewing.set(true);
+    this.certificateService.previewCertificate(this.eventId()).subscribe({
+      next: (blob) => {
+        this.previewing.set(false);
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      },
+      error: () => {
+        this.previewing.set(false);
+        this.notification.error('Certificate preview failed.');
+      },
+    });
+  }
+
+  private applyTemplateFromSettings(settings: CertificateSettingsModel): void {
+    this.templateMode.set(settings.templateMode ?? 'Classic');
+    this.templateFields.set(settings.templateFields ? [...settings.templateFields] : []);
+    this.backgroundImageUrl.set(settings.backgroundImageUrl ?? null);
+    this.backgroundImageWidth.set(settings.backgroundImageWidth ?? 0);
+    this.backgroundImageHeight.set(settings.backgroundImageHeight ?? 0);
   }
 
   loadEligibility(): void {
@@ -201,11 +293,17 @@ export class CertificateSettings implements OnInit {
         this.generating.set(false);
         if (response.isSuccess && response.data) {
           const result = response.data;
+          const errors = result.errors ?? [];
           this.notification.success(
             `Generated ${result.generated}, skipped ${result.skipped}` +
               (result.failed > 0 ? `, failed ${result.failed}` : '') +
-              '.'
+              '.',
           );
+
+          if (errors.length > 0) {
+            this.notification.error(errors[0]);
+          }
+
           this.loadIssued();
           this.loadEligibility();
         } else {

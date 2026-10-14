@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.template-canvas {
+  container-type: inline-size;
+}
