@@ -1,5 +1,6 @@
 <div class="min-h-screen bg-background">
   <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
     <!-- Header -->
     <div class="mb-8 flex items-start justify-between gap-4">
       <div>
@@ -13,76 +14,269 @@
 
       <a
         routerLink="../../gallery"
-        class="inline-flex h-10 w-10 shrink-0 items-center justify-center
-                border border-border bg-surface
-               text-text-secondary transition-colors
-               hover:bg-muted hover:text-text-primary"
+        class="inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-surface text-text-secondary transition-colors hover:bg-muted hover:text-text-primary"
         aria-label="Back to gallery"
       >
         <lucide-icon [img]="ArrowLeft" [size]="18" />
       </a>
     </div>
 
-    <!-- Face Profile -->
-    <section
-      class="mb-6  border border-primary/20
-             bg-primary/5 p-4 sm:p-5"
-    >
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center
-                  sm:justify-between">
+    <section class="mb-6 border border-primary/20 bg-primary/5 p-4 sm:p-5">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center gap-3">
           <div
-            class="flex h-11 w-11 shrink-0 items-center justify-center
-                    bg-primary/10 text-primary"
+            class="flex h-11 w-11 shrink-0 items-center justify-center bg-primary/10 text-primary"
           >
             <lucide-icon [img]="ScanFace" [size]="21" />
           </div>
 
           <div>
-            <h2 class="font-semibold text-text-primary">
-              Face Profile
-            </h2>
+            <h2 class="font-semibold text-text-primary">Face Profile</h2>
             <p class="mt-1 text-sm text-text-secondary">
               {{ hasFaceProfile() ? 'Face profile saved' : 'Not set up yet' }}
             </p>
           </div>
         </div>
 
-        <a
-          routerLink="../selfie"
-          class="inline-flex items-center justify-center gap-2
-                  bg-primary px-4 py-2.5 text-sm
-                 font-medium text-white transition-colors
-                 hover:bg-primary/90"
+        <button
+          type="button"
+          (click)="openSelfieModal()"
+          class="inline-flex cursor-pointer items-center justify-center gap-2 border border-primary bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-surface hover:text-primary"
         >
           <lucide-icon [img]="Camera" [size]="17" />
           {{ hasFaceProfile() ? 'Update Selfie' : 'Take Selfie' }}
-        </a>
+        </button>
       </div>
     </section>
 
     <!-- Statistics -->
     <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <div class=" border border-border bg-surface p-5">
+      <div class="border border-border bg-surface p-5">
         <p class="text-sm text-text-secondary">Total Photos</p>
-        <p class="mt-2 text-2xl font-bold text-text-primary">
+        <p class="mt-2 font-mono text-2xl font-semibold text-text-primary">
           {{ totalPhotos() }}
         </p>
       </div>
 
-      <div class=" border border-border bg-surface p-5">
+      <div class="border border-border bg-surface p-5">
         <p class="text-sm text-text-secondary">Matched Photos</p>
-        <p class="mt-2 text-2xl font-bold text-primary">
+        <p class="mt-2 font-mono text-2xl font-semibold text-primary">
           {{ totalMatched() }}
         </p>
       </div>
 
-      <div class=" border border-border bg-surface p-5">
+      <div class="border border-border bg-surface p-5">
         <p class="text-sm text-text-secondary">Face Profile</p>
-        <p class="mt-2 text-2xl font-bold text-text-primary">
+        <p class="mt-2 text-2xl font-semibold text-text-primary">
           {{ hasFaceProfile() ? 'Ready' : 'Not Set' }}
         </p>
       </div>
     </div>
+
+    <!-- Find My Photos -->
+    <section class="mb-8 border border-border bg-surface p-5 sm:p-6">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
+            <lucide-icon [img]="ScanFace" [size]="20" />
+          </div>
+
+          <div>
+            <h2 class="text-lg font-semibold text-text-primary">
+              Find My Photos
+            </h2>
+            <p class="mt-1 text-sm text-text-secondary">
+              Scan event photos to find pictures containing your face.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="findMyPhotos()"
+          [disabled]="matching() || loading() || !hasFaceProfile()"
+          class="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 border border-primary bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-surface hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          @if (matching()) {
+            <span class="size-4 animate-spin rounded-full border-2 border-current border-r-transparent"></span>
+            Scanning Photos...
+          } @else {
+            <lucide-icon [img]="ScanFace" [size]="17" />
+            Find My Photos
+          }
+        </button>
+      </div>
+
+      @if (!hasFaceProfile()) {
+        <div class="mt-4 border border-border bg-background p-3 text-sm text-text-secondary">
+          Please set up your face profile before searching for photos.
+        </div>
+      }
+    </section>
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center border border-border bg-surface px-4 py-16 text-center">
+        <span class="size-8 animate-spin rounded-full border-2 border-primary border-r-transparent"></span>
+        <p class="mt-4 font-medium text-text-primary">
+          Loading event photos...
+        </p>
+        <p class="mt-1 text-sm text-text-secondary">
+          Please wait while we load the gallery.
+        </p>
+      </div>
+    } @else if (allPhotos().length === 0) {
+      <!-- Empty Gallery -->
+      <div class="border border-border bg-surface px-4 py-16 text-center">
+        <div class="mx-auto flex size-14 items-center justify-center bg-primary/10 text-primary">
+          <lucide-icon [img]="Camera" [size]="26" />
+        </div>
+
+        <h3 class="mt-4 font-semibold text-text-primary">
+          No event photos available
+        </h3>
+
+        <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">
+          There are no photos available in this event gallery yet.
+          Please check back later.
+        </p>
+      </div>
+    } @else {
+      <!-- Matching Results -->
+      <section class="mb-10">
+        <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-text-primary">
+              Your Matched Photos
+            </h2>
+            <p class="mt-1 text-sm text-text-secondary">
+              Photos identified using your face profile.
+            </p>
+          </div>
+
+          <span class="self-start border border-border bg-surface px-3 py-1.5 text-sm font-medium text-text-primary sm:self-auto">
+            {{ totalMatched() }} matches
+          </span>
+        </div>
+
+        @if (matchedPhotos().length > 0) {
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            @for (photo of matchedPhotos(); track photo.imageId ?? photo.imageUrl) {
+              <article class="group overflow-hidden border border-border bg-surface transition-shadow hover:shadow-md">
+                <button
+                  type="button"
+                  class="block w-full cursor-pointer overflow-hidden"
+                  (click)="openPhoto(photo)"
+                  [attr.aria-label]="'Open matched event photo'"
+                >
+                  <img
+                    [src]="photo.imageUrl"
+                    [alt]="photo.originalFileName || 'Matched event photo'"
+                    class="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </button>
+
+                <div class="p-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <h3 class="truncate font-medium text-text-primary">
+                        {{ photo.originalFileName || 'Event Photo' }}
+                      </h3>
+
+                      <p class="mt-2 text-sm text-text-secondary">
+                        Match confidence:
+                        <span class="font-semibold text-text-primary">
+                          {{ roundConfidence(photo.confidence) }}%
+                        </span>
+                      </p>
+                    </div>
+
+                    <span
+                      class="shrink-0 px-2 py-1 text-xs font-medium"
+                      [ngClass]="getConfidenceClass(photo.confidence)"
+                    >
+                      {{ getConfidenceLabel(photo.confidence) }}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        } @else if (matching()) {
+          <div class="border border-border bg-surface px-4 py-12 text-center">
+            <span class="mx-auto block size-8 animate-spin rounded-full border-2 border-primary border-r-transparent"></span>
+            <p class="mt-4 font-medium text-text-primary">
+              Scanning event photos...
+            </p>
+            <p class="mt-1 text-sm text-text-secondary">
+              This may take some time for large galleries.
+            </p>
+          </div>
+        } @else {
+          <div class="border border-border bg-surface px-4 py-12 text-center">
+            <div class="mx-auto flex size-14 items-center justify-center bg-primary/10 text-primary">
+              <lucide-icon [img]="ScanFace" [size]="28" />
+            </div>
+
+            <h3 class="mt-4 font-semibold text-text-primary">
+              No matched photos yet
+            </h3>
+
+            <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">
+              @if (hasFaceProfile()) {
+                Click Find My Photos to scan the event gallery for your face.
+              } @else {
+                Take a selfie first to start finding your event photos.
+              }
+            </p>
+          </div>
+        }
+      </section>
+    }
+
   </div>
+
+  <!-- Selfie Modal -->
+  @if (selfieModalOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      (click)="closeSelfieModal()"
+      (keydown.escape)="closeSelfieModal()"
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="selfie-modal-title"
+        class="relative max-h-[90vh] w-full max-w-lg overflow-y-auto border border-border bg-surface p-5 shadow-2xl sm:p-6"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h2 id="selfie-modal-title" class="text-xl font-bold text-text-primary">
+              {{ hasFaceProfile() ? 'Update Face Profile' : 'Set Up Face Recognition' }}
+            </h2>
+
+            <p class="mt-1 text-sm text-text-secondary">
+              Take a selfie to find your event photos.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            (click)="closeSelfieModal()"
+            aria-label="Close selfie popup"
+            class="flex size-9 shrink-0 cursor-pointer items-center justify-center text-text-secondary hover:bg-muted hover:text-text-primary"
+          >
+            <lucide-icon [img]="X" [size]="20" />
+          </button>
+        </div>
+
+        <app-selfie-capture
+          (saved)="onSelfieSaved()"
+          (cancelled)="closeSelfieModal()"
+        />
+      </section>
+    </div>
+  }
 </div>

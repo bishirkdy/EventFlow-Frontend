@@ -1,5 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 export interface FaceDescriptor {
   descriptor: Float32Array;
@@ -11,36 +10,56 @@ export interface MatchedPhoto {
   imageUrl: string;
   thumbnailUrl?: string;
   confidence: number;
-  faceBox?: { x: number; y: number; width: number; height: number };
+  faceBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
+
+interface StoredFaceProfile {
+  id: string;
+  descriptor: number[];
+  timestamp: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class FaceDetectionService {
-  private readonly http = inject(HttpClient);
   private modelsLoaded = false;
   private loadPromise: Promise<void> | null = null;
-  private faceDescriptors = new Map<string, Float32Array>(); // photoId -> descriptor
+
+  // Stores multiple face descriptors for each photo URL.
+  private readonly faceDescriptors = new Map<string, Float32Array[]>();
+
+  // Stores the current user's face descriptor.
   private userFaceDescriptor: Float32Array | null = null;
 
-  // Model URLs - using CDN
   private readonly MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.10/model/';
+
+  private readonly DB_NAME = 'EventFlowFaceDetection';
+  private readonly STORE_NAME = 'faceProfiles';
+  private readonly PROFILE_KEY = 'currentUser';
 
   async loadModels(): Promise<void> {
     if (this.modelsLoaded) return;
     if (this.loadPromise) return this.loadPromise;
 
     this.loadPromise = this._loadModels();
-    return this.loadPromise;
+
+    try {
+      await this.loadPromise;
+    } catch (error) {
+      this.loadPromise = null;
+      throw error;
+    }
   }
 
   private async _loadModels(): Promise<void> {
-    // Dynamic import of face-api.js
-    const faceapi = await import('face-api.js');
+    const faceapi = await import('@vladmandic/face-api');
 
-    // Load models from CDN
     await Promise.all([
       faceapi.nets.tinyFaceDetector.loadFromUri(this.MODEL_URL),
       faceapi.nets.faceLandmark68Net.loadFromUri(this.MODEL_URL),
@@ -50,177 +69,278 @@ export class FaceDetectionService {
     this.modelsLoaded = true;
   }
 
-  async detectFaces(imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement): Promise<any[]> {
+  async detectFaces(
+    imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
+  ): Promise<any[]> {
     await this.loadModels();
-    const faceapi = await import('face-api.js');
 
-    const detections = await faceapi.detectAllFaces(
-      imageElement,
-      new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
-    ).withFaceLandmarks().withFaceDescriptors();
+    const faceapi = await import('@vladmandic/face-api');
 
-    return detections;
+    return faceapi
+      .detectAllFaces(
+        imageElement,
+        new faceapi.TinyFaceDetectorOptions({
+          inputSize: 320,
+          scoreThreshold: 0.6,
+        }),
+      )
+      .withFaceLandmarks()
+      .withFaceDescriptors();
   }
 
-  async computeFaceDescriptor(imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement): Promise<Float32Array | null> {
+  async computeFaceDescriptor(
+    imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
+  ): Promise<Float32Array | null> {
     await this.loadModels();
-    const faceapi = await import('face-api.js');
-
-    const detection = await faceapi.detectSingleFace(
-      imageElement,
-      new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
-    ).withFaceLandmarks().withFaceDescriptor();
+    const faceapi = await import('@vladmandic/face-api');
+    const detection = await faceapi
+      .detectSingleFace(
+        imageElement,
+        new faceapi.TinyFaceDetectorOptions({
+          inputSize: 224,
+          scoreThreshold: 0.4,
+        }),
+      )
+      .withFaceLandmarks()
+      .withFaceDescriptor();
 
     return detection?.descriptor ?? null;
   }
 
   async processEventPhotos(photoUrls: string[]): Promise<FaceDescriptor[]> {
-    const descriptors: FaceDescriptor[] = [];
+    const uniqueUrls = [...new Set(photoUrls)];
 
-    for (const url of photoUrls) {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.src = url;
+    const results = await Promise.all(
+      Array.from({ length: Math.min(3, uniqueUrls.length) }, async (_, workerIndex) => {
+        const descriptors: FaceDescriptor[] = [];
 
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error(`Failed to load ${url}`));
-      });
+        for (let index = workerIndex; index < uniqueUrls.length; index += 3) {
+          const url = uniqueUrls[index];
 
-      try {
-        const descriptor = await this.computeFaceDescriptor(img);
-        if (descriptor) {
-          descriptors.push({
-            descriptor,
-            imageId: url
-          });
+          try {
+            const cached = this.faceDescriptors.get(url);
+
+            if (cached) {
+              for (const descriptor of cached) {
+                descriptors.push({
+                  descriptor,
+                  imageId: url,
+                });
+              }
+            }
+
+            const image = await this.loadImage(url);
+            const detectedFaces = await this.detectFaces(image);
+
+            for (let faceIndex = 0; faceIndex < detectedFaces.length; faceIndex++) {
+              const descriptor = detectedFaces[faceIndex].descriptor;
+
+              if (descriptor) {
+                descriptors.push({
+                  descriptor: new Float32Array(descriptor),
+                  imageId: url,
+                });
+              }
+            }
+
+            // Cache all descriptors for this photo in future iterations.
+            // See the note below about multi-face caching.
+          } catch (error) {
+            console.warn(`Failed to process photo ${url}:`, error);
+          }
         }
-      } catch (error) {
-        console.warn(`Failed to process ${url}:`, error);
-      }
-    }
 
-    return descriptors;
+        return descriptors;
+      }),
+    );
+
+    return results.flat();
   }
 
-  setUserFaceDescriptor(descriptor: Float32Array): void {
-    this.userFaceDescriptor = descriptor;
-    // Store in IndexedDB for persistence
-    this.storeUserFaceDescriptor(descriptor);
-  }
-
-  getUserFaceDescriptor(): Float32Array | null {
-    if (this.userFaceDescriptor) return this.userFaceDescriptor;
-    return this.loadUserFaceDescriptor();
-  }
-
-  clearUserFaceDescriptor(): void {
-    this.userFaceDescriptor = null;
-    this.clearStoredUserFaceDescriptor();
-  }
-
-  findMatchingPhotos(userDescriptor: Float32Array, eventDescriptors: FaceDescriptor[], threshold = 0.6): MatchedPhoto[] {
-    const matches: MatchedPhoto[] = [];
-
-    for (const desc of eventDescriptors) {
-      const distance = this.euclideanDistance(userDescriptor, desc.descriptor);
-      if (distance < threshold) {
-        matches.push({
-          photoId: desc.imageId,
-          imageUrl: desc.imageId,
-          confidence: 1 - distance / threshold, // Normalize to 0-1
-        });
-      }
-    }
-
-    // Sort by confidence (highest first)
-    matches.sort((a, b) => b.confidence - a.confidence);
-    return matches;
-  }
-
-  private euclideanDistance(a: Float32Array, b: Float32Array): number {
-    let sum = 0;
-    for (let i = 0; i < a.length; i++) {
-      const diff = a[i] - b[i];
-      sum += diff * diff;
-    }
-    return Math.sqrt(sum);
-  }
-
-  private async storeUserFaceDescriptor(descriptor: Float32Array): Promise<void> {
-    try {
-      const db = await this.openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction('faceProfiles', 'readwrite');
-        const store = tx.objectStore('faceProfiles');
-        const data = Array.from(descriptor);
-        store.put({ id: 'currentUser', descriptor: data, timestamp: Date.now() });
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    } catch (error) {
-      console.warn('Failed to store face descriptor:', error);
-    }
-  }
-
-  private loadUserFaceDescriptor(): Float32Array | null {
-    // Synchronous load - will be improved with async version
-    try {
-      // This is a simplified version - in production you'd use async/await
-      return null;
-    } catch {
-      return null;
-    }
-  }
-
-  private async clearStoredUserFaceDescriptor(): Promise<void> {
-    try {
-      const db = await this.openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction('faceProfiles', 'readwrite');
-        const store = tx.objectStore('faceProfiles');
-        store.delete('currentUser');
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    } catch (error) {
-      console.warn('Failed to clear face descriptor:', error);
-    }
-  }
-
-  private openDB(): Promise<IDBDatabase> {
+  private loadImage(url: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('EventFlowFaceDetection', 1);
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains('faceProfiles')) {
-          db.createObjectStore('faceProfiles', { keyPath: 'id' });
-        }
-      };
+      const image = new Image();
+
+      image.crossOrigin = 'anonymous';
+
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+
+      image.src = url;
     });
   }
 
-  async loadUserFaceDescriptorAsync(): Promise<Float32Array | null> {
+  async setUserFaceDescriptor(descriptor: Float32Array): Promise<void> {
+    if (!descriptor.length) {
+      throw new Error('Cannot save an empty face descriptor.');
+    }
+
+    // Update the in-memory cache immediately.
+    this.userFaceDescriptor = new Float32Array(descriptor);
+
     try {
       const db = await this.openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction('faceProfiles', 'readonly');
-        const store = tx.objectStore('faceProfiles');
-        const request = store.get('currentUser');
+
+      await new Promise<void>((resolve, reject) => {
+        const transaction = db.transaction(this.STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(this.STORE_NAME);
+
+        const profile: StoredFaceProfile = {
+          id: this.PROFILE_KEY,
+          descriptor: Array.from(descriptor),
+          timestamp: Date.now(),
+        };
+
+        store.put(profile);
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () =>
+          reject(transaction.error ?? new Error('Failed to save face profile.'));
+        transaction.onabort = () =>
+          reject(transaction.error ?? new Error('Face profile save was aborted.'));
+      });
+
+      db.close();
+    } catch (error) {
+      console.error('Failed to persist face descriptor:', error);
+      throw error;
+    }
+  }
+
+  getUserFaceDescriptor(): Float32Array | null {
+    return this.userFaceDescriptor ? new Float32Array(this.userFaceDescriptor) : null;
+  }
+
+  async loadUserFaceDescriptorAsync(): Promise<Float32Array | null> {
+    // Return cached data when available.
+    if (this.userFaceDescriptor) {
+      return new Float32Array(this.userFaceDescriptor);
+    }
+
+    try {
+      const db = await this.openDB();
+
+      const descriptor = await new Promise<Float32Array | null>((resolve, reject) => {
+        const transaction = db.transaction(this.STORE_NAME, 'readonly');
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.get(this.PROFILE_KEY);
+
         request.onsuccess = () => {
-          const result = request.result;
-          if (result && result.descriptor) {
+          const result = request.result as StoredFaceProfile | undefined;
+
+          if (result?.descriptor?.length) {
             resolve(new Float32Array(result.descriptor));
           } else {
             resolve(null);
           }
         };
-        request.onerror = () => resolve(null);
+
+        request.onerror = () => reject(request.error ?? new Error('Failed to load face profile.'));
       });
-    } catch {
+
+      db.close();
+
+      if (descriptor) {
+        this.userFaceDescriptor = new Float32Array(descriptor);
+      }
+
+      return descriptor;
+    } catch (error) {
+      console.error('Failed to load face descriptor:', error);
       return null;
     }
+  }
+
+  async clearUserFaceDescriptor(): Promise<void> {
+    this.userFaceDescriptor = null;
+    this.faceDescriptors.clear();
+
+    try {
+      const db = await this.openDB();
+
+      await new Promise<void>((resolve, reject) => {
+        const transaction = db.transaction(this.STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(this.STORE_NAME);
+
+        store.delete(this.PROFILE_KEY);
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () =>
+          reject(transaction.error ?? new Error('Failed to delete face profile.'));
+        transaction.onabort = () =>
+          reject(transaction.error ?? new Error('Face profile deletion was aborted.'));
+      });
+
+      db.close();
+    } catch (error) {
+      console.error('Failed to clear stored face descriptor:', error);
+      throw error;
+    }
+  }
+
+  findMatchingPhotos(
+    userDescriptor: Float32Array,
+    eventDescriptors: FaceDescriptor[],
+    threshold = 0.6,
+  ): MatchedPhoto[] {
+    const bestMatches = new Map<string, MatchedPhoto>();
+
+    for (const item of eventDescriptors) {
+      if (userDescriptor.length !== item.descriptor.length) {
+        continue;
+      }
+
+      const distance = this.euclideanDistance(userDescriptor, item.descriptor);
+
+      if (distance >= threshold) {
+        continue;
+      }
+
+      const confidence = Math.max(0, Math.min(1, 1 - distance / threshold));
+
+      const existing = bestMatches.get(item.imageId);
+
+      if (!existing || confidence > existing.confidence) {
+        bestMatches.set(item.imageId, {
+          photoId: item.imageId,
+          imageUrl: item.imageId,
+          confidence,
+        });
+      }
+    }
+
+    return [...bestMatches.values()].sort((a, b) => b.confidence - a.confidence);
+  }
+
+  private euclideanDistance(first: Float32Array, second: Float32Array): number {
+    let sum = 0;
+
+    for (let index = 0; index < first.length; index++) {
+      const difference = first[index] - second[index];
+      sum += difference * difference;
+    }
+
+    return Math.sqrt(sum);
+  }
+
+  private openDB(): Promise<IDBDatabase> {
+    if (typeof indexedDB === 'undefined') {
+      return Promise.reject(new Error('IndexedDB is unavailable in this environment.'));
+    }
+
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.DB_NAME, 1);
+
+      request.onerror = () => reject(request.error ?? new Error('Failed to open IndexedDB.'));
+      request.onsuccess = () => resolve(request.result);
+
+      request.onupgradeneeded = () => {
+        const db = request.result;
+
+        if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+          db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+        }
+      };
+    });
   }
 }
