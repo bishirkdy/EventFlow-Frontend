@@ -3,10 +3,10 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { EVENT_PAGE_ENDPOINTS } from '../../api/endpoints/event-features/event-page.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
-import { EventPageModel } from '../../models/event-page/event-page.model';
-import { CreateEventPageModel } from '../../models/event-page/create-event-page.model';
-import { UpdateEventPageModel } from '../../models/event-page/update-event-page.model';
+import { ApiResponse } from '../../models/common';
+import { EventPageModel } from '../../models/event-page';
+import { CreateEventPageModel } from '../../models/event-page';
+import { UpdateEventPageModel } from '../../models/event-page';
 
 @Injectable({
   providedIn: 'root',

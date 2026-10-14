@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RegistrationStatusComponent } from '../../../components/registration-status/registration-status';
 import { TicketComponent } from '../../../components/ticket/ticket';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
-import { RegistrationModel } from '../../../../../../core/models/registration/registration.model';
+import { RegistrationModel } from '../../../../../../core/models/registration';
 import { FeedbackComponent } from '@/features/platform/feedback/feedback';
 
 @Component({

@@ -7,7 +7,7 @@ import { provideComponentTestProviders } from '../../../testing/component-provid
 import { EventService } from '../../../core/services/event/event.service';
 import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
-import { Event } from '../../../core/models/event/event.model';
+import { Event } from '../../../core/models/event';
 
 describe('MyEvents', () => {
   let component: MyEvents;

@@ -5,7 +5,7 @@ import {
   input,
 } from '@angular/core';
 
-import { TicketModel } from '../../../../../core/models/registration/ticket.model';
+import { TicketModel } from '../../../../../core/models/registration';
 import { QrCodeComponent } from '../qr-code/qr-code';
 
 @Component({

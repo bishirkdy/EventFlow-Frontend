@@ -3,14 +3,14 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
-import { CreateSessionModel } from '../../../../../core/models/session/create-session.model';
-import { SectionModel } from '../../../../../core/models/section/section.model';
+import { CreateSessionModel } from '../../../../../core/models/session';
+import { SectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { VenueModel } from '../../../../../core/models/venue/venue.model';
+import { VenueModel } from '../../../../../core/models/venue';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { Event as EventModel } from '../../../../../core/models/event/event.model';
+import { Event as EventModel } from '../../../../../core/models/event';
 
 @Component({
   selector: 'app-create-session',

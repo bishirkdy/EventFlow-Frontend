@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { SESSION_ENDPOINTS } from '../../api/endpoints/event-features/session.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 
-import { SessionModel } from '../../models/session/session.model';
-import { CreateSessionModel } from '../../models/session/create-session.model';
-import { UpdateSessionModel } from '../../models/session/update-session.model';
+import { SessionModel } from '../../models/session';
+import { CreateSessionModel } from '../../models/session';
+import { UpdateSessionModel } from '../../models/session';
 
 @Injectable({
   providedIn: 'root',

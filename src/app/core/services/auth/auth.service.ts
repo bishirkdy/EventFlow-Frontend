@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Api } from '../../api/api';
-import { ApiResponse } from '../../models/common/api-response';
-import { UserProfile } from '../../models/common/user-profile';
-import { LoginRequest } from '../../models/auth/login/LoginRequest';
-import { RegisterRequest } from '../../models/auth/register/RegisterRequest';
+import { ApiResponse } from '../../models/common';
+import { UserProfile } from '../../models/auth';
+import { LoginRequest } from '../../models/auth';
+import { RegisterRequest } from '../../models/auth';
 import { AUTH_ENDPOINTS } from '../../api/endpoints/auth-entpoints/auth-endpoints';
 
 @Injectable({

@@ -8,7 +8,7 @@ import { OrganizerEventStateService } from '@/features/organizer/services/organi
 import { NotificationService } from 'core/services/ui/notification.service';
 import { EmailValidator } from 'core/validators/email.validator';
 import { PhotographerService } from '@/core/services/photographer/photographer.service';
-import { PhotographerInvitationModel } from '@/core/models/photographer/photographer.model';
+import { PhotographerInvitationModel } from '@/core/models/photographer';
 
 
 @Component({

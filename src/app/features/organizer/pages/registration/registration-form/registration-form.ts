@@ -7,13 +7,13 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 import {
   CapacityMode,
   RegistrationFieldType,
-} from '../../../../../core/models/registration/registration.enums';
+} from '../../../../../core/models/registration';
 import { RegistrationFormService } from '../../../../../core/services/registration/registration-form.service';
 import {
   RegistrationFormFieldModel,
   UpsertRegistrationFormRequest,
-} from '../../../../../core/models/registration/registration-form.model';
-import { EditableField } from '../../../../../core/models/registration/registration-editable-field.model';
+} from '../../../../../core/models/registration';
+import { EditableField } from '../../../../../core/models/registration';
 
 @Component({
   selector: 'app-registration-form-page',

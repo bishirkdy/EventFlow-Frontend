@@ -1,4 +1,4 @@
-export interface CreateSessionModel {
+﻿export interface CreateSessionModel {
   sectionId: string;
   title: string;
   description?: string;

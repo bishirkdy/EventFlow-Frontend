@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
-import { EventPageModel } from '../../../../core/models/event-page/event-page.model';
+import { EventPageModel } from '../../../../core/models/event-page';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({

@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
-import { SessionModel } from '../../../../core/models/session/session.model';
+import { SessionModel } from '../../../../core/models/session';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 

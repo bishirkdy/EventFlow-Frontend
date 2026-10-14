@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { EVENT_SETTINGS_ENDPOINTS } from '../../api/endpoints/event-features/event-settings.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
-import { EventSettings } from '../../models/event-settings/event-settings.model';
-import { UpdateEventSettings } from '../../models/event-settings/event-settings-update.model';
+import { ApiResponse } from '../../models/common';
+import { EventSettings } from '../../models/event-settings';
+import { UpdateEventSettings } from '../../models/event-settings';
 
 @Injectable({
   providedIn: 'root',

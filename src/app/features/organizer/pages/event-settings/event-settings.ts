@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventSettingsService } from '../../../../core/services/event-settings/event-settings';
-import { EventSettings as EventSettingsModel } from '../../../../core/models/event-settings/event-settings.model';
+import { EventSettings as EventSettingsModel } from '../../../../core/models/event-settings';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({

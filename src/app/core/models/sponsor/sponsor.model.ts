@@ -1,4 +1,4 @@
-export interface SponsorModel {
+﻿export interface SponsorModel {
   id: string;
   eventId: string;
   name: string;

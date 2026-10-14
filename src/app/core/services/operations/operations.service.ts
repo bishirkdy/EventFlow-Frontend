@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 import { OPERATIONS_ENDPOINTS } from '../../api/endpoints/operations/operations.endpoints';
 import {
   AttendanceDashboardModel,
@@ -10,7 +10,7 @@ import {
   AttendanceStaffModel,
   AttendanceAnalyticsModel,
   NotificationModel,
-} from '../../models/operations/operations.model';
+} from '../../models/operations';
 @Injectable({ providedIn: 'root' })
 export class OperationsService {
   private readonly http = inject(HttpClient);

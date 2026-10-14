@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../core/services/event-page-section/event-page-section.service';
-import { PageSectionModel } from '../../../../core/models/event-page-section/PageSectionModel';
+import { PageSectionModel } from '../../../../core/models/event-page-section';
 
 @Component({
   selector: 'app-page-sections',

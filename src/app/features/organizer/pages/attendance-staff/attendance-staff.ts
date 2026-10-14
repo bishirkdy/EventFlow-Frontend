@@ -4,13 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 import { OperationsService } from '../../../../core/services/operations/operations.service';
-import { AttendanceStaffModel } from '../../../../core/models/operations/operations.model';
+import { AttendanceStaffModel } from '../../../../core/models/operations';
 
 import { SectionService } from '../../../../core/services/section/section.service';
 import { SessionService } from '../../../../core/services/session/session.service';
 
-import { SectionModel } from '../../../../core/models/section/section.model';
-import { SessionModel } from '../../../../core/models/session/session.model';
+import { SectionModel } from '../../../../core/models/section';
+import { SessionModel } from '../../../../core/models/session';
 
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { EmailValidator } from '../../../../core/validators/email.validator';

@@ -1,7 +1,6 @@
-import { RegistrationStatus } from './registration.enums';
-import { ParticipantModel } from './participant.model';
+﻿import { ParticipantModel } from './participant.model';
+import { RegistrationStatus } from './registration-status.enum';
 import { TicketModel } from './ticket.model';
-
 
 export interface RegistrationModel {
   id: string;

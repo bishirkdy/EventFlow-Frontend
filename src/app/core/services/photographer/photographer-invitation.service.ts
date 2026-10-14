@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Api } from '@/core/api/api';
-import { ApiResponse } from '@/core/models/common/api-response';
-import { InvitationData } from '@/core/models/photographer/photograher-invitation.model';
-import { AcceptInvitationResponse } from '@/core/models/photographer/accept-invitation.model';
+import { ApiResponse } from '@/core/models/common';
+import { InvitationData } from '@/core/models/photographer';
+import { AcceptInvitationResponse } from '@/core/models/photographer';
 import { PHOTOGRAPHER_INVITATION_ENDPOINTS } from '@/core/api/endpoints/photograher-invitation/photographer-invitation.endpoints';
-import { CreatePhotographerAccountRequest } from '@/core/models/photographer/create-photograher-request.model';
+import { CreatePhotographerAccountRequest } from '@/core/models/photographer';
 
 @Injectable({
   providedIn: 'root',

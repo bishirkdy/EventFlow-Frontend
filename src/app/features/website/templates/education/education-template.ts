@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
+import { EventWebsiteData } from '../../../../core/models/website';
 import { EventWebsiteShell } from '../../components/event-website-shell/event-website-shell';
 
 @Component({

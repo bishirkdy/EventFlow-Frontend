@@ -3,12 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
-import { UpdateSessionModel } from '../../../../../core/models/session/update-session.model';
+import { UpdateSessionModel } from '../../../../../core/models/session';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { VenueModel } from '../../../../../core/models/venue/venue.model';
+import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { Event as EventModel } from '../../../../../core/models/event/event.model';
+import { Event as EventModel } from '../../../../../core/models/event';
 
 @Component({
   selector: 'app-update-session',

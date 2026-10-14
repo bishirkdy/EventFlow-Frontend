@@ -5,12 +5,10 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { PARTICIPANT_ENDPOINTS } from '../../api/endpoints/registration/participant.endpoint';
 
-import {
-  PaginatedResponseModel,
-  ParticipantModel,
-} from '../../models/registration/registration-index';
+import { ParticipantModel } from '../../models/registration';
+import { PaginatedResponseModel } from '../../models/common';
 
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 
 @Injectable({
   providedIn: 'root',

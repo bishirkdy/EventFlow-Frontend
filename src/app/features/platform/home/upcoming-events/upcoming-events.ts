@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EventService } from '../../../../core/services/event/event.service';
-import { Event as EventModel } from '../../../../core/models/event/event.model';
+import { Event as EventModel } from '../../../../core/models/event';
 
 @Component({
   selector: 'app-upcoming-events',

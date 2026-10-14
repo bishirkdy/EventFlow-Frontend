@@ -5,7 +5,7 @@ import { EventService } from '../../../../core/services/event/event.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { finalize } from 'rxjs';
-import { ParticipantStatus } from '@/core/models/registration/registration.enums';
+import { ParticipantStatus } from '@/core/models/registration';
 
 @Component({
   selector: 'app-event-details',

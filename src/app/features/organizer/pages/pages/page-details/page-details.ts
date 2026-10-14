@@ -4,8 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
-import { EventPageModel } from '../../../../../core/models/event-page/event-page.model';
-import { NavigationItemByPageModel } from '../../../../../core/models/navigation-item/navigation-item-bypage.model';
+import { EventPageModel } from '../../../../../core/models/event-page';
+import { NavigationItemByPageModel } from '../../../../../core/models/navigation-item';
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 

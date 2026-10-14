@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistrationFormComponent } from './registration-form';
-import { CapacityMode } from '../../../../../core/models/registration/registration.enums';
+import { CapacityMode } from '../../../../../core/models/registration';
 
 const form = {
   id: 'form-1',

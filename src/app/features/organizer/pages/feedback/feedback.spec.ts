@@ -5,7 +5,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { OrganizerFeedbackComponent } from './feedback';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { FeedbackTargetType } from '../../../../core/models/feedback/feedback.model';
+import { FeedbackTargetType } from '../../../../core/models/feedback';
 
 describe('OrganizerFeedbackComponent', () => {
   let component: OrganizerFeedbackComponent;

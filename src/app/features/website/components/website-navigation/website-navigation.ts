@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
-import { NavigationItemModel } from '../../../../core/models/navigation-item/navigation-item.model';
-import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
+import { NavigationItemModel } from '../../../../core/models/navigation-item';
+import { EventWebsiteData } from '../../../../core/models/website';
 
 @Component({
   selector: 'app-website-navigation',

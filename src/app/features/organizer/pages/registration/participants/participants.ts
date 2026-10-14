@@ -6,8 +6,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { ParticipantService } from '../../../../../core/services/registration/participant.service';
-import { ParticipantModel } from '../../../../../core/models/registration/participant.model';
-import { ParticipantStatus } from '../../../../../core/models/registration/registration.enums';
+import { ParticipantModel } from '../../../../../core/models/registration';
+import { ParticipantStatus } from '../../../../../core/models/registration';
 
 @Component({
   selector: 'app-participants',

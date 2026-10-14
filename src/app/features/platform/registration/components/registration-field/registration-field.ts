@@ -9,8 +9,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
-import { RegistrationFormFieldModel } from '../../../../../core/models/registration/registration-form.model';
+import { RegistrationFieldType } from '../../../../../core/models/registration';
+import { RegistrationFormFieldModel } from '../../../../../core/models/registration';
 
 @Component({
   selector: 'app-registration-field',

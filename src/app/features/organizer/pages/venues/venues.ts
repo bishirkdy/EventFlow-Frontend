@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
-import { VenueModel } from '../../../../core/models/venue/venue.model';
+import { VenueModel } from '../../../../core/models/venue';
 import { VenueService } from '../../../../core/services/venue/venue.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 

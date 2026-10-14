@@ -6,23 +6,23 @@ import { Api } from '../../api/api';
 import { REGISTRATION_ENDPOINTS } from '../../api/endpoints/registration/registration.endpoint';
 
 import {
-  PaginatedResponseModel,
   RegistrationModel,
   RegistrationStatsModel,
-} from '../../models/registration/registration-index';
+} from '../../models/registration';
+import { PaginatedResponseModel } from '../../models/common';
 import {
   CertificateAnalyticsModel,
   RegistrationAnalyticsModel,
-} from '../../models/registration/registration-stats.model';
-import { RegistrationStatus } from '../../models/registration/registration.enums';
+} from '../../models/registration';
+import { RegistrationStatus } from '../../models/registration';
 
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 import {
   CancelRegistrationRequest,
   CreateRegistrationRequest,
   RejectRegistrationRequest,
   UpdateRegistrationRequest,
-} from '../../models/registration/registration-request.model';
+} from '../../models/registration';
 
 @Injectable({
   providedIn: 'root',

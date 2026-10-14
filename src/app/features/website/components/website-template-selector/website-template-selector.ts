@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { EventWebsiteData } from '../../../../core/models/website/event-website-data.model';
+import { EventWebsiteData } from '../../../../core/models/website';
 import { ConferenceTemplate } from '../../templates/conference/conference-template';
 import { EducationTemplate } from '../../templates/education/education-template';
 import { FestivalTemplate } from '../../templates/festival/festival-template';

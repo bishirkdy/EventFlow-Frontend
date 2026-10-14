@@ -3,10 +3,10 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { SPONSOR_ENDPOINTS } from '../../api/endpoints/event-features/sponsor.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
-import { CreateSponsorModel } from '../../models/sponsor/create-sponsor.model';
-import { SponsorModel } from '../../models/sponsor/sponsor.model';
-import { UpdateSponsorModel } from '../../models/sponsor/update-sponsor.model';
+import { ApiResponse } from '../../models/common';
+import { CreateSponsorModel } from '../../models/sponsor';
+import { SponsorModel } from '../../models/sponsor';
+import { UpdateSponsorModel } from '../../models/sponsor';
 @Injectable({providedIn:'root'})
 export class SponsorService {
   private readonly http=inject(HttpClient); private readonly api=inject(Api);

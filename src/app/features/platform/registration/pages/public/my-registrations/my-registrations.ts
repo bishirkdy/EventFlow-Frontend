@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { RegistrationStatusComponent } from '../../../components/registration-status/registration-status';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
-import { RegistrationModel } from '../../../../../../core/models/registration/registration.model';
+import { RegistrationModel } from '../../../../../../core/models/registration';
 
 @Component({
   selector: 'app-my-registrations',

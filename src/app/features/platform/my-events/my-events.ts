@@ -7,7 +7,7 @@ import { EventRoleService } from '../../../core/services/event-role/event-role.s
 import { RegistrationService } from '@/core/services/registration/registration.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
 
-import { Event } from '../../../core/models/event/event.model';
+import { Event } from '../../../core/models/event';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
 

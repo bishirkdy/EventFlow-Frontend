@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event/event.service';
-import { Event } from '../../../core/models/event/event.model';
+import { Event } from '../../../core/models/event';
 
 @Component({
   selector: 'app-events',

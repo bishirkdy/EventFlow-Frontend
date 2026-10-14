@@ -8,7 +8,7 @@ import { EventFeatureService } from '../../../../core/services/event-feature/eve
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import { Event as EventModel } from '../../../../core/models/event/event.model';
+import { Event as EventModel } from '../../../../core/models/event';
 import { TitleCasePipe } from '@angular/common';
 
 @Component({

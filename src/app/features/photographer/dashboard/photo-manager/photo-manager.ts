@@ -16,7 +16,7 @@ import {
 } from 'lucide-angular';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { PhotoService } from '@/core/services/photo/photo.service';
-import { Photo } from '@/core/models/photographer/photo.model';
+import { Photo } from '@/core/models/photographer';
 
 @Component({
   selector: 'app-photo-manager',

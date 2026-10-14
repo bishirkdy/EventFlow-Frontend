@@ -13,13 +13,13 @@ import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
   ProgrammeAnalyticsModel,
-} from '../../../../core/models/event/event-analytics.model';
+} from '../../../../core/models/event';
 import {
   CertificateAnalyticsModel,
   RegistrationAnalyticsModel,
-} from '../../../../core/models/registration/registration-stats.model';
-import { AttendanceAnalyticsModel } from '../../../../core/models/operations/operations.model';
-import { TeamAnalyticsModel } from '../../../../core/models/event-role/event-role.model';
+} from '../../../../core/models/registration';
+import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
+import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 
 @Component({

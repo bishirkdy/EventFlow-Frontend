@@ -1,0 +1,12 @@
+﻿import { RegistrationFieldType } from './registration-field-type.enum';
+
+export interface RegistrationFormFieldModel {
+  id: string;
+  fieldKey: string;
+  label: string;
+  fieldType: RegistrationFieldType;
+  isRequired: boolean;
+  displayOrder: number;
+  optionsJson: string | null;
+  validationJson: string | null;
+}

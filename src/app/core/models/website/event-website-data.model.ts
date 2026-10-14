@@ -1,16 +1,16 @@
-import { Event as EventModel } from '../../../core/models/event/event.model';
-import { EventFeatureModel } from '../../../core/models/event-feature/event-feature.model';
-import { EventPageModel } from '../../../core/models/event-page/event-page.model';
-import { SessionModel } from '../../../core/models/session/session.model';
-import { VenueModel } from '../../../core/models/venue/venue.model';
-import { NavigationItemModel } from '../../../core/models/navigation-item/navigation-item.model';
-import { PageSectionModel } from '../../../core/models/event-page-section/PageSectionModel';
-import { SpeakerModel } from '../../../core/models/speaker/speaker.model';
-import { SponsorModel } from '../../../core/models/sponsor/sponsor.model';
+﻿import { Event } from '../event/event.model';
+import { EventFeatureModel } from '../event-feature/event-feature.model';
+import { EventPageModel } from '../event-page/event-page.model';
+import { NavigationItemModel } from '../navigation-item/navigation-item.model';
+import { PageSectionModel } from '../event-page-section/page-section.model';
+import { SessionModel } from '../session/session.model';
+import { SpeakerModel } from '../speaker/speaker.model';
+import { SponsorModel } from '../sponsor/sponsor.model';
+import { VenueModel } from '../venue/venue.model';
 
 export interface EventWebsiteData {
-  event: EventModel | null;
-  images: EventModel['images'];
+  event: Event | null;
+  images: Event['images'];
   features: EventFeatureModel[];
   pages: EventPageModel[];
   pageSections: PageSectionModel[];

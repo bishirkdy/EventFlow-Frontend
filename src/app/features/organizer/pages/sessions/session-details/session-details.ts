@@ -3,12 +3,12 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
-import { SessionModel } from '../../../../../core/models/session/session.model';
+import { SessionModel } from '../../../../../core/models/session';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { VenueModel } from '../../../../../core/models/venue/venue.model';
-import { SpeakerModel } from '../../../../../core/models/speaker/speaker.model';
+import { VenueModel } from '../../../../../core/models/venue';
+import { SpeakerModel } from '../../../../../core/models/speaker';
 import { SpeakerService } from '../../../../../core/services/speaker/speaker.service';
 import { SessionSpeakerService } from '../../../../../core/services/session-speaker/session-speaker.service';
 import { EventFeatureService } from '../../../../../core/services/event-feature/event-feature.service';

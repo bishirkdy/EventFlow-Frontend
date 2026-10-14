@@ -4,7 +4,7 @@ import { ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { CreateVenueRequest } from '../../../../../core/models/venue/create-venue.model';
+import { CreateVenueRequest } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({

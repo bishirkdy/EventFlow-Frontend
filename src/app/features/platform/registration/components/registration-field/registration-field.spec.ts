@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 
 import { RegistrationFieldComponent } from './registration-field';
-import { RegistrationFieldType } from '../../../../../core/models/registration/registration.enums';
+import { RegistrationFieldType } from '../../../../../core/models/registration';
 
 const field = {
   id: 'field-1',

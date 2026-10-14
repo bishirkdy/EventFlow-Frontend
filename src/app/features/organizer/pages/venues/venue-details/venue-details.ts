@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { VenueModel } from '../../../../../core/models/venue/venue.model';
+import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({

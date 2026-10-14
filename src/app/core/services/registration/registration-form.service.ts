@@ -8,9 +8,9 @@ import { REGISTRATION_FORM_ENDPOINTS } from '../../api/endpoints/registration/re
 import {
   RegistrationFormModel,
   UpsertRegistrationFormRequest,
-} from '../../models/registration/registration-index';
+} from '../../models/registration';
 
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 
 @Injectable({
   providedIn: 'root',

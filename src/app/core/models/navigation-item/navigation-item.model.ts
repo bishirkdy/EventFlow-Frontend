@@ -1,4 +1,4 @@
-export interface NavigationItemModel {
+﻿export interface NavigationItemModel {
   id: string;
   eventId: string;
   label: string;

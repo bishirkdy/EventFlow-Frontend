@@ -1,4 +1,4 @@
-export interface EventImage {
+﻿export interface EventImage {
   id: string;
   url: string;
   originalFileName: string;

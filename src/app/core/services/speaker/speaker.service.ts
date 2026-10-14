@@ -3,10 +3,10 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { SPEAKER_ENDPOINTS } from '../../api/endpoints/event-features/speaker.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
-import { CreateSpeakerModel } from '../../models/speaker/create-speaker.model';
-import { SpeakerDetailsModel, SpeakerModel } from '../../models/speaker/speaker.model';
-import { UpdateSpeakerModel } from '../../models/speaker/update-speaker.model';
+import { ApiResponse } from '../../models/common';
+import { CreateSpeakerModel } from '../../models/speaker';
+import { SpeakerDetailsModel, SpeakerModel } from '../../models/speaker';
+import { UpdateSpeakerModel } from '../../models/speaker';
 @Injectable({providedIn:'root'})
 export class SpeakerService {
   private readonly http=inject(HttpClient); private readonly api=inject(Api);

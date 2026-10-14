@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 import { Api } from '../../api/api';
-import { VenueModel } from '../../models/venue/venue.model';
-import { CreateVenueRequest } from '../../models/venue/create-venue.model';
-import { UpdateVenueRequest } from '../../models/venue/update-venue.model';
+import { VenueModel } from '../../models/venue';
+import { CreateVenueRequest } from '../../models/venue';
+import { UpdateVenueRequest } from '../../models/venue';
 import { VENUE_ENDPOINTS } from '../../api/endpoints/event-features/venue.endpoint';
 
 @Injectable({

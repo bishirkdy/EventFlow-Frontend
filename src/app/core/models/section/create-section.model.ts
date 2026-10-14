@@ -1,4 +1,4 @@
-export interface CreateSectionModel {
+﻿export interface CreateSectionModel {
   name: string;
   description?: string;
   displayOrder: number;

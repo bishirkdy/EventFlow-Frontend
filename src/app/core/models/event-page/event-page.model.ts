@@ -1,4 +1,4 @@
-export interface EventPageModel {
+﻿export interface EventPageModel {
   id: string;
   eventId: string;
   name: string;

@@ -14,12 +14,9 @@ import {
 } from 'lucide-angular';
 import { CertificateService } from 'core/services/registration/certificate.service';
 import { NotificationService } from 'core/services/ui/notification.service';
-import {
-  CertificateFieldAlign,
-  CertificateSettingsModel,
-  CertificateTemplateFieldModel,
-  CertificateTemplateMode,
-} from 'core/models/registration/certificate.model';
+import { CertificateFieldAlign, CertificateTemplateFieldModel } from '@/core/models/certificate';
+import { CertificateSettingsModel, CertificateTemplateMode } from '@/core/models/certificate';
+
 
 interface FieldOption {
   key: string;

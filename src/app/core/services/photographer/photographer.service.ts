@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { PhotographerInvitationModel } from '../../models/photographer/photographer.model';
-import { ApiResponse } from '@/core/models/common/api-response';
+import { PhotographerInvitationModel } from '../../models/photographer';
+import { ApiResponse } from '@/core/models/common';
 import { Api } from '@/core/api/api';
 import { PHOTOGRAPHER_ENDPOINTS } from '@/core/api/endpoints/photographer/photographer.endpoints';
 

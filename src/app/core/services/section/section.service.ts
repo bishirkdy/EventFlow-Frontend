@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { SECTION_ENDPOINTS } from '../../api/endpoints/event-features/section.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 
-import { SectionModel } from '../../models/section/section.model';
-import { CreateSectionModel } from '../../models/section/create-section.model';
-import { UpdateSectionModel } from '../../models/section/update-section.model';
+import { SectionModel } from '../../models/section';
+import { CreateSectionModel } from '../../models/section';
+import { UpdateSectionModel } from '../../models/section';
 
 @Injectable({
   providedIn: 'root',

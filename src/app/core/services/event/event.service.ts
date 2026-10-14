@@ -3,16 +3,16 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
-import { ApiResponse } from '../../models/common/api-response';
-import { Event } from '../../models/event/event.model';
+import { ApiResponse } from '../../models/common';
+import { Event } from '../../models/event';
 import { EVENT_ENDPOINTS } from '../../api/endpoints/event-entpoints/event-endpoints';
-import { CreateEventRequest } from '../../models/event/create-event/CreateEventRequest';
-import { CreateEventResponse } from '../../models/event/create-event/CreateEventResponse';
+import { CreateEventRequest } from '../../models/event';
+import { CreateEventResponse } from '../../models/event';
 import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
   ProgrammeAnalyticsModel,
-} from '../../models/event/event-analytics.model';
+} from '../../models/event';
 
 @Injectable({
   providedIn: 'root',

@@ -4,9 +4,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { getApiErrorMessage } from '../../../../core/api/api-error';
-import { Event as EventModel } from '../../../../core/models/event/event.model';
-import { EventTeamMemberModel } from '../../../../core/models/event-role/event-role.model';
-import { EventFeatureModel } from '../../../../core/models/event-feature/event-feature.model';
+import { Event as EventModel } from '../../../../core/models/event';
+import { EventTeamMemberModel } from '../../../../core/models/event-role';
+import { EventFeatureModel } from '../../../../core/models/event-feature';
 
 import { EventService } from '../../../../core/services/event/event.service';
 import { EventRoleService } from '../../../../core/services/event-role/event-role.service';
@@ -18,13 +18,13 @@ import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
   ProgrammeAnalyticsModel,
-} from '../../../../core/models/event/event-analytics.model';
+} from '../../../../core/models/event';
 import {
   CertificateAnalyticsModel,
   RegistrationAnalyticsModel,
-} from '../../../../core/models/registration/registration-stats.model';
-import { AttendanceAnalyticsModel } from '../../../../core/models/operations/operations.model';
-import { TeamAnalyticsModel } from '../../../../core/models/event-role/event-role.model';
+} from '../../../../core/models/registration';
+import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
+import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 
 @Component({
   selector: 'app-owner-dashboard',

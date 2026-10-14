@@ -1,4 +1,4 @@
-export interface UpdateSectionModel {
+﻿export interface UpdateSectionModel {
   name: string;
   description?: string;
   displayOrder: number;

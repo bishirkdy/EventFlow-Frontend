@@ -6,10 +6,10 @@ import { SessionService } from '../../../core/services/session/session.service';
 import { SpeakerService } from '../../../core/services/speaker/speaker.service';
 import { VenueService } from '../../../core/services/venue/venue.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
-import { FeedbackTargetType } from '../../../core/models/feedback/feedback.model';
-import { SessionModel } from '../../../core/models/session/session.model';
-import { SpeakerModel } from '../../../core/models/speaker/speaker.model';
-import { VenueModel } from '../../../core/models/venue/venue.model';
+import { FeedbackTargetType } from '../../../core/models/feedback';
+import { SessionModel } from '../../../core/models/session';
+import { SpeakerModel } from '../../../core/models/speaker';
+import { VenueModel } from '../../../core/models/venue';
 import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({

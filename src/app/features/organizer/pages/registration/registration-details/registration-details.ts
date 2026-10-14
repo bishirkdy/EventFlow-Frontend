@@ -6,8 +6,8 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { RegistrationService } from '../../../../../core/services/registration/registration.service';
-import { RegistrationModel } from '../../../../../core/models/registration/registration.model';
-import { RegistrationStatus } from '../../../../../core/models/registration/registration.enums';
+import { RegistrationModel } from '../../../../../core/models/registration';
+import { RegistrationStatus } from '../../../../../core/models/registration';
 import { finalize } from 'rxjs';
 
 @Component({

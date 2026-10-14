@@ -12,7 +12,7 @@ import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { OperationsService } from '../../../../core/services/operations/operations.service';
-import { AttendanceDashboardModel } from '../../../../core/models/operations/operations.model';
+import { AttendanceDashboardModel } from '../../../../core/models/operations';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 @Component({

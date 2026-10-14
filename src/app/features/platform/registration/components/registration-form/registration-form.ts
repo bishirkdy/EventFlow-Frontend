@@ -20,15 +20,15 @@ import { RegistrationFieldComponent } from '../registration-field/registration-f
 import {
   CapacityMode,
   RegistrationFieldType,
-} from '../../../../../core/models/registration/registration.enums';
-import { Event } from '../../../../../core/models/event/event.model';
+} from '../../../../../core/models/registration';
+import { Event } from '../../../../../core/models/event';
 
 import {
   RegistrationFormFieldModel,
   RegistrationFormModel,
-} from '../../../../../core/models/registration/registration-form.model';
+} from '../../../../../core/models/registration';
 
-import { RegistrationFormSubmit } from '../../../../../core/models/registration/registration-form-submit.model';
+import { RegistrationFormSubmit } from '../../../../../core/models/registration';
 import { Router } from '@angular/router';
 
 @Component({

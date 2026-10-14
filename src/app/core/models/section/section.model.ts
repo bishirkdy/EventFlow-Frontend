@@ -1,4 +1,4 @@
-export interface SectionModel {
+﻿export interface SectionModel {
   id: string;
   name: string;
   description: string | null;

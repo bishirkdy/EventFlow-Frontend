@@ -1,4 +1,4 @@
-export interface Photo {
+﻿export interface Photo {
   photoId: string;
   eventId: string;
   photographerId: string;

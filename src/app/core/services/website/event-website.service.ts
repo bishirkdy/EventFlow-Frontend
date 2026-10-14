@@ -11,8 +11,8 @@ import { NavigationItemService } from '../navigation-item/navigation-item.servic
 import { SpeakerService } from '../speaker/speaker.service';
 import { SponsorService } from '../sponsor/sponsor.service';
 
-import { NavigationItemModel } from '../../models/navigation-item/navigation-item.model';
-import { EventWebsiteData } from '../../models/website/event-website-data.model';
+import { NavigationItemModel } from '../../models/navigation-item';
+import { EventWebsiteData } from '../../models/website';
 
 @Injectable({ providedIn: 'root' })
 export class EventWebsiteService {

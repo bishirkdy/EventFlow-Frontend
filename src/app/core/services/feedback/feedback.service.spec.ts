@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { FeedbackService } from './feedback.service';
-import { FeedbackTargetType } from '../../models/feedback/feedback.model';
+import { FeedbackTargetType } from '../../models/feedback';
 
 describe('FeedbackService', () => {
   let service: FeedbackService;

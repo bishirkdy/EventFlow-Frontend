@@ -1,4 +1,4 @@
-export interface VenueModel {
+﻿export interface VenueModel {
   id: string;
   eventId: string;
   name: string;

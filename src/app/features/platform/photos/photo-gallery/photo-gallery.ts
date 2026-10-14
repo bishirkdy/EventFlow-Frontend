@@ -14,7 +14,7 @@ import {
   ArrowLeft,
   ScanFace,
 } from 'lucide-angular';
-import { Photo } from '@/core/models/photographer/photo.model';
+import { Photo } from '@/core/models/photographer';
 
 @Component({
   selector: 'app-photo-gallery',

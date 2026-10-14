@@ -1,4 +1,4 @@
-export interface SessionModel {
+﻿export interface SessionModel {
   id: string;
   eventId: string;
   sectionId: string;

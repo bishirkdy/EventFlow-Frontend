@@ -6,7 +6,7 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
-import { EventPageModel } from '../../../../../core/models/event-page/event-page.model';
+import { EventPageModel } from '../../../../../core/models/event-page';
 
 @Component({
   selector: 'app-create-navigation-item',

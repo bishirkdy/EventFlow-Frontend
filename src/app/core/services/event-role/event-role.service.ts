@@ -3,12 +3,12 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, switchMap, throwError } from 'rxjs';
 
 import { Api } from '../../api/api';
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 import {
   EventRoleModel,
   EventTeamMemberModel,
   TeamAnalyticsModel,
-} from '../../models/event-role/event-role.model';
+} from '../../models/event-role';
 import { AuthService } from '../auth/auth.service';
 import { EVENT_ROLE_ENDPOINTS } from '../../api/endpoints/event-role/event-role.endpoints';
 

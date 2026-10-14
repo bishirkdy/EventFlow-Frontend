@@ -13,7 +13,7 @@ import {
   RegistrationModel,
   RegistrationStatsModel,
   RegistrationStatus,
-} from '../../../../../core/models/registration/registration-index';
+} from '../../../../../core/models/registration';
 
 @Component({
   selector: 'app-registrations',

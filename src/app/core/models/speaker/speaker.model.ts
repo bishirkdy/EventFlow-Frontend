@@ -1,4 +1,4 @@
-export interface SpeakerModel {
+﻿export interface SpeakerModel {
   id: string;
   eventId: string;
   name: string;
@@ -10,5 +10,3 @@ export interface SpeakerModel {
   displayOrder: number;
   isActive: boolean;
 }
-export interface SpeakerSessionModel { id: string; title: string; sessionType: string; startTime: string | null; endTime: string | null; }
-export interface SpeakerDetailsModel extends SpeakerModel { sessions: SpeakerSessionModel[]; }

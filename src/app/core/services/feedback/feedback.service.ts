@@ -3,12 +3,12 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { FEEDBACK_ENDPOINTS } from '../../api/endpoints/feedback/feedback.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 import {
   FeedbackResults,
   SubmitFeedbackPayload,
   SubmitFeedbackResult,
-} from '../../models/feedback/feedback.model';
+} from '../../models/feedback';
 
 @Injectable({
   providedIn: 'root',

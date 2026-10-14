@@ -1,10 +1,5 @@
-import { EventImage } from './event-image.model';
-
-export type EventStatus =
-  | 'Draft'
-  | 'Published'
-  | 'Cancelled'
-  | 'Completed';
+﻿import { EventImage } from './event-image.model';
+import { EventStatus } from './event-status.enum';
 
 export interface Event {
   id: string;

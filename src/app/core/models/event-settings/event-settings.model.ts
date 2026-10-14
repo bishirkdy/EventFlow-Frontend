@@ -1,4 +1,4 @@
-export interface EventSettings {
+﻿export interface EventSettings {
   id: string;
   eventId: string;
   registrationEnabled: boolean;

@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FeedbackService } from '../../../../core/services/feedback/feedback.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { FeedbackResults, FeedbackTargetType } from '../../../../core/models/feedback/feedback.model';
+import { FeedbackResults, FeedbackTargetType } from '../../../../core/models/feedback';
 
 @Component({
   selector: 'app-organizer-feedback',

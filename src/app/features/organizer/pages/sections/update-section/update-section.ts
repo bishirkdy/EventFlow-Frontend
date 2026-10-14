@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
-import { UpdateSectionModel } from '../../../../../core/models/section/update-section.model';
+import { UpdateSectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 

@@ -6,7 +6,7 @@ import { finalize } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
 import { EventTypeService } from '../../../core/services/event-type/event-type.service';
-import { EventTypeModel } from '../../../core/models/event-type/event-type.model';
+import { EventTypeModel } from '../../../core/models/event-type';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
 
 @Component({

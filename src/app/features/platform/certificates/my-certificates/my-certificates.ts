@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import { CertificateService } from '../../../../core/services/registration/certificate.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { CertificateModel } from '../../../../core/models/registration/certificate.model';
+import { CertificateModel } from '@/core/models/certificate';
 
 @Component({
   selector: 'app-my-certificates',

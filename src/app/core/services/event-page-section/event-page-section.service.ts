@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { ApiResponse } from '../../models/common/api-response';
-import { PageSectionModel } from '../../models/event-page-section/PageSectionModel';
+import { ApiResponse } from '../../models/common';
+import { PageSectionModel } from '../../models/event-page-section';
 import { Api } from '../../api/api';
 import { HttpClient } from '@angular/common/http';
 import { PAGE_SECTION_ENDPOINTS } from '../../api/endpoints/event-features/event-page-section.endpoints';
 import { Observable } from 'rxjs';
-import { CreatePageSectionModel } from '../../models/event-page-section/CreatePageSectionModel';
-import { UpdatePageSectionModel } from '../../models/event-page-section/UpdatePageSectionModel';
+import { CreatePageSectionModel } from '../../models/event-page-section';
+import { UpdatePageSectionModel } from '../../models/event-page-section';
 
 @Injectable({
   providedIn: 'root',

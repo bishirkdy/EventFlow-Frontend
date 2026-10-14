@@ -4,16 +4,15 @@ import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { CERTIFICATE_ENDPOINTS } from '../../api/endpoints/registration/certificate.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
-import {
-  CertificateEligibilityModel,
-  CertificateGenerationResultModel,
-  CertificateModel,
-  CertificateSettingsModel,
-  CertificateSettingsRequest,
-  CertificateVerifyModel,
-  GenerateCertificatesRequest,
-} from '../../models/registration/certificate.model';
+import { ApiResponse } from '../../models/common';
+import { CertificateSettingsModel } from '@/core/models/certificate';
+import { CertificateSettingsRequest } from '@/core/models/certificate';
+import { CertificateEligibilityModel } from '@/core/models/certificate';
+import { GenerateCertificatesRequest } from '@/core/models/certificate';
+import { CertificateGenerationResultModel } from '@/core/models/certificate';
+import { CertificateModel } from '@/core/models/certificate';
+import { CertificateVerifyModel } from '@/core/models/certificate';
+
 
 @Injectable({
   providedIn: 'root',

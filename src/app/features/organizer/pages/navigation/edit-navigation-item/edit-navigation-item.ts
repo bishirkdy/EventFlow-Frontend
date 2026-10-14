@@ -6,8 +6,8 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
-import { EventPageModel } from '../../../../../core/models/event-page/event-page.model';
-import { NavigationItemModel } from '../../../../../core/models/navigation-item/navigation-item.model';
+import { EventPageModel } from '../../../../../core/models/event-page';
+import { NavigationItemModel } from '../../../../../core/models/navigation-item';
 
 @Component({
   selector: 'app-edit-navigation-item',

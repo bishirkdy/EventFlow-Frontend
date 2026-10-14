@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
-import { NavigationItemModel } from '../../models/navigation-item/navigation-item.model';
-import { ApiResponse } from '../../models/common/api-response';
+import { NavigationItemModel } from '../../models/navigation-item';
+import { ApiResponse } from '../../models/common';
 import { NAVIGATION_ITEM_ENDPOINTS } from '../../api/endpoints/event-features/navigation-item.endpoint';
-import { CreateNavigationItemModel } from '../../models/navigation-item/create-navigation-item';
-import { UpdateNavigationItemModel } from '../../models/navigation-item/update-navigation-item';
-import { NavigationItemByPageModel } from '../../models/navigation-item/navigation-item-bypage.model';
+import { CreateNavigationItemModel } from '../../models/navigation-item';
+import { UpdateNavigationItemModel } from '../../models/navigation-item';
+import { NavigationItemByPageModel } from '../../models/navigation-item';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationItemService {

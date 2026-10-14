@@ -1,4 +1,4 @@
-export interface RegistrationFormSubmit {
+﻿export interface RegistrationFormSubmit {
   firstName: string;
   lastName: string;
   email: string;

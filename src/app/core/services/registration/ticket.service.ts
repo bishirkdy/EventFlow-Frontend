@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 
 import { Api } from '../../api/api';
 import { TICKET_ENDPOINTS } from '../../api/endpoints/registration/ticket.endpoint';
-import { TicketModel } from '../../models/registration/registration-index';
-import { ApiResponse } from '../../models/common/api-response';
+import { TicketModel } from '../../models/registration';
+import { ApiResponse } from '../../models/common';
 
 @Injectable({
   providedIn: 'root',

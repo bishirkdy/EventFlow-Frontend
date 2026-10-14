@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ApiResponse } from '../models/common/api-response';
+import { ApiResponse } from '../models/common';
 
 export function getApiErrorMessage(error: unknown, fallback = 'Something went wrong.'): string {
   if (error instanceof HttpErrorResponse) {

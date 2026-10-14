@@ -5,7 +5,7 @@ import { combineLatest } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { WebsiteTemplateSelector } from './components/website-template-selector/website-template-selector';
 import { EventWebsiteService } from '../../core/services/website/event-website.service';
-import { EventWebsiteData } from '../../core/models/website/event-website-data.model';
+import { EventWebsiteData } from '../../core/models/website';
 
 @Component({
   selector: 'app-website',

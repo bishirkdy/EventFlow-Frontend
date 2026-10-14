@@ -11,8 +11,8 @@ import { AuthService } from '@/core/services/auth/auth.service';
 import { NotificationService } from '@/core/services/ui/notification.service';
 import { PhotographerInvitationService } from '@/core/services/photographer/photographer-invitation.service';
 
-import { UserProfile } from '@/core/models/common/user-profile';
-import { InvitationData } from '@/core/models/photographer/photograher-invitation.model';
+import { UserProfile } from '@/core/models/auth';
+import { InvitationData } from '@/core/models/photographer';
 
 @Component({
   selector: 'app-accept-invitation',

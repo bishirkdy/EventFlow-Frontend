@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
-import { VenueModel } from '../../../../../core/models/venue/venue.model';
+import { VenueModel } from '../../../../../core/models/venue';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { UpdateVenueRequest } from '../../../../../core/models/venue/update-venue.model';
+import { UpdateVenueRequest } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 
 @Component({

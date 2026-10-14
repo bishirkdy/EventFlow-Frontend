@@ -2,12 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ApiResponse } from '../../models/common/api-response';
+import { ApiResponse } from '../../models/common';
 import { environment } from '../../../../environments/environment';
 import { PHOTO_ENDPOINTS } from '@/core/api/endpoints/photo-endpoint/photo.endpoint';
-import { UploadedPhoto } from '@/core/models/photographer/uploaded-photo.model';
-import { PaginatedResponseModel } from '@/core/models/registration/paginated-response.model';
-import { Photo } from '@/core/models/photographer/photo.model';
+import { UploadedPhoto } from '@/core/models/photographer';
+import { PaginatedResponseModel } from '@/core/models/common';
+import { Photo } from '@/core/models/photographer';
 
 @Injectable({
   providedIn: 'root',

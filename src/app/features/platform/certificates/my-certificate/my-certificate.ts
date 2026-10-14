@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CertificateService } from 'core/services/registration/certificate.service';
 import { NotificationService } from 'core/services/ui/notification.service';
-import { CertificateModel } from 'core/models/registration/certificate.model';
+import { CertificateModel } from '@/core/models/certificate';
 
 @Component({
   selector: 'app-my-certificate',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './my-certificate.html',
-  styleUrl: './my-certificate.css',
 })
+
 export class MyCertificate implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly certificateService = inject(CertificateService);

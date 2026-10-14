@@ -3,8 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
 import { Api } from '../../api/api';
 import { EVENT_FEATURE_ENDPOINTS } from '../../api/endpoints/event-features/event-feature.endpoint';
-import { ApiResponse } from '../../models/common/api-response';
-import { EventFeatureModel } from '../../models/event-feature/event-feature.model';
+import { ApiResponse } from '../../models/common';
+import { EventFeatureModel } from '../../models/event-feature';
 
 @Injectable({
   providedIn: 'root',

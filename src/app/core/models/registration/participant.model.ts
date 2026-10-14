@@ -1,4 +1,4 @@
-import { ParticipantStatus } from './registration.enums';
+﻿import { ParticipantStatus } from './participant-status.enum';
 
 export interface ParticipantModel {
   id: string;

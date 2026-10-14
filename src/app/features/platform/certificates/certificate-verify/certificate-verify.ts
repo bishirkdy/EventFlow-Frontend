@@ -2,15 +2,15 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CertificateService } from 'core/services/registration/certificate.service';
-import { CertificateVerifyModel } from 'core/models/registration/certificate.model';
+import { CertificateVerifyModel } from '@/core/models/certificate';
 
 @Component({
   selector: 'app-certificate-verify',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './certificate-verify.html',
-  styleUrl: './certificate-verify.css',
 })
+
 export class CertificateVerify implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly certificateService = inject(CertificateService);

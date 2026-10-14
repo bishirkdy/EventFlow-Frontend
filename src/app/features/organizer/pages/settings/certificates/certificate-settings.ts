@@ -4,13 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CertificateService } from 'core/services/registration/certificate.service';
 import { NotificationService } from 'core/services/ui/notification.service';
-import {
-  CertificateEligibilityModel,
-  CertificateModel,
-  CertificateSettingsModel,
-  CertificateTemplateFieldModel,
-  CertificateTemplateMode,
-} from 'core/models/registration/certificate.model';
+
 import {
   RefreshCw,
   Save,
@@ -30,6 +24,10 @@ import {
 } from 'lucide-angular';
 import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 import { CertificateTemplateEditor } from './template-editor/template-editor';
+import { CertificateSettingsModel, CertificateTemplateMode } from '@/core/models/certificate';
+import { CertificateEligibilityModel } from '@/core/models/certificate';
+import { CertificateModel } from '@/core/models/certificate';
+import { CertificateTemplateFieldModel } from '@/core/models/certificate';
 
 interface SettingsForm {
   title: string;
@@ -52,7 +50,7 @@ export class CertificateSettings implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly certificateService = inject(CertificateService);
   private readonly notification = inject(NotificationService);
-  private readonly eventState = inject(OrganizerEventStateService)
+  private readonly eventState = inject(OrganizerEventStateService);
 
   readonly eventId = signal('');
   readonly settings = signal<CertificateSettingsModel | null>(null);
@@ -102,7 +100,7 @@ export class CertificateSettings implements OnInit {
   };
 
   ngOnInit(): void {
-    const eventId = this.eventState.eventId()
+    const eventId = this.eventState.eventId();
 
     if (eventId) {
       this.eventId.set(eventId);

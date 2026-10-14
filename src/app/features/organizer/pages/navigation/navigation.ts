@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { NavigationItemService } from '../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import { NavigationItemModel } from '../../../../core/models/navigation-item/navigation-item.model';
+import { NavigationItemModel } from '../../../../core/models/navigation-item';
 @Component({
   selector: 'app-navigation',
   standalone: true,

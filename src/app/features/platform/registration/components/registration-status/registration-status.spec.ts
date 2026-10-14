@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistrationStatusComponent } from './registration-status';
-import { RegistrationStatus } from '../../../../../core/models/registration/registration.enums';
+import { RegistrationStatus } from '../../../../../core/models/registration';
 
 describe('RegistrationStatusComponent', () => {
   let component: RegistrationStatusComponent;

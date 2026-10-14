@@ -7,7 +7,7 @@ import { SectionService } from '../../../../core/services/section/section.servic
 import { SessionService } from '../../../../core/services/session/session.service';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { AttendanceScopeType } from '../../../../core/models/operations/operations.model';
+import { AttendanceScopeType } from '../../../../core/models/operations';
 
 type ScannerStatus = 'ready' | 'starting' | 'scanning' | 'verifying' | 'success' | 'error';
 

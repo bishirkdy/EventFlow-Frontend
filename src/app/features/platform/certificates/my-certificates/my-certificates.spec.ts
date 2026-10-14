@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { MyCertificates } from './my-certificates';
 import { provideComponentTestProviders } from '../../../../testing/component-providers';
 import { CertificateService } from '../../../../core/services/registration/certificate.service';
-import { CertificateModel } from '../../../../core/models/registration/certificate.model';
+import { CertificateModel } from '@/core/models/certificate';
 
 describe('MyCertificates', () => {
   let component: MyCertificates;

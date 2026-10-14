@@ -1,4 +1,4 @@
-export interface TicketModel {
+﻿export interface TicketModel {
   id: string;
   registrationId: string;
   participantId: string;

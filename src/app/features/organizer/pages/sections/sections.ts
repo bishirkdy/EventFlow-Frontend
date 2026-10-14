@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
-import { SectionModel } from '../../../../core/models/section/section.model';
+import { SectionModel } from '../../../../core/models/section';
 import { SectionService } from '../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 

@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { SpeakerModel } from '../../../../core/models/speaker/speaker.model';
+import { SpeakerModel } from '../../../../core/models/speaker';
 import { SpeakerService } from '../../../../core/services/speaker/speaker.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 

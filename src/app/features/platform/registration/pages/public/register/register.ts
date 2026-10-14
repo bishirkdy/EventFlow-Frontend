@@ -5,10 +5,10 @@ import { NotificationService } from '../../../../../../core/services/ui/notifica
 import { RegistrationFormComponent } from '../../../components/registration-form/registration-form';
 import { RegistrationFormService } from '../../../../../../core/services/registration/registration-form.service';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
-import { RegistrationFormModel } from '../../../../../../core/models/registration/registration-form.model';
+import { RegistrationFormModel } from '../../../../../../core/models/registration';
 import { EventService } from '../../../../../../core/services/event/event.service';
-import { Event } from '../../../../../../core/models/event/event.model';
-import { RegistrationFormSubmit } from '../../../../../../core/models/registration/registration-form-submit.model';
+import { Event } from '../../../../../../core/models/event';
+import { RegistrationFormSubmit } from '../../../../../../core/models/registration';
 
 @Component({
   selector: 'app-register',

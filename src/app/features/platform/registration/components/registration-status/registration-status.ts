@@ -5,7 +5,7 @@ import {
   input,
 } from '@angular/core';
 
-import { RegistrationStatus } from '../../../../../core/models/registration/registration.enums';
+import { RegistrationStatus } from '../../../../../core/models/registration';
 
 @Component({
   selector: 'app-registration-status',

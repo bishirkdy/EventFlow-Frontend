@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
-import { EventFeatureModel } from '../../../../core/models/event-feature/event-feature.model';
+import { EventFeatureModel } from '../../../../core/models/event-feature';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
 @Component({
