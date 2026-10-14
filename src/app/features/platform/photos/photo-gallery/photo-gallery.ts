@@ -1,104 +1,128 @@
-import { Component, inject, signal, computed, OnInit, effect } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { environment } from '../../../../../environments/environment';
-
-interface Photo {
-  photoId: string;
-  eventId: string;
-  photographerId: string;
-  imageUrl: string;
-  thumbnailUrl?: string;
-  isVisible: boolean;
-  uploadedAt: string;
-  approvedAt?: string;
-}
-
-interface PaginatedResponse<T> {
-  items: T[];
-  pageNumber: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
-
-interface ApiResponse<T> {
-  isSuccess: boolean;
-  statusCode: number;
-  message: string;
-  data: T | null;
-}
+import { PhotoService } from '@/core/services/photo/photo.service';
+import {
+  LucideAngularModule,
+  ChevronLeft,
+  ChevronRight,
+  Images,
+  Maximize2,
+  ArrowLeft,
+  ScanFace,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-photo-gallery',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule, RouterLink],
   templateUrl: './photo-gallery.html',
-  styleUrl: './photo-gallery.css'
 })
 export class PhotoGallery implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly http = inject(HttpClient);
   private readonly notification = inject(NotificationService);
+  private readonly photoService = inject(PhotoService);
 
-  readonly eventId = signal<string>('');
+  readonly eventId = signal('');
   readonly photos = signal<Photo[]>([]);
   readonly loading = signal(true);
   readonly currentPage = signal(1);
   readonly pageSize = signal(24);
   readonly totalCount = signal(0);
 
+  readonly Images = Images;
+  readonly Maximize2 = Maximize2;
+  readonly ChevronLeft = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
+  readonly ArrowLeft = ArrowLeft;
+  readonly ScanFace = ScanFace;
+
   readonly totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()));
   readonly hasPreviousPage = computed(() => this.currentPage() > 1);
   readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
-  readonly endItem = computed(() => Math.min(this.currentPage() * this.pageSize(), this.totalCount()));
-  readonly startItem = computed(() => (this.currentPage() - 1) * this.pageSize() + 1);
 
-  ngOnInit() {
+  readonly startItem = computed(() =>
+    this.totalCount() === 0 ? 0 : (this.currentPage() - 1) * this.pageSize() + 1,
+  );
+
+  readonly endItem = computed(() =>
+    Math.min(this.currentPage() * this.pageSize(), this.totalCount()),
+  );
+
+  readonly skeletonSlots = Array.from({ length: 12 }, (_, i) => i);
+
+  ngOnInit(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
-    if (eventId) {
-      this.eventId.set(eventId);
-      this.loadPhotos();
+
+    if (!eventId) {
+      this.loading.set(false);
+      this.notification.error('Event ID was not found');
+      return;
     }
+
+    this.eventId.set(eventId);
+    this.loadPhotos();
   }
 
-  loadPhotos() {
+  loadPhotos(): void {
+    const eventId = this.eventId();
+
+    if (!eventId) {
+      this.loading.set(false);
+      return;
+    }
+
     this.loading.set(true);
-    this.http.get<any>(
-      `${environment.apiUrl}/events/${this.eventId()}/photos?page=${this.currentPage()}&pageSize=${this.pageSize()}&visibleOnly=true`
-    ).subscribe({
-      next: (response) => {
-        if (response.isSuccess && response.data) {
-          this.photos.set(response.data.items);
-          this.totalCount.set(response.data.totalCount);
-        }
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.notification.error('Failed to load photos.');
-      }
-    });
+
+    this.photoService
+      .getPhotos(eventId, this.currentPage(), this.pageSize(), true)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (response) => {
+          if (response.isSuccess && response.data) {
+            this.photos.set(response.data.items ?? []);
+            this.totalCount.set(response.data.totalCount ?? 0);
+            return;
+          }
+
+          this.photos.set([]);
+          this.totalCount.set(0);
+          this.notification.error('Unable to load photos for this event.');
+        },
+        error: (error) => {
+          console.error('Failed to load event photos:', error);
+
+          this.photos.set([]);
+          this.totalCount.set(0);
+
+          this.notification.error('Failed to load photos.');
+        },
+      });
   }
 
-  onPageChange(page: number) {
-    const totalPages = Math.ceil(this.totalCount() / this.pageSize());
-    if (page >= 1 && page <= totalPages) {
-      this.currentPage.set(page);
-      this.loadPhotos();
+  onPageChange(page: number): void {
+    if (this.loading() || page < 1 || page > this.totalPages() || page === this.currentPage()) {
+      return;
     }
+
+    this.currentPage.set(page);
+    this.loadPhotos();
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const date = new Date(dateString);
+
+    if (Number.isNaN(date.getTime())) {
+      return 'Date unavailable';
+    }
+
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
@@ -108,26 +132,42 @@ export class PhotoGallery implements OnInit {
     const pages: number[] = [];
 
     if (total <= 7) {
-      for (let i = 1; i <= total; i++) pages.push(i);
-    } else {
-      pages.push(1);
-      if (current > 3) pages.push(-1); // ellipsis
-      for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
-        pages.push(i);
+      for (let page = 1; page <= total; page++) {
+        pages.push(page);
       }
-      if (current < total - 2) pages.push(-1); // ellipsis
-      pages.push(total);
+
+      return pages;
     }
+
+    pages.push(1);
+
+    if (current > 3) {
+      pages.push(-1);
+    }
+
+    for (let page = Math.max(2, current - 1); page <= Math.min(total - 1, current + 1); page++) {
+      pages.push(page);
+    }
+
+    if (current < total - 2) {
+      pages.push(-1);
+    }
+
+    pages.push(total);
 
     return pages;
   }
 
-  openPhoto(photo: Photo) {
-    // Navigate to photo detail or open in modal
-    window.open(photo.imageUrl, '_blank');
+  openPhoto(photo: Photo): void {
+    if (!photo.imageUrl) {
+      this.notification.error('Photo URL is unavailable.');
+      return;
+    }
+
+    window.open(photo.imageUrl, '_blank', 'noopener,noreferrer');
   }
 
-  trackByPhotoId(index: number, photo: Photo): string {
+  trackByPhotoId(_index: number, photo: Photo): string {
     return photo.photoId;
   }
 }

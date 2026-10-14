@@ -6,32 +6,17 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import type { NotificationService as NotificationServiceType } from '../../../../../core/services/ui/notification.service';
 import { FaceDetectionService } from '../face-detection.service';
 import { environment } from '../../../../../../environments/environment';
+import {ArrowLeft , ScanFace , Camera, LucideAngularModule} from "lucide-angular"
 
-interface Photo {
-  photoId: string;
-  eventId: string;
-  photographerId: string;
-  imageUrl: string;
-  thumbnailUrl?: string;
-  isVisible: boolean;
-  uploadedAt: string;
-  approvedAt?: string;
-}
-
-interface ApiResponse<T> {
-  isSuccess: boolean;
-  statusCode: number;
-  message: string;
-  data: T | null;
-}
 
 @Component({
   selector: 'app-my-photos',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink , LucideAngularModule],
   templateUrl: './my-photos.html',
   styleUrl: './my-photos.css'
 })
+
 export class MyPhotos implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -49,6 +34,11 @@ export class MyPhotos implements OnInit {
   readonly totalMatched = computed(() => this.matchedPhotos().length);
   readonly totalPhotos = computed(() => this.loading() ? 0 : this.allPhotos().length);
 
+  readonly Camera = Camera;
+  readonly ScanFace = ScanFace;
+  readonly ArrowLeft = ArrowLeft;
+
+
   ngOnInit() {
     const eventId = this.route.snapshot.paramMap.get('eventId');
     if (eventId) {
@@ -62,7 +52,6 @@ export class MyPhotos implements OnInit {
     const descriptor = this.faceDetection.getUserFaceDescriptor();
     this.hasFaceProfile.set(descriptor !== null);
 
-    // Also try async load
     this.faceDetection.loadUserFaceDescriptorAsync().then(descriptor => {
       this.hasFaceProfile.set(descriptor !== null);
     });

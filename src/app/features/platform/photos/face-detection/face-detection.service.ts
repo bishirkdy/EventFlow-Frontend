@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
 
 export interface FaceDescriptor {
   descriptor: Float32Array;
@@ -18,6 +17,7 @@ export interface MatchedPhoto {
 @Injectable({
   providedIn: 'root'
 })
+
 export class FaceDetectionService {
   private readonly http = inject(HttpClient);
   private modelsLoaded = false;

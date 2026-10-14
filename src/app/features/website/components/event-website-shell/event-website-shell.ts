@@ -242,7 +242,7 @@ export class EventWebsiteShell {
 
   photosHref(): string {
     const eventId = this.data().event?.id;
-    return eventId && this.hasFeature('gallery') ? `/events/${eventId}/gallery` : '#';
+    return `/events/${eventId}/gallery`;
   }
 
   brandHref(): string {
