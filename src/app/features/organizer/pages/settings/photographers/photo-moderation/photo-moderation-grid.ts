@@ -15,6 +15,7 @@ import {
   EyeOff,
   RefreshCw,
 } from 'lucide-angular';
+import { Photo } from '@/core/models/photographer/photo.model';
 
 @Component({
   selector: 'app-photo-moderation',

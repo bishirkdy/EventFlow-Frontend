@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { PHOTO_ENDPOINTS } from '@/core/api/endpoints/photo-endpoint/photo.endpoint';
 import { UploadedPhoto } from '@/core/models/photographer/uploaded-photo.model';
 import { PaginatedResponseModel } from '@/core/models/registration/paginated-response.model';
+import { Photo } from '@/core/models/photographer/photo.model';
 
 @Injectable({
   providedIn: 'root',
