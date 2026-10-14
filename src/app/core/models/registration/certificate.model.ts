@@ -1,3 +1,20 @@
+export type CertificateTemplateMode = 'Classic' | 'ImageTemplate';
+
+export type CertificateFieldAlign = 'Left' | 'Center' | 'Right';
+
+export interface CertificateTemplateFieldModel {
+  key: string;
+  text: string | null;
+  xPercent: number;
+  yPercent: number;
+  widthPercent: number;
+  fontSizePt: number;
+  fontColor: string;
+  bold: boolean;
+  align: CertificateFieldAlign;
+  fontFamily: string | null;
+}
+
 export interface CertificateSettingsModel {
   eventId: string;
   title: string;
@@ -7,6 +24,11 @@ export interface CertificateSettingsModel {
   themeColor: string;
   requireApprovedRegistration: boolean;
   minAttendancePercent: number | null;
+  templateMode: CertificateTemplateMode;
+  backgroundImageUrl: string | null;
+  backgroundImageWidth: number;
+  backgroundImageHeight: number;
+  templateFields: CertificateTemplateFieldModel[];
   updatedAtUtc: string | null;
 }
 
@@ -18,6 +40,8 @@ export interface CertificateSettingsRequest {
   themeColor: string;
   requireApprovedRegistration: boolean;
   minAttendancePercent: number | null;
+  templateMode: CertificateTemplateMode;
+  templateFields: CertificateTemplateFieldModel[];
 }
 
 export interface CertificateEligibilityItemModel {
@@ -59,6 +83,7 @@ export interface CertificateGenerationResultModel {
   skipped: number;
   failed: number;
   certificates: CertificateModel[];
+  errors: string[];
 }
 
 export interface GenerateCertificatesRequest {

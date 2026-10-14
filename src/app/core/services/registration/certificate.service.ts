@@ -38,6 +38,32 @@ export class CertificateService {
     );
   }
 
+  uploadTemplateImage(
+    eventId: string,
+    file: File,
+  ): Observable<ApiResponse<CertificateSettingsModel>> {
+    const form = new FormData();
+    form.append('image', file, file.name);
+
+    return this.http.post<ApiResponse<CertificateSettingsModel>>(
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.templateImage(eventId)),
+      form,
+    );
+  }
+
+  deleteTemplateImage(eventId: string): Observable<ApiResponse<CertificateSettingsModel>> {
+    return this.http.delete<ApiResponse<CertificateSettingsModel>>(
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.templateImage(eventId)),
+    );
+  }
+
+  previewCertificate(eventId: string, sampleName?: string): Observable<Blob> {
+    return this.http.get(
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.preview(eventId, sampleName)),
+      { responseType: 'blob' },
+    );
+  }
+
   getEligibility(eventId: string): Observable<ApiResponse<CertificateEligibilityModel>> {
     return this.http.get<ApiResponse<CertificateEligibilityModel>>(
       this.api.getUrl(CERTIFICATE_ENDPOINTS.eligibility(eventId)),

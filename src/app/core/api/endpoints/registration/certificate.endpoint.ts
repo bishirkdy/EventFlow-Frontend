@@ -2,6 +2,13 @@ export const CERTIFICATE_ENDPOINTS = {
   settings: (eventId: string) =>
     `/v1/events/${eventId}/certificates/settings`,
 
+  templateImage: (eventId: string) =>
+    `/v1/events/${eventId}/certificates/settings/template-image`,
+
+  preview: (eventId: string, sampleName?: string) =>
+    `/v1/events/${eventId}/certificates/settings/preview` +
+    (sampleName ? `?sampleName=${encodeURIComponent(sampleName)}` : ''),
+
   eligibility: (eventId: string) =>
     `/v1/events/${eventId}/certificates/eligibility`,
 
