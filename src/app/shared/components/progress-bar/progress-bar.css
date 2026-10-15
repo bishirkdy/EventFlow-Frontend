@@ -1,0 +1,24 @@
+.progress-bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  width: 40%;
+  background: var(--color-primary, #b5473a);
+  animation: progress-bar-slide 1.1s ease-in-out infinite;
+}
+
+@keyframes progress-bar-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}

@@ -12,10 +12,6 @@ export function getApiErrorMessage(error: unknown, fallback = 'Something went wr
     if (response?.message) {
       return response.message;
     }
-
-    if (error.message) {
-      return error.message;
-    }
   }
 
   return fallback;

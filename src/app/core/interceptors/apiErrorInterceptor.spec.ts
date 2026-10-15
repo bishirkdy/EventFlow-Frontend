@@ -7,7 +7,7 @@ import { NotificationService } from '../services/ui/notification.service';
 
 describe('apiErrorInterceptor', () => {
   let httpMock: HttpTestingController;
-  const notification = { error: vi.fn() };
+  const notification = { error: vi.fn(), success: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -23,29 +23,89 @@ describe('apiErrorInterceptor', () => {
 
   afterEach(() => httpMock.verify());
 
+  const flushError = (
+    url: string,
+    status: number,
+    body: string | object | null = null,
+    statusText = '',
+  ) => httpMock.expectOne(url).flush(body, { status, statusText });
+
   it('stays out of the way on 401 so authRefreshInterceptor owns recovery', () => {
     let captured: any;
     TestBed.inject(HttpClient).get('/api/data').subscribe({ error: err => (captured = err) });
 
-    httpMock.expectOne('/api/data').flush('expired', { status: 401, statusText: 'Unauthorized' });
+    flushError('/api/data', 401, 'expired', 'Unauthorized');
 
     expect(captured.status).toBe(401);
     expect(notification.error).not.toHaveBeenCalled();
   });
 
-  it('still surfaces a permission toast on 403', () => {
+  it('does not toast on GET failures — components show inline error states', () => {
     TestBed.inject(HttpClient).get('/api/data').subscribe({ error: () => undefined });
 
-    httpMock.expectOne('/api/data').flush('forbidden', { status: 403, statusText: 'Forbidden' });
-
-    expect(notification.error).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not toast on ordinary server errors', () => {
-    TestBed.inject(HttpClient).get('/api/data').subscribe({ error: () => undefined });
-
-    httpMock.expectOne('/api/data').flush('boom', { status: 500, statusText: 'Server Error' });
+    flushError('/api/data', 500, null, 'Server Error');
 
     expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it('does not toast a GET 403 — the calling page renders its own state', () => {
+    TestBed.inject(HttpClient).get('/api/data').subscribe({ error: () => undefined });
+
+    flushError('/api/data', 403, null, 'Forbidden');
+
+    expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it('toasts failed mutations with the API message', () => {
+    TestBed.inject(HttpClient)
+      .post('/api/items', {})
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/items', 500, { message: 'Saving failed.' }, 'Server Error');
+
+    expect(notification.error).toHaveBeenCalledTimes(1);
+    expect(notification.error).toHaveBeenCalledWith('Saving failed.');
+  });
+
+  it('uses the permission fallback for 403 mutations', () => {
+    TestBed.inject(HttpClient)
+      .delete('/api/items/1')
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/items/1', 403, { message: 'Forbidden' }, 'Forbidden');
+
+    expect(notification.error).toHaveBeenCalledWith('Forbidden');
+  });
+
+  it('uses the generic fallback when the error carries no message', () => {
+    TestBed.inject(HttpClient)
+      .post('/api/items', {})
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/items', 500, null, 'Server Error');
+
+    expect(notification.error).toHaveBeenCalledWith('The request failed. Please try again.');
+  });
+
+  it('skips mutations that failed server-side validation so forms can show field errors', () => {
+    TestBed.inject(HttpClient)
+      .post('/api/items', {})
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/items', 400, { message: 'Invalid.', errors: ['Name is required.'] }, 'Bad Request');
+
+    expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it('toasts a network failure with a connectivity message', () => {
+    TestBed.inject(HttpClient)
+      .post('/api/items', {})
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/items', 0, null, 'Unknown Error');
+
+    expect(notification.error).toHaveBeenCalledWith(
+      'Network error. Check your connection and try again.',
+    );
   });
 });

@@ -1,0 +1,12 @@
+<div class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center" role="alert">
+  <p class="text-sm text-red-700">{{ message() }}</p>
+  @if (showRetry()) {
+    <button
+      type="button"
+      (click)="retry.emit()"
+      class="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+    >
+      {{ retryLabel() }}
+    </button>
+  }
+</div>
