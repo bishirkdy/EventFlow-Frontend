@@ -18,21 +18,12 @@ export interface AsyncStateOptions<T> {
   onSuccess?: (data: T) => void;
 }
 
-export function createAsyncState<T>(
-  factory: () => Observable<ApiResponse<T>>,
-  options: AsyncStateOptions<T> & { initial: T },
-): AsyncState<T>;
-export function createAsyncState<T>(
-  factory: () => Observable<ApiResponse<T>>,
-  options?: AsyncStateOptions<T>,
-): AsyncState<T | null>;
-export function createAsyncState<T>(
-  factory: () => Observable<ApiResponse<T>>,
-  options: AsyncStateOptions<T> = {},
+function createCore<T>(
+  factory: () => Observable<unknown>,
+  unwrap: (raw: unknown, initial: T | null) => T | null,
+  options: AsyncStateOptions<T>,
 ): AsyncState<T | null> {
-  assertInInjectionContext(createAsyncState);
-
-  const untilDestroyed = takeUntilDestroyed<ApiResponse<T>>();
+  const untilDestroyed = takeUntilDestroyed<unknown>();
   const initial: T | null = 'initial' in options ? (options.initial as T) : null;
   const data = signal<T | null>(initial);
   const loading = signal(false);
@@ -43,8 +34,8 @@ export function createAsyncState<T>(
     error.set(null);
 
     factory().pipe(untilDestroyed).subscribe({
-      next: (response) => {
-        const value = response.data ?? initial;
+      next: (raw) => {
+        const value = unwrap(raw, initial);
         data.set(value);
         loading.set(false);
         if (value !== null && value !== undefined) {
@@ -70,4 +61,42 @@ export function createAsyncState<T>(
     error: error.asReadonly(),
     load,
   };
+}
+
+export function createAsyncState<T>(
+  factory: () => Observable<ApiResponse<T>>,
+  options: AsyncStateOptions<T> & { initial: T },
+): AsyncState<T>;
+export function createAsyncState<T>(
+  factory: () => Observable<ApiResponse<T>>,
+  options?: AsyncStateOptions<T>,
+): AsyncState<T | null>;
+export function createAsyncState<T>(
+  factory: () => Observable<ApiResponse<T>>,
+  options: AsyncStateOptions<T> = {},
+): AsyncState<T | null> {
+  assertInInjectionContext(createAsyncState);
+
+  return createCore<T>(
+    factory,
+    (raw, initialValue) => (raw as ApiResponse<T>).data ?? initialValue,
+    options,
+  );
+}
+
+export function createRawAsyncState<T>(
+  factory: () => Observable<T>,
+  options: AsyncStateOptions<T> & { initial: T },
+): AsyncState<T>;
+export function createRawAsyncState<T>(
+  factory: () => Observable<T>,
+  options?: AsyncStateOptions<T>,
+): AsyncState<T | null>;
+export function createRawAsyncState<T>(
+  factory: () => Observable<T>,
+  options: AsyncStateOptions<T> = {},
+): AsyncState<T | null> {
+  assertInInjectionContext(createRawAsyncState);
+
+  return createCore<T>(factory, (raw, initialValue) => (raw as T | null) ?? initialValue, options);
 }

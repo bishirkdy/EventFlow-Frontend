@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of, Subject, throwError } from 'rxjs';
+import { forkJoin, of, Subject, throwError } from 'rxjs';
 import { ApiResponse } from '../models/common';
-import { createAsyncState } from './async-state';
+import { createAsyncState, createRawAsyncState } from './async-state';
 
 const ok = <T>(data: T): ApiResponse<T> => ({
   isSuccess: true,
@@ -143,5 +143,47 @@ describe('createAsyncState observable values', () => {
 
     expect(state.loading()).toBe(false);
     expect(state.data()).toBe('done');
+  });
+});
+
+describe('createRawAsyncState', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+
+  it('stores the emitted value without unwrapping', () => {
+    const state = TestBed.runInInjectionContext(() =>
+      createRawAsyncState(() => of({ total: 3, items: ['a'] }), {
+        initial: { total: 0, items: [] as string[] },
+      }),
+    );
+
+    state.load();
+
+    expect(state.data()).toEqual({ total: 3, items: ['a'] });
+    expect(state.error()).toBeNull();
+  });
+
+  it('supports composed streams such as forkJoin', () => {
+    const state = TestBed.runInInjectionContext(() =>
+      createRawAsyncState(
+        () => forkJoin({ a: of(1), b: of('two') }),
+        { initial: { a: 0, b: '' } },
+      ),
+    );
+
+    state.load();
+
+    expect(state.data()).toEqual({ a: 1, b: 'two' });
+  });
+
+  it('reports failures with the configured fallback', () => {
+    const state = TestBed.runInInjectionContext(() =>
+      createRawAsyncState(() => throwError(() => new Error('nope')), {
+        errorFallback: 'Unable to load dashboard.',
+      }),
+    );
+
+    state.load();
+
+    expect(state.error()).toBe('Unable to load dashboard.');
   });
 });
