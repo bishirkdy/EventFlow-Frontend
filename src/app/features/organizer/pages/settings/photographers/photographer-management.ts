@@ -9,6 +9,7 @@ import { NotificationService } from 'core/services/ui/notification.service';
 import { EmailValidator } from 'core/validators/email.validator';
 import { PhotographerService } from '@/core/services/photographer/photographer.service';
 import { PhotographerInvitationModel } from '@/core/models/photographer';
+import { createAsyncAction, createAsyncState } from 'core/state';
 
 
 @Component({
@@ -25,16 +26,64 @@ export class PhotographerManagement implements OnInit {
   private readonly emailValidator = inject(EmailValidator);
 
   readonly eventId = signal('');
-  readonly invitations = signal<PhotographerInvitationModel[]>([]);
-  readonly loading = signal(true);
-  readonly inviting = signal(false);
   readonly newEmail = signal('');
+
+  private readonly invitationsState = createAsyncState<PhotographerInvitationModel[]>(
+    () => this.photographerService.getInvitations(this.eventId()),
+    { initial: [], errorFallback: 'Unable to load invitations.' },
+  );
+
+  private readonly inviteAction = createAsyncAction(
+    (eventId: string, email: string) => this.photographerService.invite(eventId, email),
+    {
+      errorFallback: 'Failed to send invitation.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.notification.error(
+            response.message || 'Failed to send invitation.',
+          );
+          return;
+        }
+
+        this.notification.success(
+          'Photographer invitation sent successfully.',
+        );
+
+        this.newEmail.set('');
+        this.loadInvitations();
+      },
+    },
+  );
+
+  private readonly revokeAction = createAsyncAction(
+    (eventId: string, invitationId: string) => this.photographerService.revoke(eventId, invitationId),
+    {
+      errorFallback: 'Failed to revoke invitation.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.notification.error(
+            response.message || 'Failed to revoke invitation.',
+          );
+          return;
+        }
+
+        this.notification.success(
+          'Invitation revoked successfully.',
+        );
+
+        this.loadInvitations();
+      },
+    },
+  );
+
+  readonly invitations = this.invitationsState.data;
+  readonly loading = this.invitationsState.loading;
+  readonly inviting = this.inviteAction.pending;
 
   ngOnInit(): void {
     const eventId = this.eventState.eventId();
 
     if (!eventId) {
-      this.loading.set(false);
       this.notification.error('Event could not be identified');
       return;
     }
@@ -47,21 +96,10 @@ export class PhotographerManagement implements OnInit {
     const eventId = this.eventId();
 
     if (!eventId) {
-      this.loading.set(false);
       return;
     }
 
-    this.loading.set(true);
-
-    this.photographerService.getInvitations(eventId).subscribe({
-      next: (response) => {
-        this.invitations.set(response.data ?? []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
+    this.invitationsState.load();
   }
 
   invitePhotographer(): void {
@@ -83,30 +121,7 @@ export class PhotographerManagement implements OnInit {
       return;
     }
 
-    this.inviting.set(true);
-
-    this.photographerService.invite(eventId, email).subscribe({
-      next: (response) => {
-        this.inviting.set(false);
-
-        if (!response.isSuccess) {
-          this.notification.error(
-            response.message || 'Failed to send invitation.',
-          );
-          return;
-        }
-
-        this.notification.success(
-          'Photographer invitation sent successfully.',
-        );
-
-        this.newEmail.set('');
-        this.loadInvitations();
-      },
-      error: () => {
-        this.inviting.set(false);
-      },
-    });
+    this.inviteAction.run(eventId, email);
   }
 
   revokeInvitation(invitationId: string): void {
@@ -121,25 +136,7 @@ export class PhotographerManagement implements OnInit {
       return;
     }
 
-    this.photographerService
-      .revoke(eventId, invitationId)
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.notification.error(
-              response.message || 'Failed to revoke invitation.',
-            );
-            return;
-          }
-
-          this.notification.success(
-            'Invitation revoked successfully.',
-          );
-
-          this.loadInvitations();
-        },
-        error: () => {},
-      });
+    this.revokeAction.run(eventId, invitationId);
   }
 
   // resendInvitation(invitation: PhotographerInvitationModel): void {

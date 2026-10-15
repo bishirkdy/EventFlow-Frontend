@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { map } from 'rxjs';
 
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 
@@ -14,7 +15,7 @@ import { SessionModel } from '../../../../core/models/session';
 
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { EmailValidator } from '../../../../core/validators/email.validator';
-import { HttpErrorResponse } from '@angular/common/http';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-attendance-staff',
@@ -40,13 +41,99 @@ export class AttendanceStaffComponent {
   readonly scopePopupOpen = signal(false);
   readonly selectedScopeName = signal('');
 
-  readonly loadingStaff = signal(false);
-  readonly loadingScopes = signal(false);
-  readonly assigning = signal(false);
-
   email = '';
   scopeType = 1;
   scopeId = '';
+
+  private readonly staffAction = createAsyncAction(
+    (eventId: string) => this.ops.getStaff(eventId),
+    {
+      errorFallback: 'Unable to load attendance staff.',
+      onError: () => this.toast.error('Unable to load attendance staff.'),
+      onSuccess: (response) => this.staff.set(response.data ?? []),
+    },
+  );
+
+  private readonly sectionsAction = createAsyncAction(
+    (eventId: string) => this.sectionService.getSections(eventId),
+    {
+      errorFallback: 'Unable to load sections.',
+      onError: (error) => {
+        console.error('Sections error:', error);
+
+        this.sections.set([]);
+
+        this.toast.error('Unable to load sections.');
+      },
+      onSuccess: (response) => this.sections.set(response.data ?? []),
+    },
+  );
+
+  private readonly sessionsAction = createAsyncAction(
+    (eventId: string) => this.sessionService.getSessions(eventId),
+    {
+      errorFallback: 'Unable to load sessions.',
+      onError: (error) => {
+        console.error('Sessions error:', error);
+
+        this.sessions.set([]);
+
+        this.toast.error('Unable to load sessions.');
+      },
+      onSuccess: (response) => this.sessions.set(response.data ?? []),
+    },
+  );
+
+  private readonly assignAction = createAsyncAction(
+    (eventId: string, payload: { email: string; scopeType: number; scopeId: string | null }) =>
+      this.ops.assignStaff(eventId, payload).pipe(
+        map((response) => ({ eventId, response })),
+      ),
+    {
+      errorFallback: 'Assignment failed.',
+      onError: (error) => {
+        console.error('Assign staff error:', error);
+      },
+      onSuccess: ({ eventId, response }) => {
+        if (!response.isSuccess) {
+          this.toast.error(response.message || 'Assignment failed.');
+          return;
+        }
+
+        this.toast.success('Attendance staff assigned.');
+
+        this.resetForm();
+        this.load(eventId);
+      },
+    },
+  );
+
+  private readonly revokeAction = createAsyncAction(
+    (eventId: string, staffId: string) => this.ops.revokeStaff(eventId, staffId).pipe(
+      map((response) => ({ eventId, response })),
+    ),
+    {
+      errorFallback: 'Unable to revoke.',
+      onError: (error) => {
+        console.error('Revoke staff error:', error);
+      },
+      onSuccess: ({ eventId, response }) => {
+        if (!response.isSuccess) {
+          this.toast.error(response.message || 'Unable to revoke.');
+          return;
+        }
+
+        this.toast.success('Attendance staff revoked.');
+        this.load(eventId);
+      },
+    },
+  );
+
+  readonly loadingStaff = this.staffAction.pending;
+  readonly loadingScopes = computed(
+    () => this.sectionsAction.pending() || this.sessionsAction.pending(),
+  );
+  readonly assigning = this.assignAction.pending;
 
   constructor() {
     const eventId = this.state.eventId();
@@ -57,18 +144,7 @@ export class AttendanceStaffComponent {
   }
 
   load(eventId: string): void {
-    this.loadingStaff.set(true);
-
-    this.ops.getStaff(eventId).subscribe({
-      next: (response) => {
-        this.staff.set(response.data ?? []);
-        this.loadingStaff.set(false);
-      },
-      error: () => {
-        this.loadingStaff.set(false);
-        this.toast.error('Unable to load attendance staff.');
-      },
-    });
+    this.staffAction.run(eventId);
   }
 
   onScopeTypeChange(): void {
@@ -122,41 +198,11 @@ export class AttendanceStaffComponent {
   }
 
   private loadSections(eventId: string): void {
-    this.loadingScopes.set(true);
-
-    this.sectionService.getSections(eventId).subscribe({
-      next: (response) => {
-        this.sections.set(response.data ?? []);
-        this.loadingScopes.set(false);
-      },
-      error: (error) => {
-        console.error('Sections error:', error);
-
-        this.sections.set([]);
-        this.loadingScopes.set(false);
-
-        this.toast.error('Unable to load sections.');
-      },
-    });
+    this.sectionsAction.run(eventId);
   }
 
   private loadSessions(eventId: string): void {
-    this.loadingScopes.set(true);
-
-    this.sessionService.getSessions(eventId).subscribe({
-      next: (response) => {
-        this.sessions.set(response.data ?? []);
-        this.loadingScopes.set(false);
-      },
-      error: (error) => {
-        console.error('Sessions error:', error);
-
-        this.sessions.set([]);
-        this.loadingScopes.set(false);
-
-        this.toast.error('Unable to load sessions.');
-      },
-    });
+    this.sessionsAction.run(eventId);
   }
 
   assign(): void {
@@ -188,39 +234,11 @@ export class AttendanceStaffComponent {
 
     const scopeId = this.scopeType === 1 ? null : this.scopeId;
 
-    this.assigning.set(true);
-
-    this.ops
-      .assignStaff(eventId, {
-        email,
-        scopeType: this.scopeType,
-        scopeId,
-      })
-      .subscribe({
-        next: (response) => {
-          this.assigning.set(false);
-
-          if (!response.isSuccess) {
-            this.toast.error(response.message || 'Assignment failed.');
-            return;
-          }
-
-          this.toast.success('Attendance staff assigned.');
-
-          this.resetForm();
-          this.load(eventId);
-        },
-
-        error: (error: HttpErrorResponse) => {
-          this.assigning.set(false);
-
-          console.error('Assign staff error:', error);
-
-          const message = error.error?.message || error.error?.errors?.[0] || 'Assignment failed.';
-
-          this.toast.error(message);
-        },
-      });
+    this.assignAction.run(eventId, {
+      email,
+      scopeType: this.scopeType,
+      scopeId,
+    });
   }
 
   revoke(x: AttendanceStaffModel): void {
@@ -231,23 +249,7 @@ export class AttendanceStaffComponent {
       return;
     }
 
-    this.ops.revokeStaff(eventId, x.id).subscribe({
-      next: (response) => {
-        if (!response.isSuccess) {
-          this.toast.error(response.message || 'Unable to revoke.');
-          return;
-        }
-
-        this.toast.success('Attendance staff revoked.');
-        this.load(eventId);
-      },
-
-      error: (error: HttpErrorResponse) => {
-        console.error('Revoke staff error:', error);
-        const message = error.error?.message || error.error?.errors?.[0] || 'Unable to revoke.';
-        this.toast.error(message);
-      },
-    });
+    this.revokeAction.run(eventId, x.id);
   }
 
   scopeLabel(scopeType: number): string {

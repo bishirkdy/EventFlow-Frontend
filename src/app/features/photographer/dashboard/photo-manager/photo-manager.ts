@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { finalize, map } from 'rxjs';
 import {
   ArrowLeft,
   Images,
@@ -17,6 +18,7 @@ import {
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { PhotoService } from '@/core/services/photo/photo.service';
 import { Photo } from '@/core/models/photographer';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-photo-manager',
@@ -33,7 +35,6 @@ export class PhotoManager implements OnInit {
   readonly eventId = signal<string>('');
 
   readonly photos = signal<Photo[]>([]);
-  readonly loading = signal(true);
   readonly deleting = signal<Record<string, boolean>>({});
 
   readonly currentPage = signal(1);
@@ -46,13 +47,64 @@ export class PhotoManager implements OnInit {
 
   readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
 
+  private readonly loadAction = createAsyncAction(
+    () => this.photoService.getPhotos(this.eventId(), this.currentPage(), this.pageSize()),
+    {
+      errorFallback: 'Failed to load photos.',
+      onError: () => {
+        this.photos.set([]);
+        this.totalCount.set(0);
+        this.notification.error('Failed to load photos.');
+      },
+      onSuccess: (response) => {
+        if (response.isSuccess && response.data) {
+          this.photos.set(response.data.items);
+          this.totalCount.set(response.data.totalCount);
+        } else {
+          this.photos.set([]);
+          this.totalCount.set(0);
+          this.notification.error(response.message || 'Failed to load photos.');
+        }
+      },
+    },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    (photoId: string) =>
+      this.photoService.deletePhoto(this.eventId(), photoId).pipe(
+        finalize(() => this.clearDeleting(photoId)),
+        map((response) => ({ photoId, response })),
+      ),
+    {
+      errorFallback: 'Failed to delete photo.',
+      onSuccess: ({ photoId, response }) => {
+        if (!response.isSuccess) {
+          this.notification.error(response.message || 'Failed to delete photo.');
+          return;
+        }
+
+        this.photos.update((current) => current.filter((item) => item.photoId !== photoId));
+
+        this.totalCount.update((count) => Math.max(0, count - 1));
+
+        this.notification.success('Photo deleted successfully.');
+
+        if (this.photos().length === 0 && this.currentPage() > 1) {
+          this.currentPage.update((page) => page - 1);
+          this.loadPhotos();
+        }
+      },
+    },
+  );
+
+  loading = this.loadAction.pending;
+
   ngOnInit(): void {
     const eventId =
       this.route.parent?.snapshot.paramMap.get('eventId') ??
       this.route.snapshot.paramMap.get('eventId');
 
     if (!eventId) {
-      this.loading.set(false);
       this.notification.error('Event ID was not found.');
       return;
     }
@@ -75,28 +127,7 @@ export class PhotoManager implements OnInit {
   };
 
   loadPhotos(): void {
-    this.loading.set(true);
-
-    this.photoService.getPhotos(this.eventId(), this.currentPage(), this.pageSize()).subscribe({
-      next: (response) => {
-        if (response.isSuccess && response.data) {
-          this.photos.set(response.data.items);
-          this.totalCount.set(response.data.totalCount);
-        } else {
-          this.photos.set([]);
-          this.totalCount.set(0);
-          this.notification.error(response.message || 'Failed to load photos.');
-        }
-
-        this.loading.set(false);
-      },
-      error: () => {
-        this.photos.set([]);
-        this.totalCount.set(0);
-        this.loading.set(false);
-        this.notification.error('Failed to load photos.');
-      },
-    });
+    this.loadAction.run();
   }
 
   onPageChange(page: number): void {
@@ -126,39 +157,14 @@ export class PhotoManager implements OnInit {
       [photo.photoId]: true,
     }));
 
-    this.photoService.deletePhoto(this.eventId(), photo.photoId).subscribe({
-      next: (response) => {
-        this.deleting.update((current) => {
-          const next = { ...current };
-          delete next[photo.photoId];
-          return next;
-        });
+    this.deleteAction.run(photo.photoId);
+  }
 
-        if (!response.isSuccess) {
-          this.notification.error(response.message || 'Failed to delete photo.');
-          return;
-        }
-
-        this.photos.update((current) => current.filter((item) => item.photoId !== photo.photoId));
-
-        this.totalCount.update((count) => Math.max(0, count - 1));
-
-        this.notification.success('Photo deleted successfully.');
-
-        if (this.photos().length === 0 && this.currentPage() > 1) {
-          this.currentPage.update((page) => page - 1);
-          this.loadPhotos();
-        }
-      },
-      error: () => {
-        this.deleting.update((current) => {
-          const next = { ...current };
-          delete next[photo.photoId];
-          return next;
-        });
-
-        this.notification.error('Failed to delete photo.');
-      },
+  private clearDeleting(photoId: string): void {
+    this.deleting.update((current) => {
+      const next = { ...current };
+      delete next[photoId];
+      return next;
     });
   }
 
