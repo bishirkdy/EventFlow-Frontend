@@ -5,6 +5,7 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { SectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-section-details',
@@ -22,11 +23,37 @@ export class SectionDetails implements OnInit {
     inject(OrganizerEventStateService);
 
   section = signal<SectionModel | null>(null);
-  loading = signal(true);
   error = signal<string | null>(null);
 
   private eventId = '';
   private sectionId = '';
+
+  private readonly loadAction = createAsyncAction(
+    () => this.sectionService.getSectionById(this.sectionId),
+    {
+      errorFallback: 'Failed to load section.',
+      onError: () => this.error.set('Failed to load section.'),
+      onSuccess: (response) => {
+        if (!response.data) {
+          this.toastr.error('Section data was not returned.');
+          return;
+        }
+
+        this.section.set(response.data);
+      },
+    },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    () => this.sectionService.deleteSection(this.eventId, this.sectionId),
+    {
+      successMessage: 'Section deleted successfully.',
+      errorFallback: 'Failed to delete section.',
+      onSuccess: () => this.goBack(),
+    },
+  );
+
+  loading = this.loadAction.pending;
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
@@ -34,50 +61,18 @@ export class SectionDetails implements OnInit {
 
     if (!eventId) {
       this.error.set('Event ID not found.');
-      this.loading.set(false);
       return;
     }
 
     if (!sectionId) {
       this.error.set('Section ID not found.');
-      this.loading.set(false);
       return;
     }
 
     this.eventId = eventId;
     this.sectionId = sectionId;
 
-    this.loadSection();
-  }
-
-  private loadSection(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.sectionService
-      .getSectionById(this.sectionId)
-      .subscribe({
-        next: (response) => {
-          if (!response.data) {
-            this.toastr.error('Section data was not returned.');
-            this.loading.set(false);
-            return;
-          }
-
-          this.section.set(response.data);
-          this.loading.set(false);
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to load section:',
-            error,
-          );
-
-          this.error.set('Failed to load section.');
-          this.loading.set(false);
-        },
-      });
+    this.loadAction.run();
   }
 
   editSection(): void {
@@ -107,30 +102,6 @@ export class SectionDetails implements OnInit {
       return;
     }
 
-    this.sectionService
-      .deleteSection(
-        this.eventId,
-        this.sectionId,
-      )
-      .subscribe({
-        next: () => {
-          this.toastr.success(
-            'Section deleted successfully.',
-          );
-
-          this.goBack();
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to delete section:',
-            error,
-          );
-
-          this.toastr.error(
-            'Failed to delete section.',
-          );
-        },
-      });
+    this.deleteAction.run();
   }
 }

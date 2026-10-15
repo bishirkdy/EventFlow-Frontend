@@ -1,7 +1,8 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LucideAngularModule, Home, Menu, X, LucideAlignHorizontalJustifyStart } from 'lucide-angular';
+import { map } from 'rxjs';
 import { ORGANIZER_NAVIGATION, OrganizerNavGroup } from '../../config/organizer-navigation';
 import { EventService } from '../../../../core/services/event/event.service';
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
@@ -10,6 +11,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../core/models/event';
 import { TitleCasePipe } from '@angular/common';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-organizer-layout',
@@ -29,8 +31,7 @@ export class OrganizerLayout {
 
   navGroups = signal<OrganizerNavGroup[]>([]);
   event = signal<EventModel | null>(null);
-  
-  loading = signal(true);
+
   mobileMenuOpen = signal(false);
 
   // Lucide icons to the template
@@ -38,6 +39,60 @@ export class OrganizerLayout {
   readonly home = LucideAlignHorizontalJustifyStart
   readonly menuIcon = Menu;
   readonly closeIcon = X;
+
+  private readonly eventAction = createAsyncAction(
+    (eventId: string) =>
+      this.eventService.getEventById(eventId).pipe(
+        map((response) => ({ eventId, response })),
+      ),
+    {
+      toastErrors: true,
+      errorFallback: 'This event could not be loaded.',
+      onError: () => this.showFallbackNavigation(),
+      onSuccess: ({ eventId, response }) => {
+        const event = response.data;
+        if (!event) {
+          this.showFallbackNavigation();
+          this.notification.error('This event could not be loaded.');
+          return;
+        }
+
+        this.event.set(event);
+        this.organizerEventState.setEvent(event);
+        this.loadNavigation(eventId);
+        this.setupWebsite(eventId);
+      },
+    },
+  );
+
+  private readonly navAction = createAsyncAction(
+    (eventId: string) => this.eventFeatureService.getFeatures(eventId),
+    {
+      onError: () => this.showFallbackNavigation(),
+      onSuccess: (response) => {
+        const features = response.data ?? [];
+
+        const enabledFeatures = new Set(
+          features.filter((feature) => feature.isEnabled).map((feature) => feature.featureCode),
+        );
+
+        const visibleGroups = ORGANIZER_NAVIGATION
+          .map((group) => ({
+            ...group,
+            items: group.items.filter(
+              (item) => !item.feature || enabledFeatures.has(item.feature),
+            ),
+          }))
+          .filter((group) => group.items.length > 0);
+
+        this.navGroups.set(visibleGroups);
+      },
+    },
+  );
+
+  readonly loading = computed(
+    () => this.eventAction.pending() || this.navAction.pending(),
+  );
 
   ngOnInit(): void {
     this.eventFeatureService.changed$
@@ -59,37 +114,13 @@ export class OrganizerLayout {
   private loadEvent(eventId: string | null): void {
     if (!eventId) {
       this.showFallbackNavigation();
-      this.loading.set(false);
       return;
     }
-
-    this.loading.set(true);
 
     // Store event ID for child organizer pages
     this.organizerEventState.setEventId(eventId);
 
-    this.eventService.getEventById(eventId).subscribe({
-      next: (response) => {
-        const event = response.data;
-        if (!event) {
-          this.loading.set(false);
-          this.showFallbackNavigation();
-          this.notification.error('This event could not be loaded.');
-          return;
-        }
-
-        this.event.set(event);
-        this.organizerEventState.setEvent(event);
-        this.loadNavigation(eventId);
-        this.setupWebsite(eventId);
-      },
-
-      error: () => {
-        this.loading.set(false);
-        this.showFallbackNavigation();
-        this.notification.error('This event could not be loaded.');
-      },
-    });
+    this.eventAction.run(eventId);
   }
 
   // Creates the default pages, page sections and navigation items
@@ -103,33 +134,7 @@ export class OrganizerLayout {
   }
 
   private loadNavigation(eventId: string): void {
-    this.eventFeatureService.getFeatures(eventId).subscribe({
-      next: (response) => {
-        const features = response.data ?? [];
-
-        const enabledFeatures = new Set(
-          features.filter((feature) => feature.isEnabled).map((feature) => feature.featureCode),
-        );
-
-        const visibleGroups = ORGANIZER_NAVIGATION
-          .map((group) => ({
-            ...group,
-            items: group.items.filter(
-              (item) => !item.feature || enabledFeatures.has(item.feature),
-            ),
-          }))
-          .filter((group) => group.items.length > 0);
-
-        this.navGroups.set(visibleGroups);
-        this.loading.set(false);
-      },
-
-      error: () => {
-
-        this.showFallbackNavigation();
-        this.loading.set(false);
-      },
-    });
+    this.navAction.run(eventId);
   }
 
   private showFallbackNavigation(): void {

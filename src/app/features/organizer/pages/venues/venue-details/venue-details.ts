@@ -5,6 +5,7 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-venue-details',
@@ -23,11 +24,29 @@ export class VenueDetails implements OnInit {
   );
 
   venue = signal<VenueModel | null>(null);
-  loading = signal(true);
   error = signal<string | null>(null);
 
   private eventId = '';
   private venueId = '';
+
+  private readonly loadAction = createAsyncAction(
+    () => this.venueService.getVenueById(this.eventId, this.venueId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load venue.',
+      onError: () => this.error.set('Failed to load venue.'),
+      onSuccess: (response) => {
+        if (!response.data) {
+          this.toastr.error('Venue data was not returned.');
+          return;
+        }
+
+        this.venue.set(response.data);
+      },
+    },
+  );
+
+  loading = this.loadAction.pending;
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
@@ -35,43 +54,13 @@ export class VenueDetails implements OnInit {
 
     if (!eventId || !venueId) {
       this.error.set('Event ID or Venue ID not found.');
-      this.loading.set(false);
       return;
     }
 
     this.eventId = eventId;
     this.venueId = venueId;
 
-    this.loadVenue();
-  }
-
-  private loadVenue(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.venueService
-      .getVenueById(this.eventId, this.venueId)
-      .subscribe({
-        next: (response) => {
-          if (!response.data) {
-            this.toastr.error('Venue data was not returned.');
-            this.loading.set(false);
-            return;
-          }
-
-          this.venue.set(response.data);
-          this.loading.set(false);
-        },
-
-        error: (error: unknown) => {
-          console.error('Failed to load venue:', error);
-
-          this.error.set('Failed to load venue.');
-          this.loading.set(false);
-
-          this.toastr.error('Failed to load venue');
-        },
-      });
+    this.loadAction.run();
   }
 
   goBack(): void {

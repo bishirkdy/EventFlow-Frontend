@@ -1,10 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { SectionModel } from '../../../../core/models/section';
 import { SectionService } from '../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { createAsyncAction, createAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-sections',
@@ -16,23 +16,37 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 export class Sections implements OnInit {
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
 
-  sections = signal<SectionModel[]>([]);
-  loading = signal(true);
-  error = signal<string | null>(null);
-  deleting = signal<string | null>(null);
-
   private eventId = '';
+  private readonly routeError = signal<string | null>(null);
+
+  private readonly sectionsState = createAsyncState<SectionModel[]>(
+    () => this.sectionService.getSections(this.eventId),
+    { initial: [], autoLoad: false, errorFallback: 'Failed to load sections.' },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    (sectionId: string) => this.sectionService.deleteSection(this.eventId, sectionId),
+    {
+      successMessage: 'Section deleted successfully.',
+      errorFallback: 'Failed to delete section.',
+      onSuccess: () => this.loadSections(),
+      onSettled: () => this.deleting.set(null),
+    },
+  );
+
+  sections = this.sectionsState.data;
+  loading = this.sectionsState.loading;
+  error = computed(() => this.sectionsState.error() ?? this.routeError());
+  deleting = signal<string | null>(null);
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
-      this.loading.set(false);
+      this.routeError.set('Event ID not found.');
       return;
     }
 
@@ -41,22 +55,8 @@ export class Sections implements OnInit {
   }
 
   loadSections(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.sectionService.getSections(this.eventId).subscribe({
-      next: (response) => {
-        this.sections.set(response.data ?? []);
-        this.loading.set(false);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to load sections:', error);
-
-        this.error.set('Failed to load sections.');
-        this.loading.set(false);
-      },
-    });
+    this.routeError.set(null);
+    this.sectionsState.load();
   }
 
   createSection(): void {
@@ -98,31 +98,6 @@ export class Sections implements OnInit {
 
     this.deleting.set(sectionId);
 
-    this.sectionService
-      .deleteSection(this.eventId, sectionId)
-      .subscribe({
-        next: () => {
-          this.deleting.set(null);
-
-          this.toastr.success(
-            'Section deleted successfully.'
-          );
-
-          this.loadSections();
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to delete section:',
-            error
-          );
-
-          this.deleting.set(null);
-
-          this.toastr.error(
-            'Failed to delete section.'
-          );
-        },
-      });
+    this.deleteAction.run(sectionId);
   }
 }

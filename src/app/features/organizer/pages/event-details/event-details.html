@@ -15,10 +15,10 @@
           <button
             type="button"
             (click)="publishEvent()"
-            [disabled]="publishing"
+            [disabled]="publishing()"
             class="cursor-pointer border border-secondary bg-secondary px-5 py-2.5 text-sm font-medium text-white transition duration-200 ease-in-out hover:bg-white hover:text-secondary disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {{ publishing ? 'Publishing...' : 'Publish Event' }}
+            {{ publishing() ? 'Publishing...' : 'Publish Event' }}
           </button>
         }
       </div>

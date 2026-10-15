@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { CreateSectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-create-section',
@@ -17,14 +17,28 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 export class CreateSection implements OnInit {
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
 
   eventId = '';
 
-  saving = signal(false);
   error = signal<string | null>(null);
+
+  private readonly createAction = createAsyncAction(
+    (request: CreateSectionModel) => this.sectionService.createSection(this.eventId, request),
+    {
+      successMessage: 'Section created successfully.',
+      errorFallback: 'Failed to create section.',
+      onSuccess: () =>
+        this.router.navigate([
+          '/organizer',
+          this.eventId,
+          'sections',
+        ]),
+    },
+  );
+
+  saving = this.createAction.pending;
 
   section: CreateSectionModel = {
     name: '',
@@ -64,37 +78,7 @@ export class CreateSection implements OnInit {
       isActive: this.section.isActive,
     };
 
-    this.saving.set(true);
-
-    this.sectionService
-      .createSection(this.eventId, request)
-      .subscribe({
-        next: () => {
-          this.saving.set(false);
-
-          this.toastr.success(
-            'Section created successfully.',
-          );
-
-          this.router.navigate([
-            '/organizer',
-            this.eventId,
-            'sections',
-          ]);
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to create section:',
-            error,
-          );
-
-          this.saving.set(false);
-          this.error.set(
-            'Failed to create section.',
-          );
-        },
-      });
+    this.createAction.run(request);
   }
 
   cancel(): void {

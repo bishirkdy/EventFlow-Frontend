@@ -4,8 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { EventService } from '../../../../core/services/event/event.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import { finalize } from 'rxjs';
+import { of } from 'rxjs';
 import { ParticipantStatus } from '@/core/models/registration';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-event-details',
@@ -20,8 +21,44 @@ export class EventDetails {
   private readonly eventState = inject(OrganizerEventStateService);
   protected readonly participantStatus = ParticipantStatus;
 
-  publishing = false;
   event = this.eventState.event;
+  private eventIdToLoad: string | null = null;
+
+  private readonly loadAction = createAsyncAction(
+    () => {
+      const eventId = this.eventIdToLoad;
+      if (!eventId) return of(null);
+      return this.eventService.getEventById(eventId);
+    },
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load event details.',
+      onSuccess: (response) => {
+        if (!response) return;
+        const event = response.data;
+        if (!event || !this.eventIdToLoad) {
+          this.toastr.error('Event details could not be loaded.');
+          return;
+        }
+        this.eventState.setEventId(this.eventIdToLoad);
+        this.eventState.setEvent(event);
+      },
+    },
+  );
+
+  private readonly publishAction = createAsyncAction(
+    () => {
+      const eventId = this.event()?.id;
+      if (!eventId) return of(null);
+      return this.eventService.publishEvent(eventId);
+    },
+    {
+      successMessage: 'Event published successfully.',
+      errorFallback: 'Failed to publish event.',
+    },
+  );
+
+  readonly publishing = this.publishAction.pending;
 
   ngOnInit(): void {
     const eventId =
@@ -39,49 +76,15 @@ export class EventDetails {
       return;
     }
 
-    this.eventService.getEventById(eventId).subscribe({
-      next: (response) => {
-        const event = response.data;
-        if (!event) {
-          this.toastr.error('Event details could not be loaded.');
-          return;
-        }
-        this.eventState.setEventId(eventId);
-        this.eventState.setEvent(event);
-      },
-      error: () => {
-        this.toastr.error('Failed to load event details.');
-      },
-    });
+    this.eventIdToLoad = eventId;
+    this.loadAction.run();
   }
 
   publishEvent(): void {
-    const eventId = this.event()?.id;
-
-    if (!eventId || this.publishing) {
+    if (!this.event()?.id || this.publishing()) {
       return;
     }
 
-    this.publishing = true;
-
-    this.eventService
-      .publishEvent(eventId)
-      .pipe(
-        finalize(() => {
-          this.publishing = false;
-        }),
-      )
-      .subscribe({
-        next: () => {
-          this.toastr.success('Event published successfully.');
-        },
-        error: () => {
-          this.toastr.error('Failed to publish event.');
-          this.publishing = false;
-        },
-        complete: () => {
-          this.publishing = false;
-        },
-      });
+    this.publishAction.run();
   }
 }

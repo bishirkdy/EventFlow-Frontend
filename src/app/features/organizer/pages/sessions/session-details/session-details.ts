@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { SessionModel } from '../../../../../core/models/session';
@@ -12,6 +13,7 @@ import { SpeakerModel } from '../../../../../core/models/speaker';
 import { SpeakerService } from '../../../../../core/services/speaker/speaker.service';
 import { SessionSpeakerService } from '../../../../../core/services/session-speaker/session-speaker.service';
 import { EventFeatureService } from '../../../../../core/services/event-feature/event-feature.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-session-details',
@@ -33,7 +35,6 @@ export class SessionDetails implements OnInit {
   private readonly eventFeatureService = inject(EventFeatureService);
 
   session = signal<SessionModel | null>(null);
-  loading = signal(true);
   error = signal<string | null>(null);
   deleting = signal(false);
   venues = signal<VenueModel[]>([]);
@@ -45,6 +46,87 @@ export class SessionDetails implements OnInit {
   private eventId = '';
   private sessionId = '';
 
+  private readonly sessionAction = createAsyncAction(
+    () => this.sessionService.getSessionById(this.eventId, this.sessionId),
+    {
+      errorFallback: 'Failed to load session.',
+      onError: () => this.error.set('Failed to load session.'),
+      onSuccess: (response) => {
+        if (!response.data) {
+          this.toastr.error('Session data was not returned.');
+          return;
+        }
+
+        this.session.set(response.data);
+      },
+    },
+  );
+
+  private readonly venuesAction = createAsyncAction(
+    () => this.venueService.getVenues(this.eventId),
+    {
+      onSuccess: (response) => this.venues.set(response.data ?? []),
+    },
+  );
+
+  private readonly assignAction = createAsyncAction(
+    (speakerId: string) =>
+      this.sessionSpeakerService.assign(this.eventId, this.sessionId, speakerId).pipe(
+        map((response) => ({ speakerId, response })),
+      ),
+    {
+      errorFallback: 'Failed to update speaker assignment.',
+      onSettled: () => this.speakerUpdating.set(null),
+      onSuccess: ({ speakerId, response }) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Unable to update speaker assignment.');
+          return;
+        }
+
+        this.assignedSpeakerIds.update((current) => {
+          const next = new Set(current);
+          next.add(speakerId);
+          return next;
+        });
+      },
+    },
+  );
+
+  private readonly removeAction = createAsyncAction(
+    (speakerId: string) =>
+      this.sessionSpeakerService.remove(this.eventId, this.sessionId, speakerId).pipe(
+        map((response) => ({ speakerId, response })),
+      ),
+    {
+      errorFallback: 'Failed to update speaker assignment.',
+      onSettled: () => this.speakerUpdating.set(null),
+      onSuccess: ({ speakerId, response }) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Unable to update speaker assignment.');
+          return;
+        }
+
+        this.assignedSpeakerIds.update((current) => {
+          const next = new Set(current);
+          next.delete(speakerId);
+          return next;
+        });
+      },
+    },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    () => this.sessionService.deleteSession(this.eventId, this.sessionId),
+    {
+      successMessage: 'Session deleted successfully.',
+      errorFallback: 'Failed to delete session.',
+      onSettled: () => this.deleting.set(false),
+      onSuccess: () => this.goBack(),
+    },
+  );
+
+  loading = this.sessionAction.pending;
+
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
     const sessionId =
@@ -52,21 +134,19 @@ export class SessionDetails implements OnInit {
 
     if (!eventId) {
       this.error.set('Event ID not found.');
-      this.loading.set(false);
       return;
     }
 
     if (!sessionId) {
       this.error.set('Session ID not found.');
-      this.loading.set(false);
       return;
     }
 
     this.eventId = eventId;
     this.sessionId = sessionId;
 
-    this.loadSession();
-    this.loadVenues();
+    this.sessionAction.run();
+    this.venuesAction.run();
     this.loadSpeakerFeature();
   }
 
@@ -96,62 +176,16 @@ export class SessionDetails implements OnInit {
   toggleSpeaker(speaker: SpeakerModel): void {
     const assigned = this.isSpeakerAssigned(speaker.id);
     this.speakerUpdating.set(speaker.id);
-    const request$ = assigned
-      ? this.sessionSpeakerService.remove(this.eventId, this.sessionId, speaker.id)
-      : this.sessionSpeakerService.assign(this.eventId, this.sessionId, speaker.id);
-    request$.subscribe({
-      next: (response) => {
-        this.speakerUpdating.set(null);
-        if (!response.isSuccess) { this.toastr.error(response.message || 'Unable to update speaker assignment.'); return; }
-        this.assignedSpeakerIds.update(current => { const next = new Set(current); assigned ? next.delete(speaker.id) : next.add(speaker.id); return next; });
-      },
-      error: (error: unknown) => { console.error(error); this.speakerUpdating.set(null); this.toastr.error('Failed to update speaker assignment.'); },
-    });
-  }
-
-  private loadVenues(): void {
-    this.venueService.getVenues(this.eventId).subscribe({
-      next: (response) => this.venues.set(response.data ?? []),
-      error: () => undefined,
-    });
+    if (assigned) {
+      this.removeAction.run(speaker.id);
+    } else {
+      this.assignAction.run(speaker.id);
+    }
   }
 
   venueName(venueId: string | null): string {
     if (!venueId) return 'No venue assigned';
     return this.venues().find(venue => venue.id === venueId)?.name ?? 'Venue unavailable';
-  }
-
-  private loadSession(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.sessionService
-      .getSessionById(
-        this.eventId,
-        this.sessionId,
-      )
-      .subscribe({
-        next: (response) => {
-          if (!response.data) {
-            this.toastr.error('Session data was not returned.');
-            this.loading.set(false);
-            return;
-          }
-
-          this.session.set(response.data);
-          this.loading.set(false);
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to load session:',
-            error,
-          );
-
-          this.error.set('Failed to load session.');
-          this.loading.set(false);
-        },
-      });
   }
 
   editSession(): void {
@@ -183,34 +217,6 @@ export class SessionDetails implements OnInit {
 
     this.deleting.set(true);
 
-    this.sessionService
-      .deleteSession(
-        this.eventId,
-        this.sessionId,
-      )
-      .subscribe({
-        next: () => {
-          this.deleting.set(false);
-
-          this.toastr.success(
-            'Session deleted successfully.',
-          );
-
-          this.goBack();
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to delete session:',
-            error,
-          );
-
-          this.deleting.set(false);
-
-          this.toastr.error(
-            'Failed to delete session.',
-          );
-        },
-      });
+    this.deleteAction.run();
   }
 }

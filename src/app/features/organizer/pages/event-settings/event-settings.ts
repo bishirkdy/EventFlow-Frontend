@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventSettingsService } from '../../../../core/services/event-settings/event-settings';
 import { EventSettings as EventSettingsModel } from '../../../../core/models/event-settings';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { createAsyncAction, createAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-event-settings',
@@ -15,44 +16,55 @@ export class EventSettings implements OnInit {
   private readonly eventSettingsService = inject(EventSettingsService);
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
-  settings = signal<EventSettingsModel | null>(null);
+  private readonly messageError = signal<string | null>(null);
 
-  loading = signal(true);
-  saving = signal(false);
-  resetting = signal(false);
+  private readonly settingsState = createAsyncState<EventSettingsModel>(
+    () => this.eventSettingsService.getSettings(this.organizerEventState.eventId() ?? ''),
+    { autoLoad: false, errorFallback: 'Failed to load event settings.' },
+  );
 
-  error = signal<string | null>(null);
+  settings = this.settingsState.data;
+  loading = this.settingsState.loading;
+
+  error = computed(() => this.settingsState.error() ?? this.messageError());
   success = signal<string | null>(null);
+
+  private readonly saveAction = createAsyncAction(
+    (request: Parameters<EventSettingsService['updateSettings']>[1]) =>
+      this.eventSettingsService.updateSettings(this.organizerEventState.eventId() ?? '', request),
+    {
+      onSuccess: () => {
+        this.success.set('Event settings updated successfully.');
+        this.settingsState.load();
+      },
+      errorFallback: 'Failed to update event settings.',
+    },
+  );
+
+  saving = this.saveAction.pending;
+
+  private readonly resetAction = createAsyncAction(
+    () => this.eventSettingsService.resetSettings(this.organizerEventState.eventId() ?? ''),
+    {
+      onSuccess: () => {
+        this.success.set('Event settings reset successfully.');
+        this.settingsState.load();
+      },
+      errorFallback: 'Failed to reset event settings.',
+    },
+  );
+
+  resetting = this.resetAction.pending;
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
-      this.loading.set(false);
+      this.messageError.set('Event ID not found.');
       return;
     }
 
-    this.loadSettings(eventId);
-  }
-
-  private loadSettings(eventId: string): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.eventSettingsService.getSettings(eventId).subscribe({
-      next: (response) => {
-        this.settings.set(response.data);
-        this.loading.set(false);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to load event settings:', error);
-
-        this.error.set('Failed to load event settings.');
-        this.loading.set(false);
-      },
-    });
+    this.settingsState.load();
   }
 
   updateSettings(): void {
@@ -63,8 +75,7 @@ export class EventSettings implements OnInit {
       return;
     }
 
-    this.saving.set(true);
-    this.error.set(null);
+    this.messageError.set(null);
     this.success.set(null);
 
     const request = {
@@ -76,21 +87,7 @@ export class EventSettings implements OnInit {
       defaultLanguage: currentSettings.defaultLanguage,
     };
 
-    this.eventSettingsService.updateSettings(eventId, request).subscribe({
-      next: () => {
-        this.saving.set(false);
-        this.success.set('Event settings updated successfully.');
-
-        this.loadSettings(eventId);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to update event settings:', error);
-
-        this.saving.set(false);
-        this.error.set('Failed to update event settings.');
-      },
-    });
+    this.saveAction.run(request);
   }
 
   resetSettings(): void {
@@ -108,24 +105,9 @@ export class EventSettings implements OnInit {
       return;
     }
 
-    this.resetting.set(true);
-    this.error.set(null);
+    this.messageError.set(null);
     this.success.set(null);
 
-    this.eventSettingsService.resetSettings(eventId).subscribe({
-      next: () => {
-        this.resetting.set(false);
-        this.success.set('Event settings reset successfully.');
-
-        this.loadSettings(eventId);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to reset event settings:', error);
-
-        this.resetting.set(false);
-        this.error.set('Failed to reset event settings.');
-      },
-    });
+    this.resetAction.run();
   }
 }

@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { UpdateSessionModel } from '../../../../../core/models/session';
 import { SessionService } from '../../../../../core/services/session/session.service';
@@ -9,6 +8,7 @@ import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../../core/models/event';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-update-session',
@@ -21,15 +21,12 @@ export class UpdateSession implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
-  private readonly toastr = inject(NotificationService);
   private readonly venueService = inject(VenueService);
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
   eventId = '';
   sessionId = '';
 
-  loading = signal(true);
-  saving = signal(false);
   error = signal<string | null>(null);
   selectedImage = signal<File | null>(null);
   imagePreview = signal<string | null>(null);
@@ -39,6 +36,57 @@ export class UpdateSession implements OnInit {
   eventStartLocal = signal('');
   eventEndLocal = signal('');
   eventWindowLabel = signal('');
+
+  private readonly venuesAction = createAsyncAction(
+    () => this.venueService.getVenues(this.eventId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load venues.',
+      onSuccess: (response) => this.venues.set(response.data ?? []),
+    },
+  );
+
+  private readonly sessionAction = createAsyncAction(
+    () => this.sessionService.getSessionById(this.eventId, this.sessionId),
+    {
+      errorFallback: 'Failed to load session.',
+      onError: () => this.error.set('Failed to load session.'),
+      onSuccess: (response) => {
+        const data = response.data;
+        if (!data) {
+          this.error.set('Session data was not returned.');
+          return;
+        }
+
+        this.session = {
+          title: data.title,
+          description: data.description ?? '',
+          sessionType: data.sessionType,
+          capacity: data.capacity,
+          startTime: data.startTime ? this.toLocalDateTime(data.startTime) : null,
+          endTime: data.endTime ? this.toLocalDateTime(data.endTime) : null,
+          venueId: data.venueId,
+        };
+        this.currentImageUrl.set(data.imageUrl ?? null);
+        this.imagePreview.set(data.imageUrl ?? null);
+      },
+    },
+  );
+
+  private readonly updateAction = createAsyncAction(
+    (request: UpdateSessionModel) =>
+      this.sessionService.updateSession(this.eventId, this.sessionId, request),
+    {
+      successMessage: 'Session updated successfully.',
+      errorFallback: 'Failed to update session.',
+      onSuccess: () =>
+        this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId]),
+    },
+  );
+
+  loading = this.sessionAction.pending;
+  saving = this.updateAction.pending;
+  loadingVenues = this.venuesAction.pending;
 
   session: UpdateSessionModel = {
     title: '',
@@ -56,13 +104,11 @@ export class UpdateSession implements OnInit {
 
     if (!eventId) {
       this.error.set('Event ID not found.');
-      this.loading.set(false);
       return;
     }
 
     if (!sessionId) {
       this.error.set('Session ID not found.');
-      this.loading.set(false);
       return;
     }
 
@@ -76,52 +122,8 @@ export class UpdateSession implements OnInit {
       this.eventWindowLabel.set(`${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} — ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`);
     }
 
-    this.loadSession();
-    this.loadVenues();
-  }
-
-  private loadVenues(): void {
-    this.venueService.getVenues(this.eventId).subscribe({
-      next: (response) => this.venues.set(response.data ?? []),
-      error: () => this.toastr.error('Failed to load venues.'),
-    });
-  }
-
-  private loadSession(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.sessionService.getSessionById(this.eventId, this.sessionId).subscribe({
-      next: (response) => {
-        const data = response.data;
-        if (!data) {
-          this.error.set('Session data was not returned.');
-          this.loading.set(false);
-          return;
-        }
-
-        this.session = {
-          title: data.title,
-          description: data.description ?? '',
-          sessionType: data.sessionType,
-          capacity: data.capacity,
-          startTime: data.startTime ? this.toLocalDateTime(data.startTime) : null,
-          endTime: data.endTime ? this.toLocalDateTime(data.endTime) : null,
-          venueId: data.venueId,
-        };
-        this.currentImageUrl.set(data.imageUrl ?? null);
-        this.imagePreview.set(data.imageUrl ?? null);
-
-        this.loading.set(false);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to load session:', error);
-
-        this.error.set('Failed to load session.');
-        this.loading.set(false);
-      },
-    });
+    this.sessionAction.run();
+    this.venuesAction.run();
   }
 
   onImageSelected(event: Event): void {
@@ -176,24 +178,7 @@ export class UpdateSession implements OnInit {
       image: this.selectedImage() ?? undefined,
     };
 
-    this.saving.set(true);
-
-    this.sessionService.updateSession(this.eventId, this.sessionId, request).subscribe({
-      next: () => {
-        this.saving.set(false);
-
-        this.toastr.success('Session updated successfully.');
-
-        this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId]);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to update session:', error);
-
-        this.saving.set(false);
-        this.error.set((error as any)?.error?.message || 'Failed to update session.');
-      },
-    });
+    this.updateAction.run(request);
   }
 
   private toEventLocalDateTime(value: string, timeZone: string): string {

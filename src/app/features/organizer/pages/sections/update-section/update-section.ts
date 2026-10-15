@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { UpdateSectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-update-section',
@@ -18,16 +18,54 @@ export class UpdateSection implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
 
   sectionId = '';
   eventId = '';
 
-  loading = signal(true);
-  saving = signal(false);
   error = signal<string | null>(null);
+
+  private readonly loadAction = createAsyncAction(
+    () => this.sectionService.getSectionById(this.sectionId),
+    {
+      errorFallback: 'Failed to load section.',
+      onError: () => this.error.set('Failed to load section.'),
+      onSuccess: (response) => {
+        const data = response.data;
+        if (!data) {
+          this.error.set('Section data was not returned.');
+          return;
+        }
+
+        this.section = {
+          name: data.name,
+          description: data.description ?? '',
+          displayOrder: data.displayOrder,
+          isActive: data.isActive,
+        };
+      },
+    },
+  );
+
+  private readonly updateAction = createAsyncAction(
+    (request: UpdateSectionModel) =>
+      this.sectionService.updateSection(this.eventId, this.sectionId, request),
+    {
+      successMessage: 'Section updated successfully.',
+      errorFallback: 'Failed to update section.',
+      onSuccess: () =>
+        this.router.navigate([
+          '/organizer',
+          this.eventId,
+          'sections',
+          this.sectionId,
+        ]),
+    },
+  );
+
+  loading = this.loadAction.pending;
+  saving = this.updateAction.pending;
 
   section: UpdateSectionModel = {
     name: '',
@@ -43,57 +81,18 @@ export class UpdateSection implements OnInit {
 
     if (!eventId) {
       this.error.set('Event ID not found.');
-      this.loading.set(false);
       return;
     }
 
     if (!sectionId) {
       this.error.set('Section ID not found.');
-      this.loading.set(false);
       return;
     }
 
     this.eventId = eventId;
     this.sectionId = sectionId;
 
-    this.loadSection();
-  }
-
-  private loadSection(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.sectionService
-      .getSectionById(this.sectionId)
-      .subscribe({
-        next: (response) => {
-          const data = response.data;
-          if (!data) {
-            this.error.set('Section data was not returned.');
-            this.loading.set(false);
-            return;
-          }
-
-          this.section = {
-            name: data.name,
-            description: data.description ?? '',
-            displayOrder: data.displayOrder,
-            isActive: data.isActive,
-          };
-
-          this.loading.set(false);
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to load section:',
-            error,
-          );
-
-          this.error.set('Failed to load section.');
-          this.loading.set(false);
-        },
-      });
+    this.loadAction.run();
   }
 
   updateSection(): void {
@@ -117,42 +116,7 @@ export class UpdateSection implements OnInit {
       isActive: this.section.isActive,
     };
 
-    this.saving.set(true);
-
-    this.sectionService
-      .updateSection(
-        this.eventId,
-        this.sectionId,
-        request,
-      )
-      .subscribe({
-        next: () => {
-          this.saving.set(false);
-
-          this.toastr.success(
-            'Section updated successfully.',
-          );
-
-          this.router.navigate([
-            '/organizer',
-            this.eventId,
-            'sections',
-            this.sectionId,
-          ]);
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to update section:',
-            error,
-          );
-
-          this.saving.set(false);
-          this.error.set(
-            'Failed to update section.',
-          );
-        },
-      });
+    this.updateAction.run(request);
   }
 
   cancel(): void {

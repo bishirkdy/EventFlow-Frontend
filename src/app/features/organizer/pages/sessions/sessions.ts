@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { SessionModel } from '../../../../core/models/session';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { createAsyncAction, createAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-sessions',
@@ -17,23 +17,37 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 export class Sessions implements OnInit {
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
-  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
 
-  sessions = signal<SessionModel[]>([]);
-  loading = signal(true);
-  error = signal<string | null>(null);
-  deleting = signal<string | null>(null);
-
   private eventId = '';
+  private readonly routeError = signal<string | null>(null);
+
+  private readonly sessionsState = createAsyncState<SessionModel[]>(
+    () => this.sessionService.getSessions(this.eventId),
+    { initial: [], autoLoad: false, errorFallback: 'Failed to load sessions.' },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    (sessionId: string) => this.sessionService.deleteSession(this.eventId, sessionId),
+    {
+      successMessage: 'Session deleted successfully.',
+      errorFallback: 'Failed to delete session.',
+      onSuccess: () => this.loadSessions(),
+      onSettled: () => this.deleting.set(null),
+    },
+  );
+
+  sessions = this.sessionsState.data;
+  loading = this.sessionsState.loading;
+  error = computed(() => this.sessionsState.error() ?? this.routeError());
+  deleting = signal<string | null>(null);
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
-      this.loading.set(false);
+      this.routeError.set('Event ID not found.');
       return;
     }
 
@@ -42,25 +56,8 @@ export class Sessions implements OnInit {
   }
 
   loadSessions(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.sessionService.getSessions(this.eventId).subscribe({
-      next: (response) => {
-        this.sessions.set(response.data ?? []);
-        this.loading.set(false);
-      },
-
-      error: (error: unknown) => {
-        console.error(
-          'Failed to load sessions:',
-          error,
-        );
-
-        this.error.set('Failed to load sessions.');
-        this.loading.set(false);
-      },
-    });
+    this.routeError.set(null);
+    this.sessionsState.load();
   }
 
   createSession(): void {
@@ -102,34 +99,6 @@ export class Sessions implements OnInit {
 
     this.deleting.set(sessionId);
 
-    this.sessionService
-      .deleteSession(
-        this.eventId,
-        sessionId,
-      )
-      .subscribe({
-        next: () => {
-          this.deleting.set(null);
-
-          this.toastr.success(
-            'Session deleted successfully.',
-          );
-
-          this.loadSessions();
-        },
-
-        error: (error: unknown) => {
-          console.error(
-            'Failed to delete session:',
-            error,
-          );
-
-          this.deleting.set(null);
-
-          this.toastr.error(
-            'Failed to delete session.',
-          );
-        },
-      });
+    this.deleteAction.run(sessionId);
   }
 }

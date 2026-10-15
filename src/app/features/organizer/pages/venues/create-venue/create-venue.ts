@@ -2,10 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { Location } from '@angular/common';
 import { ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { map } from 'rxjs';
 
 import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { CreateVenueRequest } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-create-venue',
@@ -23,10 +25,27 @@ export class CreateVenue {
     OrganizerEventStateService
   );
 
-  loading = signal(false);
   selectedImage = signal<File | null>(null);
   imagePreview = signal<string | null>(null);
   error = signal<string | null>(null);
+
+  private readonly createAction = createAsyncAction(
+    (eventId: string, request: CreateVenueRequest) =>
+      this.venueService.createVenue(eventId, request).pipe(
+        map((response) => ({ eventId, response })),
+      ),
+    {
+      errorFallback: 'Failed to create venue.',
+      onSuccess: ({ eventId }) =>
+        this.router.navigate([
+          '/organizer',
+          eventId,
+          'venues',
+        ]),
+    },
+  );
+
+  loading = this.createAction.pending;
 
   readonly form = this.fb.nonNullable.group({
     name: [
@@ -97,26 +116,6 @@ export class CreateVenue {
       image: this.selectedImage() ?? undefined,
     };
 
-    this.loading.set(true);
-
-    this.venueService.createVenue(eventId, request).subscribe({
-      next: () => {
-        this.loading.set(false);
-
-        this.router.navigate([
-          '/organizer',
-          eventId,
-          'venues',
-        ]);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to create venue:', error);
-
-        this.error.set('Failed to create venue.');
-
-        this.loading.set(false);
-      },
-    });
+    this.createAction.run(eventId, request);
   }
 }

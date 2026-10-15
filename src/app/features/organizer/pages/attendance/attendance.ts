@@ -9,11 +9,13 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
+import { of, map } from 'rxjs';
 
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { OperationsService } from '../../../../core/services/operations/operations.service';
 import { AttendanceDashboardModel } from '../../../../core/models/operations';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-attendance',
@@ -36,18 +38,42 @@ export class AttendanceComponent {
   readonly qr = signal('');
   readonly scanning = signal(false);
 
-  constructor() {
-    const id = this.state.eventId();
-    if (id) this.load(id);
-  }
-
-  load(id: string) {
-    this.ops.dashboard(id).subscribe({
-      next: (r) => {
-        if (r.data) this.dashboard.set(r.data);
+  private readonly dashboardAction = createAsyncAction(
+    () => {
+      const id = this.state.eventId();
+      if (!id) return of(null);
+      return this.ops.dashboard(id).pipe(map((r) => r.data ?? null));
+    },
+    {
+      toastErrors: true,
+      errorFallback: 'Unable to load attendance dashboard.',
+      onSuccess: (data) => {
+        if (data) this.dashboard.set(data);
       },
-      error: () => this.toast.error('Unable to load attendance dashboard.'),
-    });
+    },
+  );
+
+  private readonly checkInAction = createAsyncAction(
+    (qr: string) => {
+      const id = this.state.eventId() ?? '';
+      return this.ops.checkInQr(id, qr, null, null);
+    },
+    {
+      errorFallback: 'Ticket verification failed.',
+      onSuccess: (r) => {
+        if (r.isSuccess) {
+          this.toast.success(r.message || 'Checked in');
+          this.qr.set('');
+          this.dashboardAction.run();
+        } else {
+          this.toast.error(r.message || 'Check-in failed');
+        }
+      },
+    },
+  );
+
+  constructor() {
+    this.dashboardAction.run();
   }
 
   async camera(): Promise<void> {
@@ -90,17 +116,6 @@ export class AttendanceComponent {
 
     if (!id || !qr) return;
 
-    this.ops.checkInQr(id, qr, null, null).subscribe({
-      next: (r) => {
-        if (r.isSuccess) {
-          this.toast.success(r.message || 'Checked in');
-          this.qr.set('');
-          this.load(id);
-        } else {
-          this.toast.error(r.message || 'Check-in failed');
-        }
-      },
-      error: () => this.toast.error('Ticket verification failed.'),
-    });
+    this.checkInAction.run(qr);
   }
 }

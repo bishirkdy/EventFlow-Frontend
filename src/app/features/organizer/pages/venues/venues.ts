@@ -5,6 +5,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { VenueModel } from '../../../../core/models/venue';
 import { VenueService } from '../../../../core/services/venue/venue.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-venue',
@@ -20,10 +21,35 @@ export class Venues implements OnInit {
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
   venues = signal<VenueModel[]>([]);
-  loading = signal(false);
   deleting = signal(false);
 
   private eventId = '';
+
+  private readonly loadAction = createAsyncAction(
+    () => this.venueService.getVenues(this.eventId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load venues',
+      onSuccess: (response) => this.venues.set(response.data ?? []),
+    },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    (venueId: string) => this.venueService.deleteVenue(this.eventId, venueId),
+    {
+      onSettled: () => this.deleting.set(false),
+      onSuccess: (response) => {
+        if (response.isSuccess) {
+          this.toastr.success(response.message || 'Venue deleted successfully');
+          this.loadVenues();
+        } else {
+          this.toastr.error(response.message || 'Failed to delete venue');
+        }
+      },
+    },
+  );
+
+  loading = this.loadAction.pending;
 
   ngOnInit(): void {
     const eventId = this.getEventId();
@@ -53,22 +79,7 @@ export class Venues implements OnInit {
   }
 
   private loadVenues(): void {
-    this.loading.set(true);
-
-    this.venueService.getVenues(this.eventId).subscribe({
-      next: (response) => {
-        this.venues.set(response.data ?? []);
-        this.loading.set(false);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to load venues:', error);
-
-        this.loading.set(false);
-
-        this.toastr.error('Failed to load venues');
-      },
-    });
+    this.loadAction.run();
   }
 
   createVenue(): void {
@@ -104,24 +115,6 @@ export class Venues implements OnInit {
     }
 
     this.deleting.set(true);
-    this.venueService.deleteVenue(eventId, venueId).subscribe({
-      next: (response) => {
-        this.deleting.set(false);
-
-        if (response.isSuccess) {
-          this.toastr.success(response.message || 'Venue deleted successfully');
-
-          this.loadVenues();
-        } else {
-          this.toastr.error(response.message || 'Failed to delete venue');
-        }
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to delete venue:', error);
-        this.deleting.set(false);
-        this.toastr.error('Failed to delete venue');
-      },
-    });
+    this.deleteAction.run(venueId);
   }
 }

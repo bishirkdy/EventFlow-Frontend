@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { CreateSessionModel } from '../../../../../core/models/session';
 import { SectionModel } from '../../../../../core/models/section';
@@ -11,6 +10,7 @@ import { VenueModel } from '../../../../../core/models/venue';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../../core/models/event';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-create-session',
@@ -24,16 +24,12 @@ export class CreateSession implements OnInit {
   private readonly sessionService = inject(SessionService);
   private readonly sectionService = inject(SectionService);
   private readonly venueService = inject(VenueService);
-  private readonly toastr = inject(NotificationService);
   private readonly organizerEventState = inject(OrganizerEventStateService);
 
   eventId = '';
 
   sections = signal<SectionModel[]>([]);
   venues = signal<VenueModel[]>([]);
-  loadingVenues = signal(true);
-  loadingSections = signal(true);
-  saving = signal(false);
   selectedImage = signal<File | null>(null);
   imagePreview = signal<string | null>(null);
   error = signal<string | null>(null);
@@ -41,6 +37,38 @@ export class CreateSession implements OnInit {
   eventStartLocal = signal('');
   eventEndLocal = signal('');
   eventWindowLabel = signal('');
+
+  private readonly venuesAction = createAsyncAction(
+    () => this.venueService.getVenues(this.eventId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load venues.',
+      onSuccess: (response) => this.venues.set(response.data ?? []),
+    },
+  );
+
+  private readonly sectionsAction = createAsyncAction(
+    () => this.sectionService.getSections(this.eventId),
+    {
+      errorFallback: 'Failed to load sections.',
+      onError: () => this.error.set('Failed to load sections.'),
+      onSuccess: (response) => this.sections.set(response.data ?? []),
+    },
+  );
+
+  private readonly createAction = createAsyncAction(
+    (request: CreateSessionModel) => this.sessionService.createSession(this.eventId, request),
+    {
+      successMessage: 'Session created successfully.',
+      errorFallback: 'Failed to create session.',
+      onSuccess: () =>
+        this.router.navigate(['/organizer', this.eventId, 'sessions']),
+    },
+  );
+
+  loadingVenues = this.venuesAction.pending;
+  loadingSections = this.sectionsAction.pending;
+  saving = this.createAction.pending;
 
   session: CreateSessionModel = {
     sectionId: '',
@@ -58,7 +86,6 @@ export class CreateSession implements OnInit {
 
     if (!eventId) {
       this.error.set('Event ID not found.');
-      this.loadingSections.set(false);
       return;
     }
 
@@ -70,35 +97,8 @@ export class CreateSession implements OnInit {
       this.eventEndLocal.set(this.toEventLocalDateTime(currentEvent.endDate, currentEvent.timeZone));
       this.eventWindowLabel.set(`${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} — ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`);
     }
-    this.loadSections();
-    this.loadVenues();
-  }
-
-  private loadVenues(): void {
-    this.loadingVenues.set(true);
-    this.venueService.getVenues(this.eventId).subscribe({
-      next: (response) => { this.venues.set(response.data ?? []); this.loadingVenues.set(false); },
-      error: () => { this.loadingVenues.set(false); this.toastr.error('Failed to load venues.'); },
-    });
-  }
-
-  private loadSections(): void {
-    this.loadingSections.set(true);
-
-    this.sectionService.getSections(this.eventId).subscribe({
-      next: (response) => {
-        this.sections.set(response.data ?? []);
-        this.loadingSections.set(false);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to load sections:', error);
-
-        this.error.set('Failed to load sections.');
-
-        this.loadingSections.set(false);
-      },
-    });
+    this.sectionsAction.run();
+    this.venuesAction.run();
   }
 
   onImageSelected(event: Event): void {
@@ -159,24 +159,7 @@ export class CreateSession implements OnInit {
       image: this.selectedImage() ?? undefined,
     };
 
-    this.saving.set(true);
-
-    this.sessionService.createSession(this.eventId, request).subscribe({
-      next: () => {
-        this.saving.set(false);
-
-        this.toastr.success('Session created successfully.');
-
-        this.router.navigate(['/organizer', this.eventId, 'sessions']);
-      },
-
-      error: (error: unknown) => {
-        console.error('Failed to create session:', error);
-
-        this.saving.set(false);
-        this.error.set((error as any)?.error?.message || 'Failed to create session.');
-      },
-    });
+    this.createAction.run(request);
   }
 
   private toEventLocalDateTime(value: string, timeZone: string): string {

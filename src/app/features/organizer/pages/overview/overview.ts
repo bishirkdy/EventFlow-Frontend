@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { EventService } from '../../../../core/services/event/event.service';
@@ -21,6 +21,27 @@ import {
 import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
 import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
+import { createRawAsyncState } from 'core/state';
+
+interface AnalyticsBundle {
+  overview: EventOverviewAnalyticsModel | null;
+  programme: ProgrammeAnalyticsModel | null;
+  content: ContentAnalyticsModel | null;
+  registrations: RegistrationAnalyticsModel | null;
+  certificates: CertificateAnalyticsModel | null;
+  attendance: AttendanceAnalyticsModel | null;
+  team: TeamAnalyticsModel | null;
+}
+
+const EMPTY_ANALYTICS: AnalyticsBundle = {
+  overview: null,
+  programme: null,
+  content: null,
+  registrations: null,
+  certificates: null,
+  attendance: null,
+  team: null,
+};
 
 @Component({
   selector: 'app-overview',
@@ -38,59 +59,57 @@ export class Overview {
   private readonly operationsService = inject(OperationsService);
   private readonly roleService = inject(EventRoleService);
 
-  readonly analyticsLoading = signal(true);
+  private readonly analyticsState = createRawAsyncState<AnalyticsBundle>(
+    () => {
+      const eventId =
+        this.organizerEventState.eventId() ??
+        this.route.snapshot.paramMap.get('eventId');
 
-  readonly overviewAnalytics = signal<EventOverviewAnalyticsModel | null>(null);
-  readonly programmeAnalytics = signal<ProgrammeAnalyticsModel | null>(null);
-  readonly contentAnalytics = signal<ContentAnalyticsModel | null>(null);
-  readonly registrationAnalytics = signal<RegistrationAnalyticsModel | null>(null);
-  readonly certificateAnalytics = signal<CertificateAnalyticsModel | null>(null);
-  readonly attendanceAnalytics = signal<AttendanceAnalyticsModel | null>(null);
-  readonly teamAnalytics = signal<TeamAnalyticsModel | null>(null);
+      if (!eventId) return of(EMPTY_ANALYTICS);
 
-  ngOnInit(): void {
-    const eventId =
-      this.organizerEventState.eventId() ??
-      this.route.snapshot.paramMap.get('eventId');
+      return forkJoin({
+        overview: this.eventService.getOverviewAnalytics(eventId).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+        programme: this.eventService.getProgrammeAnalytics(eventId).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+        content: this.eventService.getContentAnalytics(eventId).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+        registrations: this.registrationService.getRegistrationAnalytics(eventId, 30).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+        certificates: this.registrationService.getCertificateAnalytics(eventId).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+        attendance: this.operationsService.attendanceAnalytics(eventId, 30).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+        team: this.roleService.getTeamAnalytics(eventId).pipe(
+          map((r) => r.data ?? null),
+          catchError(() => of(null)),
+        ),
+      });
+    },
+    { initial: EMPTY_ANALYTICS },
+  );
 
-    if (!eventId) {
-      this.analyticsLoading.set(false);
-      return;
-    }
+  readonly analyticsLoading = this.analyticsState.loading;
 
-    forkJoin({
-      overview: this.eventService
-        .getOverviewAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      programme: this.eventService
-        .getProgrammeAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      content: this.eventService
-        .getContentAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      registrations: this.registrationService
-        .getRegistrationAnalytics(eventId, 30)
-        .pipe(catchError(() => of(null))),
-      certificates: this.registrationService
-        .getCertificateAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-      attendance: this.operationsService
-        .attendanceAnalytics(eventId, 30)
-        .pipe(catchError(() => of(null))),
-      team: this.roleService
-        .getTeamAnalytics(eventId)
-        .pipe(catchError(() => of(null))),
-    }).subscribe((results) => {
-      this.overviewAnalytics.set(results.overview?.data ?? null);
-      this.programmeAnalytics.set(results.programme?.data ?? null);
-      this.contentAnalytics.set(results.content?.data ?? null);
-      this.registrationAnalytics.set(results.registrations?.data ?? null);
-      this.certificateAnalytics.set(results.certificates?.data ?? null);
-      this.attendanceAnalytics.set(results.attendance?.data ?? null);
-      this.teamAnalytics.set(results.team?.data ?? null);
-      this.analyticsLoading.set(false);
-    });
-  }
+  readonly overviewAnalytics = computed(() => this.analyticsState.data().overview);
+  readonly programmeAnalytics = computed(() => this.analyticsState.data().programme);
+  readonly contentAnalytics = computed(() => this.analyticsState.data().content);
+  readonly registrationAnalytics = computed(() => this.analyticsState.data().registrations);
+  readonly certificateAnalytics = computed(() => this.analyticsState.data().certificates);
+  readonly attendanceAnalytics = computed(() => this.analyticsState.data().attendance);
+  readonly teamAnalytics = computed(() => this.analyticsState.data().team);
 
   get registrationTrend(): RegistrationAnalyticsModel['trend'] {
     return (this.registrationAnalytics()?.trend ?? []).slice(-14);

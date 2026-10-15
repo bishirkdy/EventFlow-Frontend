@@ -1,9 +1,11 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { of } from 'rxjs';
 import { FeedbackService } from '../../../../core/services/feedback/feedback.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { FeedbackResults, FeedbackTargetType } from '../../../../core/models/feedback';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-organizer-feedback',
@@ -19,7 +21,24 @@ export class OrganizerFeedbackComponent implements OnInit {
 
   readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
   readonly results = signal<FeedbackResults | null>(null);
-  readonly loading = signal(true);
+
+  private readonly loadAction = createAsyncAction(
+    () => {
+      if (!this.eventId) return of(null);
+      return this.feedbackService.results(this.eventId);
+    },
+    {
+      toastErrors: true,
+      errorFallback: 'Unable to load feedback results.',
+      onSuccess: (response) => {
+        if (response) {
+          this.results.set(response.data ?? null);
+        }
+      },
+    },
+  );
+
+  readonly loading = this.loadAction.pending;
 
   readonly targetLabels: Record<number, string> = {
     [FeedbackTargetType.Event]: 'Event',
@@ -29,21 +48,7 @@ export class OrganizerFeedbackComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    if (!this.eventId) {
-      this.loading.set(false);
-      return;
-    }
-
-    this.feedbackService.results(this.eventId).subscribe({
-      next: response => {
-        this.results.set(response.data ?? null);
-        this.loading.set(false);
-      },
-      error: error => {
-        this.loading.set(false);
-        this.notify.error(error, 'Unable to load feedback results.');
-      },
-    });
+    this.loadAction.run();
   }
 
   distributionPercent(count: number): number {
