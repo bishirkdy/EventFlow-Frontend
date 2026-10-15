@@ -93,7 +93,7 @@ export class CertificateTemplateEditor {
   readonly selectedKey = signal<string | null>(null);
 
   readonly fieldOptions = FIELD_OPTIONS;
-  readonly fontFamilies = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Georgia', 'Calibri'];
+  readonly fontFamilies = ['Lato', 'Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Georgia', 'Calibri'];
   readonly aligns: CertificateFieldAlign[] = ['Left', 'Center', 'Right'];
 
   readonly ImagePlus = ImagePlus;
@@ -187,7 +187,7 @@ export class CertificateTemplateEditor {
       fontColor: '#111827',
       bold: false,
       align: 'Center',
-      fontFamily: 'Arial',
+      fontFamily: 'Lato',
       ...preset,
     };
 
