@@ -1,6 +1,5 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
@@ -14,6 +13,7 @@ import {
   UpsertRegistrationFormRequest,
 } from '../../../../../core/models/registration';
 import { EditableField } from '../../../../../core/models/registration';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-registration-form-page',
@@ -28,15 +28,87 @@ export class RegistrationFormPageComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly toastr = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly eventId = this.eventState.eventId;
 
-  protected readonly loading = signal(false);
-  protected readonly saving = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly formId = signal<string | null>(null);
   protected readonly fields = signal<EditableField[]>([]);
+
+  private readonly loadAction = createAsyncAction(
+    (eventId: string) => this.formService.get(eventId),
+    {
+      errorFallback: 'Unable to load registration form.',
+      onError: (err) => {
+        const message =
+          (err as {
+            status?: number;
+            error?: {
+              message?: string;
+              errors?: string[];
+            };
+            message?: string;
+          }).error?.errors?.[0] ??
+          (err as { error?: { message?: string }; message?: string }).error?.message ??
+          (err as { message?: string }).message ??
+          'Unable to load registration form.';
+
+        if (this.isFormNotFoundMessage(message)) {
+          this.prepareCreateForm();
+          return;
+        }
+
+        this.error.set(message);
+      },
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          const message =
+            response.errors?.[0] ?? response.message ?? 'Unable to load registration form.';
+
+          if (this.isFormNotFoundMessage(message)) {
+            this.prepareCreateForm();
+            return;
+          }
+
+          this.error.set(message);
+          return;
+        }
+
+        if (response.data) {
+          this.formId.set(response.data.id);
+          this.applyModel(response.data);
+        } else {
+          this.prepareCreateForm();
+        }
+      },
+    },
+  );
+
+  private readonly upsertAction = createAsyncAction(
+    (eventId: string, request: UpsertRegistrationFormRequest) =>
+      this.formService.upsert(eventId, request),
+    {
+      errorFallback: 'Unable to save registration form.',
+      onSuccess: (response) => {
+        if (!response.isSuccess || !response.data) {
+          const message = response.message || 'Unable to save registration form.';
+
+          this.error.set(message);
+          this.toastr.error(message);
+          return;
+        }
+
+        this.formId.set(response.data.id);
+
+        this.applyModel(response.data);
+
+        this.toastr.success(response.message || 'Registration form saved.');
+      },
+    },
+  );
+
+  protected readonly loading = this.loadAction.pending;
+  protected readonly saving = this.upsertAction.pending;
 
   protected readonly form = this.fb.nonNullable.group({
     name: ['Event Registration', [Validators.required, Validators.maxLength(200)]],
@@ -222,42 +294,9 @@ export class RegistrationFormPageComponent {
       })),
     };
 
-    this.saving.set(true);
     this.error.set(null);
 
-    this.formService
-      .upsert(eventId, request)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess || !response.data) {
-            const message = response.message || 'Unable to save registration form.';
-
-            this.error.set(message);
-            this.toastr.error(message);
-            return;
-          }
-
-          this.formId.set(response.data.id);
-
-          this.applyModel(response.data);
-
-          this.toastr.success(response.message || 'Registration form saved.');
-        },
-
-        error: (err: {
-          error?: { message?: string;};
-          message?: string;
-        }) => {
-          const message = err.error?.message ?? err.message ?? 'Unable to save registration form.';
-
-          this.error.set(message);
-          this.toastr.error(message);
-          this.saving.set(false);
-        },
-
-        complete: () => this.saving.set(false),
-      });
+    this.upsertAction.run(eventId, request);
   }
 
   private load(): void {
@@ -268,61 +307,9 @@ export class RegistrationFormPageComponent {
       return;
     }
 
-    this.loading.set(true);
     this.error.set(null);
 
-    this.formService
-      .get(eventId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            const message =
-              response.errors?.[0] ?? response.message ?? 'Unable to load registration form.';
-
-            if (this.isFormNotFoundMessage(message)) {
-              this.prepareCreateForm();
-              return;
-            }
-
-            this.error.set(message);
-            this.loading.set(false);
-            return;
-          }
-
-          if (response.data) {
-            this.formId.set(response.data.id);
-            this.applyModel(response.data);
-          } else {
-            this.prepareCreateForm();
-          }
-
-          this.loading.set(false);
-        },
-
-        error: (err: {
-          status?: number;
-          error?: {
-            message?: string;
-            errors?: string[];
-          };
-          message?: string;
-        }) => {
-          const message =
-            err.error?.errors?.[0] ??
-            err.error?.message ??
-            err.message ??
-            'Unable to load registration form.';
-
-          if (this.isFormNotFoundMessage(message)) {
-            this.prepareCreateForm();
-            return;
-          }
-
-          this.error.set(message);
-          this.loading.set(false);
-        },
-      });
+    this.loadAction.run(eventId);
   }
 
   private prepareCreateForm(): void {
@@ -340,8 +327,6 @@ export class RegistrationFormPageComponent {
       opensAtUtc: '',
       closesAtUtc: '',
     });
-
-    this.loading.set(false);
   }
 
   private isFormNotFoundMessage(message: string): boolean {

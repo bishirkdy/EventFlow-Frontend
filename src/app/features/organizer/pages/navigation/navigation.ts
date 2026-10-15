@@ -4,6 +4,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { NavigationItemService } from '../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { NavigationItemModel } from '../../../../core/models/navigation-item';
+import { createAsyncAction } from 'core/state';
 @Component({
   selector: 'app-navigation',
   standalone: true,
@@ -16,7 +17,45 @@ export class Navigation implements OnInit {
   private readonly state = inject(OrganizerEventStateService);
   private readonly toastr = inject(NotificationService);
   readonly items = signal<NavigationItemModel[]>([]);
-  readonly loading = signal(false);
+  private readonly loadAction = createAsyncAction(
+    (eventId: string) => this.service.getItems(eventId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load navigation items.',
+      onSuccess: (r) => this.items.set([...(r.data ?? [])].sort((a, b) => a.displayOrder - b.displayOrder)),
+    },
+  );
+  private readonly deleteAction = createAsyncAction(
+    (id: string, item: NavigationItemModel) => this.service.deleteItem(id, item.id),
+    {
+      errorFallback: 'Failed to delete navigation item.',
+      onSuccess: (r) => {
+        this.toastr.success(r.message);
+        this.loadItems();
+      },
+    },
+  );
+  private readonly toggleAction = createAsyncAction(
+    (id: string, item: NavigationItemModel) => this.service.setVisibility(id, item.id, !item.isVisible),
+    {
+      errorFallback: 'Failed to update visibility.',
+      onSuccess: (r) => {
+        this.toastr.success(r.message);
+        this.loadItems();
+      },
+    },
+  );
+  private readonly reorderAction = createAsyncAction(
+    (id: string, ids: string[]) => this.service.reorderItems(id, ids),
+    {
+      errorFallback: 'Failed to reorder navigation items.',
+      onSuccess: (r) => {
+        this.toastr.success(r.message);
+        this.loadItems();
+      },
+    },
+  );
+  readonly loading = this.loadAction.pending;
   ngOnInit(): void {
     this.loadItems();
   }
@@ -26,17 +65,7 @@ export class Navigation implements OnInit {
       this.toastr.error('Event information is missing.');
       return;
     }
-    this.loading.set(true);
-    this.service.getItems(eventId).subscribe({
-      next: (r) => {
-        this.items.set([...(r.data ?? [])].sort((a, b) => a.displayOrder - b.displayOrder));
-        this.loading.set(false);
-      },
-      error: (e) => {
-        this.loading.set(false);
-        this.toastr.error(this.apiMessage(e, 'Failed to load navigation items.'));
-      },
-    });
+    this.loadAction.run(eventId);
   }
   createItem(): void {
     this.router.navigate(['/organizer', this.state.eventId(), 'navigation', 'create']);
@@ -47,24 +76,12 @@ export class Navigation implements OnInit {
   deleteItem(item: NavigationItemModel): void {
     const id = this.state.eventId();
     if (!id || !confirm(`Delete "${item.label}"?`)) return;
-    this.service.deleteItem(id, item.id).subscribe({
-      next: (r) => {
-        this.toastr.success(r.message);
-        this.loadItems();
-      },
-      error: (e) => this.toastr.error(this.apiMessage(e, 'Failed to delete navigation item.')),
-    });
+    this.deleteAction.run(id, item);
   }
   toggleVisibility(item: NavigationItemModel): void {
     const id = this.state.eventId();
     if (!id) return;
-    this.service.setVisibility(id, item.id, !item.isVisible).subscribe({
-      next: (r) => {
-        this.toastr.success(r.message);
-        this.loadItems();
-      },
-      error: (e) => this.toastr.error(this.apiMessage(e, 'Failed to update visibility.')),
-    });
+    this.toggleAction.run(id, item);
   }
   moveItem(item: NavigationItemModel, direction: -1 | 1): void {
     const id = this.state.eventId();
@@ -74,21 +91,6 @@ export class Navigation implements OnInit {
       t = i + direction;
     if (i < 0 || t < 0 || t >= list.length) return;
     [list[i], list[t]] = [list[t], list[i]];
-    this.service
-      .reorderItems(
-        id,
-        list.map((x) => x.id),
-      )
-      .subscribe({
-        next: (r) => {
-          this.toastr.success(r.message);
-          this.loadItems();
-        },
-        error: (e) => this.toastr.error(this.apiMessage(e, 'Failed to reorder navigation items.')),
-      });
-  }
-  private apiMessage(error: unknown, fallback: string): string {
-    const r = (error as { error?: { message?: string; errors?: string[] } })?.error;
-    return r?.errors?.join(' ') || r?.message || fallback;
+    this.reorderAction.run(id, list.map((x) => x.id));
   }
 }

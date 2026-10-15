@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-create-page',
@@ -20,7 +22,22 @@ export class CreatePage {
   private readonly router = inject(Router);
   private readonly toastr = inject(NotificationService);
 
-  readonly saving = signal(false);
+  private readonly createPageAction = createAsyncAction(
+    (eventId: string, formValue: { name: string; slug: string; pageType: string }) =>
+      this.pageService.createPage(eventId, formValue).pipe(
+        map((response) => ({ eventId, response })),
+      ),
+    {
+      errorFallback: 'Failed to create event page.',
+      onSuccess: ({ eventId, response }) => {
+        this.toastr.success(response.message);
+
+        this.router.navigate(['/organizer', eventId, 'pages']);
+      },
+    },
+  );
+
+  readonly saving = this.createPageAction.pending;
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(150)]],
@@ -47,19 +64,7 @@ export class CreatePage {
       return;
     }
 
-    this.saving.set(true);
-    this.pageService.createPage(eventId, this.form.getRawValue()).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-
-        this.router.navigate(['/organizer', eventId, 'pages']);
-      },
-
-      error: () => {
-        this.saving.set(false);
-        this.toastr.error('Failed to create event page.');
-      },
-    });
+    this.createPageAction.run(eventId, this.form.getRawValue());
   }
 
   cancel(): void {

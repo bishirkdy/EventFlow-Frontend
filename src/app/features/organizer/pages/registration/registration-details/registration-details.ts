@@ -1,14 +1,14 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { RegistrationService } from '../../../../../core/services/registration/registration.service';
-import { RegistrationModel } from '../../../../../core/models/registration';
-import { RegistrationStatus } from '../../../../../core/models/registration';
-import { finalize } from 'rxjs';
+import { RegistrationModel, RegistrationStatus } from '../../../../../core/models/registration';
+import { getApiErrorMessage } from 'core/api/api-error';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-registration-details',
@@ -22,13 +22,69 @@ export class RegistrationDetailsComponent implements OnInit {
   private readonly eventState = inject(OrganizerEventStateService);
   private readonly service = inject(RegistrationService);
   private readonly toastr = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly registration = signal<RegistrationModel | null>(null);
 
   protected readonly status = RegistrationStatus;
+
+  private readonly loadAction = createAsyncAction(
+    (eventId: string, registrationId: string) =>
+      this.service.getByIdForOrganizer(eventId, registrationId),
+    {
+      errorFallback: 'Unable to load registration.',
+      onError: (err) => {
+        console.error('DETAIL ERROR:', err);
+
+        this.error.set(
+          getApiErrorMessage(err, 'Unable to load registration.'),
+        );
+      },
+      onSuccess: (response) => {
+        if (!response.isSuccess || !response.data) {
+          this.error.set(response.message || 'Unable to load registration.');
+          return;
+        }
+
+        this.registration.set(response.data);
+      },
+    },
+  );
+
+  private readonly statusAction = createAsyncAction(
+    (
+      request$: ReturnType<RegistrationService['approve']>,
+      successMessage: string,
+    ) => request$.pipe(map((response) => ({ successMessage, response }))),
+    {
+      errorFallback: 'Action failed.',
+      onSuccess: ({ successMessage, response }) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Action failed.');
+          return;
+        }
+        this.toastr.success(successMessage);
+        this.registration.set(response.data);
+      },
+    },
+  );
+
+  private readonly rejectAction = createAsyncAction(
+    (request$: ReturnType<RegistrationService['reject']>) => request$,
+    {
+      errorFallback: 'Rejection failed.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Rejection failed.');
+          return;
+        }
+        this.toastr.success('Registration rejected.');
+        this.registration.set(response.data);
+      },
+    },
+  );
+
+  protected readonly loading = this.loadAction.pending;
 
   ngOnInit(): void {
     this.load();
@@ -52,20 +108,9 @@ export class RegistrationDetailsComponent implements OnInit {
     const item = this.registration();
     if (!eventId || !item) return;
 
-    this.service
-      .reject(eventId, item.id, { reason: reason.trim() })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.toastr.error(response.message || 'Rejection failed.');
-            return;
-          }
-          this.toastr.success('Registration rejected.');
-          this.registration.set(response.data);
-        },
-        error: () => this.toastr.error('Rejection failed.'),
-      });
+    this.rejectAction.run(
+      this.service.reject(eventId, item.id, { reason: reason.trim() }),
+    );
   }
 
   protected waitlist(): void {
@@ -89,7 +134,7 @@ export class RegistrationDetailsComponent implements OnInit {
   }
 
   private action(
-    request: (eventId: string,registrationId: string,) => ReturnType<RegistrationService['approve']>,
+    request: (eventId: string, registrationId: string) => ReturnType<RegistrationService['approve']>,
     successMessage: string,
   ): void {
     const eventId = this.eventState.eventId();
@@ -97,19 +142,7 @@ export class RegistrationDetailsComponent implements OnInit {
 
     if (!eventId || !item) return;
 
-    request(eventId, item.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.toastr.error(response.message || 'Action failed.');
-            return;
-          }
-          this.toastr.success(successMessage);
-          this.registration.set(response.data);
-        },
-        error: () => this.toastr.error('Action failed.'),
-      });
+    this.statusAction.run(request(eventId, item.id), successMessage);
   }
 
   private load(): void {
@@ -125,29 +158,6 @@ export class RegistrationDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading.set(true);
-
-    this.service
-      .getByIdForOrganizer(eventId, registrationId)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.loading.set(false)),
-      )
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess || !response.data) {
-            this.error.set(response.message || 'Unable to load registration.');
-            return;
-          }
-
-          this.registration.set(response.data);
-        },
-
-        error: (err: { error?: { message?: string }; message?: string }) => {
-          console.error('DETAIL ERROR:', err);
-
-          this.error.set(err.error?.message ?? err.message ?? 'Unable to load registration.');
-        },
-      });
+    this.loadAction.run(eventId, registrationId);
   }
 }

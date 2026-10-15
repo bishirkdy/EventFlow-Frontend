@@ -14,6 +14,8 @@ import {
   RegistrationStatsModel,
   RegistrationStatus,
 } from '../../../../../core/models/registration';
+import { getApiErrorMessage } from 'core/api/api-error';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-registrations',
@@ -32,7 +34,6 @@ export class RegistrationsComponent {
 
   protected readonly eventId = this.eventState.eventId;
 
-  protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
 
   protected readonly registrations = signal<RegistrationModel[]>([]);
@@ -69,6 +70,99 @@ export class RegistrationsComponent {
       label: 'Waitlisted',
     },
   ];
+
+  private readonly listAction = createAsyncAction(
+    (eventId: string) => this.service.list(eventId, this.pageNumber(), this.pageSize),
+    {
+      errorFallback: 'Unable to load registrations.',
+      onError: (err) =>
+        this.error.set(
+          getApiErrorMessage(err, 'Unable to load registrations.'),
+        ),
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.error.set(response.message || 'Unable to load registrations.');
+          return;
+        }
+
+        const data = response.data;
+
+        if (!data) {
+          this.registrations.set([]);
+          this.totalPages.set(1);
+          return;
+        }
+
+        this.registrations.set(data.items ?? []);
+        this.totalPages.set(data.totalPages || 1);
+      },
+    },
+  );
+
+  private readonly statsAction = createAsyncAction(
+    (eventId: string) => this.service.getStats(eventId),
+    {
+      onSuccess: (response) => {
+        if (response.isSuccess && response.data) {
+          this.stats.set(response.data);
+        }
+      },
+    },
+  );
+
+  private readonly approveAction = createAsyncAction(
+    (eventId: string, registrationId: string) => this.service.approve(eventId, registrationId),
+    {
+      errorFallback: 'Approval failed.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Approval failed.');
+          return;
+        }
+
+        this.toastr.success(response.message || 'Registration approved.');
+
+        this.load();
+      },
+    },
+  );
+
+  private readonly rejectAction = createAsyncAction(
+    (eventId: string, registrationId: string, reason: string) =>
+      this.service.reject(eventId, registrationId, { reason }),
+    {
+      errorFallback: 'Rejection failed.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Rejection failed.');
+          return;
+        }
+
+        this.toastr.success(response.message || 'Registration rejected.');
+
+        this.load();
+      },
+    },
+  );
+
+  private readonly cancelAction = createAsyncAction(
+    (eventId: string, registrationId: string) => this.service.cancel(eventId, registrationId),
+    {
+      errorFallback: 'Cancellation failed.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Cancellation failed.');
+          return;
+        }
+
+        this.toastr.success(response.message || 'Registration cancelled.');
+
+        this.load();
+      },
+    },
+  );
+
+  protected readonly loading = this.listAction.pending;
 
   constructor() {
     this.filterChanged
@@ -144,24 +238,7 @@ export class RegistrationsComponent {
       return;
     }
 
-    this.service
-      .approve(eventId, item.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.toastr.error(response.message || 'Approval failed.');
-            return;
-          }
-
-          this.toastr.success(response.message || 'Registration approved.');
-
-          this.load();
-        },
-        error: () => {
-          this.toastr.error('Approval failed.');
-        },
-      });
+    this.approveAction.run(eventId, item.id);
   }
 
   protected reject(item: RegistrationModel, event: Event): void {
@@ -179,26 +256,7 @@ export class RegistrationsComponent {
       return;
     }
 
-    this.service
-      .reject(eventId, item.id, {
-        reason: reason.trim(),
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.toastr.error(response.message || 'Rejection failed.');
-            return;
-          }
-
-          this.toastr.success(response.message || 'Registration rejected.');
-
-          this.load();
-        },
-        error: () => {
-          this.toastr.error('Rejection failed.');
-        },
-      });
+    this.rejectAction.run(eventId, item.id, reason.trim());
   }
 
   protected cancel(item: RegistrationModel, event: Event): void {
@@ -214,24 +272,7 @@ export class RegistrationsComponent {
       return;
     }
 
-    this.service
-      .cancel(eventId, item.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.toastr.error(response.message || 'Cancellation failed.');
-            return;
-          }
-
-          this.toastr.success(response.message || 'Registration cancelled.');
-
-          this.load();
-        },
-        error: () => {
-          this.toastr.error('Cancellation failed.');
-        },
-      });
+    this.cancelAction.run(eventId, item.id);
   }
 
   protected nextPage(): void {
@@ -262,56 +303,9 @@ export class RegistrationsComponent {
       return;
     }
 
-    this.loading.set(true);
     this.error.set(null);
 
-    this.service
-      .list(eventId, this.pageNumber(), this.pageSize)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (!response.isSuccess) {
-            this.error.set(response.message || 'Unable to load registrations.');
-            this.loading.set(false);
-            return;
-          }
-
-          const data = response.data;
-          console.log(response.data);
-
-          if (!data) {
-            this.registrations.set([]);
-            this.totalPages.set(1);
-            this.loading.set(false);
-            return;
-          }
-
-          this.registrations.set(data.items ?? []);
-          this.totalPages.set(data.totalPages || 1);
-          this.loading.set(false);
-        },
-
-        error: (err: {
-          error?: {
-            message?: string;
-          };
-          message?: string;
-        }) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Unable to load registrations.');
-
-          this.loading.set(false);
-        },
-      });
-
-    this.service
-      .getStats(eventId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (response.isSuccess && response.data) {
-            this.stats.set(response.data);
-          }
-        },
-      });
+    this.listAction.run(eventId);
+    this.statsAction.run(eventId);
   }
 }

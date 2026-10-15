@@ -1,12 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../../core/models/event-page';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-create-navigation-item',
@@ -27,6 +29,44 @@ export class CreateNavigationItem implements OnInit {
   loadingPages = true;
   saving = false;
 
+  private readonly loadPagesAction = createAsyncAction(
+    (id: string) => this.pages.getManagePages(id),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load event pages.',
+      onSettled: () => {
+        this.loadingPages = false;
+      },
+      onSuccess: (r) => {
+        this.pageOptions = [...(r.data ?? [])].sort(
+          (a, b) => Number(b.isPublished) - Number(a.isPublished),
+        );
+      },
+    },
+  );
+
+  private readonly createItemAction = createAsyncAction(
+    (id: string, payload: { label: string; pageId: string }) =>
+      this.service.createItem(id, payload).pipe(
+        map((r) => ({ id, r })),
+      ),
+    {
+      errorFallback: 'Failed to create navigation item.',
+      onSettled: () => {
+        this.saving = false;
+      },
+      onSuccess: ({ id, r }) => {
+        this.toastr.success(r.message);
+
+        this.router.navigate([
+          '/organizer',
+          id,
+          'navigation',
+        ]);
+      },
+    },
+  );
+
   readonly form = this.fb.nonNullable.group({
     label: ['', [Validators.required, Validators.maxLength(100)]],
     pageId: ['', Validators.required],
@@ -41,20 +81,7 @@ export class CreateNavigationItem implements OnInit {
       return;
     }
 
-    this.pages.getManagePages(id).subscribe({
-      next: (r) => {
-        this.pageOptions = [...(r.data ?? [])].sort(
-          (a, b) => Number(b.isPublished) - Number(a.isPublished),
-        );
-        this.loadingPages = false;
-      },
-      error: (e) => {
-        this.loadingPages = false;
-        this.toastr.error(
-          this.apiMessage(e, 'Failed to load event pages.')
-        );
-      },
-    });
+    this.loadPagesAction.run(id);
   }
 
   submit(): void {
@@ -69,32 +96,10 @@ export class CreateNavigationItem implements OnInit {
 
     this.saving = true;
 
-    this.service
-      .createItem(id, {
-        label: v.label.trim(),
-        pageId: v.pageId,
-      })
-      .subscribe({
-        next: (r) => {
-          this.saving = false;
-          this.toastr.success(r.message);
-
-          this.router.navigate([
-            '/organizer',
-            id,
-            'navigation',
-          ]);
-        },
-        error: (e) => {
-          this.saving = false;
-          this.toastr.error(
-            this.apiMessage(
-              e,
-              'Failed to create navigation item.'
-            )
-          );
-        },
-      });
+    this.createItemAction.run(id, {
+      label: v.label.trim(),
+      pageId: v.pageId,
+    });
   }
 
   cancel(): void {
@@ -103,21 +108,5 @@ export class CreateNavigationItem implements OnInit {
       this.state.eventId(),
       'navigation',
     ]);
-  }
-
-  private apiMessage(
-    error: unknown,
-    fallback: string
-  ): string {
-    const r = (
-      error as {
-        error?: {
-          message?: string;
-          errors?: string[];
-        };
-      }
-    )?.error;
-
-    return r?.errors?.join(' ') || r?.message || fallback;
   }
 }

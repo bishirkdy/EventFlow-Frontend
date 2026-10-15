@@ -8,6 +8,7 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 import { ParticipantService } from '../../../../../core/services/registration/participant.service';
 import { ParticipantModel } from '../../../../../core/models/registration';
 import { ParticipantStatus } from '../../../../../core/models/registration';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-participants',
@@ -24,7 +25,6 @@ export class ParticipantsComponent {
   private readonly searchChanged = new Subject<void>();
 
   readonly participants = signal<ParticipantModel[]>([]);
-  readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly search = signal('');
   readonly status = signal<number | null>(null);
@@ -32,6 +32,14 @@ export class ParticipantsComponent {
   readonly totalPages = signal(1);
 
   readonly participantStatus = ParticipantStatus;
+
+  private readonly listAction = createAsyncAction(() => this.loadRequest(), {
+    errorFallback: 'Unable to load participants.',
+    onError: () => this.error.set('Unable to load participants.'),
+    onSuccess: (response) => this.applyList(response),
+  });
+
+  readonly loading = this.listAction.pending;
 
   protected readonly statuses = [
     {
@@ -55,20 +63,18 @@ export class ParticipantsComponent {
         takeUntilDestroyed(),
       )
       .subscribe({
-        next: (response) => {
-          const data = response.data;
-
-          this.participants.set(data?.items ?? []);
-          this.totalPages.set(data?.totalPages ?? 1);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.loading.set(false);
-          this.error.set('Unable to load participants.');
-        },
+        next: (response) => this.applyList(response),
+        error: () => this.error.set('Unable to load participants.'),
       });
 
     this.load();
+  }
+
+  private applyList(response: { data?: { items?: ParticipantModel[]; totalPages?: number } | null }): void {
+    const data = response.data;
+
+    this.participants.set(data?.items ?? []);
+    this.totalPages.set(data?.totalPages ?? 1);
   }
 
   onSearch(value: string): void {
@@ -83,22 +89,9 @@ export class ParticipantsComponent {
   }
 
   load(): void {
-    this.loading.set(true);
     this.error.set(null);
 
-    this.loadRequest().subscribe({
-      next: (response) => {
-        const data = response.data;
-
-        this.participants.set(data?.items ?? []);
-        this.totalPages.set(data?.totalPages ?? 1);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Unable to load participants.');
-      },
-    });
+    this.listAction.run();
   }
 
   private loadRequest() {

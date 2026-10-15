@@ -1,9 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../core/services/event-page-section/event-page-section.service';
 import { PageSectionModel } from '../../../../core/models/event-page-section';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-page-sections',
@@ -18,10 +20,54 @@ export class PageSections implements OnInit {
   private readonly pageSectionService = inject(EventPageSectionService);
 
   readonly sections = signal<PageSectionModel[]>([]);
-  readonly loading = signal(false);
 
   private pageId = '';
   private eventId = '';
+
+  private readonly loadAction = createAsyncAction(
+    () => this.pageSectionService.getManageSections(this.pageId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load page sections.',
+      onSuccess: (response) => this.sections.set(response.data ?? []),
+    },
+  );
+
+  private readonly moveAction = createAsyncAction(
+    (ids: string[]) => this.pageSectionService.reorderSections(this.pageId, ids),
+    {
+      errorFallback: 'Failed to reorder page sections.',
+      onSuccess: (response) => {
+        this.toastr.success(response.message);
+        this.loadSections();
+      },
+    },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    (section: PageSectionModel) =>
+      this.pageSectionService.deleteSection(this.pageId, section.id).pipe(
+        map((response) => ({ sectionId: section.id, response })),
+      ),
+    {
+      errorFallback: 'Failed to delete page section.',
+      onSuccess: ({ sectionId, response }) => {
+        this.sections.update((items) => items.filter((item) => item.id !== sectionId));
+        this.toastr.success(response.message);
+      },
+    },
+  );
+
+  private readonly reorderAction = createAsyncAction(
+    (ids: string[]) => this.pageSectionService.reorderSections(this.pageId, ids),
+    {
+      errorFallback: 'Failed to reorder page sections.',
+      onError: () => this.loadSections(),
+      onSuccess: (response) => this.toastr.success(response.message),
+    },
+  );
+
+  loading = this.loadAction.pending;
 
   ngOnInit(): void {
     this.pageId = this.route.snapshot.paramMap.get('pageId') ?? '';
@@ -48,18 +94,7 @@ export class PageSections implements OnInit {
   }
 
   loadSections(): void {
-    this.loading.set(true);
-
-    this.pageSectionService.getManageSections(this.pageId).subscribe({
-      next: (response) => {
-        this.sections.set(response.data ?? []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.toastr.error('Failed to load page sections.');
-      },
-    });
+    this.loadAction.run();
   }
 
   createSection(): void {
@@ -83,39 +118,18 @@ export class PageSections implements OnInit {
 
     [current[index], current[target]] = [current[target], current[index]];
 
-    this.pageSectionService.reorderSections(
-      this.pageId,
-      current.map((item) => item.id),
-    ).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-        this.loadSections();
-      },
-      error: () => this.toastr.error('Failed to reorder page sections.'),
-    });
+    this.moveAction.run(current.map((item) => item.id));
   }
 
   deleteSection(section: PageSectionModel): void {
     if (!confirm(`Delete "${section.title || section.sectionType}"?`)) return;
 
-    this.pageSectionService.deleteSection(this.pageId, section.id).subscribe({
-      next: (response) => {
-        this.sections.update((items) => items.filter((item) => item.id !== section.id));
-        this.toastr.success(response.message);
-      },
-      error: () => this.toastr.error('Failed to delete page section.'),
-    });
+    this.deleteAction.run(section);
   }
 
   reorderSections(): void {
     const sectionIds = this.sections().map((section) => section.id);
 
-    this.pageSectionService.reorderSections(this.pageId, sectionIds).subscribe({
-      next: (response) => this.toastr.success(response.message),
-      error: () => {
-        this.toastr.error('Failed to reorder page sections.');
-        this.loadSections();
-      },
-    });
+    this.reorderAction.run(sectionIds);
   }
 }

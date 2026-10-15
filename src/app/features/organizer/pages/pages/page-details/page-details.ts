@@ -8,6 +8,7 @@ import { EventPageModel } from '../../../../../core/models/event-page';
 import { NavigationItemByPageModel } from '../../../../../core/models/navigation-item';
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-page-details',
@@ -28,13 +29,84 @@ export class PageDetails implements OnInit {
   readonly page = signal<EventPageModel | null>(null);
   readonly navigationItem = signal<NavigationItemByPageModel | null>(null);
 
-  readonly loading = signal(true);
-  readonly navigationLoading = signal(false);
-  readonly navigationSaving = signal(false);
   readonly showNavigationForm = signal(false);
 
   private pageId = '';
   private eventId = '';
+
+  private readonly loadPageAction = createAsyncAction(
+    () => this.pageService.getManagePageById(this.eventId, this.pageId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load page.',
+      onSuccess: (r) => {
+        if (!r.data) {
+          this.toastr.error('Page not found.');
+          return;
+        }
+
+        this.page.set(r.data);
+      },
+    },
+  );
+
+  private readonly loadNavigationAction = createAsyncAction(
+    () => this.navigationItemService.getItemByPage(this.pageId),
+    {
+      onError: () => this.navigationItem.set(null),
+      onSuccess: (r) => this.navigationItem.set(r.data ?? null),
+    },
+  );
+
+  private readonly updateNavigationAction = createAsyncAction(
+    (label: string) =>
+      this.navigationItemService.updateItem(this.eventId, this.navigationItem()?.id ?? '', {
+        label,
+        pageId: this.pageId,
+        isVisible: this.navigationItem()?.isVisible ?? true,
+      }),
+    {
+      errorFallback: 'Failed to update navigation.',
+      onSettled: () => this.navigationSaving.set(false),
+      onSuccess: (r) => {
+        this.showNavigationForm.set(false);
+        this.toastr.success(r.message);
+        this.loadNavigation();
+      },
+    },
+  );
+
+  private readonly createNavigationAction = createAsyncAction(
+    (label: string) =>
+      this.navigationItemService.createItem(this.eventId, {
+        label,
+        pageId: this.pageId,
+      }),
+    {
+      errorFallback: 'Failed to add page to navigation.',
+      onSettled: () => this.navigationSaving.set(false),
+      onSuccess: (r) => {
+        this.showNavigationForm.set(false);
+        this.toastr.success(r.message);
+        this.loadNavigation();
+      },
+    },
+  );
+
+  private readonly removeNavigationAction = createAsyncAction(
+    () => this.navigationItemService.deleteItem(this.eventId, this.navigationItem()?.id ?? ''),
+    {
+      errorFallback: 'Failed to remove page from navigation.',
+      onSuccess: (r) => {
+        this.toastr.success(r.message);
+        this.navigationItem.set(null);
+      },
+    },
+  );
+
+  readonly loading = this.loadPageAction.pending;
+  readonly navigationLoading = this.loadNavigationAction.pending;
+  readonly navigationSaving = signal(false);
 
   readonly navigationForm = this.fb.nonNullable.group({
     label: ['', [Validators.required, Validators.maxLength(200)]],
@@ -50,7 +122,6 @@ export class PageDetails implements OnInit {
 
     if (!this.pageId || !this.eventId) {
       this.toastr.error('Page information is missing.');
-      this.loading.set(false);
       return;
     }
 
@@ -59,24 +130,7 @@ export class PageDetails implements OnInit {
   }
 
   loadPage(): void {
-    this.loading.set(true);
-
-    this.pageService.getManagePageById(this.eventId, this.pageId).subscribe({
-      next: (r) => {
-        if (!r.data) {
-          this.toastr.error('Page not found.');
-          this.loading.set(false);
-          return;
-        }
-
-        this.page.set(r.data);
-        this.loading.set(false);
-      },
-      error: (e) => {
-        this.loading.set(false);
-        this.toastr.error(this.apiMessage(e, 'Failed to load page.'));
-      },
-    });
+    this.loadPageAction.run();
   }
 
   editPage(): void {
@@ -92,18 +146,7 @@ export class PageDetails implements OnInit {
   }
 
   loadNavigation(): void {
-    this.navigationLoading.set(true);
-
-    this.navigationItemService.getItemByPage(this.pageId).subscribe({
-      next: (r) => {
-        this.navigationItem.set(r.data ?? null);
-        this.navigationLoading.set(false);
-      },
-      error: () => {
-        this.navigationItem.set(null);
-        this.navigationLoading.set(false);
-      },
-    });
+    this.loadNavigationAction.run();
   }
 
   addToNavigation(): void {
@@ -151,42 +194,9 @@ export class PageDetails implements OnInit {
     this.navigationSaving.set(true);
 
     if (existing) {
-      this.navigationItemService
-        .updateItem(this.eventId, existing.id, {
-          label: value.label.trim(),
-          pageId: this.pageId,
-          isVisible: existing.isVisible,
-        })
-        .subscribe({
-          next: (r) => {
-            this.navigationSaving.set(false);
-            this.showNavigationForm.set(false);
-            this.toastr.success(r.message);
-            this.loadNavigation();
-          },
-          error: (e) => {
-            this.navigationSaving.set(false);
-            this.toastr.error(this.apiMessage(e, 'Failed to update navigation.'));
-          },
-        });
+      this.updateNavigationAction.run(value.label.trim());
     } else {
-      this.navigationItemService
-        .createItem(this.eventId, {
-          label: value.label.trim(),
-          pageId: this.pageId,
-        })
-        .subscribe({
-          next: (r) => {
-            this.navigationSaving.set(false);
-            this.showNavigationForm.set(false);
-            this.toastr.success(r.message);
-            this.loadNavigation();
-          },
-          error: (e) => {
-            this.navigationSaving.set(false);
-            this.toastr.error(this.apiMessage(e, 'Failed to add page to navigation.'));
-          },
-        });
+      this.createNavigationAction.run(value.label.trim());
     }
   }
 
@@ -197,27 +207,6 @@ export class PageDetails implements OnInit {
       return;
     }
 
-    this.navigationItemService.deleteItem(this.eventId, item.id).subscribe({
-      next: (r) => {
-        this.toastr.success(r.message);
-        this.navigationItem.set(null);
-      },
-      error: (e) => {
-        this.toastr.error(this.apiMessage(e, 'Failed to remove page from navigation.'));
-      },
-    });
-  }
-
-  private apiMessage(error: unknown, fallback: string): string {
-    const r = (
-      error as {
-        error?: {
-          message?: string;
-          errors?: string[];
-        };
-      }
-    )?.error;
-
-    return r?.errors?.join(' ') || r?.message || fallback;
+    this.removeNavigationAction.run();
   }
 }

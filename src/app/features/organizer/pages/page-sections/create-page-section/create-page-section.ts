@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../../core/services/event-page-section/event-page-section.service';
+import { CreatePageSectionModel } from '../../../../../core/models/event-page-section';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-create-page-section',
@@ -22,8 +24,26 @@ export class CreatePageSection {
   private pageId = '';
   private eventId = '';
 
-  readonly saving = signal(false);
   readonly selectedImage = signal<File | null>(null);
+
+  private readonly createSectionAction = createAsyncAction(
+    (payload: CreatePageSectionModel) =>
+      this.pageSectionService.createSection(this.pageId, payload),
+    {
+      successMessage: 'Page section created successfully.',
+      errorFallback: 'Failed to create page section.',
+      onSuccess: () =>
+        this.router.navigate([
+          '/organizer',
+          this.eventId,
+          'pages',
+          this.pageId,
+          'sections',
+        ]),
+    },
+  );
+
+  readonly saving = this.createSectionAction.pending;
 
   readonly form = this.fb.nonNullable.group({
     sectionType: ['', Validators.required],
@@ -58,34 +78,10 @@ export class CreatePageSection {
       return;
     }
 
-    this.saving.set(true);
-
-    this.pageSectionService
-      .createSection(this.pageId, {
-        ...this.form.getRawValue(),
-        image: this.selectedImage() ?? undefined,
-      })
-      .subscribe({
-        next: () => {
-          this.toastr.success(
-            'Page section created successfully.',
-          );
-
-          this.router.navigate([
-            '/organizer',
-            this.eventId,
-            'pages',
-            this.pageId,
-            'sections',
-          ]);
-        },
-        error: () => {
-          this.saving.set(false);
-          this.toastr.error(
-            'Failed to create page section.',
-          );
-        },
-      });
+    this.createSectionAction.run({
+      ...this.form.getRawValue(),
+      image: this.selectedImage() ?? undefined,
+    });
   }
 
   goBack(): void {

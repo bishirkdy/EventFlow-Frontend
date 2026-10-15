@@ -5,6 +5,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../core/models/event-page';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-pages',
@@ -19,9 +20,63 @@ export class Pages implements OnInit {
   private readonly toastr = inject(NotificationService);
 
   readonly pages = signal<EventPageModel[]>([]);
-  readonly loading = signal(false);
 
   readonly eventId = this.eventState.eventId;
+
+  private readonly loadAction = createAsyncAction(
+    (eventId: string) => this.pageService.getManagePages(eventId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load event pages.',
+      onSuccess: (response) => this.pages.set(response.data ?? []),
+    },
+  );
+
+  private readonly publishAction = createAsyncAction(
+    (eventId: string, pageId: string) => this.pageService.publishPage(eventId, pageId),
+    {
+      errorFallback: 'Failed to publish page.',
+      onSuccess: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+    },
+  );
+
+  private readonly unpublishAction = createAsyncAction(
+    (eventId: string, pageId: string) => this.pageService.unpublishPage(eventId, pageId),
+    {
+      errorFallback: 'Failed to unpublish page.',
+      onSuccess: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+    },
+  );
+
+  private readonly reorderAction = createAsyncAction(
+    (eventId: string, ids: string[]) => this.pageService.reorderPages(eventId, ids),
+    {
+      errorFallback: 'Failed to reorder event pages.',
+      onSuccess: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+    },
+  );
+
+  private readonly deleteAction = createAsyncAction(
+    (eventId: string, pageId: string) => this.pageService.deletePage(eventId, pageId),
+    {
+      errorFallback: 'Failed to delete page.',
+      onSuccess: (response) => {
+        this.toastr.success(response.message);
+        this.loadPages();
+      },
+    },
+  );
+
+  loading = this.loadAction.pending;
 
   ngOnInit(): void {
     this.loadPages();
@@ -35,18 +90,7 @@ export class Pages implements OnInit {
       return;
     }
 
-    this.loading.set(true);
-
-    this.pageService.getManagePages(eventId).subscribe({
-      next: (response) => {
-        this.pages.set(response.data ?? []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.toastr.error('Failed to load event pages.');
-      },
-    });
+    this.loadAction.run(eventId);
   }
 
   createPage(): void {
@@ -60,15 +104,7 @@ export class Pages implements OnInit {
       return;
     }
 
-    this.pageService.publishPage(eventId, page.id).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-        this.loadPages();
-      },
-      error: () => {
-        this.toastr.error('Failed to publish page.');
-      },
-    });
+    this.publishAction.run(eventId, page.id);
   }
 
   unpublishPage(page: EventPageModel): void {
@@ -78,15 +114,7 @@ export class Pages implements OnInit {
       return;
     }
 
-    this.pageService.unpublishPage(eventId, page.id).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-        this.loadPages();
-      },
-      error: () => {
-        this.toastr.error('Failed to unpublish page.');
-      },
-    });
+    this.unpublishAction.run(eventId, page.id);
   }
 
   movePage(page: EventPageModel, direction: -1 | 1): void {
@@ -106,16 +134,10 @@ export class Pages implements OnInit {
       return;
     }
 
-    this.pageService.reorderPages(
+    this.reorderAction.run(
       eventId,
       current.map((item) => item.id),
-    ).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-        this.loadPages();
-      },
-      error: () => this.toastr.error('Failed to reorder event pages.'),
-    });
+    );
   }
 
   deletePage(page: EventPageModel): void {
@@ -131,15 +153,7 @@ export class Pages implements OnInit {
       return;
     }
 
-    this.pageService.deletePage(eventId, page.id).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-        this.loadPages();
-      },
-      error: () => {
-        this.toastr.error('Failed to delete page.');
-      },
-    });
+    this.deleteAction.run(eventId, page.id);
   }
 
   trackById(_: number, page: EventPageModel): string {

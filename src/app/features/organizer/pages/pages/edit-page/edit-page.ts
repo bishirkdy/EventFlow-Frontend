@@ -1,10 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-edit-page',
@@ -21,12 +23,48 @@ export class EditPage implements OnInit {
   private readonly eventState = inject(OrganizerEventStateService);
   private readonly toastr = inject(NotificationService);
 
-  readonly loading = signal(false);
-  readonly saving = signal(false);
-
   readonly eventId = this.eventState.eventId;
 
   private readonly pageId = this.route.snapshot.paramMap.get('pageId');
+
+  private readonly loadAction = createAsyncAction(
+    (eventId: string) => this.pageService.getManagePageById(eventId, this.pageId ?? ''),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load page.',
+      onSuccess: (response) => {
+        const page = response.data;
+        if (!page) {
+          this.toastr.error('Page data was not returned.');
+          return;
+        }
+
+        this.form.patchValue({
+          name: page.name,
+          slug: page.slug,
+          pageType: page.pageType,
+        });
+      },
+    },
+  );
+
+  private readonly updateAction = createAsyncAction(
+    (eventId: string, formValue: { name: string; slug: string; pageType: string }) =>
+      this.pageService.updatePage(eventId, this.pageId ?? '', formValue).pipe(
+        map((response) => ({ eventId, response })),
+      ),
+    {
+      errorFallback: 'Failed to update page.',
+      onSuccess: ({ eventId, response }) => {
+        this.toastr.success(response.message);
+
+        this.router.navigate(['/organizer', eventId, 'pages']);
+      },
+    },
+  );
+
+  readonly loading = this.loadAction.pending;
+  readonly saving = this.updateAction.pending;
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(150)]],
@@ -56,31 +94,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    this.loading.set(true);
-
-    this.pageService.getManagePageById(eventId, this.pageId).subscribe({
-      next: (response) => {
-        const page = response.data;
-        if (!page) {
-          this.loading.set(false);
-          this.toastr.error('Page data was not returned.');
-          return;
-        }
-
-        this.form.patchValue({
-          name: page.name,
-          slug: page.slug,
-          pageType: page.pageType,
-        });
-
-        this.loading.set(false);
-      },
-
-      error: () => {
-        this.loading.set(false);
-        this.toastr.error('Failed to load page.');
-      },
-    });
+    this.loadAction.run(eventId);
   }
 
   submit(): void {
@@ -96,20 +110,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    this.saving.set(true);
-
-    this.pageService.updatePage(eventId, this.pageId, this.form.getRawValue()).subscribe({
-      next: (response) => {
-        this.toastr.success(response.message);
-
-        this.router.navigate(['/organizer', eventId, 'pages']);
-      },
-
-      error: () => {
-        this.saving.set(false);
-        this.toastr.error('Failed to update page.');
-      },
-    });
+    this.updateAction.run(eventId, this.form.getRawValue());
   }
 
   cancel(): void {

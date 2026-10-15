@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../../core/services/event-page-section/event-page-section.service';
-import { PageSectionModel } from '../../../../../core/models/event-page-section';
-import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { PageSectionModel, UpdatePageSectionModel } from '../../../../../core/models/event-page-section';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-edit-page-section',
@@ -20,16 +20,45 @@ export class EditPageSection implements OnInit {
   private readonly router = inject(Router);
   private readonly toastr = inject(NotificationService);
   private readonly pageSectionService = inject(EventPageSectionService);
-  private readonly eventState = inject(OrganizerEventStateService);
 
-  readonly loading = signal(true);
-  readonly saving = signal(false);
   readonly selectedImage = signal<File | null>(null);
   readonly currentImageUrl = signal<string | null>(null);
 
   private pageId = '';
   private sectionId = '';
   private eventId = '';
+
+  private readonly loadAction = createAsyncAction(
+    () => this.pageSectionService.getManageSections(this.pageId),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load page section.',
+      onSuccess: (response) => {
+        const section = response.data?.find((item) => item.id === this.sectionId);
+
+        if (!section) {
+          this.toastr.error('Page section not found.');
+          this.goBack();
+          return;
+        }
+
+        this.setForm(section);
+      },
+    },
+  );
+
+  private readonly updateSectionAction = createAsyncAction(
+    (payload: UpdatePageSectionModel) =>
+      this.pageSectionService.updateSection(this.pageId, this.sectionId, payload),
+    {
+      successMessage: 'Page section updated successfully.',
+      errorFallback: 'Failed to update page section.',
+      onSuccess: () => this.goBack(),
+    },
+  );
+
+  readonly loading = this.loadAction.pending;
+  readonly saving = this.updateSectionAction.pending;
 
   readonly form = this.fb.nonNullable.group({
     sectionType: ['', Validators.required],
@@ -64,34 +93,14 @@ export class EditPageSection implements OnInit {
 
     if (!this.pageId || !this.sectionId || !this.eventId) {
       this.toastr.error('Page section information is missing.');
-      this.loading.set(false);
       return;
     }
 
     this.loadSection();
   }
+
   loadSection(): void {
-    this.loading.set(true);
-
-    this.pageSectionService.getManageSections(this.pageId).subscribe({
-      next: (response) => {
-        const section = response.data?.find((item) => item.id === this.sectionId);
-
-        if (!section) {
-          this.toastr.error('Page section not found.');
-          this.goBack();
-          return;
-        }
-
-        this.setForm(section);
-        this.loading.set(false);
-      },
-
-      error: () => {
-        this.loading.set(false);
-        this.toastr.error('Failed to load page section.');
-      },
-    });
+    this.loadAction.run();
   }
 
   private setForm(section: PageSectionModel): void {
@@ -118,27 +127,12 @@ export class EditPageSection implements OnInit {
       return;
     }
 
-    this.saving.set(true);
-
-    this.pageSectionService
-      .updateSection(this.pageId, this.sectionId, {
-        ...this.form.getRawValue(),
-        image: this.selectedImage() ?? undefined,
-      })
-      .subscribe({
-        next: () => {
-          this.toastr.success('Page section updated successfully.');
-
-          this.goBack();
-        },
-
-        error: () => {
-          this.saving.set(false);
-          this.toastr.error('Failed to update page section.');
-        },
-      });
+    this.updateSectionAction.run({
+      ...this.form.getRawValue(),
+      image: this.selectedImage() ?? undefined,
+    });
   }
-  
+
   goBack(): void {
     this.router.navigate(['/organizer', this.eventId, 'pages', this.pageId, 'sections']);
   }
