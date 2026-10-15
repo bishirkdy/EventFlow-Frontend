@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { of } from 'rxjs';
 
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { PhotoService } from '@/core/services/photo/photo.service';
@@ -15,6 +15,7 @@ import {
   ScanFace,
 } from 'lucide-angular';
 import { Photo } from '@/core/models/photographer';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-photo-gallery',
@@ -29,7 +30,6 @@ export class PhotoGallery implements OnInit {
 
   readonly eventId = signal('');
   readonly photos = signal<Photo[]>([]);
-  readonly loading = signal(true);
   readonly currentPage = signal(1);
   readonly pageSize = signal(24);
   readonly totalCount = signal(0);
@@ -40,6 +40,39 @@ export class PhotoGallery implements OnInit {
   readonly ChevronRight = ChevronRight;
   readonly ArrowLeft = ArrowLeft;
   readonly ScanFace = ScanFace;
+
+  private readonly loadAction = createAsyncAction(
+    () => {
+      const eventId = this.eventId();
+      if (!eventId) {
+        return of(null);
+      }
+      return this.photoService.getPhotos(eventId, this.currentPage(), this.pageSize(), true);
+    },
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to load photos.',
+      onError: () => {
+        this.photos.set([]);
+        this.totalCount.set(0);
+      },
+      onSuccess: (response) => {
+        if (response && response.isSuccess && response.data) {
+          this.photos.set(response.data.items ?? []);
+          this.totalCount.set(response.data.totalCount ?? 0);
+          return;
+        }
+
+        if (response) {
+          this.photos.set([]);
+          this.totalCount.set(0);
+          this.notification.error('Unable to load photos for this event.');
+        }
+      },
+    },
+  );
+
+  readonly loading = this.loadAction.pending;
 
   readonly totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()));
   readonly hasPreviousPage = computed(() => this.currentPage() > 1);
@@ -59,7 +92,6 @@ export class PhotoGallery implements OnInit {
     const eventId = this.route.snapshot.paramMap.get('eventId');
 
     if (!eventId) {
-      this.loading.set(false);
       this.notification.error('Event ID was not found');
       return;
     }
@@ -69,39 +101,11 @@ export class PhotoGallery implements OnInit {
   }
 
   loadPhotos(): void {
-    const eventId = this.eventId();
-
-    if (!eventId) {
-      this.loading.set(false);
+    if (!this.eventId()) {
       return;
     }
 
-    this.loading.set(true);
-
-    this.photoService
-      .getPhotos(eventId, this.currentPage(), this.pageSize(), true)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: (response) => {
-          if (response.isSuccess && response.data) {
-            this.photos.set(response.data.items ?? []);
-            this.totalCount.set(response.data.totalCount ?? 0);
-            return;
-          }
-
-          this.photos.set([]);
-          this.totalCount.set(0);
-          this.notification.error('Unable to load photos for this event.');
-        },
-        error: (error) => {
-          console.error('Failed to load event photos:', error);
-
-          this.photos.set([]);
-          this.totalCount.set(0);
-
-          this.notification.error('Failed to load photos.');
-        },
-      });
+    this.loadAction.run();
   }
 
   onPageChange(page: number): void {

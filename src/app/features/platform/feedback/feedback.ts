@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed, input, output } from '@angular/core';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, map } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { FeedbackService } from '../../../core/services/feedback/feedback.service';
 import { SessionService } from '../../../core/services/session/session.service';
@@ -11,6 +11,13 @@ import { SessionModel } from '../../../core/models/session';
 import { SpeakerModel } from '../../../core/models/speaker';
 import { VenueModel } from '../../../core/models/venue';
 import { LucideAngularModule, X } from 'lucide-angular';
+import { createAsyncAction, createRawAsyncState } from 'core/state';
+
+interface FeedbackTargets {
+  sessions: SessionModel[];
+  speakers: SpeakerModel[];
+  venues: VenueModel[];
+}
 
 @Component({
   selector: 'app-feedback',
@@ -32,13 +39,57 @@ export class FeedbackComponent implements OnInit {
   readonly targetId = signal<string | null>(null);
   readonly rating = signal(0);
   readonly comment = signal('');
-  readonly submitting = signal(false);
   readonly submitted = signal(false);
-  readonly loading = signal(true);
 
-  readonly sessionList = signal<SessionModel[]>([]);
-  readonly speakerList = signal<SpeakerModel[]>([]);
-  readonly venueList = signal<VenueModel[]>([]);
+  private readonly targetsState = createRawAsyncState<FeedbackTargets>(
+    () => {
+      const eventId = this.eventId();
+      if (!eventId) {
+        return of({ sessions: [], speakers: [], venues: [] });
+      }
+      return forkJoin({
+        sessions: this.sessions.getSessions(eventId).pipe(
+          map((response) => response.data ?? []),
+          catchError(() => of([] as SessionModel[])),
+        ),
+        speakers: this.speakers.getSpeakers(eventId).pipe(
+          map((response) => response.data ?? []),
+          catchError(() => of([] as SpeakerModel[])),
+        ),
+        venues: this.venues.getVenues(eventId).pipe(
+          map((response) => response.data ?? []),
+          catchError(() => of([] as VenueModel[])),
+        ),
+      });
+    },
+    {
+      initial: { sessions: [], speakers: [], venues: [] },
+      errorFallback: 'Unable to load feedback options.',
+    },
+  );
+
+  private readonly submitAction = createAsyncAction(
+    (request: Parameters<FeedbackService['submit']>[1]) =>
+      this.feedbackService.submit(this.eventId(), request),
+    {
+      onSuccess: (response) => {
+        if (response.isSuccess) {
+          this.submitted.set(true);
+          this.notify.success('Thank you for your feedback!');
+        } else {
+          this.notify.error(response.message || 'Unable to submit feedback.');
+        }
+      },
+      errorFallback: 'Unable to submit feedback.',
+    },
+  );
+
+  readonly submitting = this.submitAction.pending;
+  readonly loading = this.targetsState.loading;
+
+  readonly sessionList = computed(() => this.targetsState.data().sessions);
+  readonly speakerList = computed(() => this.targetsState.data().speakers);
+  readonly venueList = computed(() => this.targetsState.data().venues);
 
   readonly X = X;
 
@@ -81,23 +132,7 @@ export class FeedbackComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    const eventId = this.eventId();
-
-    if (!eventId) {
-      this.loading.set(false);
-      return;
-    }
-
-    forkJoin({
-      sessions: this.sessions.getSessions(eventId).pipe(catchError(() => of(null))),
-      speakers: this.speakers.getSpeakers(eventId).pipe(catchError(() => of(null))),
-      venues: this.venues.getVenues(eventId).pipe(catchError(() => of(null))),
-    }).subscribe(({ sessions, speakers, venues }) => {
-      this.sessionList.set(sessions?.data ?? []);
-      this.speakerList.set(speakers?.data ?? []);
-      this.venueList.set(venues?.data ?? []);
-      this.loading.set(false);
-    });
+    this.targetsState.load();
   }
   selectTargetType(value: number): void {
     this.targetType.set(value as FeedbackTargetType);
@@ -126,33 +161,12 @@ export class FeedbackComponent implements OnInit {
       return;
     }
 
-    this.submitting.set(true);
-    this.feedbackService
-      .submit(this.eventId(), {
-        targetType: this.targetType(),
-        targetId: this.needsTarget() ? this.targetId() : this.eventId(),
-        rating: this.rating(),
-        comment: this.comment().trim() || null,
-      })
-      .subscribe({
-        next: (response) => {
-          this.submitting.set(false);
-          if (response.isSuccess) {
-            this.submitted.set(true);
-            this.notify.success('Thank you for your feedback!');
-          } else {
-            this.notify.error(response.message || 'Unable to submit feedback.');
-          }
-        },
-        error: (error) => {
-          this.submitting.set(false);
-          const message =
-            error?.error?.message ||
-            (typeof error?.error === 'string' ? error.error : null) ||
-            'Unable to submit feedback.';
-          this.notify.error(message);
-        },
-      });
+    this.submitAction.run({
+      targetType: this.targetType(),
+      targetId: this.needsTarget() ? this.targetId() : this.eventId(),
+      rating: this.rating(),
+      comment: this.comment().trim() || null,
+    });
   }
 
   reset(): void {

@@ -1,58 +1,60 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { CertificateService } from '../../../../core/services/registration/certificate.service';
-import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { CertificateModel } from '@/core/models/certificate';
+import { map } from 'rxjs';
+import { createAsyncAction, createAsyncState } from 'core/state';
+import { ErrorState } from '../../../../shared/components/error-state/error-state';
 
 @Component({
   selector: 'app-my-certificates',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, ErrorState],
   templateUrl: './my-certificates.html',
   styleUrl: './my-certificates.css',
 })
 export class MyCertificates implements OnInit {
   private readonly certificateService = inject(CertificateService);
-  private readonly notification = inject(NotificationService);
 
-  readonly certificates = signal<CertificateModel[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal(false);
+  private readonly certificatesState = createAsyncState<CertificateModel[]>(
+    () => this.certificateService.getAllMine(),
+    { initial: [], autoLoad: false },
+  );
+
+  private readonly downloadAction = createAsyncAction(
+    (certificate: CertificateModel) =>
+      this.certificateService.download(certificate.eventId, certificate.id).pipe(
+        map((blob) => ({ blob, fileName: `${certificate.certificateNumber}.pdf` })),
+      ),
+    {
+      onSuccess: ({ blob, fileName }) => this.saveBlob(blob, fileName),
+      errorFallback: 'Certificate download failed.',
+    },
+  );
+
+  readonly certificates = this.certificatesState.data;
+  readonly loading = this.certificatesState.loading;
+  readonly error = computed(() => this.certificatesState.error() !== null);
 
   ngOnInit(): void {
     this.load();
   }
 
   load(): void {
-    this.loading.set(true);
-    this.error.set(false);
-
-    this.certificateService.getAllMine().subscribe({
-      next: (response) => {
-        this.certificates.set(response.data ?? []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.certificatesState.load();
   }
 
   download(certificate: CertificateModel): void {
-    this.certificateService.download(certificate.eventId, certificate.id).subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement('a');
-        anchor.href = url;
-        anchor.download = `${certificate.certificateNumber}.pdf`;
-        anchor.click();
-        URL.revokeObjectURL(url);
-      },
-      error: () => {
-        this.notification.error('Certificate download failed.');
-      },
-    });
+    this.downloadAction.run(certificate);
+  }
+
+  private saveBlob(blob: Blob, fileName: string): void {
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 }

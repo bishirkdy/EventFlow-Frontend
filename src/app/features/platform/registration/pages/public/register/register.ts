@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../../core/services/ui/notification.service';
 
@@ -9,6 +9,8 @@ import { RegistrationFormModel } from '../../../../../../core/models/registratio
 import { EventService } from '../../../../../../core/services/event/event.service';
 import { Event } from '../../../../../../core/models/event';
 import { RegistrationFormSubmit } from '../../../../../../core/models/registration';
+import { ApiResponse } from '@/core/models/common';
+import { createAsyncAction, createRawAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-register',
@@ -27,68 +29,37 @@ export class RegisterComponent implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly toastr = inject(NotificationService);
 
-  protected readonly loading = signal(true);
-  protected readonly submitting = signal(false);
-  protected readonly error = signal<string | null>(null);
-  protected readonly registrationForm = signal<RegistrationFormModel | null>(null);
-  protected readonly event = signal<Event | null>(null);
-
   private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
 
-  ngOnInit(): void {
-    if (!this.eventId) {
-      this.loading.set(false);
-      this.error.set('Event could not be identified.');
-      return;
+  private readonly routeError = signal<string | null>(null);
+  private readonly formState = createRawAsyncState<ApiResponse<RegistrationFormModel>>(
+    () => this.registrationFormService.get(this.eventId),
+    { autoLoad: false, errorFallback: 'Unable to load the registration form.' },
+  );
+  private readonly eventState = createRawAsyncState<ApiResponse<Event>>(
+    () => this.eventService.getEventById(this.eventId),
+    { autoLoad: false },
+  );
+
+  protected readonly loading = this.formState.loading;
+  protected readonly registrationForm = computed(() => this.formState.data()?.data ?? null);
+  protected readonly event = computed(() => this.eventState.data()?.data ?? null);
+  protected readonly error = computed<string | null>(() => {
+    const stateError = this.formState.error();
+    if (stateError) return stateError;
+    if (this.routeError()) return this.routeError();
+    const response = this.formState.data();
+    if (response && (!response.isSuccess || !response.data)) {
+      return response.message || 'Registration form is not available.';
     }
+    return null;
+  });
 
-    this.loadRegistrationForm();
-    this.loadEvent();
-  }
-
-  protected loadRegistrationForm(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.registrationFormService.get(this.eventId).subscribe({
-      next: (response) => {
-        this.loading.set(false);
-
-        if (!response.isSuccess || !response.data) {
-          this.error.set(response.message || 'Registration form is not available.');
-          return;
-        }
-
-        this.registrationForm.set(response.data);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Unable to load the registration form.');
-      },
-    });
-  }
-
-  private loadEvent(): void {
-    this.eventService.getEventById(this.eventId).subscribe({
-      next: (response) => {
-        if (response.isSuccess && response.data) {
-          this.event.set(response.data);
-        }
-      },
-    });
-  }
-
-  protected submitRegistration(request: RegistrationFormSubmit): void {
-    if (this.submitting()) {
-      return;
-    }
-
-    this.submitting.set(true);
-
-    this.registrationService.create(this.eventId, request).subscribe({
-      next: (response) => {
-        this.submitting.set(false);
-
+  private readonly submitAction = createAsyncAction(
+    (request: RegistrationFormSubmit) =>
+      this.registrationService.create(this.eventId, request),
+    {
+      onSuccess: (response) => {
         if (!response.isSuccess || !response.data) {
           this.toastr.error(response.message || 'Registration failed.');
           return;
@@ -97,10 +68,36 @@ export class RegisterComponent implements OnInit {
         this.toastr.success('Your registration was submitted successfully.');
         this.router.navigate(['/events', this.eventId, 'registrations', response.data.id]);
       },
-      error: () => {
-        this.submitting.set(false);
-        this.toastr.error('Unable to submit your registration.');
-      },
-    });
+      errorFallback: 'Unable to submit your registration.',
+    },
+  );
+
+  protected readonly submitting = this.submitAction.pending;
+
+  ngOnInit(): void {
+    if (!this.eventId) {
+      this.routeError.set('Event could not be identified.');
+      return;
+    }
+
+    this.loadRegistrationForm();
+    this.loadEvent();
+  }
+
+  protected loadRegistrationForm(): void {
+    this.routeError.set(null);
+    this.formState.load();
+  }
+
+  private loadEvent(): void {
+    this.eventState.load();
+  }
+
+  protected submitRegistration(request: RegistrationFormSubmit): void {
+    if (this.submitting()) {
+      return;
+    }
+
+    this.submitAction.run(request);
   }
 }

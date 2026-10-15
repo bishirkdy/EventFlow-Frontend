@@ -1,8 +1,10 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { EMPTY, map } from 'rxjs';
 import { OperationsService } from '../../../core/services/operations/operations.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { createRawAsyncState } from 'core/state';
 
 interface History {
   eventId: string;
@@ -24,9 +26,24 @@ export class AttendanceHistoryComponent implements OnInit {
   private readonly ops = inject(OperationsService);
   private readonly auth = inject(AuthService);
 
-  readonly data = signal<History | null>(null);
-  readonly loading = signal(true);
   readonly eventId = this.route.snapshot.paramMap.get('eventId');
+  private userId: string | null = null;
+  private readonly awaitingAuth = signal(true);
+
+  private readonly historyState = createRawAsyncState<History | null>(
+    () => {
+      if (!this.eventId || !this.userId) return EMPTY;
+      return this.ops.history(this.eventId, this.userId).pipe(
+        map((response) => (response.data as History | null) ?? null),
+      );
+    },
+    { autoLoad: false, initial: null },
+  );
+
+  readonly data = this.historyState.data;
+  readonly loading = computed(
+    () => this.historyState.loading() || this.awaitingAuth(),
+  );
 
   ngOnInit(): void {
     const existing = this.auth.currentUser();
@@ -42,22 +59,17 @@ export class AttendanceHistoryComponent implements OnInit {
       if (user?.id) {
         this.fetch(user.id);
       } else {
-        this.loading.set(false);
+        this.awaitingAuth.set(false);
       }
     });
   }
 
   private fetch(userId: string): void {
+    this.userId = userId;
+    this.awaitingAuth.set(false);
     if (!this.eventId) {
-      this.loading.set(false);
       return;
     }
-    this.ops.history(this.eventId, userId).subscribe({
-      next: r => {
-        this.data.set(r.data as History | null);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.historyState.load();
   }
 }

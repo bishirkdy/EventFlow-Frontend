@@ -1,12 +1,14 @@
 import { Component, inject, signal, computed, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 import type { NotificationService as NotificationServiceType } from '../../../../../core/services/ui/notification.service';
 import { FaceDetectionService } from '../face-detection.service';
 import { ArrowLeft, ScanFace, Camera, LucideAngularModule, X } from 'lucide-angular';
 import { SelfieCapture } from '../selfie-capture/selfie-capture';
 import { PhotoService } from '@/core/services/photo/photo.service';
+import { createRawAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-my-photos',
@@ -22,11 +24,22 @@ export class MyPhotos implements OnInit {
   private readonly notification = inject<NotificationServiceType>(NotificationService);
 
   readonly eventId = signal<string>('');
-  readonly allPhotos = signal<any[]>([]);
-  readonly matchedPhotos = signal<any[]>([]);
-  readonly loading = signal(true);
   readonly matching = signal(false);
   readonly hasFaceProfile = signal(false);
+
+  private readonly photosState = createRawAsyncState<any[]>(
+    () => {
+      const eventId = this.eventId();
+      if (!eventId) return of([]);
+      return this.loadPage(eventId, 1);
+    },
+    { initial: [], autoLoad: false, errorFallback: 'Failed to load event photos.' },
+  );
+
+  readonly allPhotos = this.photosState.data;
+  readonly loading = this.photosState.loading;
+
+  readonly matchedPhotos = signal<any[]>([]);
 
   readonly totalMatched = computed(() => this.matchedPhotos().length);
   readonly totalPhotos = computed(() => (this.loading() ? 0 : this.allPhotos().length));
@@ -42,9 +55,29 @@ export class MyPhotos implements OnInit {
     const eventId = this.route.snapshot.paramMap.get('eventId');
     if (eventId) {
       this.eventId.set(eventId);
-      this.loadEventPhotos(eventId);
+      this.photosState.load();
       this.checkFaceProfile();
     }
+  }
+
+  private loadPage(eventId: string, page: number): Observable<any[]> {
+    return this.photoService.getPhotos(eventId, page, 100, true).pipe(
+      switchMap((response) => {
+        if (response.isSuccess && response.data) {
+          const items = response.data.items ?? [];
+
+          if (response.data.hasNextPage) {
+            return this.loadPage(eventId, page + 1).pipe(
+              map((rest) => [...items, ...rest]),
+            );
+          }
+
+          return of(items);
+        }
+
+        return of([]);
+      }),
+    );
   }
 
   private checkFaceProfile() {
@@ -53,35 +86,6 @@ export class MyPhotos implements OnInit {
 
     this.faceDetection.loadUserFaceDescriptorAsync().then((descriptor) => {
       this.hasFaceProfile.set(descriptor !== null);
-    });
-  }
-
-  private loadEventPhotos(eventId: string) {
-    this.loadAllPages(eventId, 1);
-  }
-
-  private loadAllPages(eventId: string, page: number): void {
-    this.loading.set(true);
-
-    this.photoService.getPhotos(eventId, page, 100, true).subscribe({
-      next: (response) => {
-        const data = response.data;
-
-        if (response.isSuccess && data) {
-          this.allPhotos.update((current) => [...current, ...data.items]);
-
-          if (data.hasNextPage) {
-            this.loadAllPages(eventId, page + 1);
-            return;
-          }
-        }
-
-        this.loading.set(false);
-      },
-      error: (error) => {
-        console.error('Failed to load event photos:', error);
-        this.loading.set(false);
-      },
     });
   }
 

@@ -1,10 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { RegistrationStatusComponent } from '../../../components/registration-status/registration-status';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
 import { RegistrationModel } from '../../../../../../core/models/registration';
+import { ApiResponse } from '@/core/models/common';
+import { createRawAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-my-registrations',
@@ -19,16 +21,32 @@ export class MyRegistrationsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly registrationService = inject(RegistrationService);
 
-  protected readonly loading = signal(true);
-  protected readonly registrations = signal<RegistrationModel[]>([]);
-  protected readonly error = signal<string | null>(null);
-
   private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
+
+  private readonly routeError = signal<string | null>(null);
+  private readonly registrationsState = createRawAsyncState<ApiResponse<RegistrationModel[]>>(
+    () => this.registrationService.getMine(this.eventId),
+    { autoLoad: false, errorFallback: 'Unable to load your registrations.' },
+  );
+
+  protected readonly loading = this.registrationsState.loading;
+  protected readonly registrations = computed(
+    () => this.registrationsState.data()?.data ?? [],
+  );
+  protected readonly error = computed<string | null>(() => {
+    const stateError = this.registrationsState.error();
+    if (stateError) return stateError;
+    if (this.routeError()) return this.routeError();
+    const response = this.registrationsState.data();
+    if (response && (!response.isSuccess || !response.data)) {
+      return response.message || 'Unable to load your registrations.';
+    }
+    return null;
+  });
 
   ngOnInit() {
     if (!this.eventId) {
-      this.loading.set(false);
-      this.error.set('Event could not be identified.');
+      this.routeError.set('Event could not be identified.');
       return;
     }
 
@@ -36,25 +54,8 @@ export class MyRegistrationsComponent implements OnInit {
   }
 
   protected loadRegistrations(): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    this.registrationService.getMine(this.eventId).subscribe({
-      next: (response) => {
-        this.loading.set(false);
-
-        if (!response.isSuccess || !response.data) {
-          this.error.set(response.message || 'Unable to load your registrations.');
-          return;
-        }
-
-        this.registrations.set(response.data);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set('Unable to load your registrations.');
-      },
-    });
+    this.routeError.set(null);
+    this.registrationsState.load();
   }
 
   protected openRegistration(registrationId: string): void {

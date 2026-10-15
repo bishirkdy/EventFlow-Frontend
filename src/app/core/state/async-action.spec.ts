@@ -109,4 +109,29 @@ describe('createAsyncAction', () => {
 
     expect(onSettled).toHaveBeenCalledTimes(1);
   });
+
+  it('stays silent on failures by default so the interceptor owns toasts', () => {
+    const action = TestBed.runInInjectionContext(() =>
+      createAsyncAction(() => throwError(() => new Error('nope'))),
+    );
+
+    action.run();
+
+    expect(action.error()).toBe('Something went wrong.');
+    expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it('toasts failures itself when toastErrors is set for skipped GETs', () => {
+    const action = TestBed.runInInjectionContext(() =>
+      createAsyncAction(() => throwError(() => new Error('nope')), {
+        toastErrors: true,
+        errorFallback: 'Failed to open event',
+      }),
+    );
+
+    action.run();
+
+    expect(notification.error).toHaveBeenCalledTimes(1);
+    expect(notification.error).toHaveBeenCalledWith('Failed to open event');
+  });
 });

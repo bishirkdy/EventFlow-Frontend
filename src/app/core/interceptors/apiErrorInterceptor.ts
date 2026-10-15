@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { getApiErrorMessage, getApiErrorErrors } from '../api/api-error';
+import { getApiErrorMessage } from '../api/api-error';
 import { NotificationService } from '../services/ui/notification.service';
 
 const AUTH_CREDENTIALS_URL = /\/v1\/auth\/(login|register)(\?|$)/i;
@@ -16,8 +16,9 @@ export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       // GET failures belong to the calling component, which shows an inline
-      // error state with a retry button instead of a transient toast.
-      if (req.method === 'GET') {
+      // error state with a retry button instead of a transient toast. Blob
+      // downloads are the exception: there is no inline surface for them.
+      if (req.method === 'GET' && req.responseType !== 'blob') {
         return throwError(() => error);
       }
 
@@ -37,12 +38,6 @@ export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
       // 401 is owned exclusively by authRefreshInterceptor: it attempts a token
       // refresh first and only sends the user to /login when the refresh fails.
       if (error.status === 401) {
-        return throwError(() => error);
-      }
-
-      // The API returns field-level validation messages in `errors[]`; forms
-      // render those under their inputs, so a toast would be a duplicate.
-      if (getApiErrorErrors(error).length > 0) {
         return throwError(() => error);
       }
 

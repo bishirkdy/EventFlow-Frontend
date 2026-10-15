@@ -56,6 +56,17 @@ describe('apiErrorInterceptor', () => {
     expect(notification.error).not.toHaveBeenCalled();
   });
 
+  it('toasts blob download failures since they have no inline surface', () => {
+    TestBed.inject(HttpClient)
+      .get('/api/file', { responseType: 'blob' })
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/file', 500, null, 'Server Error');
+
+    expect(notification.error).toHaveBeenCalledTimes(1);
+    expect(notification.error).toHaveBeenCalledWith('The request failed. Please try again.');
+  });
+
   it('toasts failed mutations with the API message', () => {
     TestBed.inject(HttpClient)
       .post('/api/items', {})
@@ -87,14 +98,15 @@ describe('apiErrorInterceptor', () => {
     expect(notification.error).toHaveBeenCalledWith('The request failed. Please try again.');
   });
 
-  it('skips mutations that failed server-side validation so forms can show field errors', () => {
+  it('toasts validation failures with the joined field errors', () => {
     TestBed.inject(HttpClient)
       .post('/api/items', {})
       .subscribe({ error: () => undefined });
 
     flushError('/api/items', 400, { message: 'Invalid.', errors: ['Name is required.'] }, 'Bad Request');
 
-    expect(notification.error).not.toHaveBeenCalled();
+    expect(notification.error).toHaveBeenCalledTimes(1);
+    expect(notification.error).toHaveBeenCalledWith('Name is required.');
   });
 
   it('toasts a network failure with a connectivity message', () => {

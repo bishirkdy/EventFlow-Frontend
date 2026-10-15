@@ -1,15 +1,16 @@
 import { Component, inject, signal, PLATFORM_ID, OnInit } from '@angular/core';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
 import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { RegistrationService } from '@/core/services/registration/registration.service';
-import { NotificationService } from '../../../core/services/ui/notification.service';
 
 import { Event } from '../../../core/models/event';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-my-events',
@@ -19,13 +20,11 @@ import { FeedbackComponent } from '../feedback/feedback';
 })
 export class MyEvents implements OnInit {
   events = signal<Event[]>([]);
-  loading = signal(true);
 
   private readonly eventService = inject(EventService);
   private readonly roleService = inject(EventRoleService);
   private readonly registrationService = inject(RegistrationService);
   private readonly router = inject(Router);
-  private readonly toastr = inject(NotificationService);
   private readonly platformId = inject(PLATFORM_ID);
 
   private readonly registeredEventIds = signal<string[]>([]);
@@ -45,9 +44,51 @@ export class MyEvents implements OnInit {
     'attendancestaff',
   ];
 
+  private readonly openAction = createAsyncAction(
+    (event: Event) =>
+      this.roleService.getMyRoles(event.id).pipe(
+        map((response) => ({ event, roles: response.data ?? [] })),
+      ),
+    {
+      toastErrors: true,
+      errorFallback: 'Failed to open event',
+      onSuccess: ({ event, roles }) => {
+        const names = roles.map((role) => role.roleName.trim().toLowerCase());
+
+        if (names.includes('owner')) {
+          void this.router.navigate(['/owner', event.id]);
+        } else if (names.includes('attendancestaff')) {
+          void this.router.navigate(['/attendance-staff', event.id]);
+        } else if (names.includes('photographer')) {
+          void this.router.navigate(['/photographer', event.id, 'photos']);
+        } else if (names.includes('organizer')) {
+          void this.router.navigate(['/organizer', event.id, 'overview']);
+        } else {
+          void this.router.navigate(['/events', event.id]);
+        }
+      },
+    },
+  );
+
+  private readonly loadAction = createAsyncAction(() => this.eventService.getMyEvents(), {
+    toastErrors: true,
+    errorFallback: 'Failed to load events',
+    onSuccess: (response) => {
+      const events = response.data ?? [];
+
+      this.events.set(events);
+
+      for (const event of events) {
+        this.loadEventRoles(event.id);
+        this.loadRegistrationStatus(event.id);
+      }
+    },
+  });
+
+  readonly loading = this.loadAction.pending;
+
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
-      this.loading.set(false);
       return;
     }
 
@@ -55,50 +96,11 @@ export class MyEvents implements OnInit {
   }
 
   openEvent(event: Event): void {
-    this.roleService.getMyRoles(event.id).subscribe({
-      next: (response) => {
-        const roles = (response.data ?? []).map((role) => role.roleName.trim().toLowerCase());
-
-        if (roles.includes('owner')) {
-          void this.router.navigate(['/owner', event.id]);
-        } else if (roles.includes('attendancestaff')) {
-          void this.router.navigate(['/attendance-staff', event.id]);
-        } else if (roles.includes('photographer')) {
-          void this.router.navigate(['/photographer', event.id, 'photos']);
-        } else if (roles.includes('organizer')) {
-          void this.router.navigate(['/organizer', event.id, 'overview']);
-        } else {
-          void this.router.navigate(['/events', event.id]);
-        }
-      },
-      error: (error: unknown) => {
-        console.error('Failed to load event roles', error);
-        this.toastr.error(error, 'Failed to open event');
-      },
-    });
+    this.openAction.run(event);
   }
 
   private loadEvents(): void {
-    this.loading.set(true);
-
-    this.eventService.getMyEvents().subscribe({
-      next: (response) => {
-        const events = response.data ?? [];
-
-        this.events.set(events);
-        this.loading.set(false);
-
-        for (const event of events) {
-          this.loadEventRoles(event.id);
-          this.loadRegistrationStatus(event.id);
-        }
-      },
-      error: (error: unknown) => {
-        console.error('Failed to load events', error);
-        this.toastr.error(error, 'Failed to load events');
-        this.loading.set(false);
-      },
-    });
+    this.loadAction.run();
   }
 
   private loadEventRoles(eventId: string): void {

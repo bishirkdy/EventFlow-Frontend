@@ -41,24 +41,11 @@
         } @else if (error()) {
 
         <!-- Error -->
-        <div
-            class="mt-8 rounded-xl border border-red-200
-                   bg-red-50 p-8 text-center">
-
-            <p class="text-sm text-red-700">
-                Unable to load your certificates.
-            </p>
-
-            <button
-                type="button"
-                (click)="load()"
-                class="mt-4 rounded-lg bg-primary px-4 py-2
-                       text-sm font-medium text-white
-                       hover:opacity-90">
-                Try again
-            </button>
-
-        </div>
+        <app-error-state
+            class="mt-8"
+            message="Unable to load your certificates."
+            [showRetry]="true"
+            (retry)="load()" />
 
         } @else {
 

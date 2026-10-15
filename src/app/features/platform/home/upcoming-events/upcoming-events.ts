@@ -1,7 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { EventService } from '../../../../core/services/event/event.service';
 import { Event as EventModel } from '../../../../core/models/event';
+import { createRawAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-upcoming-events',
@@ -12,22 +14,20 @@ import { Event as EventModel } from '../../../../core/models/event';
 export class UpcomingEvents implements OnInit {
   private readonly eventService = inject(EventService);
 
-  readonly events = signal<EventModel[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
+  private readonly eventsState = createRawAsyncState<EventModel[]>(
+    () =>
+      this.eventService.getPublicEvents(3).pipe(
+        map((response) => (response.data ?? []).slice(0, 3)),
+      ),
+    { initial: [], errorFallback: 'Unable to load upcoming events.' },
+  );
+
+  readonly events = this.eventsState.data;
+  readonly loading = this.eventsState.loading;
+  readonly error = this.eventsState.error;
 
   ngOnInit(): void {
-    this.eventService.getPublicEvents(3).subscribe({
-      next: (response) => {
-        this.events.set((response.data ?? []).slice(0, 3));
-        this.loading.set(false);
-      },
-      error: (error: unknown) => {
-        console.error('Failed to load public events:', error);
-        this.error.set('Unable to load upcoming events.');
-        this.loading.set(false);
-      },
-    });
+    this.eventsState.load();
   }
 
   formatDate(date: string, timeZone?: string): string {

@@ -14,7 +14,9 @@ export interface AsyncActionOptions<Res> {
   successMessage?: string;
   onSuccess?: (response: Res) => void;
   onSettled?: () => void;
+  onError?: (error: unknown) => void;
   errorFallback?: string;
+  toastErrors?: boolean;
 }
 
 export function createAsyncAction<Args extends unknown[], Res>(
@@ -48,9 +50,15 @@ export function createAsyncAction<Args extends unknown[], Res>(
           options.onSuccess?.(response);
         },
         error: (requestError: unknown) => {
-          error.set(
-            getApiErrorMessage(requestError, options.errorFallback ?? 'Something went wrong.'),
+          const message = getApiErrorMessage(
+            requestError,
+            options.errorFallback ?? 'Something went wrong.',
           );
+          error.set(message);
+          if (options.toastErrors) {
+            notification.error(message);
+          }
+          options.onError?.(requestError);
         },
       });
   };

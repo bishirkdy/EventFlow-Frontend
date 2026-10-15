@@ -1,13 +1,13 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/ui/notification.service';
-import { finalize } from 'rxjs';
 
 import { EventService } from '../../../core/services/event/event.service';
 import { EventTypeService } from '../../../core/services/event-type/event-type.service';
 import { EventTypeModel } from '../../../core/models/event-type';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
+import { createAsyncAction, createAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-create-event',
@@ -23,8 +23,13 @@ export class CreateEvent implements OnInit {
   private readonly toastr = inject(NotificationService);
   private readonly eventTypeService = inject(EventTypeService);
 
-  readonly loading = signal(false);
-  readonly eventTypes = signal<EventTypeModel[]>([]);
+  private readonly eventTypesState = createAsyncState<EventTypeModel[]>(
+    () => this.eventTypeService.getEventTypes(),
+    { initial: [], errorFallback: 'Failed to load event types.' },
+  );
+
+  readonly eventTypes = this.eventTypesState.data;
+  readonly eventTypesError = this.eventTypesState.error;
 
   selectedImages: File[] = [];
   imagePreviews: string[] = [];
@@ -53,22 +58,29 @@ export class CreateEvent implements OnInit {
     },
   );
 
+  private readonly createAction = createAsyncAction(
+    (request: Parameters<EventService['createEvent']>[0]) =>
+      this.eventService.createEvent(request),
+    {
+      onSuccess: (response) => {
+        const data = response.data;
+
+        if (!data) {
+          this.toastr.error('Event was created but no event data was returned.');
+          return;
+        }
+
+        this.toastr.success('Event created successfully.');
+        this.router.navigate(['/organizer', data.id, 'overview']);
+      },
+      errorFallback: 'Failed to create event.',
+    },
+  );
+
+  readonly loading = this.createAction.pending;
+
   ngOnInit(): void {
-    this.loadEventTypes();
-  }
-
-  private loadEventTypes(): void {
-    this.eventTypeService.getEventTypes().subscribe({
-      next: (response) => {
-        this.eventTypes.set(response.data ?? []);
-      },
-
-      error: (error) => {
-        console.error('Failed to load event types:', error);
-
-        this.toastr.error(error?.error?.message || 'Failed to load event types.');
-      },
-    });
+    this.eventTypesState.load();
   }
 
   onImagesSelected(event: globalThis.Event): void {
@@ -98,11 +110,9 @@ export class CreateEvent implements OnInit {
       return;
     }
 
-    this.loading.set(true);
-
     const formValue = this.eventForm.getRawValue();
 
-    const request = {
+    this.createAction.run({
       name: formValue.eventName,
       description: formValue.description,
       eventTypeId: formValue.eventTypeId,
@@ -111,34 +121,7 @@ export class CreateEvent implements OnInit {
       endDate: formValue.endDate,
       timeZone: formValue.timeZone,
       images: this.selectedImages,
-    };
-
-    this.eventService
-      .createEvent(request)
-      .pipe(
-        finalize(() => {
-          this.loading.set(false);
-        }),
-      )
-      .subscribe({
-        next: (response) => {
-          const data = response.data;
-
-          if (!data) {
-            this.toastr.error('Event was created but no event data was returned.');
-            return;
-          }
-
-          this.toastr.success('Event created successfully.');
-          this.router.navigate(['/organizer', data.id, 'overview']);
-        },
-
-        error: (error) => {
-          console.error('Create event failed:', error);
-
-          this.toastr.error(error?.error?.message || 'Failed to create event.');
-        },
-      });
+    });
   }
 
   cancel(): void {
