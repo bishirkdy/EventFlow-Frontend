@@ -2,30 +2,29 @@ import { assertInInjectionContext, computed, inject, signal, Signal } from '@ang
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, finalize } from 'rxjs';
 import { getApiErrorMessage } from '../api/api-error';
-import { ApiResponse } from '../models/common';
 import { NotificationService } from '../services/ui/notification.service';
 
-export interface AsyncAction<Args extends unknown[], R> {
+export interface AsyncAction<Args extends unknown[], Res> {
   readonly pending: Signal<boolean>;
   readonly error: Signal<string | null>;
   run(...args: Args): void;
 }
 
-export interface AsyncActionOptions<R> {
+export interface AsyncActionOptions<Res> {
   successMessage?: string;
-  onSuccess?: (response: ApiResponse<R>) => void;
+  onSuccess?: (response: Res) => void;
   onSettled?: () => void;
   errorFallback?: string;
 }
 
-export function createAsyncAction<Args extends unknown[], R>(
-  fn: (...args: Args) => Observable<ApiResponse<R>>,
-  options: AsyncActionOptions<R> = {},
-): AsyncAction<Args, R> {
+export function createAsyncAction<Args extends unknown[], Res>(
+  fn: (...args: Args) => Observable<Res>,
+  options: AsyncActionOptions<Res> = {},
+): AsyncAction<Args, Res> {
   assertInInjectionContext(createAsyncAction);
 
   const notification = inject(NotificationService);
-  const untilDestroyed = takeUntilDestroyed<ApiResponse<R>>();
+  const untilDestroyed = takeUntilDestroyed<Res>();
   const active = signal(0);
   const error = signal<string | null>(null);
 
@@ -36,7 +35,10 @@ export function createAsyncAction<Args extends unknown[], R>(
     fn(...args)
       .pipe(
         untilDestroyed,
-        finalize(() => active.update((count) => Math.max(0, count - 1))),
+        finalize(() => {
+          active.update((count) => Math.max(0, count - 1));
+          options.onSettled?.();
+        }),
       )
       .subscribe({
         next: (response) => {
@@ -50,7 +52,6 @@ export function createAsyncAction<Args extends unknown[], R>(
             getApiErrorMessage(requestError, options.errorFallback ?? 'Something went wrong.'),
           );
         },
-        complete: () => options.onSettled?.(),
       });
   };
 

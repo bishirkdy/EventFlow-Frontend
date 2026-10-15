@@ -108,4 +108,25 @@ describe('apiErrorInterceptor', () => {
       'Network error. Check your connection and try again.',
     );
   });
+
+  it('toasts failed login attempts even though they return 401', () => {
+    TestBed.inject(HttpClient)
+      .post('/api/v1/auth/login', {})
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/v1/auth/login', 401, { message: 'Invalid credentials.' }, 'Unauthorized');
+
+    expect(notification.error).toHaveBeenCalledTimes(1);
+    expect(notification.error).toHaveBeenCalledWith('Invalid credentials.');
+  });
+
+  it('stays silent on logout 401 so an expired session does not toast', () => {
+    TestBed.inject(HttpClient)
+      .post('/api/v1/auth/logout', {})
+      .subscribe({ error: () => undefined });
+
+    flushError('/api/v1/auth/logout', 401, null, 'Unauthorized');
+
+    expect(notification.error).not.toHaveBeenCalled();
+  });
 });

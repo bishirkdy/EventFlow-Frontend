@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { UserMenu, UserMenuLink } from '../user-menu/user-menu';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +15,13 @@ export class Navbar {
   private authService = inject(AuthService);
   private router = inject(Router);
   currentUser = this.authService.currentUser;
+
+  private readonly logoutAction = createAsyncAction(() => this.authService.logout(), {
+    onSettled: () => {
+      this.authService.clearCurrentUser();
+      void this.router.navigate(['/']);
+    },
+  });
 
   readonly userLinks: UserMenuLink[] = [
     { label: 'My Certificates', url: '/my-certificates' },
@@ -28,21 +36,6 @@ export class Navbar {
   }
 
   logout(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.authService.clearCurrentUser();
-        this.router.navigate(['/']);
-      },
-
-      error: (err) => {
-        console.error('Logout failed:', err);
-
-        // Clear local state even if server request fails
-        this.authService.clearCurrentUser();
-        this.router.navigate(['/']);
-      },
-    });
+    this.logoutAction.run();
   }
-
-
 }

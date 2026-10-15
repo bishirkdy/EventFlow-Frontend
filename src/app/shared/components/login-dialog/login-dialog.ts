@@ -3,10 +3,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Eye, EyeOff, LucideAngularModule, X } from 'lucide-angular';
 
-import { getApiErrorMessage } from '../../../core/api/api-error';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { LoginRequest } from '../../../core/models/auth';
 import { LoginDialogService } from '../../../core/services/ui/login-dialog.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-login-dialog',
@@ -26,8 +27,27 @@ export class LoginDialog {
   email = '';
   password = '';
 
+  private readonly loginAction = createAsyncAction(
+    (credentials: LoginRequest) => this.authService.login(credentials),
+    {
+      onSuccess: (user) => {
+        if (user) {
+          this.toastr.success('Login successful.');
+          const returnUrl = this.service.takeReturnUrl();
+          this.service.close();
+          if (returnUrl) {
+            void this.router.navigateByUrl(returnUrl);
+          }
+        } else {
+          this.toastr.error('Login failed.');
+        }
+      },
+      errorFallback: 'Login failed.',
+    },
+  );
+
   readonly showPassword = signal(false);
-  readonly loading = signal(false);
+  readonly loading = this.loginAction.pending;
 
   @HostListener('document:keydown.escape')
 
@@ -47,27 +67,6 @@ export class LoginDialog {
       return;
     }
 
-    this.loading.set(true);
-
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (user) => {
-        this.loading.set(false);
-        
-        if (user) {
-          this.toastr.success('Login successful.');
-          const returnUrl = this.service.takeReturnUrl();
-          this.service.close();
-          if (returnUrl) {
-            void this.router.navigateByUrl(returnUrl);
-          }
-        } else {
-          this.toastr.error('Login failed.');
-        }
-      },
-      error: (err: unknown) => {
-        this.loading.set(false);
-        this.toastr.error(getApiErrorMessage(err, 'Login failed.'));
-      },
-    });
+    this.loginAction.run({ email: this.email, password: this.password });
   }
 }

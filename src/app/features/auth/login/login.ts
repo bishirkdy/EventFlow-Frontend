@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NotificationService } from '../../../core/services/ui/notification.service';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { getApiErrorMessage } from '../../../core/api/api-error';
+import { LoginRequest } from '../../../core/models/auth';
+import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-login',
@@ -18,13 +18,21 @@ export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly toastr = inject(NotificationService);
 
   readonly Eye = Eye;
   readonly EyeOff = EyeOff;
 
   email = '';
   password = '';
+
+  private readonly loginAction = createAsyncAction(
+    (credentials: LoginRequest) => this.authService.login(credentials),
+    {
+      successMessage: 'Login successful.',
+      onSuccess: () => this.router.navigateByUrl(this.returnTarget()),
+      errorFallback: 'Login failed.',
+    },
+  );
 
   ngOnInit(): void {
     const loginEmail = this.route.snapshot.queryParamMap.get('email');
@@ -34,7 +42,7 @@ export class Login {
   }
 
   readonly showPassword = signal(false);
-  readonly loading = signal(false);
+  readonly loading = this.loginAction.pending;
 
   togglePassword(): void {
     this.showPassword.update((value) => !value);
@@ -46,21 +54,7 @@ export class Login {
       return;
     }
 
-    this.loading.set(true);
-
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.toastr.success('Login successful.');
-        this.router.navigateByUrl(this.returnTarget());
-      },
-
-      error: (err: unknown) => {
-        console.error('Login failed:', err);
-        this.loading.set(false);
-        this.toastr.error(getApiErrorMessage(err, 'Login failed.'));
-      },
-    });
+    this.loginAction.run({ email: this.email, password: this.password });
   }
 
   private returnTarget(): string {

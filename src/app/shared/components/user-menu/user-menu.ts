@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginDialogService } from '../../../core/services/ui/login-dialog.service';
+import { createAsyncAction } from 'core/state';
 
 export interface UserMenuLink {
   label: string;
@@ -21,6 +22,10 @@ export class UserMenu {
   readonly loginDialog = inject(LoginDialogService);
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef);
+
+  private readonly signOutAction = createAsyncAction(() => this.authService.logout(), {
+    onSettled: () => this.authService.clearCurrentUser(),
+  });
 
   readonly isOpen = signal(false);
   readonly user = this.authService.currentUser;
@@ -50,9 +55,7 @@ export class UserMenu {
 
   signOut(): void {
     this.isOpen.set(false);
-    this.authService.logout().subscribe({
-      error: () => this.authService.clearCurrentUser(),
-    });
+    this.signOutAction.run();
     void this.router.navigateByUrl('/');
   }
 

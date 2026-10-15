@@ -1,11 +1,12 @@
-import { Component, DestroyRef, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { combineLatest } from 'rxjs';
+import { combineLatest, EMPTY } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { WebsiteTemplateSelector } from './components/website-template-selector/website-template-selector';
 import { EventWebsiteService } from '../../core/services/website/event-website.service';
 import { EventWebsiteData } from '../../core/models/website';
+import { createRawAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-website',
@@ -21,14 +22,30 @@ export class Website implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly platformId = inject(PLATFORM_ID);
 
-  readonly data = signal<EventWebsiteData | null>(null);
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
+  private lastLoad: { eventId: string; preview: boolean } | null = null;
+  private loadKey: string | null = null;
+
+  private readonly websiteState = createRawAsyncState<EventWebsiteData>(
+    () => {
+      const last = this.lastLoad;
+      if (!last) return EMPTY;
+      // The preview endpoints need the organizer's session cookie, which the
+      // server never has, so preview data is only fetched in the browser.
+      if (last.preview && isPlatformServer(this.platformId)) return EMPTY;
+      return this.websiteService.load(last.eventId, last.preview);
+    },
+    { errorFallback: 'Failed to load event website.' },
+  );
+
+  private readonly routeError = signal<string | null>(null);
+
+  readonly data = this.websiteState.data;
+  readonly loading = this.websiteState.loading;
+  readonly error = computed<string | null>(
+    () => this.routeError() ?? this.websiteState.error(),
+  );
   readonly pageSlug = signal<string | null>(null);
   readonly preview = signal(false);
-
-  private loadKey: string | null = null;
-  private lastLoad: { eventId: string; preview: boolean } | null = null;
 
   ngOnInit(): void {
     // Follow the route params instead of reading them once, otherwise
@@ -43,48 +60,28 @@ export class Website implements OnInit {
         this.preview.set(preview);
 
         if (!eventId) {
-          this.error.set('Event ID not found.');
-          this.loading.set(false);
+          this.routeError.set('Event ID not found.');
           return;
         }
+
+        this.routeError.set(null);
 
         const key = `${eventId}|${preview ? 'preview' : 'public'}`;
         if (key !== this.loadKey) {
           this.loadKey = key;
-          this.lastLoad = { eventId, preview };
           this.loadWebsite(eventId, preview);
         }
       });
   }
 
   retry(): void {
-    const last = this.lastLoad;
-    if (last) this.loadWebsite(last.eventId, last.preview);
+    if (this.lastLoad) {
+      this.websiteState.load();
+    }
   }
 
   private loadWebsite(eventId: string, preview: boolean): void {
-    this.loading.set(true);
-    this.error.set(null);
-
-    // The preview endpoints need the organizer's session cookie, which the
-    // server never has, so preview data is only fetched in the browser.
-    if (preview && isPlatformServer(this.platformId)) {
-      return;
-    }
-
-    this.websiteService.load(eventId, preview).subscribe({
-      next: (data) => {
-        this.data.set(data);
-        this.loading.set(false);
-      },
-      error: (error: unknown) => {
-        console.error('Failed to load event website:', error);
-        // For public events, show error but don't redirect to login
-        // The page will render with minimal information
-        this.error.set('Failed to load event website.');
-        this.loading.set(false);
-        // Don't set data, allow fallback rendering
-      },
-    });
+    this.lastLoad = { eventId, preview };
+    this.websiteState.load();
   }
 }

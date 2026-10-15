@@ -98,4 +98,15 @@ describe('createAsyncAction', () => {
 
     expect(action.error()).toBeNull();
   });
+
+  it('invokes onSettled after failures as well as successes', () => {
+    const onSettled = vi.fn();
+    const action = TestBed.runInInjectionContext(() =>
+      createAsyncAction(() => throwError(() => new Error('nope')), { onSettled }),
+    );
+
+    action.run();
+
+    expect(onSettled).toHaveBeenCalledTimes(1);
+  });
 });

@@ -87,7 +87,7 @@ describe('LoginDialog', () => {
     expect(invalidForm.control.markAllAsTouched).toHaveBeenCalled();
   });
 
-  it('shows an error toast and keeps the dialog open when login fails', () => {
+  it('keeps the dialog open and clears the pending state when login fails', () => {
     authService.login.mockReturnValue(
       throwError(() => Object.assign(new Error('bad credentials'), { status: 401 })),
     );
@@ -97,7 +97,8 @@ describe('LoginDialog', () => {
 
     component.submit(validForm);
 
-    expect(toastr.error).toHaveBeenCalledTimes(1);
+    expect(component.loading()).toBe(false);
+    expect(toastr.success).not.toHaveBeenCalled();
     expect(TestBed.inject(LoginDialogService).isOpen()).toBe(true);
   });
 });
