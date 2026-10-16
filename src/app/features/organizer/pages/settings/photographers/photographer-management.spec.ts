@@ -5,6 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from 'core/services/ui/notification.service';
+import { EmailValidator } from 'core/validators/email.validator';
 
 describe('PhotographerManagement', () => {
   let component: PhotographerManagement;
@@ -53,9 +54,9 @@ describe('PhotographerManagement', () => {
   });
 
   it('should validate email format', () => {
-    const validator = (component as any).isValidEmail.bind(component);
-    expect(validator('test@example.com')).toBe(true);
-    expect(validator('invalid')).toBe(false);
-    expect(validator('test@')).toBe(false);
+    const validator = TestBed.inject(EmailValidator);
+    expect(validator.isValid('test@example.com')).toBe(true);
+    expect(validator.isValid('invalid')).toBe(false);
+    expect(validator.isValid('test@')).toBe(false);
   });
 });
