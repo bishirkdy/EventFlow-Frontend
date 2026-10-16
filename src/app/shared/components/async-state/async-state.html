@@ -1,0 +1,16 @@
+@if (loading()) {
+  <app-skeleton [variant]="skeleton()" [count]="skeletonCount()" />
+} @else if (error()) {
+  <app-error-state
+    [message]="error() || errorFallback()"
+    [showRetry]="showRetry()"
+    [retryLabel]="retryLabel()"
+    (retry)="retry.emit()"
+  />
+} @else if (empty()) {
+  <app-empty-state [title]="emptyTitle()" [message]="emptyMessage()" />
+} @else {
+  @if (content(); as template) {
+    <ng-container *ngTemplateOutlet="template" />
+  }
+}

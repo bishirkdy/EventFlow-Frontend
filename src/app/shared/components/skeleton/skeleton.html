@@ -1,3 +1,48 @@
-@for (block of blocks(); track block) {
-  <div [class]="blockClasses()"></div>
+@if (variant() === 'cards') {
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
+    @for (item of items(); track item) {
+      <div class="overflow-hidden rounded-2xl border border-border bg-surface">
+        <div class="h-52 animate-pulse bg-background"></div>
+        <div class="space-y-4 p-5">
+          <div class="h-4 w-24 animate-pulse rounded bg-background"></div>
+          <div class="h-6 w-3/4 animate-pulse rounded bg-background"></div>
+          <div class="h-4 w-full animate-pulse rounded bg-background"></div>
+          <div class="h-10 w-32 animate-pulse rounded bg-background"></div>
+        </div>
+      </div>
+    }
+  </div>
+} @else if (variant() === 'list') {
+  <div class="divide-y divide-border" aria-hidden="true">
+    @for (item of items(); track item) {
+      <div class="flex items-center gap-4 py-4">
+        <div class="h-10 w-10 animate-pulse rounded-full bg-background"></div>
+        <div class="flex-1 space-y-2">
+          <div class="h-4 w-1/3 animate-pulse rounded bg-background"></div>
+          <div class="h-3 w-2/3 animate-pulse rounded bg-background"></div>
+        </div>
+      </div>
+    }
+  </div>
+} @else if (variant() === 'table') {
+  <div class="space-y-3" aria-hidden="true">
+    <div class="h-4 w-full animate-pulse rounded bg-background"></div>
+    @for (item of items(); track item) {
+      <div class="h-12 w-full animate-pulse rounded bg-background"></div>
+    }
+  </div>
+} @else if (variant() === 'detail') {
+  <div class="grid gap-8 lg:grid-cols-[320px_1fr]" aria-hidden="true">
+    <div class="h-72 w-full animate-pulse rounded bg-background"></div>
+    <div class="space-y-4">
+      <div class="h-8 w-2/3 animate-pulse rounded bg-background"></div>
+      <div class="h-4 w-full animate-pulse rounded bg-background"></div>
+      <div class="h-4 w-5/6 animate-pulse rounded bg-background"></div>
+      <div class="h-4 w-3/4 animate-pulse rounded bg-background"></div>
+    </div>
+  </div>
+} @else {
+  @for (item of items(); track item) {
+    <div [class]="lineClasses()" aria-hidden="true"></div>
+  }
 }

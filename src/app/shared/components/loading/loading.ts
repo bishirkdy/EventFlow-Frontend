@@ -10,6 +10,7 @@ export class Loading {
   label = input('');
   size = input<'sm' | 'md' | 'lg'>('md');
   align = input<'center' | 'start'>('center');
+  ariaLabel = input('Loading');
 
   readonly spinnerClass = computed(() => {
     switch (this.size()) {

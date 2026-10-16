@@ -2,10 +2,14 @@
   class="flex items-center gap-3 p-6"
   [class.justify-center]="align() === 'center'"
   [class.justify-start]="align() === 'start'"
+  role="status"
+  aria-live="polite"
+  [attr.aria-label]="label() || ariaLabel()"
 >
   <span
     class="animate-spin rounded-full border-primary-light border-t-primary"
     [class]="spinnerClass()"
+    aria-hidden="true"
   ></span>
   @if (label()) {
     <span class="text-sm text-text-muted">{{ label() }}</span>

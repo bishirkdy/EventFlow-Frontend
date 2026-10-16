@@ -1,5 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 
+export type SkeletonVariant = 'lines' | 'cards' | 'list' | 'table' | 'detail';
+
 @Component({
   selector: 'app-skeleton',
   imports: [],
@@ -7,14 +9,13 @@ import { Component, computed, input } from '@angular/core';
   styleUrl: './skeleton.css',
 })
 export class Skeleton {
+  variant = input<SkeletonVariant>('lines');
   count = input(1);
   blockClass = input('h-4 w-full');
 
-  readonly blocks = computed(() =>
+  readonly items = computed(() =>
     Array.from({ length: Math.max(1, this.count()) }, (_, index) => index),
   );
 
-  readonly blockClasses = computed(
-    () => `animate-pulse rounded bg-background ${this.blockClass()}`,
-  );
+  readonly lineClasses = computed(() => `animate-pulse rounded bg-background ${this.blockClass()}`);
 }

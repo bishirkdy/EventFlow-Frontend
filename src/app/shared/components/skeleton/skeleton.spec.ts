@@ -29,4 +29,12 @@ describe('Skeleton', () => {
     expect(classes).toContain('h-24');
     expect(classes).toContain('w-full');
   });
+
+  it('renders one card per count in the cards variant', () => {
+    fixture.componentRef.setInput('variant', 'cards');
+    fixture.componentRef.setInput('count', 2);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('.rounded-2xl').length).toBe(2);
+  });
 });
