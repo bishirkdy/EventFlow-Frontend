@@ -9,11 +9,12 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../../core/models/event-page';
 import { createAsyncAction } from 'core/state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-create-navigation-item',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CapitalizePipe],
   templateUrl: './create-navigation-item.html',
   styleUrl: './create-navigation-item.css',
 })

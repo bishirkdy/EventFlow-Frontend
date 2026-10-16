@@ -1,10 +1,12 @@
 import { Component, input } from '@angular/core';
 import { NavigationItemModel } from '../../../../core/models/navigation-item';
 import { EventWebsiteData } from '../../../../core/models/website';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-website-navigation',
   standalone: true,
+  imports: [CapitalizePipe],
   templateUrl: './website-navigation.html',
   styleUrl: './website-navigation.css',
 })

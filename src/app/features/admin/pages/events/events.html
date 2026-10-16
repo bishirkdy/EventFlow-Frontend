@@ -67,7 +67,7 @@
                       [routerLink]="['/admin/events', event.id]"
                       class="font-medium text-primary transition hover:text-primary-dark"
                     >
-                      {{ event.name }}
+                      {{ event.name | capitalize }}
                     </a>
                   </td>
                   <td class="px-5 py-3 text-text-secondary">{{ event.eventType | capitalize }}</td>

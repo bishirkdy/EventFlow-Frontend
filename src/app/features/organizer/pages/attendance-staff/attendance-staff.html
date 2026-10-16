@@ -143,7 +143,7 @@
               (click)="selectSection(section)"
             >
               <p class="font-medium text-text-primary">
-                {{ section.name }}
+                {{ section.name | capitalize }}
               </p>
 
               @if (section.description) {
@@ -163,7 +163,7 @@
               (click)="selectSession(session)"
             >
               <p class="font-medium text-text-primary">
-                {{ session.title }}
+                {{ session.title | capitalize }}
               </p>
 
               @if (session.description) {

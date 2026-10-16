@@ -6,11 +6,12 @@ import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-venue-details',
   standalone: true,
-  imports: [],
+  imports: [CapitalizePipe],
   templateUrl: './venue-details.html',
   styleUrl: './venue-details.css',
 })

@@ -22,7 +22,7 @@
         @if (event(); as currentEvent) {
           <div class="min-w-0">
             <h1 class="truncate text-sm font-semibold text-text-primary sm:text-base">
-              {{ currentEvent.name }}
+              {{ currentEvent.name | capitalize }}
             </h1>
 
             <p class="truncate text-xs text-text-muted">

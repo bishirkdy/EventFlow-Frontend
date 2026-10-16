@@ -204,11 +204,13 @@ export class EventWebsiteShell {
       return '';
     }
 
-    return text
+    const normalized = text
       .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
       .replace(/\s+/g, ' ')
       .replace(/^the\s+/i, '')
       .trim();
+
+    return normalized.charAt(0).toUpperCase() + normalized.slice(1);
   }
 
   sectionId(sectionType: string | null | undefined, title: string | null | undefined): string {

@@ -60,7 +60,7 @@
                     <h2
                       class="text-lg font-semibold text-text-primary"
                     >
-                      {{ session.title }}
+                      {{ session.title | capitalize }}
                   @if (session.startTime && session.endTime) {
                     <span class="mt-1 block text-xs text-text-muted">{{ session.startTime | date:'short' }} — {{ session.endTime | date:'short' }}</span>
                   }

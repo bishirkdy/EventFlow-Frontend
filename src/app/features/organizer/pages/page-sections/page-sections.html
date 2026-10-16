@@ -120,7 +120,7 @@
                 <!-- Section -->
                 <td class="px-5 py-4">
                   <div class="font-medium text-text-primary">
-                    {{ section.title || 'Untitled section' }}
+                    {{ (section.title | capitalize) || 'Untitled section' }}
                   </div>
 
                   <div

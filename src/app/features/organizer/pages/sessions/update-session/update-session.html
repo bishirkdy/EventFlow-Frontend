@@ -112,7 +112,7 @@
           <label for="venueId" class="mb-2 block text-sm font-medium text-text-primary">Venue</label>
           <select id="venueId" name="venueId" [(ngModel)]="session.venueId" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary">
             <option [ngValue]="null">No venue assigned</option>
-            @for (venue of venues(); track venue.id) { <option [value]="venue.id">{{ venue.name }}</option> }
+            @for (venue of venues(); track venue.id) { <option [value]="venue.id">{{ venue.name | capitalize }}</option> }
           </select>
         </div>
 

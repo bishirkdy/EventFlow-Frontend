@@ -10,11 +10,12 @@ import { EventPageService } from '../../../../../core/services/event-page/event-
 import { EventPageModel } from '../../../../../core/models/event-page';
 import { NavigationItemModel } from '../../../../../core/models/navigation-item';
 import { createAsyncAction } from 'core/state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-edit-navigation-item',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CapitalizePipe],
   templateUrl: './edit-navigation-item.html',
   styleUrl: './edit-navigation-item.css',
 })

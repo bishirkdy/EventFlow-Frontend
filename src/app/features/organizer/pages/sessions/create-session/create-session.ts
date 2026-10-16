@@ -11,11 +11,12 @@ import { SessionService } from '../../../../../core/services/session/session.ser
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../../core/models/event';
 import { createAsyncAction } from 'core/state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-create-session',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CapitalizePipe],
   templateUrl: './create-session.html',
   styleUrl: './create-session.css',
 })

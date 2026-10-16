@@ -16,11 +16,12 @@ import { SessionModel } from '../../../../core/models/session';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { EmailValidator } from '../../../../core/validators/email.validator';
 import { createAsyncAction } from 'core/state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-attendance-staff',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, CapitalizePipe],
   templateUrl: './attendance-staff.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

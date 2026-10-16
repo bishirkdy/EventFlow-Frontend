@@ -52,14 +52,14 @@
               @if (s.logoUrl) {
                 <img [src]="s.logoUrl" [alt]="s.name" class="max-h-full max-w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105" loading="lazy" />
               } @else {
-                <span class="text-3xl font-semibold tracking-tight text-text-muted">{{ s.name }}</span>
+                <span class="text-3xl font-semibold tracking-tight text-text-muted">{{ s.name | capitalize }}</span>
               }
             </div>
 
             <div class="pt-5">
               <div class="flex items-start justify-between gap-4">
-                <h2 class="text-xl font-semibold text-text-primary">{{ s.name }}</h2>
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-secondary">{{ s.sponsorLevel }}</span>
+                <h2 class="text-xl font-semibold text-text-primary">{{ s.name | capitalize }}</h2>
+                <span class="text-[10px] font-semibold uppercase tracking-widest text-secondary">{{ s.sponsorLevel | capitalize }}</span>
               </div>
 
               @if (s.description) {

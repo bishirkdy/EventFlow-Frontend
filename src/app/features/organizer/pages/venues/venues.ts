@@ -7,11 +7,12 @@ import { VenueService } from '../../../../core/services/venue/venue.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
 import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-venue',
   standalone: true,
-  imports: [Skeleton],
+  imports: [Skeleton, CapitalizePipe],
   templateUrl: './venues.html',
   styleUrl: './venues.css',
 })
