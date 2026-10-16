@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Api } from '../../api/api';
 import { ApiResponse } from '../../models/common';
@@ -17,6 +17,9 @@ export class AuthService {
   private readonly api = inject(Api);
 
   readonly currentUser = signal<UserProfile | null>(null);
+
+  // Platform administrators can reach the read-only admin console.
+  readonly isPlatformAdmin = computed(() => this.currentUser()?.isPlatformAdmin === true);
 
   login(data: LoginRequest): Observable<UserProfile | null> {
     return this.http
