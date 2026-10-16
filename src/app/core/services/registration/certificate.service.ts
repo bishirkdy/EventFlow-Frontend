@@ -13,7 +13,6 @@ import { CertificateGenerationResultModel } from '@/core/models/certificate';
 import { CertificateModel } from '@/core/models/certificate';
 import { CertificateVerifyModel } from '@/core/models/certificate';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -57,10 +56,9 @@ export class CertificateService {
   }
 
   previewCertificate(eventId: string, sampleName?: string): Observable<Blob> {
-    return this.http.get(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.preview(eventId, sampleName)),
-      { responseType: 'blob' },
-    );
+    return this.http.get(this.api.getUrl(CERTIFICATE_ENDPOINTS.preview(eventId, sampleName)), {
+      responseType: 'blob',
+    });
   }
 
   getEligibility(eventId: string): Observable<ApiResponse<CertificateEligibilityModel>> {
@@ -97,10 +95,7 @@ export class CertificateService {
     );
   }
 
-  revoke(
-    eventId: string,
-    certificateId: string,
-  ): Observable<ApiResponse<CertificateModel>> {
+  revoke(eventId: string, certificateId: string): Observable<ApiResponse<CertificateModel>> {
     return this.http.post<ApiResponse<CertificateModel>>(
       this.api.getUrl(CERTIFICATE_ENDPOINTS.revoke(eventId, certificateId)),
       {},
@@ -108,10 +103,9 @@ export class CertificateService {
   }
 
   download(eventId: string, certificateId: string): Observable<Blob> {
-    return this.http.get(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.download(eventId, certificateId)),
-      { responseType: 'blob' },
-    );
+    return this.http.get(this.api.getUrl(CERTIFICATE_ENDPOINTS.download(eventId, certificateId)), {
+      responseType: 'blob',
+    });
   }
 
   verify(certificateNumber: string): Observable<ApiResponse<CertificateVerifyModel>> {

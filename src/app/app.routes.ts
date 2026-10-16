@@ -39,6 +39,23 @@ export const routes: Routes = [
         loadComponent: () => import('./features/platform/home/home').then((m) => m.Home),
       },
       {
+        path: 'about',
+        loadComponent: () => import('./features/platform/about/about').then((m) => m.About),
+      },
+      {
+        path: 'features',
+        loadComponent: () => import('./features/platform/features/features').then((m) => m.Features),
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('./features/platform/contact/contact').then((m) => m.Contact),
+      },
+      {
+        path: 'event-setup',
+        loadComponent: () =>
+          import('./features/platform/event-setup/event-setup').then((m) => m.EventSetup),
+      },
+      {
         path: 'events',
         loadComponent: () => import('./features/platform/events/events').then((m) => m.Events),
       },

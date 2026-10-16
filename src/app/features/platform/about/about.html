@@ -1,0 +1,116 @@
+<main class="bg-background">
+  <!-- Intro -->
+  <section class="border-b border-border bg-surface py-20 sm:py-24 lg:py-28">
+    <div class="container-app">
+      <div class="max-w-3xl">
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+          About this website
+        </span>
+
+        <h1
+          class="mt-5 text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-text-primary sm:text-5xl lg:text-6xl"
+        >
+          The story behind
+          <span class="text-primary"> EventFlow.</span>
+        </h1>
+
+        <p class="mt-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+          EventFlow is a modern event platform that brings planning, websites, registration,
+          attendance and communication together in one connected place — so organizers can focus on
+          the event, not the busywork.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="py-20 sm:py-24 lg:py-28">
+    <div class="container-app grid gap-12 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <h2 class="text-3xl font-bold tracking-[-0.03em] text-text-primary sm:text-4xl">
+          Why EventFlow exists
+        </h2>
+      </div>
+
+      <div class="space-y-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+        <p>
+          Running an event usually means juggling a dozen disconnected tools — a website builder
+          here, a spreadsheet there, a separate check-in app and a photo drive somewhere else.
+          EventFlow was created to close those gaps.
+        </p>
+        <p>
+          Instead of stitching tools together, organizers get a single workspace where an event is
+          created, published, filled with participants, checked in and remembered through photos,
+          feedback and certificates.
+        </p>
+        <p>
+          This website is the front door to that platform. Explore the features, follow the setup
+          guide, and reach out whenever you need a hand.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="border-y border-border bg-surface py-20 sm:py-24 lg:py-28">
+    <div class="container-app">
+      <div class="max-w-2xl">
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+          What we care about
+        </span>
+
+        <h2 class="mt-5 text-3xl font-bold tracking-[-0.03em] text-text-primary sm:text-4xl">
+          Principles that shape the platform
+        </h2>
+      </div>
+
+      <div class="mt-14 grid gap-8 sm:grid-cols-2 lg:gap-10">
+        @for (value of values; track value.title) {
+          <div class="flex gap-5">
+            <span
+              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary"
+            >
+              <lucide-icon [img]="value.icon" [size]="22" [strokeWidth]="1.8"></lucide-icon>
+            </span>
+
+            <div>
+              <h3 class="text-lg font-semibold text-text-primary">{{ value.title }}</h3>
+
+              <p class="mt-2 text-sm leading-6 text-text-secondary sm:text-base sm:leading-7">
+                {{ value.description }}
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 sm:py-24 lg:py-28">
+    <div class="container-app">
+      <div
+        class="rounded-3xl border border-border bg-surface px-8 py-14 text-center sm:px-16 sm:py-20"
+      >
+        <h2 class="text-3xl font-bold tracking-[-0.03em] text-text-primary sm:text-4xl">
+          Ready to create your first event?
+        </h2>
+
+        <p class="mx-auto mt-5 max-w-xl text-base leading-7 text-text-secondary">
+          Start building a professional event experience in minutes. No setup headaches, no
+          scattered tools.
+        </p>
+
+        <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+          <a routerLink="/create-event">
+            <app-button label="Create an Event" size="lg" />
+          </a>
+
+          <a routerLink="/features">
+            <app-button label="Explore Features" variant="secondary" size="lg" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

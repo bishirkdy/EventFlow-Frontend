@@ -39,7 +39,7 @@ export const organizerRoutes: Routes = [
       },
       // Photographer Management
       {
-        path: 'settings/photographers',
+        path: 'photographers',
 
         loadComponent: () =>
           import('./pages/settings/photographers/photographer-management').then(
@@ -47,7 +47,7 @@ export const organizerRoutes: Routes = [
           ),
       },
       {
-        path: 'settings/photos',
+        path: 'photos',
         loadComponent: () =>
           import('./pages/settings/photographers/photo-moderation/photo-moderation-grid').then(
             (m) => m.PhotoModerationGrid,
@@ -55,13 +55,13 @@ export const organizerRoutes: Routes = [
       },
 
       // Certificates
-      // {
-      //   path: 'settings/certificates',
-      //   loadComponent: () =>
-      //     import('./pages/settings/certificates/certificate-settings').then(
-      //       (m) => m.CertificateSettings,
-      //     ),
-      // },
+      {
+        path: 'certificates',
+        loadComponent: () =>
+          import('./pages/settings/certificates/certificate-settings').then(
+            (m) => m.CertificateSettings,
+          ),
+      },
       // Website preview
       {
         path: 'preview',

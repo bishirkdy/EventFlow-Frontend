@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CertificateService } from 'core/services/registration/certificate.service';
 import { NotificationService } from 'core/services/ui/notification.service';
-
 import {
   RefreshCw,
   Save,
@@ -28,16 +27,7 @@ import { CertificateSettingsModel, CertificateTemplateMode } from '@/core/models
 import { CertificateEligibilityModel } from '@/core/models/certificate';
 import { CertificateModel } from '@/core/models/certificate';
 import { CertificateTemplateFieldModel } from '@/core/models/certificate';
-
-interface SettingsForm {
-  title: string;
-  subtitle: string;
-  signatoryName: string;
-  signatoryTitle: string;
-  themeColor: string;
-  requireApprovedRegistration: boolean;
-  minAttendancePercent: number | null;
-}
+import { SettingsForm } from '@/core/models/certificate/certificate-generate-form.model';
 
 @Component({
   selector: 'app-certificate-settings',
@@ -47,7 +37,6 @@ interface SettingsForm {
   styleUrl: './certificate-settings.css',
 })
 export class CertificateSettings implements OnInit {
-  private readonly route = inject(ActivatedRoute);
   private readonly certificateService = inject(CertificateService);
   private readonly notification = inject(NotificationService);
   private readonly eventState = inject(OrganizerEventStateService);
@@ -293,9 +282,7 @@ export class CertificateSettings implements OnInit {
           const result = response.data;
           const errors = result.errors ?? [];
           this.notification.success(
-            `Generated ${result.generated}, skipped ${result.skipped}` +
-              (result.failed > 0 ? `, failed ${result.failed}` : '') +
-              '.',
+            `Generated ${result.generated}, skipped ${result.skipped}` + (result.failed > 0 ? `, failed ${result.failed}` : '') + '.',
           );
 
           if (errors.length > 0) {

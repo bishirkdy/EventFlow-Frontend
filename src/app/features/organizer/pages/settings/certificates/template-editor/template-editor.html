@@ -1,5 +1,4 @@
 <div class="space-y-5">
-  <!-- Template mode toggle -->
   <div>
     <h3 class="mb-3 text-sm font-semibold text-text-primary">Certificate layout</h3>
 
@@ -11,7 +10,7 @@
         [class.text-white]="mode() === 'Classic'"
         [class.bg-surface]="mode() !== 'Classic'"
         [class.text-text-secondary]="mode() !== 'Classic'"
-        class="px-4 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+        class="px-4 py-2 text-sm font-medium transition-colors hover:bg-white hover:text-primary hover:border-primary disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
       >
         Classic layout
       </button>
@@ -22,7 +21,7 @@
         [class.text-white]="mode() === 'ImageTemplate'"
         [class.bg-surface]="mode() !== 'ImageTemplate'"
         [class.text-text-secondary]="mode() !== 'ImageTemplate'"
-        class="border-l border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+        class="border-l border-border cursor-pointer px-4 py-2 text-sm font-medium hover:bg-white hover:text-primary hover:border-primary transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         Image template
       </button>
@@ -37,12 +36,11 @@
     </p>
   } @else {
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_270px]">
-      <!-- Canvas column -->
       <div class="min-w-0 space-y-4">
         @if (imageUrl()) {
           <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-xs text-text-secondary">
-              Drag fields on the image to position them. Positions are saved as percentages.
+              Drag fields on the image to position them. Positions are saved as percentages
             </p>
 
             <div class="flex items-center gap-2">
@@ -101,9 +99,14 @@
                 (pointercancel)="endDrag($event)"
               >
                 @if (field.key === 'verificationQr') {
-                  <div class="flex w-full flex-col items-center justify-center gap-0.5 py-1 text-gray-400">
+                  <div
+                    class="flex w-full flex-col items-center justify-center gap-0.5 py-1 text-gray-400"
+                  >
                     <lucide-icon [img]="QrCode" [size]="28" />
-                    <span [style.font-size]="fontSizeCss(field)" [style.font-family]="field.fontFamily">
+                    <span
+                      [style.font-size]="fontSizeCss(field)"
+                      [style.font-family]="field.fontFamily"
+                    >
                       QR code
                     </span>
                   </div>
@@ -170,7 +173,7 @@
               <button
                 type="button"
                 (click)="addField(addFieldSelect.value)"
-                class="inline-flex items-center gap-1.5 bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
+                class="inline-flex items-center gap-1.5 cursor-pointer bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
               >
                 <lucide-icon [img]="Plus" [size]="14" />
                 Add
@@ -252,7 +255,9 @@
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="mb-1.5 block text-xs font-medium text-text-secondary">Font size (pt)</label>
+                <label class="mb-1.5 block text-xs font-medium text-text-secondary"
+                  >Font size (pt)</label
+                >
                 <input
                   type="number"
                   min="6"
@@ -263,7 +268,9 @@
                 />
               </div>
               <div>
-                <label class="mb-1.5 block text-xs font-medium text-text-secondary">Font color</label>
+                <label class="mb-1.5 block text-xs font-medium text-text-secondary"
+                  >Font color</label
+                >
                 <input
                   type="color"
                   [ngModel]="field.fontColor"
@@ -274,7 +281,9 @@
             </div>
 
             <div>
-              <label class="mb-1.5 block text-xs font-medium text-text-secondary">Font family</label>
+              <label class="mb-1.5 block text-xs font-medium text-text-secondary"
+                >Font family</label
+              >
               <select
                 [ngModel]="field.fontFamily"
                 (ngModelChange)="patchSelected({ fontFamily: $event })"
@@ -288,7 +297,9 @@
 
             <div class="flex items-end gap-2">
               <div class="flex-1">
-                <label class="mb-1.5 block text-xs font-medium text-text-secondary">Alignment</label>
+                <label class="mb-1.5 block text-xs font-medium text-text-secondary"
+                  >Alignment</label
+                >
                 <div class="inline-flex border border-border">
                   @for (align of aligns; track align) {
                     <button

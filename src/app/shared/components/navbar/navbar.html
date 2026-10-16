@@ -13,17 +13,21 @@
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden items-center gap-8 md:flex">
-        <a
-          routerLink="/events"
-          class="text-sm font-medium text-text-secondary transition hover:text-primary"
-        >
-          Events
-        </a>
+      <div class="hidden items-center gap-6 lg:flex">
+        @for (link of navLinks; track link.url) {
+          <a
+            [routerLink]="link.url"
+            routerLinkActive="text-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="text-sm font-medium text-text-secondary transition hover:text-primary"
+          >
+            {{ link.label }}
+          </a>
+        }
       </div>
 
       <!-- Desktop Actions -->
-      <div class="hidden items-center gap-4 md:flex">
+      <div class="hidden items-center gap-4 lg:flex">
         <app-user-menu [links]="userLinks" />
 
         <!-- Create Event -->
@@ -38,7 +42,7 @@
       <!-- Mobile Menu Button -->
       <button
         type="button"
-        class="flex h-10 w-10 items-center justify-center rounded-md text-text-primary hover:bg-surface-soft md:hidden"
+        class="flex h-10 w-10 items-center justify-center rounded-md text-text-primary hover:bg-surface-soft lg:hidden"
         (click)="toggleMenu()"
         [attr.aria-expanded]="isMenuOpen()"
         aria-label="Toggle navigation"
@@ -53,15 +57,19 @@
 
     <!-- Mobile Navigation -->
     @if (isMenuOpen()) {
-      <div class="border-t border-border py-4 md:hidden">
+      <div class="border-t border-border py-4 lg:hidden">
         <div class="flex flex-col gap-1">
-          <a
-            routerLink="/events"
-            (click)="closeMenu()"
-            class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
-          >
-            Events
-          </a>
+          @for (link of navLinks; track link.url) {
+            <a
+              [routerLink]="link.url"
+              routerLinkActive="text-primary"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="closeMenu()"
+              class="rounded-md px-3 py-3 text-sm font-medium text-text-secondary hover:bg-surface-soft hover:text-primary"
+            >
+              {{ link.label }}
+            </a>
+          }
 
           <div class="my-2 border-t border-border"></div>
 

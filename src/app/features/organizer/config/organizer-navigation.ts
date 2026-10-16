@@ -83,7 +83,12 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
         icon: Users,
         feature: 'registration',
       },
-      // { label: 'Certificates', route: 'settings/certificates', icon: Award, feature: 'registration' },
+      {
+        label: 'Certificates',
+        route: 'certificates',
+        icon: Award,
+        feature: 'registration',
+      },
     ],
   },
   {
@@ -93,18 +98,18 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
       { label: 'Attendance Staff', route: 'attendance-staff', icon: UserCog },
     ],
   },
-  // {
-  //   label: 'Communication',
-  //   items: [
-  //     // { label: 'Notifications', route: 'notifications', icon: Bell },
-  //     // { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' },
-  //   ],
-  // },
+  {
+    label: 'Communication',
+    items: [
+      { label: 'Notifications', route: 'notifications', icon: Bell },
+      { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' },
+    ],
+  },
   {
     label: 'Media',
     items: [
-      { label: 'Photographers', route: 'settings/photographers', icon: Camera },
-      { label: 'Photo Moderation', route: 'settings/photos', icon: Eye },
+      { label: 'Photographers', route: 'photographers', icon: Camera },
+      { label: 'Photo Moderation', route: 'photos', icon: Eye },
     ],
   },
 ];
