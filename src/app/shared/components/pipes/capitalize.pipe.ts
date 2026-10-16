@@ -6,10 +6,18 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CapitalizePipe implements PipeTransform {
   transform(value: string | null | undefined): string {
-    if (!value) {
+    const text = (value ?? '').trim();
+
+    if (!text) {
       return '';
     }
 
-    return value.charAt(0).toUpperCase() + value.slice(1);
+    const index = text.search(/[A-Za-zÀ-ÖØ-öø-ÿ]/);
+
+    if (index === -1) {
+      return text;
+    }
+
+    return text.slice(0, index) + text.charAt(index).toUpperCase() + text.slice(index + 1);
   }
 }
