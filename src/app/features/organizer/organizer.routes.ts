@@ -52,6 +52,7 @@ export const organizerRoutes: Routes = [
       // Certificates
       {
         path: 'certificates',
+        canActivate: [eventFeatureGuard('certificates')],
         loadComponent: () =>
           import('./pages/settings/certificates/certificate-settings').then(
             (m) => m.CertificateSettings,
@@ -291,11 +292,13 @@ export const organizerRoutes: Routes = [
       // Attendance operations
       {
         path: 'attendance',
+        canActivate: [eventFeatureGuard('attendance')],
         loadComponent: () =>
           import('./pages/attendance/attendance').then((m) => m.AttendanceComponent),
       },
       {
         path: 'attendance-staff',
+        canActivate: [eventFeatureGuard('attendance')],
         loadComponent: () =>
           import('./pages/attendance-staff/attendance-staff').then(
             (m) => m.AttendanceStaffComponent,

@@ -85,15 +85,15 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
         label: 'Certificates',
         route: 'certificates',
         icon: Award,
-        feature: 'registration',
+        feature: 'certificates',
       },
     ],
   },
   {
     label: 'Attendance',
     items: [
-      { label: 'Attendance Dashboard', route: 'attendance', icon: ScanLine },
-      { label: 'Attendance Staff', route: 'attendance-staff', icon: UserCog },
+      { label: 'Attendance Dashboard', route: 'attendance', icon: ScanLine, feature: 'attendance' },
+      { label: 'Attendance Staff', route: 'attendance-staff', icon: UserCog, feature: 'attendance' },
     ],
   },
   {
