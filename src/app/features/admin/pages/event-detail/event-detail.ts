@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { createAsyncState } from 'core/state';
-import { EventService } from '../../../../core/services/event/event.service';
+import { AdminService } from '../../../../core/services/admin/admin.service';
 import { Event } from '../../../../core/models/event';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
 
@@ -13,12 +13,12 @@ import { AsyncState } from '../../../../shared/components/async-state/async-stat
 })
 export class AdminEventDetail {
   private readonly route = inject(ActivatedRoute);
-  private readonly eventService = inject(EventService);
+  private readonly adminService = inject(AdminService);
 
   private readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
 
   private readonly state = createAsyncState<Event>(
-    () => this.eventService.getEventById(this.eventId),
+    () => this.adminService.getEventById(this.eventId),
     { autoLoad: true, errorFallback: 'Event could not be loaded.' },
   );
 

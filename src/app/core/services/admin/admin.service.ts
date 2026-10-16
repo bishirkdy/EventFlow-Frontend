@@ -10,6 +10,7 @@ import {
   AdminUserListItem,
   AdminUserStats,
 } from '../../models/admin';
+import { Event } from '../../models/event';
 import { ADMIN_ENDPOINTS } from '../../api/endpoints/admin-endpoints/admin-endpoints';
 
 export interface AdminEventsQuery {
@@ -36,6 +37,12 @@ export class AdminService {
     return this.http.get<ApiResponse<PaginatedResponseModel<AdminEventListItem>>>(
       this.api.getUrl(ADMIN_ENDPOINTS.events),
       { params: this.buildParams(query) },
+    );
+  }
+
+  getEventById(eventId: string): Observable<ApiResponse<Event>> {
+    return this.http.get<ApiResponse<Event>>(
+      this.api.getUrl(ADMIN_ENDPOINTS.eventById(eventId)),
     );
   }
 
