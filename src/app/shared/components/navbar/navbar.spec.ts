@@ -43,8 +43,8 @@ describe('Navbar', () => {
     ).map(anchor => anchor.getAttribute('href'));
 
     expect(hrefs).toContain('/events');
-    expect(hrefs).not.toContain('/features');
-    expect(hrefs).not.toContain('/about');
+    expect(hrefs).toContain('/about');
+    expect(hrefs).toContain('/features');
     expect(hrefs).not.toContain('/profile');
   });
 });
