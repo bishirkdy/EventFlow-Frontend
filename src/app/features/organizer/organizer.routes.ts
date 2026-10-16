@@ -31,12 +31,6 @@ export const organizerRoutes: Routes = [
         ],
       },
 
-      // Event settings
-      {
-        path: 'settings',
-        loadComponent: () =>
-          import('./pages/event-settings/event-settings').then((m) => m.EventSettings),
-      },
       // Photographer Management
       {
         path: 'photographers',

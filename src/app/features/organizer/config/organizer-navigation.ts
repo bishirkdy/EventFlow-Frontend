@@ -1,7 +1,6 @@
 import type { LucideIconData } from 'lucide-angular';
 import {
   LayoutDashboard,
-  Settings,
   Settings2,
   MapPin,
   CalendarDays,
@@ -40,7 +39,6 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
     items: [
       { label: 'Overview', route: 'overview', icon: LayoutDashboard },
       { label: 'Event Details', route: 'event/details', icon: Settings2 },
-      { label: 'Event Settings', route: 'settings', icon: Settings },
     ],
   },
   {
