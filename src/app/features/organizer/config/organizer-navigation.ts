@@ -106,8 +106,8 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
   {
     label: 'Media',
     items: [
-      { label: 'Photographers', route: 'photographers', icon: Camera },
-      { label: 'Photo Moderation', route: 'photos', icon: Eye },
+      { label: 'Photographers', route: 'photographers', icon: Camera, feature: 'gallery' },
+      { label: 'Photo Moderation', route: 'photos', icon: Eye, feature: 'gallery' },
     ],
   },
 ];

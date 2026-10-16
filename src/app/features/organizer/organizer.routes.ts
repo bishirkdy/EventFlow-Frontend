@@ -34,7 +34,7 @@ export const organizerRoutes: Routes = [
       // Photographer Management
       {
         path: 'photographers',
-
+        canActivate: [eventFeatureGuard('gallery')],
         loadComponent: () =>
           import('./pages/settings/photographers/photographer-management').then(
             (m) => m.PhotographerManagement,
@@ -42,6 +42,7 @@ export const organizerRoutes: Routes = [
       },
       {
         path: 'photos',
+        canActivate: [eventFeatureGuard('gallery')],
         loadComponent: () =>
           import('./pages/settings/photographers/photo-moderation/photo-moderation-grid').then(
             (m) => m.PhotoModerationGrid,
