@@ -10,13 +10,14 @@ import { NotificationService } from '../../../core/services/ui/notification.serv
 
 import { Event } from '../../../core/models/event';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
 import { createAsyncAction } from 'core/state';
 import { Skeleton } from '../../../shared/components/skeleton/skeleton';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent, Skeleton],
+  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent, Skeleton, CapitalizePipe],
   templateUrl: './my-events.html',
   styleUrl: './my-events.css',
 })

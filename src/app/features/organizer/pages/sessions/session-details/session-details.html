@@ -59,7 +59,7 @@
             </h2>
 
             <p class="mt-1 text-sm text-text-muted">
-              {{ currentSession.sessionType }}
+              {{ currentSession.sessionType | capitalize }}
             </p>
           </div>
 
@@ -149,7 +149,7 @@
               class="text-sm text-text-primary
                      sm:col-span-2"
             >
-              {{ currentSession.sessionType }}
+              {{ currentSession.sessionType | capitalize }}
             </div>
           </div>
 

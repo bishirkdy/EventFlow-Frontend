@@ -50,7 +50,7 @@
           <p class="text-sm text-text-muted">Event Type</p>
 
           <p class="mt-1 font-medium text-text-primary">
-            {{ currentEvent.eventType }}
+            {{ currentEvent.eventType | capitalize }}
           </p>
         </div>
 
@@ -86,7 +86,7 @@
           <p class="text-sm text-text-muted">Status</p>
 
           <p class="mt-1 font-medium text-text-primary">
-            {{ currentEvent.status }}
+            {{ currentEvent.status | capitalize }}
           </p>
         </div>
 

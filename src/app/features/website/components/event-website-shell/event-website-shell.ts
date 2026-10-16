@@ -2,11 +2,12 @@ import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EventWebsiteData } from '../../../../core/models/website';
 import { EventPageModel } from '../../../../core/models/event-page';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-event-website-shell',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CapitalizePipe],
   templateUrl: './event-website-shell.html',
   styleUrl: './event-website-shell.css',
 })

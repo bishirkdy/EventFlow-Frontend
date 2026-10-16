@@ -5,11 +5,13 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 
 import { EventPageSectionService } from '../../../../core/services/event-page-section/event-page-section.service';
 import { PageSectionModel } from '../../../../core/models/event-page-section';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-page-sections',
   standalone: true,
+  imports: [CapitalizePipe],
   templateUrl: './page-sections.html',
   styleUrl: './page-sections.css',
 })

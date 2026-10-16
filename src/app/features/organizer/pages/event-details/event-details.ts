@@ -6,11 +6,12 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { of } from 'rxjs';
 import { ParticipantStatus } from '@/core/models/registration';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-event-details',
-  imports: [DatePipe],
+  imports: [DatePipe, CapitalizePipe],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })

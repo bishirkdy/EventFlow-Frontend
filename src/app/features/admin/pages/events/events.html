@@ -70,8 +70,8 @@
                       {{ event.name }}
                     </a>
                   </td>
-                  <td class="px-5 py-3 text-text-secondary">{{ event.eventType }}</td>
-                  <td class="px-5 py-3 text-text-secondary">{{ event.status }}</td>
+                  <td class="px-5 py-3 text-text-secondary">{{ event.eventType | capitalize }}</td>
+                  <td class="px-5 py-3 text-text-secondary">{{ event.status | capitalize }}</td>
                   <td class="px-5 py-3 text-text-secondary">
                     {{ event.startDate | date: 'mediumDate' }}
                   </td>

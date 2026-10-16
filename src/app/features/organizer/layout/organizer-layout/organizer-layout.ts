@@ -11,11 +11,12 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../core/models/event';
 import { TitleCasePipe } from '@angular/common';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-organizer-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule , TitleCasePipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule , TitleCasePipe, CapitalizePipe],
   templateUrl: './organizer-layout.html',
   styleUrl: './organizer-layout.css',
 })

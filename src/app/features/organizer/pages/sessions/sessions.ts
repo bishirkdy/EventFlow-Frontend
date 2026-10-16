@@ -5,12 +5,13 @@ import { Router } from '@angular/router';
 import { SessionModel } from '../../../../core/models/session';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction, createAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-sessions',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, CapitalizePipe],
   templateUrl: './sessions.html',
   styleUrl: './sessions.css',
 })

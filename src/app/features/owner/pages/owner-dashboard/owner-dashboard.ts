@@ -25,11 +25,12 @@ import {
 import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
 import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { createAsyncAction, createRawAsyncState } from 'core/state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-owner-dashboard',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, CapitalizePipe],
   templateUrl: './owner-dashboard.html',
   styleUrl: './owner-dashboard.css',
 })

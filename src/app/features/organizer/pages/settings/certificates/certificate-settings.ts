@@ -28,11 +28,12 @@ import { CertificateEligibilityModel } from '@/core/models/certificate';
 import { CertificateModel } from '@/core/models/certificate';
 import { CertificateTemplateFieldModel } from '@/core/models/certificate';
 import { SettingsForm } from '@/core/models/certificate/certificate-generate-form.model';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-certificate-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, CertificateTemplateEditor],
+  imports: [CommonModule, FormsModule, LucideAngularModule, CertificateTemplateEditor, CapitalizePipe],
   templateUrl: './certificate-settings.html',
   styleUrl: './certificate-settings.css',
 })

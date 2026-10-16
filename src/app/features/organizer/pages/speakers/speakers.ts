@@ -6,8 +6,9 @@ import { SpeakerService } from '../../../../core/services/speaker/speaker.servic
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
 import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
-@Component({ selector:'app-speakers', standalone:true, imports:[Skeleton], templateUrl:'./speakers.html', styleUrl:'./speakers.css' })
+@Component({ selector:'app-speakers', standalone:true, imports:[Skeleton, CapitalizePipe], templateUrl:'./speakers.html', styleUrl:'./speakers.css' })
 export class Speakers implements OnInit {
  private readonly service=inject(SpeakerService); private readonly route=inject(ActivatedRoute); private readonly router=inject(Router); private readonly toastr=inject(NotificationService); private readonly state=inject(OrganizerEventStateService);
  speakers=signal<SpeakerModel[]>([]); deleting=signal<string|null>(null); eventId='';

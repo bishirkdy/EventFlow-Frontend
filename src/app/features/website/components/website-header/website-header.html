@@ -6,7 +6,7 @@
     </div>
 
     @if (data().event?.subType) {
-      <p class="hidden text-sm opacity-60 sm:block">{{ data().event?.subType }}</p>
+      <p class="hidden text-sm opacity-60 sm:block">{{ data().event?.subType | capitalize }}</p>
     }
   </div>
 </header>

@@ -5,10 +5,11 @@ import { createAsyncState } from 'core/state';
 import { AdminService } from '../../../../core/services/admin/admin.service';
 import { Event } from '../../../../core/models/event';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-admin-event-detail',
-  imports: [RouterLink, DatePipe, AsyncState],
+  imports: [RouterLink, DatePipe, AsyncState, CapitalizePipe],
   templateUrl: './event-detail.html',
 })
 export class AdminEventDetail {

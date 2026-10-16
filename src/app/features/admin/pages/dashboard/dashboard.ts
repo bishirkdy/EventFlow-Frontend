@@ -9,6 +9,7 @@ import {
   AdminUserStats,
 } from '../../../../core/models/admin';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 interface DashboardData {
   events: AdminEventStats;
@@ -18,7 +19,7 @@ interface DashboardData {
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [RouterLink, AsyncState],
+  imports: [RouterLink, AsyncState, CapitalizePipe],
   templateUrl: './dashboard.html',
 })
 export class AdminDashboard {

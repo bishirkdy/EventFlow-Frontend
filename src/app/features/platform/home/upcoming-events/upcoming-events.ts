@@ -5,10 +5,11 @@ import { EventService } from '../../../../core/services/event/event.service';
 import { Event as EventModel } from '../../../../core/models/event';
 import { createRawAsyncState } from 'core/state';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-upcoming-events',
-  imports: [RouterLink, AsyncState],
+  imports: [RouterLink, AsyncState, CapitalizePipe],
   templateUrl: './upcoming-events.html',
   styleUrl: './upcoming-events.css',
 })

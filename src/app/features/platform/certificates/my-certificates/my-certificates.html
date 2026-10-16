@@ -76,7 +76,7 @@
                             [class.text-green-700]="certificate.status === 'Issued'"
                             [class.bg-red-50]="certificate.status === 'Revoked'"
                             [class.text-red-700]="certificate.status === 'Revoked'">
-                            {{ certificate.status }}
+                            {{ certificate.status | capitalize }}
                         </span>
 
                     </div>

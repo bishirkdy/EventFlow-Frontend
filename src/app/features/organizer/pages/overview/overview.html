@@ -35,17 +35,17 @@
                       [class.bg-red-500]="currentEvent.status === 'Cancelled'"
                     ></span>
 
-                    {{ currentEvent.status }}
+                    {{ currentEvent.status | capitalize }}
                   </span>
 
                   <span class="text-xs text-white/60">·</span>
 
                   <span class="text-xs text-white/80">
-                    {{ currentEvent.eventType }}
+                    {{ currentEvent.eventType | capitalize }}
                   </span>
 
                   @if (currentEvent.subType) {
-                    <span class="text-xs text-white/80"> · {{ currentEvent.subType }} </span>
+                    <span class="text-xs text-white/80"> · {{ currentEvent.subType | capitalize }} </span>
                   }
                 </div>
 
@@ -154,7 +154,7 @@
                 <p class="text-sm text-text-muted">Event Type</p>
 
                 <p class="mt-2 truncate text-xl font-semibold text-text-primary">
-                  {{ currentEvent.eventType }}
+                  {{ currentEvent.eventType | capitalize }}
                 </p>
               </div>
 
@@ -602,7 +602,7 @@
                             <span
                               class="rounded-lg border border-border px-2 py-1 text-xs text-text-secondary"
                             >
-                              {{ role.roleName }} · {{ role.count }}
+                              {{ role.roleName | capitalize }} · {{ role.count }}
                             </span>
                           }
                         </div>
@@ -884,7 +884,7 @@
                 <p class="text-xs text-text-muted">Sub Type</p>
 
                 <p class="mt-1 text-sm font-medium text-text-primary">
-                  {{ currentEvent.subType || 'Not specified' }}
+                  {{ (currentEvent.subType | capitalize) || 'Not specified' }}
                 </p>
               </div>
 

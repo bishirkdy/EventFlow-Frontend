@@ -6,10 +6,11 @@ import { AdminService } from '../../../../core/services/admin/admin.service';
 import { AdminEventListItem } from '../../../../core/models/admin';
 import { PaginatedResponseModel } from '../../../../core/models/common';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-admin-events',
-  imports: [RouterLink, DatePipe, AsyncState],
+  imports: [RouterLink, DatePipe, AsyncState, CapitalizePipe],
   templateUrl: './events.html',
 })
 export class AdminEvents {

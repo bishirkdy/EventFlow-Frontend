@@ -220,7 +220,7 @@
                             <h3>{{ session.title }}</h3>
 
                             @if (session.sessionType) {
-                              <span>{{ session.sessionType }}</span>
+                              <span>{{ session.sessionType | capitalize }}</span>
                             }
 
                             @if (displayDescription(session.description)) {
@@ -289,7 +289,7 @@
 
                                 @if (speaker.designation || speaker.organization) {
                                   <p class="speaker-role">
-                                    {{ speaker.designation || 'Speaker'
+                                    {{ (speaker.designation | capitalize) || 'Speaker'
                                     }}{{ speaker.organization ? ' · ' + speaker.organization : '' }}
                                   </p>
                                 }
@@ -493,7 +493,7 @@
           <div class="hero-inner">
             <div class="hero-copy">
               <span class="hero-kicker">
-                {{ event.eventType || 'Event' }}
+                {{ (event.eventType | capitalize) || 'Event' }}
               </span>
 
               <h2>{{ event.name }}</h2>
@@ -532,7 +532,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <span class="brand-kicker">
-              {{ event.eventType || 'Event' }}
+              {{ (event.eventType | capitalize) || 'Event' }}
             </span>
 
             <h2>{{ event.name }}</h2>

@@ -60,7 +60,7 @@
                 <span
                   class="border border-secondary bg-secondary-light px-3 py-1 text-xs font-medium text-secondary"
                 >
-                  {{ event.eventType }}
+                  {{ event.eventType | capitalize }}
                 </span>
 
                 <span
@@ -70,7 +70,7 @@
                   [class.bg-orange-50]="event.status === 'Draft'"
                   [class.text-orange-700]="event.status === 'Draft'"
                 >
-                  {{ event.status }}
+                  {{ event.status | capitalize }}
                 </span>
               </div>
 

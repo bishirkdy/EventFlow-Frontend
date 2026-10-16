@@ -21,6 +21,7 @@ import {
 import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
 import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createRawAsyncState } from 'core/state';
 
 interface AnalyticsBundle {
@@ -45,7 +46,7 @@ const EMPTY_ANALYTICS: AnalyticsBundle = {
 
 @Component({
   selector: 'app-overview',
-  imports: [DatePipe, DecimalPipe, RouterLink , TruncateWordsPipe],
+  imports: [DatePipe, DecimalPipe, RouterLink , TruncateWordsPipe, CapitalizePipe],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })

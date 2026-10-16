@@ -13,12 +13,13 @@ import { SpeakerModel } from '../../../../../core/models/speaker';
 import { SpeakerService } from '../../../../../core/services/speaker/speaker.service';
 import { SessionSpeakerService } from '../../../../../core/services/session-speaker/session-speaker.service';
 import { EventFeatureService } from '../../../../../core/services/event-feature/event-feature.service';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-session-details',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, CapitalizePipe],
   templateUrl: './session-details.html',
   styleUrl: './session-details.css',
 })

@@ -8,12 +8,13 @@ import { EventPageModel } from '../../../../../core/models/event-page';
 import { NavigationItemByPageModel } from '../../../../../core/models/navigation-item';
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-page-details',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CapitalizePipe],
   templateUrl: './page-details.html',
   styleUrl: './page-details.css',
 })

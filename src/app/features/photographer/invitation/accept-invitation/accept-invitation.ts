@@ -13,12 +13,13 @@ import { PhotographerInvitationService } from '@/core/services/photographer/phot
 
 import { UserProfile } from '@/core/models/auth';
 import { InvitationData } from '@/core/models/photographer';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-accept-invitation',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CapitalizePipe],
   templateUrl: './accept-invitation.html',
   styleUrl: './accept-invitation.css',
 })

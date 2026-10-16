@@ -7,10 +7,11 @@ import { CertificateModel } from '@/core/models/certificate';
 import { map } from 'rxjs';
 import { createAsyncAction, createAsyncState } from 'core/state';
 import { ErrorState } from '../../../../shared/components/error-state/error-state';
+import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-my-certificates',
-  imports: [DatePipe, RouterLink, ErrorState],
+  imports: [DatePipe, RouterLink, ErrorState, CapitalizePipe],
   templateUrl: './my-certificates.html',
   styleUrl: './my-certificates.css',
 })

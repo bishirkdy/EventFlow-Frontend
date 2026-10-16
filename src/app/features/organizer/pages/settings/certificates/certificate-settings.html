@@ -516,7 +516,7 @@
                         <span
                           class="inline-flex items-center border border-border bg-background px-2.5 py-1 text-xs font-medium text-text-secondary"
                         >
-                          {{ item.registrationStatus }}
+                          {{ item.registrationStatus | capitalize }}
                         </span>
                       </td>
 
@@ -701,7 +701,7 @@
                         class="inline-flex items-center border px-2.5 py-1 text-xs font-medium"
                         [class]="statusClass(certificate.status)"
                       >
-                        {{ certificate.status }}
+                              {{ certificate.status | capitalize }}
                       </span>
                     </td>
 
