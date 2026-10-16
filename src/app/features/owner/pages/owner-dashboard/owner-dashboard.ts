@@ -12,6 +12,8 @@ import { EventRoleService } from '../../../../core/services/event-role/event-rol
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
 import { RegistrationService } from '../../../../core/services/registration/registration.service';
 import { OperationsService } from '../../../../core/services/operations/operations.service';
+import { InvitationService } from '../../../../core/services/invitation/invitation.service';
+import { EventInvitationModel } from '../../../../core/models/invitation';
 
 import {
   ContentAnalyticsModel,
@@ -42,11 +44,13 @@ export class OwnerDashboard implements OnInit {
   private readonly featureService = inject(EventFeatureService);
   private readonly registrationService = inject(RegistrationService);
   private readonly operationsService = inject(OperationsService);
+  private readonly invitationService = inject(InvitationService);
   private readonly toastr = inject(NotificationService);
 
   readonly event = signal<EventModel | null>(null);
   readonly team = signal<EventTeamMemberModel[]>([]);
   readonly features = signal<EventFeatureModel[]>([]);
+  readonly organizerInvitations = signal<EventInvitationModel[]>([]);
   readonly teamLoading = signal(true);
   readonly organizerEmail = signal('');
   readonly isOwner = signal(false);
@@ -88,6 +92,7 @@ export class OwnerDashboard implements OnInit {
 
         if (owner) {
           this.loadTeam(eventId);
+          this.loadOrganizerInvitations(eventId);
           return;
         }
 
@@ -114,18 +119,51 @@ export class OwnerDashboard implements OnInit {
     },
   );
 
-  private readonly assignAction = createAsyncAction(
-    (email: string) => this.roleService.assignOrganizer(this.eventId!, email),
+  private readonly inviteAction = createAsyncAction(
+    (email: string) => this.invitationService.inviteOrganizer(this.eventId!, email),
     {
-      errorFallback: 'Failed to assign organizer.',
-      onSuccess: () => {
+      errorFallback: 'Failed to send invitation.',
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Failed to send invitation.');
+          return;
+        }
+
         this.organizerEmail.set('');
 
-        this.toastr.success('Organizer assigned successfully');
+        this.toastr.success('Organizer invitation sent successfully.');
 
-        // Stay on Owner Dashboard.
         if (this.eventId) {
-          this.loadTeam(this.eventId);
+          this.loadOrganizerInvitations(this.eventId);
+        }
+      },
+    },
+  );
+
+  private readonly organizerInvitationsAction = createAsyncAction(
+    (eventId: string) => this.invitationService.getOrganizerInvitations(eventId),
+    {
+      onError: () => this.organizerInvitations.set([]),
+      onSuccess: (response) => this.organizerInvitations.set(response.data ?? []),
+    },
+  );
+
+  private readonly revokeInvitationAction = createAsyncAction(
+    (invitationId: string) =>
+      this.invitationService.revokeOrganizerInvitation(this.eventId!, invitationId),
+    {
+      errorFallback: 'Failed to revoke invitation.',
+      onSettled: () => this.revokingInvitationId.set(null),
+      onSuccess: (response) => {
+        if (!response.isSuccess) {
+          this.toastr.error(response.message || 'Failed to revoke invitation.');
+          return;
+        }
+
+        this.toastr.success('Invitation revoked successfully.');
+
+        if (this.eventId) {
+          this.loadOrganizerInvitations(this.eventId);
         }
       },
     },
@@ -180,9 +218,11 @@ export class OwnerDashboard implements OnInit {
 
   readonly loading = this.eventAction.pending;
   readonly featuresLoading = this.featuresAction.pending;
-  readonly assigning = this.assignAction.pending;
+  readonly inviting = this.inviteAction.pending;
+  readonly invitationsLoading = this.organizerInvitationsAction.pending;
   readonly claiming = this.claimAction.pending;
   readonly removingUserId = signal<string | null>(null);
+  readonly revokingInvitationId = signal<string | null>(null);
   readonly analyticsLoading = this.analyticsState.loading;
 
   readonly overviewAnalytics = computed(() => this.analyticsState.data()?.overview?.data ?? null);
@@ -205,14 +245,55 @@ export class OwnerDashboard implements OnInit {
     this.loadAnalytics();
   }
 
-  assignOrganizer(): void {
+  inviteOrganizer(): void {
     const email = this.organizerEmail().trim();
 
-    if (!this.eventId || !email || this.assigning()) {
+    if (!this.eventId || !email || this.inviting()) {
       return;
     }
 
-    this.assignAction.run(email);
+    this.inviteAction.run(email);
+  }
+
+  revokeInvitation(invitationId: string): void {
+    if (!this.eventId || this.revokingInvitationId()) {
+      return;
+    }
+
+    if (!window.confirm('Revoke this invitation?')) {
+      return;
+    }
+
+    this.revokingInvitationId.set(invitationId);
+    this.revokeInvitationAction.run(invitationId);
+  }
+
+  getInvitationStatusLabel(status: number): string {
+    switch (status) {
+      case 0:
+        return 'Pending';
+      case 1:
+        return 'Accepted';
+      case 2:
+        return 'Revoked';
+      case 3:
+        return 'Expired';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  getInvitationStatusClass(status: number): string {
+    switch (status) {
+      case 0:
+        return 'border-amber-500 text-amber-600';
+      case 1:
+        return 'border-green-500 text-green-600';
+      case 2:
+        return 'border-red-500 text-red-600';
+      default:
+        return 'border-border text-text-muted';
+    }
   }
 
   removeOrganizer(userId: string): void {
@@ -275,5 +356,9 @@ export class OwnerDashboard implements OnInit {
     this.teamLoading.set(true);
 
     this.teamAction.run(eventId);
+  }
+
+  private loadOrganizerInvitations(eventId: string): void {
+    this.organizerInvitationsAction.run(eventId);
   }
 }
