@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserMenu, UserMenuLink } from '../user-menu/user-menu';
@@ -16,6 +16,9 @@ export class Navbar {
   private router = inject(Router);
   currentUser = this.authService.currentUser;
 
+  // Only platform administrators see the console link.
+  readonly isPlatformAdmin = this.authService.isPlatformAdmin;
+
   private readonly logoutAction = createAsyncAction(() => this.authService.logout(), {
     onSettled: () => {
       this.authService.clearCurrentUser();
@@ -31,9 +34,15 @@ export class Navbar {
     { label: 'Contact', url: '/contact' },
   ];
 
-  readonly userLinks: UserMenuLink[] = [
-    { label: 'My Certificates', url: '/my-certificates' },
-  ];
+  readonly userLinks = computed<UserMenuLink[]>(() => {
+    const links: UserMenuLink[] = [{ label: 'My Certificates', url: '/my-certificates' }];
+
+    if (this.isPlatformAdmin()) {
+      links.unshift({ label: 'Admin Console', url: '/admin' });
+    }
+
+    return links;
+  });
 
   toggleMenu(): void {
     this.isMenuOpen.update((value) => !value);
