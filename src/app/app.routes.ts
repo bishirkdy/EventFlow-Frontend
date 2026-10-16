@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { PublicLayout } from './shared/layouts/public-layout/public-layout';
 import { authGuard } from './core/guards/auth/auth-guard';
+import { publicEventFeatureGuard } from './core/guards/feature/feature.guard';
 import { eventRoleGuard } from './core/guards/event-role/event-role.guard';
 import { platformAdminGuard } from './core/guards/platform-admin/platform-admin.guard';
 import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
@@ -89,7 +90,7 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/attendance',
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicEventFeatureGuard('attendance')],
     loadComponent: () =>
       import('./features/platform/attendance-history/attendance-history').then(
         (m) => m.AttendanceHistoryComponent,
@@ -97,11 +98,13 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/gallery',
+    canActivate: [publicEventFeatureGuard('gallery')],
     loadComponent: () =>
       import('./features/platform/photos/photo-gallery/photo-gallery').then((m) => m.PhotoGallery),
   },
   {
     path: 'events/:eventId/gallery/my',
+    canActivate: [publicEventFeatureGuard('gallery')],
     loadComponent: () =>
       import('./features/platform/photos/face-detection/my-photos/my-photos').then(
         (m) => m.MyPhotos,
@@ -109,6 +112,7 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/gallery/selfie',
+    canActivate: [publicEventFeatureGuard('gallery')],
     loadComponent: () =>
       import('./features/platform/photos/face-detection/selfie-capture/selfie-capture').then(
         (m) => m.SelfieCapture,
@@ -116,7 +120,7 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/certificates',
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicEventFeatureGuard('certificates')],
     loadComponent: () =>
       import('./features/platform/certificates/my-certificate/my-certificate').then(
         (m) => m.MyCertificate,
@@ -124,7 +128,7 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/feedback',
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicEventFeatureGuard('feedback')],
     loadComponent: () =>
       import('./features/platform/feedback/feedback').then((m) => m.FeedbackComponent),
   },

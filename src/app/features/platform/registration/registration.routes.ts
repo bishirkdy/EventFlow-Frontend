@@ -1,10 +1,11 @@
 import { authGuard } from '../../../core/guards/auth/auth-guard';
+import { publicEventFeatureGuard } from '../../../core/guards/feature/feature.guard';
 import { Routes } from '@angular/router';
 
 export const REGISTRATION_ROUTES: Routes = [
   {
     path: 'events/:eventId/register',
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicEventFeatureGuard('registration')],
     loadComponent: () =>
       import('./pages/public/register/register').then(
         (m) => m.RegisterComponent,
@@ -12,7 +13,7 @@ export const REGISTRATION_ROUTES: Routes = [
   },
   {
     path: 'events/:eventId/my-registrations',
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicEventFeatureGuard('registration')],
     loadComponent: () =>
       import('./pages/public/my-registrations/my-registrations').then(
         (m) => m.MyRegistrationsComponent,
@@ -20,7 +21,7 @@ export const REGISTRATION_ROUTES: Routes = [
   },
   {
     path: 'events/:eventId/registrations/:registrationId',
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicEventFeatureGuard('registration')],
     loadComponent: () =>
       import('./pages/public/registration-details/registration-details').then(
         (m) => m.PublicRegistrationDetailsComponent,

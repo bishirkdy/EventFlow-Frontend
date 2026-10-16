@@ -43,3 +43,24 @@ export const eventFeatureGuard = (featureCode: string): CanActivateFn => (route)
     }),
   );
 };
+
+export const publicEventFeatureGuard = (featureCode: string): CanActivateFn => (route) => {
+  const featureService = inject(EventFeatureService);
+  const router = inject(Router);
+  const eventId = eventIdFrom(route);
+  if (!eventId) return false;
+
+  return featureService.getFeatures(eventId).pipe(
+    map(response => {
+      const enabled = (response.data ?? []).some(
+        f => f.isEnabled && f.featureCode.toLowerCase() === featureCode.toLowerCase(),
+      );
+      return enabled ? true : router.createUrlTree(['/events', eventId]);
+    }),
+    catchError(() => {
+      // If features cannot be loaded, keep the public page reachable
+      // instead of hiding the event during a brief outage.
+      return of(true);
+    }),
+  );
+};
