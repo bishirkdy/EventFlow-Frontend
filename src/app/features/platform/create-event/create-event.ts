@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/ui/notification.service';
 
 import { EventService } from '../../../core/services/event/event.service';
+import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { EventTypeService } from '../../../core/services/event-type/event-type.service';
 import { EventTypeModel } from '../../../core/models/event-type';
+import { workspaceUrlForRoles } from '../../../core/routing/event-route.util';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
 import { createAsyncAction, createAsyncState } from 'core/state';
 
@@ -20,6 +22,7 @@ export class CreateEvent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly eventService = inject(EventService);
+  private readonly eventRoleService = inject(EventRoleService);
   private readonly toastr = inject(NotificationService);
   private readonly eventTypeService = inject(EventTypeService);
 
@@ -71,7 +74,19 @@ export class CreateEvent implements OnInit {
         }
 
         this.toastr.success('Event created successfully.');
-        this.router.navigate(['/organizer', data.id, 'overview']);
+
+        // The creator is always made the owner, so the owner dashboard is the
+        // safe landing page if the role lookup fails or comes back empty.
+        this.eventRoleService.getMyRoles(data.id).subscribe({
+          next: (rolesResponse) => {
+            const url = workspaceUrlForRoles(data.id, rolesResponse.data ?? []);
+
+            void this.router.navigate(url ?? ['/owner', data.id]);
+          },
+          error: () => {
+            void this.router.navigate(['/owner', data.id]);
+          },
+        });
       },
       errorFallback: 'Failed to create event.',
     },

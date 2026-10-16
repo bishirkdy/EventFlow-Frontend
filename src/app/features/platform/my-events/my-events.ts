@@ -9,6 +9,7 @@ import { RegistrationService } from '@/core/services/registration/registration.s
 import { NotificationService } from '../../../core/services/ui/notification.service';
 
 import { Event } from '../../../core/models/event';
+import { workspaceUrlForRoles } from '../../../core/routing/event-route.util';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
@@ -57,24 +58,14 @@ export class MyEvents implements OnInit {
       toastErrors: true,
       errorFallback: 'Failed to open event',
       onSuccess: ({ event, roles }) => {
-        const names = roles.map((role) => role.roleName.trim().toLowerCase());
+        const url = workspaceUrlForRoles(event.id, roles);
 
-        if (names.length === 0) {
+        if (!url) {
           this.notify.error("You don't have access to this event.");
           return;
         }
 
-        if (names.includes('owner')) {
-          void this.router.navigate(['/owner', event.id]);
-        } else if (names.includes('attendancestaff')) {
-          void this.router.navigate(['/attendance-staff', event.id]);
-        } else if (names.includes('photographer')) {
-          void this.router.navigate(['/photographer', event.id, 'photos']);
-        } else if (names.includes('organizer')) {
-          void this.router.navigate(['/organizer', event.id, 'overview']);
-        } else {
-          void this.router.navigate(['/events', event.id]);
-        }
+        void this.router.navigate(url);
       },
     },
   );
