@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, forkJoin, map, of } from 'rxjs';
 
@@ -49,7 +49,7 @@ const EMPTY_ANALYTICS: AnalyticsBundle = {
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
-export class Overview {
+export class Overview implements OnInit {
   organizerEventState = inject(OrganizerEventStateService);
   event = this.organizerEventState.event;
 
@@ -110,6 +110,10 @@ export class Overview {
   readonly certificateAnalytics = computed(() => this.analyticsState.data().certificates);
   readonly attendanceAnalytics = computed(() => this.analyticsState.data().attendance);
   readonly teamAnalytics = computed(() => this.analyticsState.data().team);
+
+  ngOnInit(): void {
+    this.analyticsState.load();
+  }
 
   get registrationTrend(): RegistrationAnalyticsModel['trend'] {
     return (this.registrationAnalytics()?.trend ?? []).slice(-14);
