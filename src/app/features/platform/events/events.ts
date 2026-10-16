@@ -63,6 +63,10 @@ export class Events implements OnInit {
       .sort((a, b) => this.compare(a, b));
   });
 
+  readonly heroImage = computed(
+    () => this.events().find((event) => event.images?.length)?.images[0]?.url ?? null,
+  );
+
   readonly hasActiveFilters = computed(
     () => this.search().trim().length > 0 || this.typeFilter() !== 'all',
   );

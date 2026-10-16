@@ -1,48 +1,71 @@
-<main class="min-h-screen bg-background px-6 py-12 md:px-8 lg:py-16">
-  <div class="mx-auto max-w-7xl">
-    <div class="max-w-2xl">
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-secondary">Discover</p>
-      <h1 class="mt-3 text-3xl font-bold tracking-tight text-text-primary md:text-4xl">Upcoming Events</h1>
-      <p class="mt-3 text-sm leading-6 text-text-secondary md:text-base">
-        Explore published events and open an event website to see its schedule, venue and registration details.
+<main class="min-h-screen bg-background">
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-primary text-white">
+    @if (heroImage(); as image) {
+      <img
+        [src]="image"
+        alt=""
+        aria-hidden="true"
+        class="absolute inset-0 h-full w-full object-cover opacity-30"
+      />
+    }
+    <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary-dark/80"></div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-16 md:px-8 lg:py-24">
+      <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">Discover</p>
+      <h1 class="mt-4 max-w-3xl text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+        Upcoming Events
+      </h1>
+      <p class="mt-4 max-w-2xl text-sm leading-6 text-white/80 md:text-base">
+        Explore published events and open an event website to see its schedule, venue and
+        registration details.
+      </p>
+
+      <div class="relative mt-8 max-w-2xl">
+        <lucide-icon
+          [img]="searchIcon"
+          [size]="20"
+          [strokeWidth]="1.8"
+          class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"
+        />
+        <input
+          type="search"
+          [value]="search()"
+          (input)="updateSearch($any($event.target).value)"
+          placeholder="Search events by name or description"
+          aria-label="Search events"
+          class="h-14 w-full rounded-none border border-white/20 bg-surface pl-12 pr-12 text-sm text-text-primary placeholder:text-text-muted focus:border-white focus:outline-none focus:ring-2 focus:ring-white/40"
+        />
+        @if (search()) {
+          <button
+            type="button"
+            (click)="updateSearch('')"
+            aria-label="Clear search"
+            class="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-none text-text-muted transition hover:bg-surface-soft hover:text-text-primary"
+          >
+            <lucide-icon [img]="clearIcon" [size]="16" [strokeWidth]="1.8" />
+          </button>
+        }
+      </div>
+
+      <p class="mt-4 text-xs font-medium text-white/70">
+        {{ events().length }} event{{ events().length === 1 ? '' : 's' }} available
       </p>
     </div>
+  </section>
 
-    <!-- Filters -->
-    <div class="mt-8 rounded-none border border-border bg-surface p-4">
-      <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <div class="relative flex-1">
-          <lucide-icon
-            [img]="searchIcon"
-            [size]="18"
-            [strokeWidth]="1.8"
-            class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"
-          />
-          <input
-            type="search"
-            [value]="search()"
-            (input)="updateSearch($any($event.target).value)"
-            placeholder="Search events by name or description"
-            aria-label="Search events"
-            class="h-12 w-full rounded-none border border-border bg-surface pl-11 pr-11 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
-          @if (search()) {
-            <button
-              type="button"
-              (click)="updateSearch('')"
-              aria-label="Clear search"
-              class="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-none text-text-muted transition hover:bg-surface-soft hover:text-text-primary"
-            >
-              <lucide-icon [img]="clearIcon" [size]="16" [strokeWidth]="1.8" />
-            </button>
-          }
-        </div>
-
+  <!-- Content -->
+  <div class="mx-auto max-w-7xl px-6 py-8 md:px-8 lg:py-12">
+    <!-- Filter bar -->
+    <div
+      class="flex flex-col gap-3 rounded-none border border-border bg-surface p-4 lg:flex-row lg:items-center lg:justify-between"
+    >
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
         <select
           [value]="typeFilter()"
           (change)="updateType($any($event.target).value)"
           aria-label="Filter by event type"
-          class="h-12 rounded-none border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          class="h-11 rounded-none border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="all">All types</option>
           @for (type of eventTypes(); track type.id) {
@@ -54,7 +77,7 @@
           [value]="sort()"
           (change)="updateSort($any($event.target).value)"
           aria-label="Sort events"
-          class="h-12 rounded-none border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          class="h-11 rounded-none border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="date-asc">Date: soonest</option>
           <option value="date-desc">Date: latest</option>
@@ -65,7 +88,7 @@
           <button
             type="button"
             (click)="clearFilters()"
-            class="inline-flex h-12 items-center justify-center gap-2 rounded-none border border-border bg-surface px-4 text-sm font-medium text-text-secondary transition hover:bg-surface-soft hover:text-text-primary"
+            class="inline-flex h-11 items-center justify-center gap-2 rounded-none border border-border bg-surface px-4 text-sm font-medium text-text-secondary transition hover:bg-surface-soft hover:text-text-primary"
           >
             <lucide-icon [img]="clearIcon" [size]="16" [strokeWidth]="1.8" />
             Clear filters
@@ -73,7 +96,7 @@
         }
       </div>
 
-      <p class="mt-4 text-xs text-text-muted">
+      <p class="text-xs text-text-muted">
         Showing {{ filteredEvents().length }} of {{ events().length }} events
       </p>
     </div>
