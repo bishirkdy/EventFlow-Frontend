@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { EventService } from '../../../core/services/event/event.service';
 import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { RegistrationService } from '@/core/services/registration/registration.service';
+import { NotificationService } from '../../../core/services/ui/notification.service';
 
 import { Event } from '../../../core/models/event';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
@@ -25,6 +26,7 @@ export class MyEvents implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly roleService = inject(EventRoleService);
   private readonly registrationService = inject(RegistrationService);
+  private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
 
@@ -55,6 +57,11 @@ export class MyEvents implements OnInit {
       errorFallback: 'Failed to open event',
       onSuccess: ({ event, roles }) => {
         const names = roles.map((role) => role.roleName.trim().toLowerCase());
+
+        if (names.length === 0) {
+          this.notify.error("You don't have access to this event.");
+          return;
+        }
 
         if (names.includes('owner')) {
           void this.router.navigate(['/owner', event.id]);

@@ -7,26 +7,16 @@ import { provideComponentTestProviders } from '../../../testing/component-provid
 import { EventService } from '../../../core/services/event/event.service';
 import { EventRoleService } from '../../../core/services/event-role/event-role.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
+import { RegistrationService } from '../../../core/services/registration/registration.service';
 import { Event } from '../../../core/models/event';
 
 describe('MyEvents', () => {
   let component: MyEvents;
   let fixture: ComponentFixture<MyEvents>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MyEvents],
-      providers: provideComponentTestProviders(),
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MyEvents);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  const roleService = { getMyRoles: vi.fn() };
+  const eventService = { getMyEvents: vi.fn() };
+  const registrationService = { getMine: vi.fn() };
 
   function makeEvent(status: 'Published' | 'Draft'): Event {
     return {
@@ -41,30 +31,66 @@ describe('MyEvents', () => {
     } as unknown as Event;
   }
 
-  it('shows register, certificate and feedback shortcuts on published cards', () => {
-    component.events.set([makeEvent('Published')]);
-    fixture.detectChanges();
+  beforeEach(async () => {
+    roleService.getMyRoles.mockReset().mockReturnValue(of({ data: [{ roleName: 'Participant' }] }));
+    eventService.getMyEvents.mockReset().mockReturnValue(of({ data: [] }));
+    registrationService.getMine.mockReset().mockReturnValue(of({ data: [] }));
 
-    const links = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
-    ).filter(anchor =>
-      ['Register', 'Certificate', 'Feedback'].includes(anchor.textContent?.trim() ?? ''),
-    );
+    await TestBed.configureTestingModule({
+      imports: [MyEvents],
+      providers: [
+        ...provideComponentTestProviders(),
+        { provide: EventRoleService, useValue: roleService },
+        { provide: EventService, useValue: eventService },
+        { provide: RegistrationService, useValue: registrationService },
+        { provide: NotificationService, useValue: { success: vi.fn(), error: vi.fn() } },
+      ],
+    }).compileComponents();
 
-    expect(links.map(anchor => anchor.getAttribute('href'))).toEqual([
-      '/events/evt-9/register',
-      '/events/evt-9/certificates',
-      '/events/evt-9/feedback',
-    ]);
+    fixture = TestBed.createComponent(MyEvents);
+    component = fixture.componentInstance;
   });
 
-  it('keeps participant shortcuts off draft cards', () => {
-    component.events.set([makeEvent('Draft')]);
+  it('should create', () => {
     fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+
+  it('shows the register shortcut on published cards the user can participate in', async () => {
+    eventService.getMyEvents.mockReturnValue(of({ data: [makeEvent('Published')] }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const register = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
+    ).find(anchor => anchor.textContent?.trim() === 'Register');
+
+    expect(register?.getAttribute('href')).toBe('/events/evt-9/register');
+  });
+
+  it('shows the feedback action once the user is registered', async () => {
+    registrationService.getMine.mockReturnValue(of({ data: [{ id: 'reg-1' }] }));
+    eventService.getMyEvents.mockReturnValue(of({ data: [makeEvent('Published')] }));
+    fixture.detectChanges();
+    await fixture.whenStable();
 
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    expect(text).not.toContain('Certificate');
-    expect(text).toContain('Publish Event');
+    expect(text).toContain('My Registration');
+    expect(text).toContain('Feedback');
+  });
+
+  it('keeps participant shortcuts off draft cards', async () => {
+    eventService.getMyEvents.mockReturnValue(of({ data: [makeEvent('Draft')] }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    const links = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
+    ).map(anchor => anchor.textContent?.trim());
+    expect(links).not.toContain('Register');
+    expect(text).not.toContain('My Registration');
+    expect(text).toContain('Open Event');
   });
 });
 
