@@ -9,72 +9,74 @@
     </div>
 
     <!-- Filters -->
-    <div class="mt-8 flex flex-col gap-3 lg:flex-row lg:items-center">
-      <div class="relative flex-1">
-        <lucide-icon
-          [img]="searchIcon"
-          [size]="18"
-          [strokeWidth]="1.8"
-          class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"
-        />
-        <input
-          type="search"
-          [value]="search()"
-          (input)="updateSearch($any($event.target).value)"
-          placeholder="Search events by name or description"
-          aria-label="Search events"
-          class="h-12 w-full rounded-xl border border-border bg-surface pl-11 pr-11 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-        />
-        @if (search()) {
+    <div class="mt-8 rounded-none border border-border bg-surface p-4">
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div class="relative flex-1">
+          <lucide-icon
+            [img]="searchIcon"
+            [size]="18"
+            [strokeWidth]="1.8"
+            class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"
+          />
+          <input
+            type="search"
+            [value]="search()"
+            (input)="updateSearch($any($event.target).value)"
+            placeholder="Search events by name or description"
+            aria-label="Search events"
+            class="h-12 w-full rounded-none border border-border bg-surface pl-11 pr-11 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          @if (search()) {
+            <button
+              type="button"
+              (click)="updateSearch('')"
+              aria-label="Clear search"
+              class="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-none text-text-muted transition hover:bg-surface-soft hover:text-text-primary"
+            >
+              <lucide-icon [img]="clearIcon" [size]="16" [strokeWidth]="1.8" />
+            </button>
+          }
+        </div>
+
+        <select
+          [value]="typeFilter()"
+          (change)="updateType($any($event.target).value)"
+          aria-label="Filter by event type"
+          class="h-12 rounded-none border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="all">All types</option>
+          @for (type of eventTypes(); track type.id) {
+            <option [value]="type.name">{{ type.name | capitalize }}</option>
+          }
+        </select>
+
+        <select
+          [value]="sort()"
+          (change)="updateSort($any($event.target).value)"
+          aria-label="Sort events"
+          class="h-12 rounded-none border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="date-asc">Date: soonest</option>
+          <option value="date-desc">Date: latest</option>
+          <option value="name-asc">Name: A–Z</option>
+        </select>
+
+        @if (hasActiveFilters()) {
           <button
             type="button"
-            (click)="updateSearch('')"
-            aria-label="Clear search"
-            class="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-text-muted transition hover:bg-surface-soft hover:text-text-primary"
+            (click)="clearFilters()"
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-none border border-border bg-surface px-4 text-sm font-medium text-text-secondary transition hover:bg-surface-soft hover:text-text-primary"
           >
             <lucide-icon [img]="clearIcon" [size]="16" [strokeWidth]="1.8" />
+            Clear filters
           </button>
         }
       </div>
 
-      <select
-        [value]="typeFilter()"
-        (change)="updateType($any($event.target).value)"
-        aria-label="Filter by event type"
-        class="h-12 rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-      >
-        <option value="all">All types</option>
-        @for (type of eventTypes(); track type.id) {
-          <option [value]="type.name">{{ type.name }}</option>
-        }
-      </select>
-
-      <select
-        [value]="sort()"
-        (change)="updateSort($any($event.target).value)"
-        aria-label="Sort events"
-        class="h-12 rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-      >
-        <option value="date-asc">Date: soonest</option>
-        <option value="date-desc">Date: latest</option>
-        <option value="name-asc">Name: A–Z</option>
-      </select>
-
-      @if (hasActiveFilters()) {
-        <button
-          type="button"
-          (click)="clearFilters()"
-          class="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-medium text-text-secondary transition hover:bg-surface-soft hover:text-text-primary"
-        >
-          <lucide-icon [img]="clearIcon" [size]="16" [strokeWidth]="1.8" />
-          Clear filters
-        </button>
-      }
+      <p class="mt-4 text-xs text-text-muted">
+        Showing {{ filteredEvents().length }} of {{ events().length }} events
+      </p>
     </div>
-
-    <p class="mt-4 text-xs text-text-muted">
-      Showing {{ filteredEvents().length }} of {{ events().length }} events
-    </p>
 
     <app-async-state
       class="mt-6 block"
@@ -91,7 +93,7 @@
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           @for (event of filteredEvents(); track event.id) {
             <article
-              class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              class="group flex flex-col overflow-hidden rounded-none border border-border bg-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div class="relative h-52 overflow-hidden bg-background">
                 @if (event.images[0]; as image) {
@@ -105,7 +107,7 @@
                 }
 
                 <span
-                  class="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white shadow-sm"
+                  class="absolute left-3 top-3 rounded-none bg-primary px-3 py-1 text-xs font-semibold text-white shadow-sm"
                 >
                   {{ event.eventType | capitalize }}
                 </span>
@@ -131,7 +133,7 @@
 
                 <a
                   [routerLink]="['/events', event.id]"
-                  class="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary-dark"
+                  class="mt-5 inline-flex items-center justify-center rounded-none bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary-dark"
                 >
                   View Event
                 </a>
