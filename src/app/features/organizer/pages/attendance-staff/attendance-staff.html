@@ -3,10 +3,12 @@
   <div>
     <h2 class="text-2xl font-semibold text-text-primary">Attendance Staff</h2>
 
-    <p class="text-sm text-text-muted">Assign staff to an event, section, or session.</p>
+    <p class="text-sm text-text-muted">
+      Send staff invitations scoped to a whole event, a section, or a session.
+    </p>
   </div>
 
-  <!-- Assignment -->
+  <!-- Invitation -->
   <div class="grid gap-3 border border-border bg-surface p-5 md:grid-cols-4">
     <!-- Email -->
     <input
@@ -44,19 +46,86 @@
       </button>
     }
 
-    <!-- Assign -->
+    <!-- Invite -->
     <button
       type="button"
       class="min-h-11 bg-primary hover:bg-white hover:text-primary hover:border-primary border cursor-pointer px-5 py-3 font-semibold text-white disabled:opacity-50"
-      [disabled]="assigning()"
-      (click)="assign()"
+      [disabled]="inviting()"
+      (click)="invite()"
     >
-      {{ assigning() ? 'Assigning...' : 'Assign Staff' }}
+      {{ inviting() ? 'Sending...' : 'Send Invitation' }}
     </button>
+  </div>
+
+  <!-- Invitations table -->
+  <div class="overflow-x-auto border border-border bg-surface">
+    <div class="border-b border-border px-4 py-3">
+      <h3 class="text-sm font-semibold text-text-primary">Pending invitations</h3>
+    </div>
+
+    <table class="min-w-full text-sm">
+      <thead class="border-b border-border bg-background">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold">Email</th>
+
+          <th class="px-4 py-3 text-left font-semibold">Scope</th>
+
+          <th class="px-4 py-3 text-left font-semibold">Status</th>
+
+          <th class="px-4 py-3 text-right"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (invitation of invitations(); track invitation.invitationId) {
+          <tr class="border-b border-border last:border-b-0">
+            <td class="px-4 py-3">
+              {{ invitation.email }}
+            </td>
+
+            <td class="px-4 py-3">
+              {{ scopeLabel(invitation.scopeType || 1) }}
+            </td>
+
+            <td class="px-4 py-3">
+              <span
+                class="inline-flex border px-2.5 py-1 text-xs font-medium"
+                [class]="getInvitationStatusClass(invitation.status)"
+              >
+                {{ getInvitationStatusLabel(invitation.status) }}
+              </span>
+            </td>
+
+            <td class="px-4 py-3 text-right">
+              @if (invitation.status === 0 || invitation.status === 1) {
+                <button
+                  type="button"
+                  class="text-red-600 hover:text-red-700 disabled:opacity-50"
+                  [disabled]="revokingInvitationId() === invitation.invitationId"
+                  (click)="revokeInvitation(invitation.invitationId)"
+                >
+                  {{ revokingInvitationId() === invitation.invitationId ? 'Revoking...' : 'Revoke' }}
+                </button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="px-4 py-10 text-center text-sm text-text-muted">
+              No attendance staff invitations.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 
   <!-- Staff table -->
   <div class="overflow-x-auto border border-border bg-surface">
+    <div class="border-b border-border px-4 py-3">
+      <h3 class="text-sm font-semibold text-text-primary">Assigned staff</h3>
+    </div>
+
     <table class="min-w-full text-sm">
       <thead class="border-b border-border bg-background">
         <tr>
