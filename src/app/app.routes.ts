@@ -58,17 +58,8 @@ export const routes: Routes = [
         loadComponent: () => import('./features/platform/about/about').then((m) => m.About),
       },
       {
-        path: 'features',
-        loadComponent: () => import('./features/platform/features/features').then((m) => m.Features),
-      },
-      {
         path: 'contact',
         loadComponent: () => import('./features/platform/contact/contact').then((m) => m.Contact),
-      },
-      {
-        path: 'event-setup',
-        loadComponent: () =>
-          import('./features/platform/event-setup/event-setup').then((m) => m.EventSetup),
       },
       {
         path: 'events',

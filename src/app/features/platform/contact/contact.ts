@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import {
   LucideAngularModule,
   LucideIconData,
@@ -7,6 +8,9 @@ import {
   Phone,
   MapPin,
   Clock,
+  ArrowRight,
+  CalendarDays,
+  CheckCircle,
 } from 'lucide-angular';
 import { Button } from '../../../shared/components/button/button';
 
@@ -19,7 +23,7 @@ interface ContactDetail {
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [FormsModule, LucideAngularModule, Button],
+  imports: [FormsModule, RouterLink, LucideAngularModule, Button],
   templateUrl: './contact.html',
   styleUrl: './contact.css',
 })
@@ -31,11 +35,14 @@ export class Contact {
   readonly subject = signal('');
   readonly message = signal('');
 
+  readonly ArrowRight = ArrowRight;
+  readonly CalendarDays = CalendarDays;
+  readonly CheckCircle = CheckCircle;
+
   readonly details: ContactDetail[] = [
     { label: 'Email', value: 'support@eventflow.com', icon: Mail },
-    { label: 'Phone', value: '+91 98765 43210', icon: Phone },
+    { label: 'Phone', value: '+91 9048931894', icon: Phone },
     { label: 'Office', value: 'Calicut, Kerala, India', icon: MapPin },
-    { label: 'Hours', value: 'Mon – Fri, 9:00 – 18:00', icon: Clock },
   ];
 
   submit(): void {

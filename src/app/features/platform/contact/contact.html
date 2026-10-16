@@ -1,75 +1,117 @@
 <main class="bg-background">
-  <!-- Intro -->
-  <section class="border-b border-border bg-surface py-20 sm:py-24 lg:py-28">
-    <div class="container-app">
-      <div class="max-w-3xl">
-        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-          Contact
-        </span>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-border bg-surface">
+    <div class="container-app py-16 sm:py-20 lg:py-24">
+      <div class="grid gap-10 lg:grid-cols-[1fr_0.55fr] lg:items-end lg:gap-16">
+        <div class="max-w-3xl">
+          <div class="flex items-center gap-3">
+            <span class="h-px w-8 bg-primary"></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Contact our team
+            </span>
+          </div>
 
-        <h1
-          class="mt-5 text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-text-primary sm:text-5xl lg:text-6xl"
-        >
-          Let's talk about
-          <span class="text-primary"> your event.</span>
-        </h1>
+          <h1 class="mt-5 text-4xl font-bold leading-[1.08] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+            Good events start with
+            <span class="text-primary"> good conversations.</span>
+          </h1>
 
-        <p class="mt-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
-          Questions about the platform, a feature, or your upcoming event? Send us a message and the
-          team will get back to you.
-        </p>
+          <p class="mt-6 max-w-2xl text-sm leading-7 text-text-secondary sm:text-lg sm:leading-8">
+            Tell us what you're planning, ask us about EventFlow, or get help with your event
+            workflow. We're here to help you move forward.
+          </p>
+        </div>
+
+        <div class="border-l-2 border-primary pl-5 lg:mb-2">
+          <p class="text-sm font-semibold text-text-primary">
+            Have something in mind?
+          </p>
+          <p class="mt-2 text-sm leading-6 text-text-secondary">
+            Share a few details using the form below. The more context you provide, the easier
+            it is for us to understand your question.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Content -->
-  <section class="py-16 sm:py-20 lg:py-24">
-    <div class="container-app grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
-      <!-- Form -->
-      <div class="rounded-3xl border border-border bg-surface p-6 sm:p-10">
-        @if (sent()) {
-          <div class="rounded-2xl border border-border bg-primary-light px-6 py-5">
-            <p class="text-sm font-semibold text-primary">Message sent</p>
+  <!-- Contact Section -->
+  <section class="py-12 sm:py-16 lg:py-20">
+    <div class="container-app grid items-start gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-16">
+      <!-- Form Column -->
+      <div class="min-w-0">
+        <div class="mb-7">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            Send us a message
+          </p>
+          <h2 class="mt-3 text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+            How can we help?
+          </h2>
+          <p class="mt-3 text-sm leading-7 text-text-secondary">
+            Complete the form and give us a little context about your enquiry.
+          </p>
+        </div>
 
-            <p class="mt-1 text-sm text-text-secondary">
-              Thanks {{ name() || 'there' }}! We have received your message and will respond soon.
-            </p>
+        @if (sent()) {
+          <div class="mb-6 flex items-start gap-3 border border-primary/30 bg-primary-light p-4" role="status" aria-live="polite">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center border border-primary/20 bg-background text-primary">
+              <lucide-icon [img]="CheckCircle" [size]="19" />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-text-primary">
+                Message sent successfully
+              </p>
+              <p class="mt-1 text-sm leading-6 text-text-secondary">
+                Thanks {{ name() || 'there' }}! We have received your message and will respond soon.
+              </p>
+            </div>
           </div>
         }
 
-        <form class="grid gap-6 sm:grid-cols-2" (ngSubmit)="submit()">
-          <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-text-primary" for="contact-name">
-              Full name <span class="text-error">*</span>
-            </label>
-            <input
-              id="contact-name"
-              name="name"
-              type="text"
-              required
-              [(ngModel)]="name"
-              placeholder="Jane Doe"
-              class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
-            />
+        <form
+          class="space-y-5"
+          (ngSubmit)="submit()"
+        >
+          <div class="grid gap-5 sm:grid-cols-2">
+            <!-- Name -->
+            <div class="flex min-w-0 flex-col gap-2">
+              <label for="contact-name" class="text-sm font-medium text-text-primary">
+                Full name <span class="text-error">*</span>
+              </label>
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                required
+                [(ngModel)]="name"
+                placeholder="Enter your name"
+                class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="flex min-w-0 flex-col gap-2">
+              <label for="contact-email" class="text-sm font-medium text-text-primary">
+                Email address <span class="text-error">*</span>
+              </label>
+              <input
+                id="contact-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                [(ngModel)]="email"
+                placeholder="Enter your email"
+                class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
+              />
+            </div>
           </div>
 
+          <!-- Subject -->
           <div class="flex flex-col gap-2">
-            <label class="text-sm font-medium text-text-primary" for="contact-email">
-              Email <span class="text-error">*</span>
-            </label>
-            <input
-              id="contact-email"
-              name="email"
-              type="email"
-              required
-              [(ngModel)]="email"
-              placeholder="jane@example.com"
-              class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
-            />
-          </div>
-
-          <div class="flex flex-col gap-2 sm:col-span-2">
-            <label class="text-sm font-medium text-text-primary" for="contact-subject">
+            <label for="contact-subject" class="text-sm font-medium text-text-primary">
               Subject
             </label>
             <input
@@ -77,64 +119,97 @@
               name="subject"
               type="text"
               [(ngModel)]="subject"
-              placeholder="How can we help?"
-              class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
+              placeholder="What is your enquiry about?"
+              class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
             />
           </div>
 
-          <div class="flex flex-col gap-2 sm:col-span-2">
-            <label class="text-sm font-medium text-text-primary" for="contact-message">
+          <!-- Message -->
+          <div class="flex flex-col gap-2">
+            <label for="contact-message" class="text-sm font-medium text-text-primary">
               Message <span class="text-error">*</span>
             </label>
             <textarea
               id="contact-message"
               name="message"
               required
-              rows="5"
+              rows="6"
               [(ngModel)]="message"
-              placeholder="Tell us a little about your event..."
-              class="w-full resize-none rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
+              placeholder="Tell us about your question, event, or the support you need..."
+              class="w-full resize-y rounded-md border border-border bg-surface px-3.5 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
             ></textarea>
           </div>
 
-          <div class="sm:col-span-2">
+          <!-- Submit -->
+          <div class="border-t border-border pt-5">
             <app-button label="Send Message" size="lg" />
+            <p class="mt-3 text-xs leading-5 text-text-muted">
+              Fields marked with * are required.
+            </p>
           </div>
         </form>
       </div>
 
-      <!-- Details -->
-      <div>
-        <h2 class="text-xl font-semibold text-text-primary">Reach us directly</h2>
+      <!-- Information Column -->
+      <aside class="min-w-0 lg:sticky lg:top-24">
+        <div class="border border-border bg-surface">
+          <div class="border-b border-border p-5 sm:p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+              Contact information
+            </p>
+            <h2 class="mt-3 text-xl font-bold tracking-tight text-text-primary sm:text-2xl">
+              Reach us directly
+            </h2>
+            <p class="mt-3 text-sm leading-7 text-text-secondary">
+              Find the contact details you need for your enquiry.
+            </p>
+          </div>
 
-        <div class="mt-6 space-y-5">
-          @for (detail of details; track detail.label) {
-            <div class="flex items-start gap-4">
-              <span
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary"
-              >
-                <lucide-icon [img]="detail.icon" [size]="20" [strokeWidth]="1.8"></lucide-icon>
-              </span>
+          <div class="divide-y divide-border px-5 sm:px-6">
+            @for (detail of details; track detail.label) {
+              <div class="flex items-start gap-4 py-5">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-background text-primary">
+                  <lucide-icon [img]="detail.icon" [size]="19" [strokeWidth]="1.8" />
+                </div>
 
-              <div>
-                <p class="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
-                  {{ detail.label }}
-                </p>
-
-                <p class="mt-1 text-sm font-medium text-text-primary">{{ detail.value }}</p>
+                <div class="min-w-0 flex-1 pt-0.5">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                    {{ detail.label }}
+                  </p>
+                  <p class="mt-1 wrap-break-word text-sm font-medium leading-6 text-text-primary">
+                    {{ detail.value }}
+                  </p>
+                </div>
               </div>
+            }
+          </div>
+        </div>
+
+        <!-- Event CTA -->
+        <div class="mt-5 border border-border bg-surface p-5 sm:p-6">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center bg-primary text-white">
+              <lucide-icon [img]="CalendarDays" [size]="19" />
             </div>
-          }
-        </div>
+            <div>
+              <p class="text-sm font-semibold text-text-primary">
+                Planning an event?
+              </p>
+              <p class="mt-1 text-xs text-text-secondary">
+                Start building your event workspace.
+              </p>
+            </div>
+          </div>
 
-        <div class="mt-10 rounded-2xl border border-border bg-surface-soft p-6">
-          <p class="text-sm font-semibold text-text-primary">Prefer exploring first?</p>
-
-          <p class="mt-2 text-sm leading-6 text-text-secondary">
-            Follow the step-by-step setup guide to see how quickly an event comes together.
-          </p>
+          <a
+            routerLink="/create-event"
+            class="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+          >
+            Create an Event
+            <lucide-icon class="ml-2" [img]="ArrowRight" [size]="16" />
+          </a>
         </div>
-      </div>
+      </aside>
     </div>
   </section>
 </main>

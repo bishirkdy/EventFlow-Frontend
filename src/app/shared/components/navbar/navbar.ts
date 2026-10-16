@@ -31,10 +31,9 @@ export class Navbar {
   });
 
   readonly navLinks: { label: string; url: string }[] = [
+    { label: 'Home', url: '' },
     { label: 'Events', url: '/events' },
     { label: 'About', url: '/about' },
-    { label: 'Features', url: '/features' },
-    { label: 'Event Setup', url: '/event-setup' },
     { label: 'Contact', url: '/contact' },
   ];
 

@@ -1,116 +1,255 @@
-<main class="bg-background">
-  <!-- Intro -->
-  <section class="border-b border-border bg-surface py-20 sm:py-24 lg:py-28">
-    <div class="container-app">
-      <div class="max-w-3xl">
-        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-          About this website
-        </span>
+<main class="overflow-hidden bg-background">
+  <!-- Hero -->
+  <section class="border-b border-border bg-surface">
+    <div class="container-app grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="h-px w-8 bg-primary"></span>
+          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            About EventFlow
+          </span>
+        </div>
 
-        <h1
-          class="mt-5 text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-text-primary sm:text-5xl lg:text-6xl"
-        >
-          The story behind
-          <span class="text-primary"> EventFlow.</span>
+        <h1 class="mt-6 max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+          Better events begin with
+          <span class="text-primary"> better organization.</span>
         </h1>
 
-        <p class="mt-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
-          EventFlow is a modern event platform that brings planning, websites, registration,
-          attendance and communication together in one connected place — so organizers can focus on
-          the event, not the busywork.
+        <p class="mt-6 max-w-lg text-base leading-8 text-text-secondary">
+          EventFlow brings planning, event websites, registrations, attendance, photos, and
+          certificates into one connected workspace.
         </p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a
+            routerLink="/create-event"
+            class="inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+          >
+            Create an Event
+            <lucide-icon class="ml-2" [img]="ArrowRight" [size]="16" />
+          </a>
+
+          <a
+            routerLink="/events"
+            class="inline-flex min-h-11 items-center justify-center rounded-md border border-border px-5 py-3 text-sm font-semibold text-text-primary transition hover:bg-surface-soft"
+          >
+            Explore Events
+          </a>
+        </div>
+      </div>
+
+      <div class="relative min-w-0">
+        <img
+          src="/images/journey/img1.png"
+          alt="Planning an event with EventFlow"
+          class="aspect-5/4 w-full border border-border object-cover"
+        />
+
+        <div class="absolute bottom-0 left-0 max-w-[85%] border border-border bg-background p-4 sm:p-5">
+          <p class="text-xs font-semibold uppercase tracking-widest text-primary">
+            One connected workspace
+          </p>
+          <p class="mt-2 text-sm font-medium leading-6 text-text-primary sm:text-base">
+            From the first idea to the final memory.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Story -->
-  <section class="py-20 sm:py-24 lg:py-28">
-    <div class="container-app grid gap-12 lg:grid-cols-2 lg:gap-20">
+  <!-- Our Story -->
+  <section class="py-16 sm:py-20 lg:py-28">
+    <div class="container-app grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
       <div>
-        <h2 class="text-3xl font-bold tracking-[-0.03em] text-text-primary sm:text-4xl">
-          Why EventFlow exists
+        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          Our purpose
+        </span>
+        <h2 class="mt-4 max-w-md text-3xl font-bold leading-tight tracking-tight text-text-primary sm:text-4xl">
+          Less time managing tools. More time creating experiences.
         </h2>
       </div>
 
-      <div class="space-y-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+      <div class="space-y-5 text-sm leading-7 text-text-secondary sm:text-base sm:leading-8">
         <p>
-          Running an event usually means juggling a dozen disconnected tools — a website builder
-          here, a spreadsheet there, a separate check-in app and a photo drive somewhere else.
-          EventFlow was created to close those gaps.
+          Organizing an event can involve websites, spreadsheets, registration forms, check-in
+          systems, and separate photo collections. Keeping everything coordinated shouldn't be
+          another event in itself.
         </p>
         <p>
-          Instead of stitching tools together, organizers get a single workspace where an event is
-          created, published, filled with participants, checked in and remembered through photos,
-          feedback and certificates.
+          EventFlow connects these workflows through an event-focused workspace. Organizers can
+          publish event pages, manage participants, coordinate attendance, share photos, collect
+          feedback, and issue certificates.
         </p>
         <p>
-          This website is the front door to that platform. Explore the features, follow the setup
-          guide, and reach out whenever you need a hand.
+          The idea is simple: give organizers a clearer way to manage events and give participants
+          a more connected experience from registration to completion.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Values -->
-  <section class="border-y border-border bg-surface py-20 sm:py-24 lg:py-28">
+  <!-- Event Journey -->
+  <section class="border-y border-border bg-surface py-16 sm:py-20 lg:py-24">
+    <div class="container-app">
+      <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div class="max-w-2xl">
+          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            The workflow
+          </span>
+          <h2 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+            Every stage. One platform.
+          </h2>
+          <p class="mt-4 max-w-xl text-sm leading-7 text-text-secondary sm:text-base">
+            A connected workflow helps keep event planning, participation, and follow-up organized.
+          </p>
+        </div>
+
+        <span class="text-sm text-text-secondary">01 — 05 / Event lifecycle</span>
+      </div>
+
+      <!-- Featured image -->
+      <article class="mt-10 grid border border-border bg-background md:grid-cols-2">
+        <div class="overflow-hidden bg-surface-soft">
+          <img
+            src="/images/journey/img2.png"
+            alt="Creating and publishing an event"
+            class="aspect-4/3 h-full w-full object-cover transition-transform duration-500 hover:scale-[1.02] md:aspect-auto"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="flex flex-col justify-center p-6 sm:p-9 lg:p-12">
+          <span class="text-xs font-semibold uppercase tracking-widest text-primary">
+            01 / Publish
+          </span>
+          <h3 class="mt-4 text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+            Give every event its own space.
+          </h3>
+          <p class="mt-4 text-sm leading-7 text-text-secondary sm:text-base">
+            Present event details, schedules, and registration information through a dedicated
+            event website.
+          </p>
+          <a
+            routerLink="/events"
+            class="mt-6 inline-flex w-fit items-center text-sm font-semibold text-primary hover:text-primary-dark"
+          >
+            Discover events
+            <lucide-icon class="ml-2" [img]="ArrowRight" [size]="16" />
+          </a>
+        </div>
+      </article>
+
+      <!-- Supporting image grid -->
+      <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="border border-border bg-background">
+          <div class="overflow-hidden bg-surface-soft">
+            <img
+              src="/images/journey/img1.png"
+              alt="Planning an event"
+              class="aspect-5/3 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-5">
+            <span class="text-xs font-semibold uppercase tracking-widest text-primary">02 / Plan</span>
+            <h3 class="mt-3 text-lg font-semibold text-text-primary">Organize the details</h3>
+            <p class="mt-2 text-sm leading-6 text-text-secondary">
+              Bring event information, schedules, and venues into one workspace.
+            </p>
+          </div>
+        </article>
+
+        <article class="border border-border bg-background">
+          <div class="overflow-hidden bg-surface-soft">
+            <img
+              src="/images/journey/img3.png"
+              alt="Managing registrations"
+              class="aspect-5/3 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-5">
+            <span class="text-xs font-semibold uppercase tracking-widest text-primary">03 / Connect</span>
+            <h3 class="mt-3 text-lg font-semibold text-text-primary">Manage participants</h3>
+            <p class="mt-2 text-sm leading-6 text-text-secondary">
+              Keep registration information and participant workflows organized.
+            </p>
+          </div>
+        </article>
+
+        <article class="border border-border bg-background sm:col-span-2 lg:col-span-1">
+          <div class="overflow-hidden bg-surface-soft">
+            <img
+              src="/images/journey/img4.png"
+              alt="Event operations and attendance"
+              class="aspect-5/3 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-5">
+            <span class="text-xs font-semibold uppercase tracking-widest text-primary">04 / Deliver</span>
+            <h3 class="mt-3 text-lg font-semibold text-text-primary">Run the event</h3>
+            <p class="mt-2 text-sm leading-6 text-text-secondary">
+              Coordinate attendance and support event-day operations.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <!-- Memories -->
+      <article class="mt-5 grid border border-border bg-background md:grid-cols-[1.15fr_0.85fr]">
+        <div class="overflow-hidden bg-surface-soft">
+          <img
+            src="/images/journey/img5.png"
+            alt="Preserving event memories"
+            class="aspect-5/3 h-full w-full object-cover transition-transform duration-500 hover:scale-[1.02] md:aspect-auto"
+            loading="lazy"
+          />
+        </div>
+        <div class="flex flex-col justify-center p-6 sm:p-9">
+          <span class="text-xs font-semibold uppercase tracking-widest text-primary">05 / Remember</span>
+          <h3 class="mt-3 text-2xl font-bold tracking-tight text-text-primary">
+            Make the experience last.
+          </h3>
+          <p class="mt-3 text-sm leading-7 text-text-secondary">
+            Keep photos, feedback, and certificates connected to the event after the day is over.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="py-16 sm:py-20 lg:py-24">
     <div class="container-app">
       <div class="max-w-2xl">
-        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-          What we care about
+        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          Our principles
         </span>
-
-        <h2 class="mt-5 text-3xl font-bold tracking-[-0.03em] text-text-primary sm:text-4xl">
-          Principles that shape the platform
+        <h2 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+          Designed around real event needs.
         </h2>
+        <p class="mt-4 text-sm leading-7 text-text-secondary sm:text-base">
+          Practical tools, connected workflows, and thoughtful experiences guide the platform.
+        </p>
       </div>
 
-      <div class="mt-14 grid gap-8 sm:grid-cols-2 lg:gap-10">
+      <div class="mt-9 grid gap-5 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
         @for (value of values; track value.title) {
-          <div class="flex gap-5">
-            <span
-              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary"
-            >
-              <lucide-icon [img]="value.icon" [size]="22" [strokeWidth]="1.8"></lucide-icon>
-            </span>
-
-            <div>
-              <h3 class="text-lg font-semibold text-text-primary">{{ value.title }}</h3>
-
-              <p class="mt-2 text-sm leading-6 text-text-secondary sm:text-base sm:leading-7">
-                {{ value.description }}
-              </p>
+          <article class="border border-border bg-surface p-5 sm:p-6">
+            <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary-light text-primary">
+              <lucide-icon [img]="value.icon" [size]="21" [strokeWidth]="1.8" />
             </div>
-          </div>
+            <h3 class="mt-5 text-base font-semibold text-text-primary sm:text-lg">
+              {{ value.title }}
+            </h3>
+            <p class="mt-2 text-sm leading-6 text-text-secondary">
+              {{ value.description }}
+            </p>
+          </article>
         }
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="py-20 sm:py-24 lg:py-28">
-    <div class="container-app">
-      <div
-        class="rounded-3xl border border-border bg-surface px-8 py-14 text-center sm:px-16 sm:py-20"
-      >
-        <h2 class="text-3xl font-bold tracking-[-0.03em] text-text-primary sm:text-4xl">
-          Ready to create your first event?
-        </h2>
-
-        <p class="mx-auto mt-5 max-w-xl text-base leading-7 text-text-secondary">
-          Start building a professional event experience in minutes. No setup headaches, no
-          scattered tools.
-        </p>
-
-        <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-          <a routerLink="/create-event">
-            <app-button label="Create an Event" size="lg" />
-          </a>
-
-          <a routerLink="/features">
-            <app-button label="Explore Features" variant="secondary" size="lg" />
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>

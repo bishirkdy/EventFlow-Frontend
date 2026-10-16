@@ -7,8 +7,8 @@ import {
   Heart,
   ShieldCheck,
   Sparkles,
+  ArrowRight,
 } from 'lucide-angular';
-import { Button } from '../../../shared/components/button/button';
 
 interface AboutValue {
   title: string;
@@ -19,11 +19,13 @@ interface AboutValue {
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [RouterLink, LucideAngularModule, Button],
+  imports: [RouterLink, LucideAngularModule],
   templateUrl: './about.html',
   styleUrl: './about.css',
 })
 export class About {
+  readonly ArrowRight = ArrowRight;
+
   readonly values: AboutValue[] = [
     {
       title: 'Built for organizers',
