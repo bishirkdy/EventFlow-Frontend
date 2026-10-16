@@ -4,10 +4,11 @@ import { map } from 'rxjs';
 import { EventService } from '../../../../core/services/event/event.service';
 import { Event as EventModel } from '../../../../core/models/event';
 import { createRawAsyncState } from 'core/state';
+import { AsyncState } from '../../../../shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-upcoming-events',
-  imports: [RouterLink],
+  imports: [RouterLink, AsyncState],
   templateUrl: './upcoming-events.html',
   styleUrl: './upcoming-events.css',
 })
@@ -27,6 +28,10 @@ export class UpcomingEvents implements OnInit {
   readonly error = this.eventsState.error;
 
   ngOnInit(): void {
+    this.eventsState.load();
+  }
+
+  retry(): void {
     this.eventsState.load();
   }
 

@@ -6,10 +6,12 @@ import { VenueModel } from '../../../../core/models/venue';
 import { VenueService } from '../../../../core/services/venue/venue.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
+import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 
 @Component({
   selector: 'app-venue',
   standalone: true,
+  imports: [Skeleton],
   templateUrl: './venues.html',
   styleUrl: './venues.css',
 })

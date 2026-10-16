@@ -6,10 +6,12 @@ import { EventFeatureService } from '../../../../core/services/event-feature/eve
 import { EventFeatureModel } from '../../../../core/models/event-feature';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '../../../../shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-features',
   standalone: true,
+  imports: [AsyncState],
   templateUrl: './features.html',
   styleUrl: './features.css',
 })
@@ -73,6 +75,17 @@ export class Features implements OnInit {
 
     if (!eventId) {
       this.error.set('Event ID not found.');
+      return;
+    }
+
+    this.loadAction.run(eventId);
+  }
+
+  retry(): void {
+    const eventId = this.eventState.eventId();
+
+    if (!eventId) {
+      this.toastr.error('Event ID not found.');
       return;
     }
 

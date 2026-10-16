@@ -25,30 +25,20 @@
     </button>
   </div>
 
-  <!-- Loading -->
-  @if (loading()) {
-    <div class="py-10 text-sm text-text-secondary">
-      Loading features...
-    </div>
-  }
-
-  <!-- Error -->
-  @if (!loading() && error()) {
-    <div class="mt-6 border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-      {{ error() }}
-    </div>
-  }
-
-  <!-- Features -->
-  @if (!loading() && !error()) {
-    @if (features().length === 0) {
-      <div class="py-10 text-sm text-text-secondary">
-        No features found.
-      </div>
-    }
-
-    @if (features().length > 0) {
-      <div class="mt-6 divide-y divide-border border-y border-border">
+  <!-- Loading / Error / Empty / Content -->
+  <app-async-state
+    class="mt-6 block"
+    [loading]="loading()"
+    [error]="error()"
+    [empty]="features().length === 0"
+    skeleton="list"
+    [skeletonCount]="4"
+    emptyTitle="No features found"
+    emptyMessage="There are no configurable features for this event."
+    (retry)="retry()"
+  >
+    <ng-template>
+      <div class="divide-y divide-border border-y border-border">
         @for (feature of features(); track feature.id) {
           <div class="flex items-center justify-between gap-6 py-5">
             <!-- Feature information -->
@@ -84,6 +74,6 @@
           </div>
         }
       </div>
-    }
-  }
+    </ng-template>
+  </app-async-state>
 </div>

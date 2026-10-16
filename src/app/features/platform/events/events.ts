@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event/event.service';
 import { Event } from '../../../core/models/event';
 import { createAsyncState } from 'core/state';
+import { AsyncState } from '../../../shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, AsyncState],
   templateUrl: './events.html',
   styleUrl: './events.css',
 })

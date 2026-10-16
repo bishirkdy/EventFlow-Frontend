@@ -11,10 +11,11 @@ import { Event } from '../../../core/models/event';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
 import { createAsyncAction } from 'core/state';
+import { Skeleton } from '../../../shared/components/skeleton/skeleton';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent],
+  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent, Skeleton],
   templateUrl: './my-events.html',
   styleUrl: './my-events.css',
 })

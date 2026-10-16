@@ -20,9 +20,7 @@
 
     <!-- Loading -->
     @if (loading()) {
-      <div class="py-16 text-center">
-        <p class="text-sm text-text-secondary">Loading venues...</p>
-      </div>
+      <app-skeleton variant="list" [count]="4" />
     }
 
     <!-- Content -->
