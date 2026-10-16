@@ -80,6 +80,7 @@ export class FeedbackComponent implements OnInit {
           this.notify.error(response.message || 'Unable to submit feedback.');
         }
       },
+      toastErrors: true,
       errorFallback: 'Unable to submit feedback.',
     },
   );

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { FeedbackComponent } from './feedback';
 import { NotificationService } from '../../../core/services/ui/notification.service';
@@ -35,16 +35,6 @@ describe('FeedbackComponent', () => {
         provideHttpClientTesting(),
         provideRouter([]),
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => 'event-1',
-              },
-            },
-          },
-        },
-        {
           provide: NotificationService,
           useValue: notify,
         },
@@ -53,6 +43,7 @@ describe('FeedbackComponent', () => {
 
     httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(FeedbackComponent);
+    fixture.componentRef.setInput('eventId', 'event-1');
     component = fixture.componentInstance;
     fixture.detectChanges();
     flushTargets();
