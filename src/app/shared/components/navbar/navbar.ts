@@ -1,12 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { LucideAngularModule, Menu, X } from 'lucide-angular';
 import { UserMenu, UserMenuLink } from '../user-menu/user-menu';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, UserMenu],
+  imports: [RouterLink, RouterLinkActive, UserMenu, LucideAngularModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
@@ -18,6 +19,9 @@ export class Navbar {
 
   // Only platform administrators see the console link.
   readonly isPlatformAdmin = this.authService.isPlatformAdmin;
+
+  readonly menuIcon = Menu;
+  readonly closeIcon = X;
 
   private readonly logoutAction = createAsyncAction(() => this.authService.logout(), {
     onSettled: () => {
@@ -34,14 +38,16 @@ export class Navbar {
     { label: 'Contact', url: '/contact' },
   ];
 
+  // Platform admins only get the console link; regular users get their pages.
   readonly userLinks = computed<UserMenuLink[]>(() => {
-    const links: UserMenuLink[] = [{ label: 'My Certificates', url: '/my-certificates' }];
-
     if (this.isPlatformAdmin()) {
-      links.unshift({ label: 'Admin Console', url: '/admin' });
+      return [{ label: 'Admin Console', url: '/admin' }];
     }
 
-    return links;
+    return [
+      { label: 'My Events', url: '/my-events' },
+      { label: 'My Certificates', url: '/my-certificates' },
+    ];
   });
 
   toggleMenu(): void {

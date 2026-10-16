@@ -77,7 +77,7 @@ describe('UserMenu', () => {
     expect(signInButton()).toBeNull();
   });
 
-  it('lists My Events and the extra event links in the menu', async () => {
+  it('lists the links passed in from the navbar', async () => {
     await setup();
     authService.currentUser.set({
       id: 'u-1',
@@ -88,6 +88,7 @@ describe('UserMenu', () => {
     });
     component = fixture.componentInstance;
     fixture.componentRef.setInput('links', [
+      { label: 'My Events', url: '/my-events' },
       { label: 'Certificate', url: '/events/evt-1/certificates' },
     ]);
     fixture.detectChanges();

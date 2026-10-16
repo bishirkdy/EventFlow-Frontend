@@ -21,14 +21,6 @@
         </div>
 
         <div class="py-1">
-          <a
-            routerLink="/my-events"
-            (click)="isOpen.set(false)"
-            class="block px-4 py-2.5 text-sm text-text-primary transition hover:bg-surface-soft hover:text-primary"
-          >
-            My Events
-          </a>
-
           @for (link of links(); track link.url) {
             <a
               [routerLink]="link.url"
