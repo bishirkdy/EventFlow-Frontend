@@ -46,7 +46,9 @@ export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn =>
       map((response) => {
         const names = (response.data ?? []).map((x) => x.roleName.toLowerCase());
 
-        const allowed = names.includes(requiredRole.toLowerCase());
+        // The owner is a super-role and can reach every event workspace.
+        const allowed =
+          names.includes(requiredRole.toLowerCase()) || names.includes('owner');
         if (allowed) return true;
         notification.error(`You don't have ${requiredRole} access for this event.`);
         return router.createUrlTree(['/']);
