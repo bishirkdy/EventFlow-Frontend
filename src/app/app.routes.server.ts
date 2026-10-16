@@ -128,6 +128,16 @@ export const serverRoutes: ServerRoute[] = [
   },
 
   {
+    path: 'organizer-invitation/**',
+    renderMode: RenderMode.Client,
+  },
+
+  {
+    path: 'attendance-staff-invitation/**',
+    renderMode: RenderMode.Client,
+  },
+
+  {
     path: '**',
     renderMode: RenderMode.Server,
   },

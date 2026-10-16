@@ -16,6 +16,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'organizer-invitation/:token',
+    loadComponent: () =>
+      import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
+        (m) => m.AcceptInvitation,
+      ),
+  },
+  {
+    path: 'attendance-staff-invitation/:token',
+    loadComponent: () =>
+      import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
+        (m) => m.AcceptInvitation,
+      ),
+  },
+  {
     path: 'photographer',
     canActivate: [authGuard],
     loadChildren: () =>

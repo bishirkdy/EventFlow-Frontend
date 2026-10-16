@@ -9,10 +9,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '@/core/services/auth/auth.service';
 import { NotificationService } from '@/core/services/ui/notification.service';
-import { PhotographerInvitationService } from '@/core/services/photographer/photographer-invitation.service';
+import { InvitationService } from '@/core/services/invitation/invitation.service';
 
 import { UserProfile } from '@/core/models/auth';
-import { InvitationData } from '@/core/models/photographer';
+import { InvitationData, InvitationType } from '@/core/models/invitation';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
 
@@ -29,9 +29,7 @@ export class AcceptInvitation implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly notification = inject(NotificationService);
-  private readonly invitationService = inject(
-    PhotographerInvitationService,
-  );
+  private readonly invitationService = inject(InvitationService);
 
   readonly token = signal('');
   readonly invitation = signal<InvitationData | null>(null);
@@ -238,8 +236,10 @@ export class AcceptInvitation implements OnInit {
       return;
     }
 
-    const returnUrl =
-      `/photographer/${invitation.eventId}/photos`;
+    const returnUrl = this.dashboardUrl(
+      invitation.eventId,
+      invitation.type,
+    );
 
     const user = this.authUser();
 
@@ -299,7 +299,7 @@ export class AcceptInvitation implements OnInit {
 
     void this.router.navigate(['/login'], {
       queryParams: {
-        returnUrl: `/photographer/${invitation.eventId}/photos`,
+        returnUrl: this.dashboardUrl(invitation.eventId, invitation.type),
         email: invitation.email,
       },
     });
@@ -331,14 +331,12 @@ export class AcceptInvitation implements OnInit {
   }
 
   navigateToDashboard(): void {
-    const eventId = this.invitation()?.eventId;
+    const invitation = this.invitation();
 
-    if (eventId) {
-      void this.router.navigate([
-        '/photographer',
-        eventId,
-        'photos',
-      ]);
+    if (invitation?.eventId) {
+      void this.router.navigateByUrl(
+        this.dashboardUrl(invitation.eventId, invitation.type),
+      );
       return;
     }
 
@@ -347,5 +345,19 @@ export class AcceptInvitation implements OnInit {
 
   goHome(): void {
     void this.router.navigate(['/']);
+  }
+
+  private dashboardUrl(eventId: string, type: InvitationType): string {
+    switch (type) {
+      case InvitationType.Organizer:
+        return `/organizer/${eventId}/overview`;
+
+      case InvitationType.AttendanceStaff:
+        return `/attendance-staff/${eventId}`;
+
+      case InvitationType.Photographer:
+      default:
+        return `/photographer/${eventId}/photos`;
+    }
   }
 }

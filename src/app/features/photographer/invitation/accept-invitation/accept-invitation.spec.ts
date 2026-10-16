@@ -6,6 +6,7 @@ import { provideRouter } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
+import { InvitationType } from '../../../../core/models/invitation';
 
 describe('AcceptInvitation', () => {
   let component: AcceptInvitation;
@@ -17,6 +18,7 @@ describe('AcceptInvitation', () => {
     eventName: 'Test Event',
     email: 'test@example.com',
     roleName: 'Photographer',
+    type: InvitationType.Photographer,
     expiresAt: new Date().toISOString(),
     status: 0
   };
@@ -74,11 +76,11 @@ describe('AcceptInvitation', () => {
 
   it('goes to the event photos page after the invitation is accepted', () => {
     const router = TestBed.inject(Router);
-    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
     component.invitation.set({ ...mockInvitation, status: 1 });
     component.navigateToDashboard();
 
-    expect(navigate).toHaveBeenCalledWith(['/photographer', 'event-1', 'photos']);
+    expect(navigateByUrl).toHaveBeenCalledWith('/photographer/event-1/photos');
   });
 });
