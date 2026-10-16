@@ -16,42 +16,42 @@
     <ng-template>
       @if (data(); as stats) {
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="rounded-2xl border border-border bg-surface p-5">
+          <div class="rounded-none border border-border bg-surface p-5">
             <p class="text-sm font-medium text-text-secondary">Total events</p>
             <p class="mt-2 text-3xl font-semibold text-text-primary">
               {{ stats.events.totalEvents }}
             </p>
           </div>
 
-          <div class="rounded-2xl border border-border bg-surface p-5">
+          <div class="rounded-none border border-border bg-surface p-5">
             <p class="text-sm font-medium text-text-secondary">Published events</p>
             <p class="mt-2 text-3xl font-semibold text-text-primary">
               {{ stats.events.publishedEvents }}
             </p>
           </div>
 
-          <div class="rounded-2xl border border-border bg-surface p-5">
+          <div class="rounded-none border border-border bg-surface p-5">
             <p class="text-sm font-medium text-text-secondary">Draft events</p>
             <p class="mt-2 text-3xl font-semibold text-text-primary">
               {{ stats.events.draftEvents }}
             </p>
           </div>
 
-          <div class="rounded-2xl border border-border bg-surface p-5">
+          <div class="rounded-none border border-border bg-surface p-5">
             <p class="text-sm font-medium text-text-secondary">Total users</p>
             <p class="mt-2 text-3xl font-semibold text-text-primary">
               {{ stats.users.totalUsers }}
             </p>
           </div>
 
-          <div class="rounded-2xl border border-border bg-surface p-5">
+          <div class="rounded-none border border-border bg-surface p-5">
             <p class="text-sm font-medium text-text-secondary">Active users</p>
             <p class="mt-2 text-3xl font-semibold text-text-primary">
               {{ stats.users.activeUsers }}
             </p>
           </div>
 
-          <div class="rounded-2xl border border-border bg-surface p-5">
+          <div class="rounded-none border border-border bg-surface p-5">
             <p class="text-sm font-medium text-text-secondary">Platform admins</p>
             <p class="mt-2 text-3xl font-semibold text-text-primary">
               {{ stats.users.platformAdmins }}
@@ -59,7 +59,7 @@
           </div>
         </div>
 
-        <div class="mt-8 rounded-2xl border border-border bg-surface">
+        <div class="mt-8 rounded-none border border-border bg-surface">
           <div class="flex items-center justify-between border-b border-border px-5 py-4">
             <h2 class="text-sm font-semibold text-text-primary">Recent events</h2>
             <a

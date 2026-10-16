@@ -11,12 +11,12 @@
       #searchInput
       type="search"
       placeholder="Search by name"
-      class="h-10 w-full rounded-xl border border-border bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-primary sm:max-w-xs"
+      class="h-10 w-full rounded-none border border-border bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-primary sm:max-w-xs"
       (keyup.enter)="applySearch(searchInput.value)"
     />
 
     <select
-      class="h-10 w-full rounded-xl border border-border bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-primary sm:w-48"
+      class="h-10 w-full rounded-none border border-border bg-surface px-3 text-sm text-text-primary outline-none transition focus:border-primary sm:w-48"
       [value]="status()"
       (change)="applyStatus($any($event.target).value)"
     >
@@ -28,7 +28,7 @@
 
     <button
       type="button"
-      class="h-10 cursor-pointer rounded-xl bg-primary px-4 text-sm font-medium text-white transition hover:bg-primary-dark"
+      class="h-10 cursor-pointer rounded-none bg-primary px-4 text-sm font-medium text-white transition hover:bg-primary-dark"
       (click)="applySearch(searchInput.value)"
     >
       Search
@@ -46,7 +46,7 @@
     (retry)="reload()"
   >
     <ng-template>
-      <div class="overflow-hidden rounded-2xl border border-border bg-surface">
+      <div class="overflow-hidden rounded-none border border-border bg-surface">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-border text-sm">
             <thead class="bg-background">
@@ -95,7 +95,7 @@
           <div class="flex items-center gap-2">
             <button
               type="button"
-              class="h-9 cursor-pointer rounded-lg border border-border px-3 text-sm font-medium text-text-secondary transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
+              class="h-9 cursor-pointer rounded-none border border-border px-3 text-sm font-medium text-text-secondary transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
               [disabled]="page() <= 1"
               (click)="previousPage()"
             >
@@ -104,7 +104,7 @@
 
             <button
               type="button"
-              class="h-9 cursor-pointer rounded-lg border border-border px-3 text-sm font-medium text-text-secondary transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
+              class="h-9 cursor-pointer rounded-none border border-border px-3 text-sm font-medium text-text-secondary transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
               [disabled]="page() >= totalPages()"
               (click)="nextPage()"
             >

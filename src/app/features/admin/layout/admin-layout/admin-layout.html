@@ -6,7 +6,7 @@
         <!-- Mobile menu -->
         <button
           type="button"
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary transition hover:bg-background hover:text-text-primary lg:hidden"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-none text-text-secondary transition hover:bg-background hover:text-text-primary lg:hidden"
           (click)="toggleMobileMenu()"
           aria-label="Toggle navigation"
         >
@@ -27,7 +27,7 @@
 
       <a
         routerLink="/"
-        class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+        class="inline-flex items-center gap-2 rounded-none px-3 py-2 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
       >
         <lucide-icon [img]="homeIcon" [size]="18" [strokeWidth]="1.8"></lucide-icon>
         <span class="hidden sm:inline">Back to site</span>
@@ -56,7 +56,7 @@
 
         <button
           type="button"
-          class="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition hover:bg-background hover:text-text-primary"
+          class="flex h-9 w-9 items-center justify-center rounded-none text-text-secondary transition hover:bg-background hover:text-text-primary"
           (click)="closeMobileMenu()"
           aria-label="Close navigation"
         >
@@ -70,7 +70,7 @@
             <a
               [routerLink]="[item.route]"
               routerLinkActive="bg-secondary-light text-secondary"
-              class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+              class="flex items-center gap-3 rounded-none px-3 py-2.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
               (click)="closeMobileMenu()"
             >
               <lucide-icon
