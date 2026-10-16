@@ -1,0 +1,93 @@
+<section class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+  <header class="mb-6">
+    <h1 class="text-xl font-semibold text-text-primary">Platform overview</h1>
+    <p class="mt-1 text-sm text-text-secondary">
+      Read-only metrics across every event and user on the platform.
+    </p>
+  </header>
+
+  <app-async-state
+    [loading]="loading()"
+    [error]="error()"
+    skeleton="cards"
+    [skeletonCount]="6"
+    (retry)="reload()"
+  >
+    <ng-template>
+      @if (data(); as stats) {
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-2xl border border-border bg-surface p-5">
+            <p class="text-sm font-medium text-text-secondary">Total events</p>
+            <p class="mt-2 text-3xl font-semibold text-text-primary">
+              {{ stats.events.totalEvents }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-border bg-surface p-5">
+            <p class="text-sm font-medium text-text-secondary">Published events</p>
+            <p class="mt-2 text-3xl font-semibold text-text-primary">
+              {{ stats.events.publishedEvents }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-border bg-surface p-5">
+            <p class="text-sm font-medium text-text-secondary">Draft events</p>
+            <p class="mt-2 text-3xl font-semibold text-text-primary">
+              {{ stats.events.draftEvents }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-border bg-surface p-5">
+            <p class="text-sm font-medium text-text-secondary">Total users</p>
+            <p class="mt-2 text-3xl font-semibold text-text-primary">
+              {{ stats.users.totalUsers }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-border bg-surface p-5">
+            <p class="text-sm font-medium text-text-secondary">Active users</p>
+            <p class="mt-2 text-3xl font-semibold text-text-primary">
+              {{ stats.users.activeUsers }}
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-border bg-surface p-5">
+            <p class="text-sm font-medium text-text-secondary">Platform admins</p>
+            <p class="mt-2 text-3xl font-semibold text-text-primary">
+              {{ stats.users.platformAdmins }}
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-2xl border border-border bg-surface">
+          <div class="flex items-center justify-between border-b border-border px-5 py-4">
+            <h2 class="text-sm font-semibold text-text-primary">Recent events</h2>
+            <a
+              routerLink="/admin/events"
+              class="text-sm font-medium text-primary transition hover:text-primary-dark"
+            >
+              View all
+            </a>
+          </div>
+
+          <ul class="divide-y divide-border">
+            @for (event of stats.recentEvents; track event.id) {
+              <li class="flex items-center justify-between gap-4 px-5 py-3">
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-medium text-text-primary">{{ event.name }}</p>
+                  <p class="truncate text-xs text-text-muted">{{ event.eventType }}</p>
+                </div>
+
+                <span class="shrink-0 text-xs font-medium text-text-secondary">
+                  {{ event.status }}
+                </span>
+              </li>
+            } @empty {
+              <li class="px-5 py-6 text-sm text-text-muted">No events yet.</li>
+            }
+          </ul>
+        </div>
+      }
+    </ng-template>
+  </app-async-state>
+</section>

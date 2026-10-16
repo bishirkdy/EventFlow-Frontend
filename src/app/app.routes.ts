@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { PublicLayout } from './shared/layouts/public-layout/public-layout';
 import { authGuard } from './core/guards/auth/auth-guard';
 import { eventRoleGuard } from './core/guards/event-role/event-role.guard';
+import { platformAdminGuard } from './core/guards/platform-admin/platform-admin.guard';
 import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
 import { AttendanceStaffLayout } from './features/attendance-staff/layout/attendance-staff-layout';
 
@@ -164,6 +165,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () =>
       import('./features/organizer/organizer.routes').then((m) => m.organizerRoutes),
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard, platformAdminGuard],
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
   },
   {
     path: 'owner/:eventId',
