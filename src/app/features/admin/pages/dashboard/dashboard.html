@@ -72,15 +72,24 @@
 
           <ul class="divide-y divide-border">
             @for (event of stats.recentEvents; track event.id) {
-              <li class="flex items-center justify-between gap-4 px-5 py-3">
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-medium text-text-primary">{{ event.name }}</p>
-                  <p class="truncate text-xs text-text-muted">{{ event.eventType | capitalize }}</p>
-                </div>
+              <li>
+                <a
+                  [routerLink]="['/admin/events', event.id]"
+                  class="flex items-center justify-between gap-4 px-5 py-3 transition hover:bg-background"
+                >
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-medium text-text-primary">
+                      {{ event.name | capitalize }}
+                    </p>
+                    <p class="truncate text-xs text-text-muted">
+                      {{ event.eventType | capitalize }}
+                    </p>
+                  </div>
 
-                <span class="shrink-0 text-xs font-medium text-text-secondary">
-                  {{ event.status | capitalize }}
-                </span>
+                  <span class="shrink-0 text-xs font-medium text-text-secondary">
+                    {{ event.status | capitalize }}
+                  </span>
+                </a>
               </li>
             } @empty {
               <li class="px-5 py-6 text-sm text-text-muted">No events yet.</li>
