@@ -304,17 +304,17 @@ export const organizerRoutes: Routes = [
             (m) => m.AttendanceStaffComponent,
           ),
       },
-      // {
-      //   path: 'notifications',
-      //   loadComponent: () =>
-      //     import('./pages/notifications/notifications').then((m) => m.NotificationsComponent),
-      // },
-      // {
-      //   path: 'feedback',
-      //   canActivate: [eventFeatureGuard('feedback')],
-      //   loadComponent: () =>
-      //     import('./pages/feedback/feedback').then((m) => m.OrganizerFeedbackComponent),
-      // },
+      {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./pages/notifications/notifications').then((m) => m.NotificationsComponent),
+      },
+      {
+        path: 'feedback',
+        canActivate: [eventFeatureGuard('feedback')],
+        loadComponent: () =>
+          import('./pages/feedback/feedback').then((m) => m.OrganizerFeedbackComponent),
+      },
 
       //Registration
       {

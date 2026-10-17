@@ -23,6 +23,7 @@ import { EmptyState } from '../empty-state/empty-state';
  *   </ng-template>
  * </app-async-state>
  */
+
 @Component({
   selector: 'app-async-state',
   imports: [NgTemplateOutlet, Skeleton, ErrorState, EmptyState],

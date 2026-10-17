@@ -2,7 +2,11 @@
   <nav class="container-app">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
-      <a routerLink="/" class="flex min-w-0 items-center gap-2.5" (click)="closeMenu()">
+      <a
+        routerLink="/"
+        class="flex min-w-0 items-center gap-2.5"
+        (click)="closeMenu()"
+      >
         <div
           class="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-sm font-bold text-white shadow-sm"
         >
@@ -15,13 +19,13 @@
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden items-center gap-5 xl:gap-6 lg:flex">
+      <div class="hidden items-center gap-5 lg:flex xl:gap-6">
         @for (link of navLinks; track link.url) {
           <a
             [routerLink]="link.url"
-            routerLinkActive="text-primary"
+            routerLinkActive="!border-primary !text-primary"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="whitespace-nowrap text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+            class="whitespace-nowrap border-b-2 border-transparent py-2 text-sm font-medium text-text-secondary transition-colors duration-200 hover:border-primary/50 hover:text-primary"
           >
             {{ link.label }}
           </a>
@@ -30,28 +34,33 @@
 
       <!-- Desktop Actions -->
       <div class="hidden items-center gap-4 lg:flex">
-        <a
-          routerLink="/create-event"
-          class="inline-flex h-10 items-center justify-center gap-2 bg-primary px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark"
-        >
-          Create Event
-        </a>
+        @if (currentUser()) {
+          <a
+            routerLink="/create-event"
+            class="inline-flex h-10 items-center justify-center gap-2 bg-primary px-4 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-primary-dark"
+          >
+            Create Event
+          </a>
+        }
+
         <app-user-menu [links]="userLinks()" />
       </div>
 
       <!-- Mobile Actions -->
       <div class="flex items-center gap-2 lg:hidden">
-        <a
-          routerLink="/create-event"
-          (click)="closeMenu()"
-          class="inline-flex h-9 items-center justify-center bg-primary px-3 text-xs font-semibold text-white transition hover:bg-primary-dark sm:px-4 sm:text-sm"
-        >
-          Create Event
-        </a>
+        @if (currentUser()) {
+          <a
+            routerLink="/create-event"
+            (click)="closeMenu()"
+            class="inline-flex h-9 items-center justify-center bg-primary px-3 text-xs font-semibold text-white transition-colors duration-200 hover:bg-primary-dark sm:px-4 sm:text-sm"
+          >
+            Create Event
+          </a>
+        }
 
         <button
           type="button"
-          class="flex h-10 w-10 shrink-0 items-center justify-center border border-border text-text-primary transition hover:bg-surface-soft"
+          class="flex h-10 w-10 shrink-0 items-center justify-center border border-border text-text-primary transition-colors duration-200 hover:bg-surface-soft hover:text-primary"
           (click)="toggleMenu()"
           [attr.aria-expanded]="isMenuOpen()"
           aria-controls="mobile-navigation"
@@ -68,7 +77,10 @@
 
     <!-- Mobile Navigation Panel -->
     @if (isMenuOpen()) {
-      <div id="mobile-navigation" class="border-t border-border py-4 lg:hidden">
+      <div
+        id="mobile-navigation"
+        class="border-t border-border py-4 lg:hidden"
+      >
         <div class="flex flex-col gap-4">
           <!-- User Profile -->
           @if (currentUser(); as user) {
@@ -83,6 +95,7 @@
                 <p class="truncate text-sm font-semibold text-text-primary">
                   {{ user.firstName }} {{ user.lastName }}
                 </p>
+
                 <p class="truncate text-xs text-text-secondary">
                   {{ user.email }}
                 </p>
@@ -92,17 +105,19 @@
 
           <!-- Main Navigation -->
           <div class="flex flex-col gap-1">
-            <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+            <p
+              class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+            >
               Navigation
             </p>
 
             @for (link of navLinks; track link.url) {
               <a
                 [routerLink]="link.url"
-                routerLinkActive="bg-surface-soft text-primary"
+                routerLinkActive="!border-primary bg-surface-soft !text-primary"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="closeMenu()"
-                class="flex min-h-11 items-center px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-soft hover:text-primary"
+                class="flex min-h-11 items-center border-l-2 border-transparent px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors duration-200 hover:bg-surface-soft hover:text-primary"
               >
                 {{ link.label }}
               </a>
@@ -122,9 +137,10 @@
                 @for (link of userLinks(); track link.url) {
                   <a
                     [routerLink]="link.url"
-                    routerLinkActive="bg-surface-soft text-primary"
+                    routerLinkActive="!border-primary bg-surface-soft !text-primary"
+                    [routerLinkActiveOptions]="{ exact: true }"
                     (click)="closeMenu()"
-                    class="flex min-h-11 items-center px-3 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-soft hover:text-primary"
+                    class="flex min-h-11 items-center border-l-2 border-transparent px-3 py-2.5 text-sm font-medium text-text-primary transition-colors duration-200 hover:bg-surface-soft hover:text-primary"
                   >
                     {{ link.label }}
                   </a>
@@ -134,25 +150,30 @@
               <button
                 type="button"
                 (click)="logout()"
-                class="mt-2 flex min-h-11 w-full items-center px-3 py-2.5 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-950/30"
+                class="mt-2 flex min-h-11 w-full items-center px-3 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-200 hover:bg-red-50 dark:hover:bg-red-950/30"
               >
                 Logout
               </button>
             </div>
           } @else {
+            <!-- Logged-out Account Navigation -->
             <div class="border-t border-border pt-3">
               <a
                 routerLink="/login"
+                routerLinkActive="bg-surface-soft text-primary"
+                [routerLinkActiveOptions]="{ exact: true }"
                 (click)="closeMenu()"
-                class="flex min-h-11 items-center px-3 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-soft"
+                class="flex min-h-11 items-center px-3 py-2.5 text-sm font-medium text-text-primary transition-colors duration-200 hover:bg-surface-soft hover:text-primary"
               >
                 Sign In
               </a>
 
               <a
                 routerLink="/register"
+                routerLinkActive="bg-surface-soft text-primary"
+                [routerLinkActiveOptions]="{ exact: true }"
                 (click)="closeMenu()"
-                class="mt-1 flex min-h-11 items-center px-3 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-soft"
+                class="mt-1 flex min-h-11 items-center px-3 py-2.5 text-sm font-medium text-text-primary transition-colors duration-200 hover:bg-surface-soft hover:text-primary"
               >
                 Create Account
               </a>
