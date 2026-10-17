@@ -187,6 +187,8 @@ export class AttendanceStaffComponent {
   load(eventId: string): void {
     this.staffAction.run(eventId);
     this.invitationsAction.run(eventId);
+    this.sectionsAction.run(eventId);
+    this.sessionsAction.run(eventId);
   }
 
   onScopeTypeChange(): void {
@@ -340,6 +342,22 @@ export class AttendanceStaffComponent {
     }
 
     this.revokeAction.run(eventId, x.id);
+  }
+
+  scopeName(x: AttendanceStaffModel): string {
+    switch (x.scopeType) {
+      case 1:
+        return 'Event';
+
+      case 2:
+        return this.sections().find((section) => section.id === x.scopeId)?.name ?? '—';
+
+      case 3:
+        return this.sessions().find((session) => session.id === x.scopeId)?.title ?? '—';
+
+      default:
+        return '—';
+    }
   }
 
   scopeLabel(scopeType: number): string {

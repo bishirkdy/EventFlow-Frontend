@@ -133,7 +133,7 @@
 
           <th class="px-4 py-3 text-left font-semibold">Scope</th>
 
-          <th class="px-4 py-3 text-left font-semibold">Scope ID</th>
+          <th class="px-4 py-3 text-left font-semibold">Scope name</th>
 
           <th class="px-4 py-3 text-right"></th>
         </tr>
@@ -151,7 +151,7 @@
             </td>
 
             <td class="px-4 py-3">
-              {{ x.scopeId || 'Event' }}
+              {{ scopeName(x) | capitalize }}
             </td>
 
             <td class="px-4 py-3 text-right">
