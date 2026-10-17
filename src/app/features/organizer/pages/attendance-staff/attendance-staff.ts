@@ -40,6 +40,9 @@ export class AttendanceStaffComponent {
 
   readonly staff = signal<AttendanceStaffModel[]>([]);
   readonly invitations = signal<EventInvitationModel[]>([]);
+  readonly pendingInvitations = computed(() =>
+    this.invitations().filter((invitation) => invitation.status === 0),
+  );
   readonly sections = signal<SectionModel[]>([]);
   readonly sessions = signal<SessionModel[]>([]);
 
