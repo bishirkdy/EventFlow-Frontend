@@ -16,7 +16,7 @@
               Register
             </a>
           }
-          @if (photosHref() !== '#') {
+          @if (hasFeature('gallery')) {
             <a [routerLink]="photosHref()" class="event-action">Photos</a>
           }
         </div>
