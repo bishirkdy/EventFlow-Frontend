@@ -18,7 +18,7 @@ export class EventWebsiteShell {
 
   readonly pages = computed(() =>
     this.data()
-      .pages.filter((page) => page.isPublished)
+      .pages.filter((page) => this.preview() || page.isPublished)
       .sort((a, b) => a.displayOrder - b.displayOrder),
   );
 
