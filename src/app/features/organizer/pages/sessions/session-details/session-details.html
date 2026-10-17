@@ -219,31 +219,14 @@
                    sm:grid-cols-3"
           >
             <div class="text-sm font-medium text-text-secondary">
-              Section ID
+              Section
             </div>
 
             <div
-              class="break-all text-sm text-text-muted
+              class="text-sm text-text-primary
                      sm:col-span-2"
             >
-              {{ currentSession.sectionId }}
-            </div>
-          </div>
-
-          <!-- Session ID -->
-          <div
-            class="grid grid-cols-1 gap-2 px-6 py-5
-                   sm:grid-cols-3"
-          >
-            <div class="text-sm font-medium text-text-secondary">
-              Session ID
-            </div>
-
-            <div
-              class="break-all text-sm text-text-muted
-                     sm:col-span-2"
-            >
-              {{ currentSession.id }}
+              {{ sectionName(currentSession.sectionId) | capitalize }}
             </div>
           </div>
 

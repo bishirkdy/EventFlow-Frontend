@@ -9,6 +9,8 @@ import { SessionService } from '../../../../../core/services/session/session.ser
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { VenueModel } from '../../../../../core/models/venue';
+import { SectionService } from '../../../../../core/services/section/section.service';
+import { SectionModel } from '../../../../../core/models/section';
 import { SpeakerModel } from '../../../../../core/models/speaker';
 import { SpeakerService } from '../../../../../core/services/speaker/speaker.service';
 import { SessionSpeakerService } from '../../../../../core/services/session-speaker/session-speaker.service';
@@ -29,6 +31,7 @@ export class SessionDetails implements OnInit {
   private readonly sessionService = inject(SessionService);
   private readonly toastr = inject(NotificationService);
   private readonly venueService = inject(VenueService);
+  private readonly sectionService = inject(SectionService);
   private readonly organizerEventState =
     inject(OrganizerEventStateService);
   private readonly speakerService = inject(SpeakerService);
@@ -39,6 +42,7 @@ export class SessionDetails implements OnInit {
   error = signal<string | null>(null);
   deleting = signal(false);
   venues = signal<VenueModel[]>([]);
+  sections = signal<SectionModel[]>([]);
   speakers = signal<SpeakerModel[]>([]);
   assignedSpeakerIds = signal<Set<string>>(new Set());
   speakerFeatureEnabled = signal(false);
@@ -67,6 +71,13 @@ export class SessionDetails implements OnInit {
     () => this.venueService.getVenues(this.eventId),
     {
       onSuccess: (response) => this.venues.set(response.data ?? []),
+    },
+  );
+
+  private readonly sectionsAction = createAsyncAction(
+    () => this.sectionService.getSections(this.eventId),
+    {
+      onSuccess: (response) => this.sections.set(response.data ?? []),
     },
   );
 
@@ -148,6 +159,7 @@ export class SessionDetails implements OnInit {
 
     this.sessionAction.run();
     this.venuesAction.run();
+    this.sectionsAction.run();
     this.loadSpeakerFeature();
   }
 
@@ -187,6 +199,11 @@ export class SessionDetails implements OnInit {
   venueName(venueId: string | null): string {
     if (!venueId) return 'No venue assigned';
     return this.venues().find(venue => venue.id === venueId)?.name ?? 'Venue unavailable';
+  }
+
+  sectionName(sectionId: string | null): string {
+    if (!sectionId) return 'No section assigned';
+    return this.sections().find(section => section.id === sectionId)?.name ?? 'Section unavailable';
   }
 
   editSession(): void {
