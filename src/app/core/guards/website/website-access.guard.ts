@@ -5,8 +5,8 @@ import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { EventRoleService } from '../../services/event-role/event-role.service';
 
-// Permissions allowed to look at a website before the event is published.
-const PREVIEW_PERMISSIONS = ['event.update', 'event.team.manage'];
+// Only the organizer may look at a website before the event is published.
+const PREVIEW_PERMISSIONS = ['event.preview'];
 
 // The public website stays open, but preview mode (?preview=1) is limited to
 // the roles that manage the event. The backend enforces the same rule.

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -25,6 +25,10 @@ export class EditPage implements OnInit {
 
   readonly eventId = this.eventState.eventId;
 
+  readonly canPreview = computed(() => this.eventState.permissions().has('event.preview'));
+
+  private pageSlug = '';
+
   private readonly pageId = this.route.snapshot.paramMap.get('pageId');
 
   private readonly loadAction = createAsyncAction(
@@ -38,6 +42,8 @@ export class EditPage implements OnInit {
           this.toastr.error('Page data was not returned.');
           return;
         }
+
+        this.pageSlug = page.slug;
 
         this.form.patchValue({
           name: page.name,
@@ -115,5 +121,20 @@ export class EditPage implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/organizer', this.eventId(), 'pages']);
+  }
+
+  previewPage(): void {
+    const eventId = this.eventId();
+    const slug = this.pageSlug.trim().toLowerCase();
+
+    if (!eventId) {
+      return;
+    }
+
+    const url = !slug || slug === 'home'
+      ? `/events/${eventId}?preview=1`
+      : `/events/${eventId}/${encodeURIComponent(this.pageSlug)}?preview=1`;
+
+    window.open(url, '_blank');
   }
 }

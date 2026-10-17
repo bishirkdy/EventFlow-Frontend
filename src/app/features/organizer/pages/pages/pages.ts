@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 
@@ -24,6 +24,8 @@ export class Pages implements OnInit {
   readonly pages = signal<EventPageModel[]>([]);
 
   readonly eventId = this.eventState.eventId;
+
+  readonly canPreview = computed(() => this.eventState.permissions().has('event.preview'));
 
   private readonly loadAction = createAsyncAction(
     (eventId: string) => this.pageService.getManagePages(eventId),
@@ -168,5 +170,20 @@ export class Pages implements OnInit {
 
   pageDetails(page: EventPageModel): void {
     this.router.navigate(['/organizer', this.eventId(), 'pages', page.id]);
+  }
+
+  previewPage(page: EventPageModel): void {
+    const eventId = this.eventId();
+
+    if (!eventId) {
+      return;
+    }
+
+    const slug = page.slug?.trim().toLowerCase();
+    const url = !slug || slug === 'home'
+      ? `/events/${eventId}?preview=1`
+      : `/events/${eventId}/${encodeURIComponent(page.slug)}?preview=1`;
+
+    window.open(url, '_blank');
   }
 }

@@ -87,6 +87,8 @@ export class OrganizerLayout {
           (access?.data?.permissions ?? []).map((name) => name.toLowerCase()),
         );
 
+        this.organizerEventState.setPermissions(permissions);
+
         const visibleGroups = ORGANIZER_NAVIGATION
           .map((group) => ({
             ...group,

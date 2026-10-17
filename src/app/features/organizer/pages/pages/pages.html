@@ -124,6 +124,16 @@
                       View
                     </button>
 
+                    @if (canPreview()) {
+                      <button
+                        type="button"
+                        (click)="previewPage(page)"
+                        class="cursor-pointer border border-border px-3 py-1.5 font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+                      >
+                        Preview
+                      </button>
+                    }
+
                     @if (page.isPublished) {
                       <button
                         type="button"

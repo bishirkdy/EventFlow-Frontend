@@ -125,6 +125,16 @@
       <!-- Actions -->
       <div class="flex justify-end gap-6 border-t border-border pt-8">
 
+        @if (canPreview()) {
+          <button
+            type="button"
+            (click)="previewPage()"
+            class="px-4 py-2.5 text-sm font-medium text-text-secondary transition hover:text-text-primary"
+          >
+            Preview
+          </button>
+        }
+
         <button
           type="button"
           (click)="cancel()"

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
@@ -29,6 +29,8 @@ export class PageDetails implements OnInit {
 
   readonly page = signal<EventPageModel | null>(null);
   readonly navigationItem = signal<NavigationItemByPageModel | null>(null);
+
+  readonly canPreview = computed(() => this.eventState.permissions().has('event.preview'));
 
   readonly showNavigationForm = signal(false);
 
@@ -144,6 +146,21 @@ export class PageDetails implements OnInit {
 
   backToPages(): void {
     this.router.navigate(['/organizer', this.eventId, 'pages']);
+  }
+
+  previewPage(): void {
+    const page = this.page();
+
+    if (!this.eventId || !page) {
+      return;
+    }
+
+    const slug = page.slug?.trim().toLowerCase();
+    const url = !slug || slug === 'home'
+      ? `/events/${this.eventId}?preview=1`
+      : `/events/${this.eventId}/${encodeURIComponent(page.slug)}?preview=1`;
+
+    window.open(url, '_blank');
   }
 
   loadNavigation(): void {

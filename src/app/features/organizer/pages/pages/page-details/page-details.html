@@ -31,6 +31,12 @@
         </div>
 
         <div class="flex shrink-0 gap-3">
+          @if (canPreview()) {
+            <button type="button" (click)="previewPage()"
+              class="cursor-pointer border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition hover:bg-background">
+              Preview
+            </button>
+          }
           <button type="button" (click)="editPage()"
             class="cursor-pointer border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-primary transition hover:bg-background">
             Edit Page

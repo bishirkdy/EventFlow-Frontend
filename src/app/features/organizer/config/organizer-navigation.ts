@@ -45,7 +45,7 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
   {
     label: 'Event Website',
     items: [
-      { label: 'Website Preview', route: 'preview', icon: Eye },
+      { label: 'Website Preview', route: 'preview', icon: Eye, permission: 'event.preview' },
       { label: 'Pages', route: 'pages', icon: FileText },
       { label: 'Navigation', route: 'navigation', icon: Menu },
       { label: 'Features', route: 'features', icon: List },
