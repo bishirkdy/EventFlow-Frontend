@@ -1,4 +1,4 @@
 ﻿export enum CapacityMode {
-  Unlimited = 0,
-  Limited = 1,
+  Unlimited = 1,
+  Limited = 2,
 }

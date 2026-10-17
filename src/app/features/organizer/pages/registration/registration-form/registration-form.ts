@@ -109,6 +109,7 @@ export class RegistrationFormPageComponent {
 
   protected readonly loading = this.loadAction.pending;
   protected readonly saving = this.upsertAction.pending;
+  protected readonly CapacityMode = CapacityMode;
 
   protected readonly form = this.fb.nonNullable.group({
     name: ['Event Registration', [Validators.required, Validators.maxLength(200)]],

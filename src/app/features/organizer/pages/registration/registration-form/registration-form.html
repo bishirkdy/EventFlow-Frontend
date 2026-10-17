@@ -177,7 +177,7 @@
                 <div class="mt-3 grid gap-3 sm:grid-cols-2">
                   <button
                     type="button"
-                    (click)="form.controls.capacityMode.setValue(1)"
+                    (click)="form.controls.capacityMode.setValue(CapacityMode.Limited)"
                     [class.border-primary]="isLimited()"
                     [class.bg-[#f7f5f2]]="isLimited()"
                     class="border border-[#d8d4cf] p-4 text-left transition hover:border-primary"
@@ -193,7 +193,7 @@
 
                   <button
                     type="button"
-                    (click)="form.controls.capacityMode.setValue(0)"
+                    (click)="form.controls.capacityMode.setValue(CapacityMode.Unlimited)"
                     [class.border-primary]="!isLimited()"
                     [class.bg-[#f7f5f2]]="!isLimited()"
                     class="border border-[#d8d4cf] p-4 text-left transition hover:border-primary"
