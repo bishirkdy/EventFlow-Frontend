@@ -2,10 +2,11 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LucideAngularModule, Home, Menu, X, LucideAlignHorizontalJustifyStart } from 'lucide-angular';
-import { map } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { ORGANIZER_NAVIGATION, OrganizerNavGroup } from '../../config/organizer-navigation';
 import { EventService } from '../../../../core/services/event/event.service';
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
+import { EventRoleService } from '../../../../core/services/event-role/event-role.service';
 import { EventPageService } from '../../../../core/services/event-page/event-page.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
@@ -26,6 +27,7 @@ export class OrganizerLayout {
   private readonly route = inject(ActivatedRoute);
   private readonly eventService = inject(EventService);
   private readonly eventFeatureService = inject(EventFeatureService);
+  private readonly roleService = inject(EventRoleService);
   private readonly pageService = inject(EventPageService);
   private readonly notification = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -67,21 +69,31 @@ export class OrganizerLayout {
   );
 
   private readonly navAction = createAsyncAction(
-    (eventId: string) => this.eventFeatureService.getFeatures(eventId),
+    (eventId: string) =>
+      forkJoin({
+        features: this.eventFeatureService.getFeatures(eventId),
+        access: this.roleService.getMyPermissions(eventId).pipe(catchError(() => of(null))),
+      }),
     {
       onError: () => this.showFallbackNavigation(),
-      onSuccess: (response) => {
-        const features = response.data ?? [];
-
+      onSuccess: ({ features, access }) => {
         const enabledFeatures = new Set(
-          features.filter((feature) => feature.isEnabled).map((feature) => feature.featureCode),
+          (features.data ?? [])
+            .filter((feature) => feature.isEnabled)
+            .map((feature) => feature.featureCode),
+        );
+
+        const permissions = new Set(
+          (access?.data?.permissions ?? []).map((name) => name.toLowerCase()),
         );
 
         const visibleGroups = ORGANIZER_NAVIGATION
           .map((group) => ({
             ...group,
             items: group.items.filter(
-              (item) => !item.feature || enabledFeatures.has(item.feature),
+              (item) =>
+                (!item.feature || enabledFeatures.has(item.feature)) &&
+                (!item.permission || permissions.has(item.permission.toLowerCase())),
             ),
           }))
           .filter((group) => group.items.length > 0);
@@ -142,7 +154,7 @@ export class OrganizerLayout {
     this.navGroups.set(
       ORGANIZER_NAVIGATION.map((group) => ({
         ...group,
-        items: group.items.filter((item) => !item.feature),
+        items: group.items.filter((item) => !item.feature && !item.permission),
       })).filter((group) => group.items.length > 0),
     );
   }

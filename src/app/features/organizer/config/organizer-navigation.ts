@@ -26,6 +26,7 @@ export interface OrganizerNavItem {
   route: string;
   icon: LucideIconData;
   feature?: string;
+  permission?: string;
 }
 
 export interface OrganizerNavGroup {
@@ -93,7 +94,13 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
     label: 'Attendance',
     items: [
       { label: 'Attendance Dashboard', route: 'attendance', icon: ScanLine, feature: 'attendance' },
-      { label: 'Attendance Staff', route: 'attendance-staff', icon: UserCog, feature: 'attendance' },
+      {
+        label: 'Attendance Staff',
+        route: 'attendance-staff',
+        icon: UserCog,
+        feature: 'attendance',
+        permission: 'event.team.manage',
+      },
     ],
   },
   {
@@ -106,7 +113,13 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
   {
     label: 'Media',
     items: [
-      { label: 'Photographers', route: 'photographers', icon: Camera, feature: 'gallery' },
+      {
+        label: 'Photographers',
+        route: 'photographers',
+        icon: Camera,
+        feature: 'gallery',
+        permission: 'event.team.manage',
+      },
       { label: 'Photo Moderation', route: 'photos', icon: Eye, feature: 'gallery' },
     ],
   },

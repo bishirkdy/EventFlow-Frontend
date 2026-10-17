@@ -33,6 +33,14 @@ describe('workspaceUrlForRoles', () => {
     ]);
   });
 
+  it('routes event admins to the organizer dashboard', () => {
+    expect(workspaceUrlForRoles('evt-1', roles('EventAdmin'))).toEqual([
+      '/organizer',
+      'evt-1',
+      'overview',
+    ]);
+  });
+
   it('opens the public event site for participant-only memberships', () => {
     expect(workspaceUrlForRoles('evt-1', roles('Participant'))).toEqual(['/events', 'evt-1']);
   });

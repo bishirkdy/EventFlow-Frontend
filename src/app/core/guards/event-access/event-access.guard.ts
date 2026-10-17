@@ -21,46 +21,58 @@ function isTransient(err: unknown): boolean {
   return !(err instanceof HttpErrorResponse) || err.status === 0 || err.status >= 500;
 }
 
-export type UserRole = 'Owner' | 'Organizer' | 'Photographer' | 'AttendanceStaff';
+export interface EventAccessRequirement {
+  roles?: string[];
+  permissions?: string[];
+}
 
-export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn =>
+// Gates an event workspace by the caller's effective backend permissions
+// (and, where a permission is shared, by role). A route passes when every
+// requirement it declares is satisfied.
+export const eventAccessGuard = (requirement: EventAccessRequirement): CanActivateFn =>
   (route, state) => {
-    const roles = inject(EventRoleService);
+    const access = inject(EventRoleService);
     const router = inject(Router);
     const notification = inject(NotificationService);
     const eventId = eventIdFrom(route);
     if (!eventId) return router.createUrlTree(['/']);
 
-    const loadRoles = () =>
-      roles
-        .getMyRoles(eventId)
+    const loadAccess = () =>
+      access
+        .getMyPermissions(eventId)
         .pipe(
           catchError((err) =>
             isTransient(err)
-              ? timer(600).pipe(switchMap(() => roles.getMyRoles(eventId)))
+              ? timer(600).pipe(switchMap(() => access.getMyPermissions(eventId)))
               : throwError(() => err),
           ),
         );
 
-    return loadRoles().pipe(
+    return loadAccess().pipe(
       map((response) => {
-        const names = (response.data ?? []).map((x) => x.roleName.toLowerCase());
+        const roles = (response.data?.roles ?? []).map((name) => name.toLowerCase());
+        const permissions = (response.data?.permissions ?? []).map((name) => name.toLowerCase());
 
-        // The owner is a super-role and can reach every event workspace.
-        const allowed =
-          names.includes(requiredRole.toLowerCase()) || names.includes('owner');
-        if (allowed) return true;
-        notification.error(`You don't have ${requiredRole} access for this event.`);
+        const requiredRoles = (requirement.roles ?? []).map((name) => name.toLowerCase());
+        const requiredPermissions = (requirement.permissions ?? []).map((name) =>
+          name.toLowerCase(),
+        );
+
+        const rolesMatch =
+          requiredRoles.length === 0 || requiredRoles.some((name) => roles.includes(name));
+        const permissionsMatch =
+          requiredPermissions.length === 0 ||
+          requiredPermissions.some((name) => permissions.includes(name));
+
+        if (rolesMatch && permissionsMatch) return true;
+
+        notification.error("You don't have access to this event workspace.");
         return router.createUrlTree(['/']);
       }),
       catchError((err) => {
         // The session expired: go to login (without an error toast) so the user
         // is refreshed or signed in and returned to this page.
         if (err instanceof HttpErrorResponse && err.status === 401) {
-          // `state.url` is the page being activated. `router.url` is still the
-          // *previous* page while a navigation is in flight (and '/' before the
-          // first one), which is how `/login?returnUrl=%2F` — or a returnUrl
-          // pointing back at /login — was produced from here.
           const returnUrl = state?.url;
           return of(
             returnUrl
@@ -69,10 +81,10 @@ export const eventRoleGuard = (requiredRole: UserRole): CanActivateFn =>
           );
         }
 
-        // The server already said this user has no role on this event, so show
-        // the clear access message instead of a verification error.
+        // The server already said this user has no access on this event, so
+        // show the clear message instead of a verification error.
         if (err instanceof HttpErrorResponse && err.status === 403) {
-          notification.error(`You don't have ${requiredRole} access for this event.`);
+          notification.error("You don't have access to this event workspace.");
           return of(router.createUrlTree(['/']));
         }
 

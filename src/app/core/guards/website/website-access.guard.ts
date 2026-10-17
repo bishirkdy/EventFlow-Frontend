@@ -5,8 +5,8 @@ import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { EventRoleService } from '../../services/event-role/event-role.service';
 
-// Roles allowed to look at a website before the event is published.
-const PREVIEW_ROLES = ['owner', 'organizer', 'eventadmin'];
+// Permissions allowed to look at a website before the event is published.
+const PREVIEW_PERMISSIONS = ['event.update', 'event.team.manage'];
 
 // The public website stays open, but preview mode (?preview=1) is limited to
 // the roles that manage the event. The backend enforces the same rule.
@@ -34,10 +34,10 @@ export const websiteAccessGuard: CanActivateFn = (route, state) => {
     queryParams: { returnUrl: state.url },
   });
 
-  return roleService.getMyRoles(eventId).pipe(
+  return roleService.getMyPermissions(eventId).pipe(
     map((response) => {
-      const names = (response.data ?? []).map((role) => role.roleName.toLowerCase());
-      const allowed = names.some((name) => PREVIEW_ROLES.includes(name));
+      const permissions = (response.data?.permissions ?? []).map((name) => name.toLowerCase());
+      const allowed = permissions.some((name) => PREVIEW_PERMISSIONS.includes(name));
       return allowed ? true : router.createUrlTree(['/']);
     }),
     catchError((error) => {

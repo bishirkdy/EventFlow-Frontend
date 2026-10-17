@@ -36,7 +36,7 @@ export const workspaceUrlForRoles = (
     return ['/photographer', eventId, 'photos'];
   }
 
-  if (names.includes('organizer')) {
+  if (names.includes('organizer') || names.includes('eventadmin')) {
     return ['/organizer', eventId, 'overview'];
   }
 

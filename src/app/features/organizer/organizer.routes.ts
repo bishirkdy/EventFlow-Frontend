@@ -1,5 +1,5 @@
 import { eventFeatureGuard } from '../../core/guards/feature/feature.guard';
-import { eventRoleGuard } from '../../core/guards/event-role/event-role.guard';
+import { eventAccessGuard } from '../../core/guards/event-access/event-access.guard';
 import { Routes } from '@angular/router';
 import { OrganizerLayout } from './layout/organizer-layout/organizer-layout';
 import { Overview } from './pages/overview/overview';
@@ -7,7 +7,7 @@ import { Overview } from './pages/overview/overview';
 export const organizerRoutes: Routes = [
   {
     path: ':eventId',
-    canActivate: [eventRoleGuard('Organizer')],
+    canActivate: [eventAccessGuard({ permissions: ['event.update'] })],
     component: OrganizerLayout,
     children: [
       {
@@ -34,7 +34,10 @@ export const organizerRoutes: Routes = [
       // Photographer Management
       {
         path: 'photographers',
-        canActivate: [eventFeatureGuard('gallery')],
+        canActivate: [
+          eventFeatureGuard('gallery'),
+          eventAccessGuard({ permissions: ['event.team.manage'] }),
+        ],
         loadComponent: () =>
           import('./pages/settings/photographers/photographer-management').then(
             (m) => m.PhotographerManagement,
@@ -298,7 +301,10 @@ export const organizerRoutes: Routes = [
       },
       {
         path: 'attendance-staff',
-        canActivate: [eventFeatureGuard('attendance')],
+        canActivate: [
+          eventFeatureGuard('attendance'),
+          eventAccessGuard({ permissions: ['event.team.manage'] }),
+        ],
         loadComponent: () =>
           import('./pages/attendance-staff/attendance-staff').then(
             (m) => m.AttendanceStaffComponent,

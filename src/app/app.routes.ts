@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { PublicLayout } from './shared/layouts/public-layout/public-layout';
 import { authGuard } from './core/guards/auth/auth-guard';
 import { publicEventFeatureGuard } from './core/guards/feature/feature.guard';
-import { eventRoleGuard } from './core/guards/event-role/event-role.guard';
+import { eventAccessGuard } from './core/guards/event-access/event-access.guard';
 import { platformAdminGuard } from './core/guards/platform-admin/platform-admin.guard';
 import { websiteAccessGuard } from './core/guards/website/website-access.guard';
 import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
@@ -152,7 +152,7 @@ export const routes: Routes = [
   },
   {
     path: 'attendance-staff/:eventId',
-    canActivate: [authGuard, eventRoleGuard('AttendanceStaff')],
+    canActivate: [authGuard, eventAccessGuard({ roles: ['AttendanceStaff'] })],
     component: AttendanceStaffLayout,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -185,7 +185,7 @@ export const routes: Routes = [
   },
   {
     path: 'owner/:eventId',
-    canActivate: [authGuard, eventRoleGuard('Owner')],
+    canActivate: [authGuard, eventAccessGuard({ roles: ['Owner'] })],
     loadComponent: () =>
       import('./features/owner/pages/owner-dashboard/owner-dashboard').then(
         (m) => m.OwnerDashboard,

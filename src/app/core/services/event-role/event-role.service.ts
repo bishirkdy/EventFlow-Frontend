@@ -5,6 +5,7 @@ import { Observable, switchMap, throwError } from 'rxjs';
 import { Api } from '../../api/api';
 import { ApiResponse } from '../../models/common';
 import {
+  EventAccessModel,
   EventRoleModel,
   EventTeamMemberModel,
   TeamAnalyticsModel,
@@ -43,6 +44,12 @@ export class EventRoleService {
           this.api.getUrl(EVENT_ROLE_ENDPOINTS.myRoles(eventId, user.id)),
         );
       }),
+    );
+  }
+
+  getMyPermissions(eventId: string): Observable<ApiResponse<EventAccessModel>> {
+    return this.http.get<ApiResponse<EventAccessModel>>(
+      this.api.getUrl(EVENT_ROLE_ENDPOINTS.myPermissions(eventId)),
     );
   }
 
