@@ -98,8 +98,9 @@ export class EventWebsiteShell {
     const hrefFor = (page: EventPageModel | null): string => {
       const eventId = this.data().event?.id;
       if (!eventId) return '#';
-      if (!page || page.id === homeId) return `/events/${eventId}`;
-      return `/events/${eventId}/${encodeURIComponent(page.slug)}`;
+      const suffix = this.previewSuffix();
+      if (!page || page.id === homeId) return `/events/${eventId}${suffix}`;
+      return `/events/${eventId}/${encodeURIComponent(page.slug)}${suffix}`;
     };
 
     const links: { id: string; label: string; href: string; active: boolean }[] = [];
@@ -250,7 +251,12 @@ export class EventWebsiteShell {
 
   brandHref(): string {
     const eventId = this.data().event?.id;
-    return eventId ? `/events/${eventId}` : '#';
+    return eventId ? `/events/${eventId}${this.previewSuffix()}` : '#';
+  }
+
+  // Keeps the organizer in preview while navigating between website pages.
+  private previewSuffix(): string {
+    return this.preview() ? '?preview=1' : '';
   }
 
   formatDate(value: string | null | undefined): string {

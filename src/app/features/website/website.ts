@@ -1,7 +1,8 @@
 import { Component, computed, DestroyRef, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { combineLatest, EMPTY } from 'rxjs';
+import { catchError, combineLatest, EMPTY, of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { WebsiteTemplateSelector } from './components/website-template-selector/website-template-selector';
 import { EventWebsiteService } from '../../core/services/website/event-website.service';
@@ -32,7 +33,20 @@ export class Website implements OnInit {
       // The preview endpoints need the organizer's session cookie, which the
       // server never has, so preview data is only fetched in the browser.
       if (last.preview && isPlatformServer(this.platformId)) return EMPTY;
-      return this.websiteService.load(last.eventId, last.preview);
+      return this.websiteService.load(last.eventId, last.preview).pipe(
+        catchError((requestError: unknown) => {
+          // A 404 on the public site means the event is not published yet.
+          if (
+            !last.preview &&
+            requestError instanceof HttpErrorResponse &&
+            requestError.status === 404
+          ) {
+            this.notPublished.set(true);
+            return of(null as unknown as EventWebsiteData);
+          }
+          return throwError(() => requestError);
+        }),
+      );
     },
     { errorFallback: 'Failed to load event website.' },
   );
@@ -46,6 +60,7 @@ export class Website implements OnInit {
   );
   readonly pageSlug = signal<string | null>(null);
   readonly preview = signal(false);
+  readonly notPublished = signal(false);
 
   ngOnInit(): void {
     // Follow the route params instead of reading them once, otherwise
@@ -76,12 +91,14 @@ export class Website implements OnInit {
 
   retry(): void {
     if (this.lastLoad) {
+      this.notPublished.set(false);
       this.websiteState.load();
     }
   }
 
   private loadWebsite(eventId: string, preview: boolean): void {
     this.lastLoad = { eventId, preview };
+    this.notPublished.set(false);
     this.websiteState.load();
   }
 }

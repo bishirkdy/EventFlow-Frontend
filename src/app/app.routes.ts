@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth/auth-guard';
 import { publicEventFeatureGuard } from './core/guards/feature/feature.guard';
 import { eventRoleGuard } from './core/guards/event-role/event-role.guard';
 import { platformAdminGuard } from './core/guards/platform-admin/platform-admin.guard';
+import { websiteAccessGuard } from './core/guards/website/website-access.guard';
 import { REGISTRATION_ROUTES } from './features/platform/registration/registration.routes';
 import { AttendanceStaffLayout } from './features/attendance-staff/layout/attendance-staff-layout';
 
@@ -141,10 +142,12 @@ export const routes: Routes = [
   },
   {
     path: 'events/:eventId/:slug',
+    canActivate: [websiteAccessGuard],
     loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },
   {
     path: 'events/:eventId',
+    canActivate: [websiteAccessGuard],
     loadComponent: () => import('./features/website/website').then((m) => m.Website),
   },
   {
