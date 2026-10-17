@@ -1,7 +1,12 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EventWebsiteData } from '../../../../core/models/website';
 import { EventPageModel } from '../../../../core/models/event-page';
+import { SessionModel } from '../../../../core/models/session';
+import { RegistrationScope } from '../../../../core/models/registration';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { LoginDialogService } from '../../../../core/services/ui/login-dialog.service';
+import { RegistrationDialogService } from '../../../../core/services/ui/registration-dialog.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
@@ -15,6 +20,14 @@ export class EventWebsiteShell {
   readonly data = input.required<EventWebsiteData>();
   readonly pageSlug = input<string | null>(null);
   readonly preview = input<boolean>(false);
+
+  private readonly authService = inject(AuthService);
+  private readonly loginDialog = inject(LoginDialogService);
+  private readonly registrationDialog = inject(RegistrationDialogService);
+
+  readonly registrationEnabled = computed(
+    () => this.hasFeature('registration') && !this.preview(),
+  );
 
   readonly pages = computed(() =>
     this.data()
@@ -242,6 +255,42 @@ export class EventWebsiteShell {
   registrationHref(): string {
     const eventId = this.data().event?.id;
     return eventId && this.hasFeature('registration') ? `/events/${eventId}/register` : '#';
+  }
+
+  canRegisterSession(session: SessionModel): boolean {
+    return this.registrationEnabled() && session.allowRegistration === true;
+  }
+
+  sectionRegistrationEnabled(section: { showRegistrationForm?: boolean }): boolean {
+    return this.registrationEnabled() && section.showRegistrationForm === true;
+  }
+
+  openEventRegistration(): void {
+    this.openRegistration(
+      RegistrationScope.Event,
+      null,
+      this.data().event?.name ?? null,
+    );
+  }
+
+  openSessionRegistration(session: SessionModel): void {
+    this.openRegistration(RegistrationScope.Session, session.id, session.title);
+  }
+
+  private openRegistration(
+    scopeType: RegistrationScope,
+    scopeId: string | null,
+    contextTitle: string | null,
+  ): void {
+    const eventId = this.data().event?.id;
+    if (!eventId) return;
+
+    if (!this.authService.currentUser()) {
+      this.loginDialog.open(`${window.location.pathname}${window.location.search}`);
+      return;
+    }
+
+    this.registrationDialog.open({ eventId, scopeType, scopeId, contextTitle });
   }
 
   photosHref(): string {

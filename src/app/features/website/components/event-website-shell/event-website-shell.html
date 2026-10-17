@@ -229,6 +229,16 @@
                               </p>
                             }
                           </div>
+
+                          @if (canRegisterSession(session)) {
+                            <button
+                              type="button"
+                              class="session-register"
+                              (click)="openSessionRegistration(session)"
+                            >
+                              Register for this session <span>→</span>
+                            </button>
+                          }
                         </article>
                       }
                     </div>
@@ -437,10 +447,10 @@
                         </p>
                       }
 
-                      @if (registrationHref() !== '#') {
-                        <a class="rsvp-link" [routerLink]="registrationHref()">
+                      @if (registrationEnabled()) {
+                        <button type="button" class="rsvp-link" (click)="openEventRegistration()">
                           Register <span>→</span>
-                        </a>
+                        </button>
                       }
                     </div>
                   </div>
@@ -465,6 +475,16 @@
                         <p>
                           {{ displayDescription(section.content) }}
                         </p>
+                      }
+
+                      @if (sectionRegistrationEnabled(section)) {
+                        <button
+                          type="button"
+                          class="rsvp-link"
+                          (click)="openEventRegistration()"
+                        >
+                          Register <span>→</span>
+                        </button>
                       }
                     </div>
 

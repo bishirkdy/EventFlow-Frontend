@@ -520,6 +520,11 @@
     border-top: 1px solid var(--line)
 }
 
+.schedule-section .section-intro,
+.schedule-section .session-list {
+    width: min(1280px, 100%)
+}
+
 .session-card {
     display: grid;
     grid-template-columns: 190px 130px minmax(0, 1fr);
@@ -590,6 +595,38 @@
     margin-top: 9px;
     color: var(--muted);
     line-height: 1.65
+}
+
+.session-register {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 8px 0;
+    border: 0;
+    border-bottom: 1px solid var(--ink);
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: .2s
+}
+
+.session-register span {
+    transition: transform .2s
+}
+
+.session-register:hover {
+    color: var(--accent);
+    border-color: var(--accent)
+}
+
+.session-register:hover span {
+    transform: translateX(4px)
 }
 
 .gallery-section {
@@ -671,10 +708,14 @@
     flex: 0 0 auto;
     color: var(--ink);
     text-decoration: none;
+    border: 0;
     border-bottom: 1px solid var(--ink);
+    background: none;
     padding: 11px 0;
+    font: inherit;
     font-size: 12px;
     font-weight: 800;
+    cursor: pointer;
     transition: .2s
 }
 
