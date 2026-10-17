@@ -6,5 +6,6 @@
   startTime?: string | null;
   endTime?: string | null;
   venueId?: string | null;
+  allowRegistration?: boolean;
   image?: File;
 }

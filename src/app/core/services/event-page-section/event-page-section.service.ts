@@ -59,6 +59,8 @@ export class EventPageSectionService {
       formData.append('image', request.image);
     }
 
+    formData.append('showRegistrationForm', String(request.showRegistrationForm ?? false));
+
     if (request.configuration) {
       formData.append('configuration', request.configuration);
     }
@@ -74,6 +76,7 @@ export class EventPageSectionService {
 
     formData.append('sectionType', request.sectionType);
     formData.append('isVisible', request.isVisible.toString());
+    formData.append('showRegistrationForm', String(request.showRegistrationForm ?? false));
 
     if (request.title) {
       formData.append('title', request.title);

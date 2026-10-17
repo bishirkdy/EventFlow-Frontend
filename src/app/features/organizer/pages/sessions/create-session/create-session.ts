@@ -80,6 +80,7 @@ export class CreateSession implements OnInit {
     startTime: null,
     endTime: null,
     venueId: null,
+    allowRegistration: false,
   };
 
   ngOnInit(): void {
@@ -157,6 +158,7 @@ export class CreateSession implements OnInit {
       startTime: this.session.startTime || null,
       endTime: this.session.endTime || null,
       venueId: this.session.venueId || null,
+      allowRegistration: this.session.allowRegistration ?? false,
       image: this.selectedImage() ?? undefined,
     };
 

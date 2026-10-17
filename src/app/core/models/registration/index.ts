@@ -12,6 +12,7 @@ export * from './registration-form.model';
 export * from './registration-form-field.model';
 export * from './registration-form-field-request.request';
 export * from './registration-form-submit.model';
+export * from './registration-scope.enum';
 export * from './registration-stats.model';
 export * from './registration-status.enum';
 export * from './registration-trend-point.model';

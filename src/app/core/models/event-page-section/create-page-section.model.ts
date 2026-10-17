@@ -3,5 +3,6 @@
   title?: string;
   content?: string;
   image?: File;
+  showRegistrationForm?: boolean;
   configuration?: string;
 }

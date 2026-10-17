@@ -49,6 +49,7 @@ export class CreatePageSection {
     sectionType: ['', Validators.required],
     title: [''],
     content: [''],
+    showRegistrationForm: [false],
     configuration: [''],
   });
 

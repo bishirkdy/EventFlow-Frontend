@@ -67,6 +67,7 @@ export class UpdateSession implements OnInit {
           startTime: data.startTime ? this.toLocalDateTime(data.startTime) : null,
           endTime: data.endTime ? this.toLocalDateTime(data.endTime) : null,
           venueId: data.venueId,
+          allowRegistration: data.allowRegistration,
         };
         this.currentImageUrl.set(data.imageUrl ?? null);
         this.imagePreview.set(data.imageUrl ?? null);
@@ -97,6 +98,7 @@ export class UpdateSession implements OnInit {
     startTime: null,
     endTime: null,
     venueId: null,
+    allowRegistration: false,
   };
 
   ngOnInit(): void {
@@ -176,6 +178,7 @@ export class UpdateSession implements OnInit {
       startTime: this.session.startTime || null,
       endTime: this.session.endTime || null,
       venueId: this.session.venueId || null,
+      allowRegistration: this.session.allowRegistration ?? false,
       image: this.selectedImage() ?? undefined,
     };
 

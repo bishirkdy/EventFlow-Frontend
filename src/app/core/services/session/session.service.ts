@@ -57,6 +57,7 @@ export class SessionService {
     if (request.startTime) formData.append('StartTime', request.startTime);
     if (request.endTime) formData.append('EndTime', request.endTime);
     if (request.venueId) formData.append('VenueId', request.venueId);
+    formData.append('AllowRegistration', String(request.allowRegistration ?? false));
     if (request.image) formData.append('Image', request.image, request.image.name);
     return formData;
   }

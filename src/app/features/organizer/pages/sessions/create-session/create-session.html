@@ -217,6 +217,27 @@
           </p>
         </div>
 
+        <!-- Registration -->
+        <div class="border border-border bg-background px-4 py-3">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input
+              id="allowRegistration"
+              name="allowRegistration"
+              type="checkbox"
+              [(ngModel)]="session.allowRegistration"
+              class="mt-1 h-4 w-4 accent-primary"
+            />
+            <span>
+              <span class="block text-sm font-medium text-text-primary">
+                Allow registration for this session
+              </span>
+              <span class="mt-1 block text-xs text-text-muted">
+                Visitors can register for just this session. Their ticket is only valid when scanned at this session.
+              </span>
+            </span>
+          </label>
+        </div>
+
       </div>
 
       <div

@@ -1,4 +1,6 @@
 ﻿export interface CreateRegistrationRequest {
+  scopeType?: number;
+  scopeId?: string | null;
   firstName: string;
   lastName: string;
   email: string;

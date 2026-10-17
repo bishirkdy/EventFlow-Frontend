@@ -8,6 +8,7 @@
   imagePublicId: string | null;
   displayOrder: number;
   isVisible: boolean;
+  showRegistrationForm: boolean;
   configuration: string | null;
   createdAt: string;
   updatedAt: string | null;

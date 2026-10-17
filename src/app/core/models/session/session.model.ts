@@ -10,6 +10,7 @@
   endTime: string | null;
   venueId: string | null;
   imageUrl: string | null;
+  allowRegistration: boolean;
   status: string;
   createdAt: string;
   updatedAt: string | null;
