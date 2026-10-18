@@ -25,46 +25,20 @@
 
   </div>
 
-
-  <!-- Loading -->
-  @if (loading()) {
-
-    <div class="border border-border bg-surface p-8">
-
-      <div class="flex items-center gap-3">
-
-        <div
-          class="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-primary"
-        ></div>
-
-        <p class="text-sm text-text-secondary">
-          Loading sections...
-        </p>
-
-      </div>
-
-    </div>
-
-  }
-
-
-  <!-- Error -->
-  @if (error(); as message) {
-
-    <div
-      class="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
-    >
-      {{ message }}
-    </div>
-
-  }
-
-
-  <!-- Content -->
-  @if (!loading() && !error()) {
-
-    @if (sections().length > 0) {
-
+  <app-async-state
+    [loading]="loading()"
+    [error]="error()"
+    [empty]="sections().length === 0"
+    layout="inline"
+    loadingView="text"
+    loadingLabel="Loading sections..."
+    emptyTitle="No sections found"
+    emptyMessage="Create your first section for this event."
+    emptyActionLabel="Create Section"
+    (retry)="loadSections()"
+    (emptyAction)="createSection()"
+  >
+    <ng-template>
       <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
         @for (section of sections(); track section.id) {
@@ -182,42 +156,7 @@
         }
 
       </div>
-
-    } @else {
-
-      <!-- Empty State -->
-      <div
-        class="border border-dashed border-border bg-surface p-12 text-center"
-      >
-
-        <div
-          class="mx-auto flex h-12 w-12 items-center justify-center border border-border bg-background"
-        >
-          <span class="text-lg font-semibold text-text-secondary">
-            S
-          </span>
-        </div>
-
-        <h2 class="mt-5 text-base font-semibold text-text-primary">
-          No sections found
-        </h2>
-
-        <p class="mt-1 text-sm text-text-secondary">
-          Create your first section for this event.
-        </p>
-
-        <button
-          type="button"
-          (click)="createSection()"
-          class="mt-5 bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-        >
-          Create Section
-        </button>
-
-      </div>
-
-    }
-
-  }
+    </ng-template>
+  </app-async-state>
 
 </div>

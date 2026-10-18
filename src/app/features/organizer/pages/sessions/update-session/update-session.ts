@@ -10,11 +10,12 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 import { Event as EventModel } from '../../../../../core/models/event';
 import { createAsyncAction } from 'core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-update-session',
   standalone: true,
-  imports: [FormsModule, CapitalizePipe],
+  imports: [FormsModule, CapitalizePipe, AsyncState],
   templateUrl: './update-session.html',
   styleUrl: './update-session.css',
 })
@@ -29,6 +30,7 @@ export class UpdateSession implements OnInit {
   sessionId = '';
 
   error = signal<string | null>(null);
+  loadError = signal<string | null>(null);
   selectedImage = signal<File | null>(null);
   imagePreview = signal<string | null>(null);
   currentImageUrl = signal<string | null>(null);
@@ -51,11 +53,11 @@ export class UpdateSession implements OnInit {
     () => this.sessionService.getSessionById(this.eventId, this.sessionId),
     {
       errorFallback: 'Failed to load session.',
-      onError: () => this.error.set('Failed to load session.'),
+      onError: () => this.loadError.set('Failed to load session.'),
       onSuccess: (response) => {
         const data = response.data;
         if (!data) {
-          this.error.set('Session data was not returned.');
+          this.loadError.set('Session data was not returned.');
           return;
         }
 
@@ -106,12 +108,12 @@ export class UpdateSession implements OnInit {
     const sessionId = this.route.snapshot.paramMap.get('sessionId');
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
+      this.loadError.set('Event ID not found.');
       return;
     }
 
     if (!sessionId) {
-      this.error.set('Session ID not found.');
+      this.loadError.set('Session ID not found.');
       return;
     }
 
@@ -125,6 +127,11 @@ export class UpdateSession implements OnInit {
       this.eventWindowLabel.set(`${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} — ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`);
     }
 
+    this.reload();
+  }
+
+  reload(): void {
+    this.loadError.set(null);
     this.sessionAction.run();
     this.venuesAction.run();
   }

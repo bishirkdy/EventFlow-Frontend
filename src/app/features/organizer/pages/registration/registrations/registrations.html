@@ -19,14 +19,6 @@
   </header>
 
   <main class="mx-auto max-w-7xl px-6">
-    @if (error()) {
-      <section class="border-b border-[#e3e0dc] py-5">
-        <p class="text-sm font-medium text-red-600">
-          {{ error() }}
-        </p>
-      </section>
-    }
-
     <!-- Statistics -->
     <div class="grid grid-cols-2 border-b border-[#e3e0dc] lg:grid-cols-6">
       @for (
@@ -89,31 +81,18 @@
       </div>
     </section>
 
-    <!-- Loading -->
-    @if (loading()) {
-      <div class="divide-y divide-[#e3e0dc]">
-        @for (item of [1, 2, 3, 4]; track item) {
-          <div class="animate-pulse py-6">
-            <div class="h-4 w-48 bg-[#e8e5e1]"></div>
-            <div class="mt-3 h-3 w-64 bg-[#efedea]"></div>
-          </div>
-        }
-      </div>
-    }
-
-    <!-- Empty -->
-    @else if (filteredRegistrations().length === 0) {
-      <section class="border-b border-[#e3e0dc] py-28 text-center">
-        <h3 class="text-2xl font-semibold">No registrations yet</h3>
-
-        <p class="mx-auto mt-3 max-w-md text-sm leading-6 text-[#66615c]">
-          Registrations will appear here when attendees submit the event form.
-        </p>
-      </section>
-    }
-
-    <!-- Registration List -->
-    @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="filteredRegistrations().length === 0"
+      layout="inline"
+      skeleton="list"
+      [skeletonCount]="4"
+      emptyTitle="No registrations yet"
+      emptyMessage="Registrations will appear here when attendees submit the event form."
+      (retry)="load()"
+    >
+      <ng-template>
       <section class="divide-y divide-[#e3e0dc]">
         @for (item of filteredRegistrations(); track item.id) {
           <article
@@ -218,6 +197,7 @@
           </button>
         </div>
       </footer>
-    }
+      </ng-template>
+    </app-async-state>
   </main>
 </div>

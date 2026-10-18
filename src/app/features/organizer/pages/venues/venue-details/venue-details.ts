@@ -7,11 +7,12 @@ import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-venue-details',
   standalone: true,
-  imports: [CapitalizePipe],
+  imports: [CapitalizePipe, AsyncState],
   templateUrl: './venue-details.html',
   styleUrl: './venue-details.css',
 })
@@ -33,7 +34,6 @@ export class VenueDetails implements OnInit {
   private readonly loadAction = createAsyncAction(
     () => this.venueService.getVenueById(this.eventId, this.venueId),
     {
-      toastErrors: true,
       errorFallback: 'Failed to load venue.',
       onError: () => this.error.set('Failed to load venue.'),
       onSuccess: (response) => {
@@ -61,6 +61,11 @@ export class VenueDetails implements OnInit {
     this.eventId = eventId;
     this.venueId = venueId;
 
+    this.reload();
+  }
+
+  reload(): void {
+    this.error.set(null);
     this.loadAction.run();
   }
 

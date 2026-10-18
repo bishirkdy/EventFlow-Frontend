@@ -24,28 +24,16 @@
       </button>
     </div>
 
-    <!-- Loading -->
-    @if (loading()) {
-      <div
-        class="border border-border bg-surface px-6 py-10
-               text-center text-sm text-text-muted"
-      >
-        Loading session...
-      </div>
-    }
-
-    <!-- Error -->
-    @if (!loading() && error()) {
-      <div
-        class="border border-red-500/30 bg-red-500/10
-               px-4 py-3 text-sm text-red-500"
-      >
-        {{ error() }}
-      </div>
-    }
-
-    <!-- Details -->
-    @if (!loading() && session(); as currentSession) {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      layout="inline"
+      loadingView="text"
+      loadingLabel="Loading session..."
+      (retry)="reload()"
+    >
+      <ng-template>
+        @if (session(); as currentSession) {
       <div class="border border-border bg-surface">
 
         <!-- Header -->
@@ -232,6 +220,8 @@
 
         </div>
       </div>
-    }
+        }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

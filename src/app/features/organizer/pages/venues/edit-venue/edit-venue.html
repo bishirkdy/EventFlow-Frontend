@@ -25,19 +25,15 @@
     </div>
 
 
-    <!-- Loading -->
-    @if (loading()) {
-
-      <div class="py-10">
-        <p class="text-sm text-text-secondary">
-          Loading venue...
-        </p>
-      </div>
-
-    }
-
-    @else {
-
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      layout="inline"
+      loadingView="text"
+      loadingLabel="Loading venue..."
+      (retry)="reload()"
+    >
+      <ng-template>
       <form
         [formGroup]="form"
         (ngSubmit)="updateVenue()"
@@ -176,14 +172,6 @@
         </div>
 
 
-        <!-- Error -->
-        @if (error()) {
-          <p class="text-sm text-red-600">
-            {{ error() }}
-          </p>
-        }
-
-
         <!-- Actions -->
         <div class="flex items-center gap-4 pt-3">
 
@@ -207,8 +195,8 @@
         </div>
 
       </form>
-
-    }
+      </ng-template>
+    </app-async-state>
 
   </div>
 

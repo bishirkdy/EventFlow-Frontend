@@ -24,28 +24,16 @@
       </button>
     </div>
 
-    <!-- Loading -->
-    @if (loading()) {
-      <div
-        class="border border-border bg-surface px-6 py-10
-               text-center text-sm text-text-muted"
-      >
-        Loading section...
-      </div>
-    }
-
-    <!-- Error -->
-    @if (!loading() && error()) {
-      <div
-        class="border border-red-500/30 bg-red-500/10
-               px-4 py-3 text-sm text-red-500"
-      >
-        {{ error() }}
-      </div>
-    }
-
-    <!-- Details -->
-    @if (!loading() && section(); as currentSection) {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      layout="inline"
+      loadingView="text"
+      loadingLabel="Loading section..."
+      (retry)="reload()"
+    >
+      <ng-template>
+        @if (section(); as currentSection) {
       <div class="border border-border bg-surface">
 
         <!-- Section Header -->
@@ -171,6 +159,8 @@
 
         </div>
       </div>
-    }
+        }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

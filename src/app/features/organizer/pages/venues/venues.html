@@ -18,32 +18,20 @@
       </button>
     </div>
 
-    <!-- Loading -->
-    @if (loading()) {
-      <app-skeleton variant="list" [count]="4" />
-    }
-
-    <!-- Content -->
-    @else {
-      @if (venues().length === 0) {
-        <!-- Empty State -->
-        <div class="border-t border-border py-20 text-center">
-          <h2 class="text-lg font-medium text-text-primary">No venues yet</h2>
-
-          <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-text-secondary">
-            Add a venue to start organizing locations for your event.
-          </p>
-
-          <button
-            type="button"
-            (click)="createVenue()"
-            class="mt-6 bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
-          >
-            Add your first venue
-          </button>
-        </div>
-      } @else {
-        <!-- Venue List -->
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="venues().length === 0"
+      layout="inline"
+      skeleton="list"
+      [skeletonCount]="4"
+      emptyTitle="No venues yet"
+      emptyMessage="Add a venue to start organizing locations for your event."
+      emptyActionLabel="Add your first venue"
+      (retry)="loadVenues()"
+      (emptyAction)="createVenue()"
+    >
+      <ng-template>
         <div class="border-t border-border">
           @for (venue of venues(); track venue.id) {
             <div class="group border-b border-border py-6 transition">
@@ -101,7 +89,7 @@
             </div>
           }
         </div>
-      }
-    }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

@@ -6,11 +6,12 @@ import { UpdateSectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-update-section',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, AsyncState],
   templateUrl: './update-section.html',
   styleUrl: './update-section.css',
 })
@@ -25,16 +26,17 @@ export class UpdateSection implements OnInit {
   eventId = '';
 
   error = signal<string | null>(null);
+  loadError = signal<string | null>(null);
 
   private readonly loadAction = createAsyncAction(
     () => this.sectionService.getSectionById(this.sectionId),
     {
       errorFallback: 'Failed to load section.',
-      onError: () => this.error.set('Failed to load section.'),
+      onError: () => this.loadError.set('Failed to load section.'),
       onSuccess: (response) => {
         const data = response.data;
         if (!data) {
-          this.error.set('Section data was not returned.');
+          this.loadError.set('Section data was not returned.');
           return;
         }
 
@@ -80,18 +82,23 @@ export class UpdateSection implements OnInit {
       this.route.snapshot.paramMap.get('sectionId');
 
     if (!eventId) {
-      this.error.set('Event ID not found.');
+      this.loadError.set('Event ID not found.');
       return;
     }
 
     if (!sectionId) {
-      this.error.set('Section ID not found.');
+      this.loadError.set('Section ID not found.');
       return;
     }
 
     this.eventId = eventId;
     this.sectionId = sectionId;
 
+    this.reload();
+  }
+
+  reload(): void {
+    this.loadError.set(null);
     this.loadAction.run();
   }
 

@@ -37,26 +37,19 @@
       </button>
     </section>
 
-    @if (error()) {
-      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{{ error() }}</div>
-    }
-
-    <section class="overflow-hidden rounded-2xl border border-border bg-surface">
-      @if (loading()) {
-        <div class="divide-y divide-border">
-          @for (item of [1,2,3,4,5]; track item) {
-            <div class="animate-pulse p-5">
-              <div class="h-4 w-48 rounded bg-background"></div>
-              <div class="mt-2 h-3 w-72 rounded bg-background"></div>
-            </div>
-          }
-        </div>
-      } @else if (participants().length === 0) {
-        <div class="p-16 text-center">
-          <h2 class="text-lg font-semibold">No participants found</h2>
-          <p class="mt-2 text-sm text-text-muted">Try another search or wait for registrations to be approved.</p>
-        </div>
-      } @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="participants().length === 0"
+      layout="inline"
+      skeleton="list"
+      [skeletonCount]="5"
+      emptyTitle="No participants found"
+      emptyMessage="Try another search or wait for registrations to be approved."
+      (retry)="load()"
+    >
+      <ng-template>
+        <section class="overflow-hidden rounded-2xl border border-border bg-surface">
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm">
             <thead class="border-b border-border bg-background">
@@ -96,7 +89,8 @@
             <button type="button" (click)="nextPage()" [disabled]="page() >= totalPages()" class="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-40">Next</button>
           </div>
         </footer>
-      }
-    </section>
+        </section>
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

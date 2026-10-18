@@ -6,11 +6,12 @@ import { SectionService } from '../../../../core/services/section/section.servic
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction, createAsyncState } from 'core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-sections',
   standalone: true,
-  imports: [CapitalizePipe],
+  imports: [CapitalizePipe, AsyncState],
   templateUrl: './sections.html',
   styleUrl: './sections.css',
 })

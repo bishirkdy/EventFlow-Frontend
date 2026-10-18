@@ -24,28 +24,15 @@
       </button>
     </div>
 
-    <!-- Loading -->
-    @if (loading()) {
-      <div
-        class="border border-border bg-surface px-6 py-10
-               text-center text-sm text-text-muted"
-      >
-        Loading section...
-      </div>
-    }
-
-    <!-- Error -->
-    @if (!loading() && error()) {
-      <div
-        class="mb-6 border border-red-500/30 bg-red-500/10
-               px-4 py-3 text-sm text-red-500"
-      >
-        {{ error() }}
-      </div>
-    }
-
-    <!-- Form -->
-    @if (!loading()) {
+    <app-async-state
+      [loading]="loading()"
+      [error]="loadError()"
+      layout="inline"
+      loadingView="text"
+      loadingLabel="Loading section..."
+      (retry)="reload()"
+    >
+      <ng-template>
       <form
         (ngSubmit)="updateSection()"
         class="border border-border bg-surface"
@@ -60,6 +47,15 @@
             Update the section details below.
           </p>
         </div>
+
+        @if (error()) {
+          <div
+            class="border-b border-red-500/30 bg-red-500/10
+                   px-6 py-3 text-sm text-red-500"
+          >
+            {{ error() }}
+          </div>
+        }
 
         <div class="space-y-6 p-6">
 
@@ -204,6 +200,7 @@
         </div>
 
       </form>
-    }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

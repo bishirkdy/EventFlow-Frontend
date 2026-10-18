@@ -8,11 +8,12 @@ import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { UpdateVenueRequest } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-edit-venue',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncState],
   templateUrl: './edit-venue.html',
   styleUrl: './edit-venue.css',
 })
@@ -97,6 +98,11 @@ export class EditVenue implements OnInit {
     this.eventId = eventId;
     this.venueId = venueId;
 
+    this.reload();
+  }
+
+  reload(): void {
+    this.error.set(null);
     this.loadAction.run();
   }
 

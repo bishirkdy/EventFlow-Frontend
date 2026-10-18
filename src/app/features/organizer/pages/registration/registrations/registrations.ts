@@ -16,11 +16,12 @@ import {
 } from '../../../../../core/models/registration';
 import { getApiErrorMessage } from 'core/api/api-error';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-registrations',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, AsyncState],
   templateUrl: './registrations.html',
 })
 export class RegistrationsComponent {
@@ -295,7 +296,7 @@ export class RegistrationsComponent {
     this.load();
   }
 
-  private load(): void {
+  protected load(): void {
     const eventId = this.eventId();
 
     if (!eventId) {

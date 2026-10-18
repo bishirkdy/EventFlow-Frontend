@@ -16,12 +16,13 @@ import { SpeakerService } from '../../../../../core/services/speaker/speaker.ser
 import { SessionSpeakerService } from '../../../../../core/services/session-speaker/session-speaker.service';
 import { EventFeatureService } from '../../../../../core/services/event-feature/event-feature.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 import { createAsyncAction } from 'core/state';
 
 @Component({
   selector: 'app-session-details',
   standalone: true,
-  imports: [DatePipe, CapitalizePipe],
+  imports: [DatePipe, CapitalizePipe, AsyncState],
   templateUrl: './session-details.html',
   styleUrl: './session-details.css',
 })
@@ -157,12 +158,16 @@ export class SessionDetails implements OnInit {
     this.eventId = eventId;
     this.sessionId = sessionId;
 
+    this.reload();
+  }
+
+  reload(): void {
+    this.error.set(null);
     this.sessionAction.run();
     this.venuesAction.run();
     this.sectionsAction.run();
     this.loadSpeakerFeature();
   }
-
 
   private loadSpeakerFeature(): void {
     this.eventFeatureService.getFeatures(this.eventId).subscribe({

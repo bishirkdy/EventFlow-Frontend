@@ -9,11 +9,12 @@ import { ParticipantService } from '../../../../../core/services/registration/pa
 import { ParticipantModel } from '../../../../../core/models/registration';
 import { ParticipantStatus } from '../../../../../core/models/registration';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-participants',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, AsyncState],
   templateUrl: './participants.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

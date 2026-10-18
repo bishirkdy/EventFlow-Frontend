@@ -6,13 +6,13 @@ import { VenueModel } from '../../../../core/models/venue';
 import { VenueService } from '../../../../core/services/venue/venue.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
-import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-venue',
   standalone: true,
-  imports: [Skeleton, CapitalizePipe],
+  imports: [CapitalizePipe, AsyncState],
   templateUrl: './venues.html',
   styleUrl: './venues.css',
 })
@@ -31,8 +31,7 @@ export class Venues implements OnInit {
   private readonly loadAction = createAsyncAction(
     () => this.venueService.getVenues(this.eventId),
     {
-      toastErrors: true,
-      errorFallback: 'Failed to load venues',
+      errorFallback: 'Failed to load venues.',
       onSuccess: (response) => this.venues.set(response.data ?? []),
     },
   );
@@ -53,6 +52,7 @@ export class Venues implements OnInit {
   );
 
   loading = this.loadAction.pending;
+  error = this.loadAction.error;
 
   ngOnInit(): void {
     const eventId = this.getEventId();
@@ -81,7 +81,7 @@ export class Venues implements OnInit {
     return '';
   }
 
-  private loadVenues(): void {
+  loadVenues(): void {
     this.loadAction.run();
   }
 

@@ -7,11 +7,12 @@ import { SectionService } from '../../../../../core/services/section/section.ser
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-section-details',
   standalone: true,
-  imports: [CapitalizePipe],
+  imports: [CapitalizePipe, AsyncState],
   templateUrl: './section-details.html',
   styleUrl: './section-details.css',
 })
@@ -73,6 +74,11 @@ export class SectionDetails implements OnInit {
     this.eventId = eventId;
     this.sectionId = sectionId;
 
+    this.reload();
+  }
+
+  reload(): void {
+    this.error.set(null);
     this.loadAction.run();
   }
 

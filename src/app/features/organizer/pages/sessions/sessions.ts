@@ -8,12 +8,13 @@ import { SessionService } from '../../../../core/services/session/session.servic
 import { SectionService } from '../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 import { createAsyncAction, createAsyncState } from 'core/state';
 
 @Component({
   selector: 'app-sessions',
   standalone: true,
-  imports: [DatePipe, CapitalizePipe],
+  imports: [DatePipe, CapitalizePipe, AsyncState],
   templateUrl: './sessions.html',
   styleUrl: './sessions.css',
 })
