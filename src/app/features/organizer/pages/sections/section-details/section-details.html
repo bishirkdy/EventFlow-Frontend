@@ -1,24 +1,16 @@
 <div class="min-h-full bg-background p-6">
   <div class="mx-auto max-w-4xl">
-
-    <!-- Header -->
     <div class="mb-6 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-text-primary">
-          Section Details
-        </h1>
+        <h1 class="text-2xl font-semibold text-text-primary">Section Details</h1>
 
-        <p class="mt-1 text-sm text-text-secondary">
-          View the details of this event section.
-        </p>
+        <p class="mt-1 text-sm text-text-secondary">View the details of this event section.</p>
       </div>
 
       <button
         type="button"
         (click)="goBack()"
-        class="border border-border px-4 py-2 text-sm
-               font-medium text-text-secondary
-               hover:bg-surface hover:text-text-primary"
+        class="border border-border px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface hover:text-text-primary"
       >
         Back
       </button>
@@ -34,131 +26,85 @@
     >
       <ng-template>
         @if (section(); as currentSection) {
-      <div class="border border-border bg-surface">
+          <div class="border border-border bg-surface">
+            <div class="flex items-center justify-between border-b border-border px-6 py-5">
+              <div>
+                <h2 class="text-xl font-semibold text-text-primary">
+                  {{ currentSection.name | capitalize }}
+                </h2>
 
-        <!-- Section Header -->
-        <div
-          class="flex items-center justify-between
-                 border-b border-border px-6 py-5"
-        >
-          <div>
-            <h2 class="text-xl font-semibold text-text-primary">
-              {{ currentSection.name | capitalize }}
-            </h2>
+                <p class="mt-1 text-sm text-text-muted">Section information</p>
+              </div>
 
-            <p class="mt-1 text-sm text-text-muted">
-              Section information
-            </p>
-          </div>
-
-          <div class="flex gap-3">
-            <button
-              type="button"
-              (click)="editSection()"
-              class="border border-border px-4 py-2
-                     text-sm font-medium text-text-primary
-                     hover:bg-background"
-            >
-              Edit
-            </button>
-
-            <button
-              type="button"
-              (click)="deleteSection()"
-              class="border border-red-500/30 px-4 py-2
-                     text-sm font-medium text-red-500
-                     hover:bg-red-500/10"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-
-        <!-- Details -->
-        <div class="divide-y divide-border">
-
-          <!-- Name -->
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">
-              Name
-            </div>
-
-            <div class="text-sm text-text-primary sm:col-span-2">
-              {{ currentSection.name | capitalize }}
-            </div>
-          </div>
-
-          <!-- Description -->
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">
-              Description
-            </div>
-
-            <div class="text-sm text-text-primary sm:col-span-2">
-              @if (currentSection.description) {
-                {{ currentSection.description }}
-              } @else {
-                <span class="text-text-muted">
-                  No description provided.
-                </span>
-              }
-            </div>
-          </div>
-
-          <!-- Display Order -->
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">
-              Display Order
-            </div>
-
-            <div class="text-sm text-text-primary sm:col-span-2">
-              {{ currentSection.displayOrder }}
-            </div>
-          </div>
-
-          <!-- Status -->
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">
-              Status
-            </div>
-
-            <div class="sm:col-span-2">
-              @if (currentSection.isActive) {
-                <span
-                  class="border border-green-500/30
-                         bg-green-500/10 px-3 py-1
-                         text-xs font-medium text-green-500"
+              <div class="flex gap-3">
+                <button
+                  type="button"
+                  (click)="editSection()"
+                  class="border border-border px-4 py-2 text-sm font-medium text-text-primary hover:bg-background"
                 >
-                  Active
-                </span>
-              } @else {
-                <span
-                  class="border border-border bg-background
-                         px-3 py-1 text-xs font-medium
-                         text-text-muted"
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  (click)="deleteSection()"
+                  class="border border-red-500/30 px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10"
                 >
-                  Inactive
-                </span>
-              }
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            <div class="divide-y divide-border">
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Name</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  {{ currentSection.name | capitalize }}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Description</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  @if (currentSection.description) {
+                    {{ currentSection.description }}
+                  } @else {
+                    <span class="text-text-muted"> No description provided. </span>
+                  }
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Display Order</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  {{ currentSection.displayOrder }}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Status</div>
+
+                <div class="sm:col-span-2">
+                  @if (currentSection.isActive) {
+                    <span
+                      class="border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-medium text-green-500"
+                    >
+                      Active
+                    </span>
+                  } @else {
+                    <span
+                      class="border border-border bg-background px-3 py-1 text-xs font-medium text-text-muted"
+                    >
+                      Inactive
+                    </span>
+                  }
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- ID -->
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">
-              Section ID
-            </div>
-
-            <div
-              class="break-all text-sm text-text-muted
-                     sm:col-span-2"
-            >
-              {{ currentSection.id }}
-            </div>
-          </div>
-
-        </div>
-      </div>
         }
       </ng-template>
     </app-async-state>

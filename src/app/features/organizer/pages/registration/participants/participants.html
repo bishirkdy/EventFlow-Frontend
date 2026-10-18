@@ -1,38 +1,46 @@
 <div class="min-h-full bg-background p-4 sm:p-6 lg:p-8">
   <div class="mx-auto max-w-7xl space-y-6">
-    <header class="flex flex-col gap-4 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
+    <header
+      class="flex flex-col gap-4 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between"
+    >
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Registration</p>
         <h1 class="mt-2 text-3xl font-semibold tracking-tight text-text-primary">Participants</h1>
-        <p class="mt-2 text-sm text-text-muted">Manage the participant records created through event registration.</p>
+        <p class="mt-2 text-sm text-text-muted">
+          Manage the participant records created through event registration.
+        </p>
       </div>
       <a
         [routerLink]="['/organizer', state.eventId(), 'registration', 'registrations']"
-        class="inline-flex items-center justify-center rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary hover:bg-background"
+        class="inline-flex items-center justify-center border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary hover:bg-background"
       >
         Registration Management
       </a>
     </header>
 
-    <section class="grid gap-3 rounded-2xl border border-border bg-surface p-4 md:grid-cols-[1fr_220px_auto]">
+    <section class="grid gap-3 border border-border bg-surface p-4 md:grid-cols-[1fr_220px_auto]">
       <input
         type="search"
         [value]="search()"
         (input)="onSearch($any($event.target).value)"
         placeholder="Search name, email or participant number"
-        class="min-h-11 rounded-xl border border-border bg-background px-4 text-sm outline-none focus:border-secondary"
+        class="min-h-11 border border-border bg-background px-4 text-sm outline-none focus:border-secondary"
       />
       <select
         [value]="status() ?? ''"
         (change)="onStatus($any($event.target).value)"
-        class="min-h-11 rounded-xl border border-border bg-background px-4 text-sm outline-none focus:border-secondary"
+        class="min-h-11 border border-border bg-background px-4 text-sm outline-none focus:border-secondary"
       >
         <option value="">All participant status</option>
         @for (item of statuses; track item.value) {
           <option [value]="item.value">{{ item.label }}</option>
         }
       </select>
-      <button type="button" (click)="load()" class="min-h-11 rounded-xl bg-primary px-5 text-sm font-semibold text-white">
+      <button
+        type="button"
+        (click)="load()"
+        class="min-h-11 cursor-pointer bg-primary px-5 text-sm font-semibold text-white"
+      >
         Refresh
       </button>
     </section>
@@ -49,46 +57,62 @@
       (retry)="load()"
     >
       <ng-template>
-        <section class="overflow-hidden rounded-2xl border border-border bg-surface">
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-sm">
-            <thead class="border-b border-border bg-background">
-              <tr>
-                <th class="px-5 py-3 text-left font-semibold">Participant</th>
-                <th class="px-5 py-3 text-left font-semibold">Number</th>
-                <th class="px-5 py-3 text-left font-semibold">Organization</th>
-                <th class="px-5 py-3 text-left font-semibold">Status</th>
-                <th class="px-5 py-3"></th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border">
-              @for (item of participants(); track item.id) {
-                <tr class="cursor-pointer hover:bg-background" (click)="openParticipant(item)">
-                  <td class="px-5 py-4">
-                    <div class="font-medium">{{ item.firstName }} {{ item.lastName }}</div>
-                    <div class="mt-1 text-xs text-text-muted">{{ item.email }}</div>
-                  </td>
-                  <td class="px-5 py-4">{{ item.participantNumber }}</td>
-                  <td class="px-5 py-4">{{ item.organization || '—' }}</td>
-                  <td class="px-5 py-4">
-                    <span class="rounded-full bg-secondary-light px-2.5 py-1 text-xs font-medium text-secondary">
-                      {{ item.status === participantStatus.Active ? 'Active' : 'Cancelled' }}
-                    </span>
-                  </td>
-                  <td class="px-5 py-4 text-right text-secondary">View →</td>
+        <section class="overflow-hidden border border-border bg-surface">
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="border-b border-border bg-background">
+                <tr>
+                  <th class="px-5 py-3 text-left font-semibold">Participant</th>
+                  <th class="px-5 py-3 text-left font-semibold">Number</th>
+                  <th class="px-5 py-3 text-left font-semibold">Organization</th>
+                  <th class="px-5 py-3 text-left font-semibold">Status</th>
+                  <th class="px-5 py-3"></th>
                 </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
-        <footer class="flex items-center justify-between border-t border-border px-5 py-4">
-          <span class="text-xs text-text-muted">Page {{ page() }} of {{ totalPages() }}</span>
-          <div class="flex gap-2">
-            <button type="button" (click)="previousPage()" [disabled]="page() === 1" class="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-40">Previous</button>
-            <button type="button" (click)="nextPage()" [disabled]="page() >= totalPages()" class="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-40">Next</button>
+              </thead>
+              <tbody class="divide-y divide-border">
+                @for (item of participants(); track item.id) {
+                  <tr class="cursor-pointer hover:bg-background" (click)="openParticipant(item)">
+                    <td class="px-5 py-4">
+                      <div class="font-medium">{{ item.firstName }} {{ item.lastName }}</div>
+                      <div class="mt-1 text-xs text-text-muted">{{ item.email }}</div>
+                    </td>
+                    <td class="px-5 py-4">{{ item.participantNumber }}</td>
+                    <td class="px-5 py-4">{{ item.organization || '—' }}</td>
+                    <td class="px-5 py-4">
+                      <span
+                        class="bg-secondary-light px-2.5 py-1 text-xs font-medium text-secondary"
+                      >
+                        {{ item.status === participantStatus.Active ? 'Active' : 'Cancelled' }}
+                      </span>
+                    </td>
+                    <td class="px-5 py-4 text-right text-secondary">View →</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
-        </footer>
+
+          <footer class="flex items-center justify-between border-t border-border px-5 py-4">
+            <span class="text-xs text-text-muted">Page {{ page() }} of {{ totalPages() }}</span>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                (click)="previousPage()"
+                [disabled]="page() === 1"
+                class="border border-border px-3 py-2 text-sm disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                (click)="nextPage()"
+                [disabled]="page() >= totalPages()"
+                class="border border-border px-3 py-2 text-sm disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </footer>
         </section>
       </ng-template>
     </app-async-state>
