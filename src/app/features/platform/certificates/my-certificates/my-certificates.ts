@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -6,12 +6,12 @@ import { CertificateService } from '../../../../core/services/registration/certi
 import { CertificateModel } from '@/core/models/certificate';
 import { map } from 'rxjs';
 import { createAsyncAction, createAsyncState } from 'core/state';
-import { ErrorState } from '../../../../shared/components/error-state/error-state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-my-certificates',
-  imports: [DatePipe, RouterLink, ErrorState, CapitalizePipe],
+  imports: [DatePipe, RouterLink, AsyncState, CapitalizePipe],
   templateUrl: './my-certificates.html',
   styleUrl: './my-certificates.css',
 })
@@ -36,7 +36,7 @@ export class MyCertificates implements OnInit {
 
   readonly certificates = this.certificatesState.data;
   readonly loading = this.certificatesState.loading;
-  readonly error = computed(() => this.certificatesState.error() !== null);
+  readonly error = this.certificatesState.error;
 
   ngOnInit(): void {
     this.load();

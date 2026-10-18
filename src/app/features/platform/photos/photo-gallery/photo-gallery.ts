@@ -16,11 +16,12 @@ import {
 } from 'lucide-angular';
 import { Photo } from '@/core/models/photographer';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-photo-gallery',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, RouterLink],
+  imports: [CommonModule, LucideAngularModule, RouterLink, AsyncState],
   templateUrl: './photo-gallery.html',
 })
 export class PhotoGallery implements OnInit {
@@ -50,13 +51,14 @@ export class PhotoGallery implements OnInit {
       return this.photoService.getPhotos(eventId, this.currentPage(), this.pageSize(), true);
     },
     {
-      toastErrors: true,
       errorFallback: 'Failed to load photos.',
       onError: () => {
         this.photos.set([]);
         this.totalCount.set(0);
+        this.loadError.set('Failed to load photos.');
       },
       onSuccess: (response) => {
+        this.loadError.set(null);
         if (response && response.isSuccess && response.data) {
           this.photos.set(response.data.items ?? []);
           this.totalCount.set(response.data.totalCount ?? 0);
@@ -66,13 +68,15 @@ export class PhotoGallery implements OnInit {
         if (response) {
           this.photos.set([]);
           this.totalCount.set(0);
-          this.notification.error('Unable to load photos for this event.');
+          this.loadError.set('Unable to load photos for this event.');
         }
       },
     },
   );
 
   readonly loading = this.loadAction.pending;
+  private readonly loadError = signal<string | null>(null);
+  readonly error = this.loadError;
 
   readonly totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()));
   readonly hasPreviousPage = computed(() => this.currentPage() > 1);

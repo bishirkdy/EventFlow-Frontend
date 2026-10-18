@@ -9,11 +9,12 @@ import { ArrowLeft, ScanFace, Camera, LucideAngularModule, X } from 'lucide-angu
 import { SelfieCapture } from '../selfie-capture/selfie-capture';
 import { PhotoService } from '@/core/services/photo/photo.service';
 import { createRawAsyncState } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-photos',
   standalone: true,
-  imports: [CommonModule, RouterLink, LucideAngularModule, SelfieCapture],
+  imports: [CommonModule, RouterLink, LucideAngularModule, SelfieCapture, AsyncState],
   templateUrl: './my-photos.html',
 })
 export class MyPhotos implements OnInit {
@@ -38,6 +39,11 @@ export class MyPhotos implements OnInit {
 
   readonly allPhotos = this.photosState.data;
   readonly loading = this.photosState.loading;
+  readonly error = this.photosState.error;
+
+  reload(): void {
+    this.photosState.load();
+  }
 
   readonly matchedPhotos = signal<any[]>([]);
 

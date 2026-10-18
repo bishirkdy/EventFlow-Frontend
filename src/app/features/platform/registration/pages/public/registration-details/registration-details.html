@@ -1,35 +1,13 @@
 <div class="min-h-screen bg-background text-text-primary">
   <main class="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8 lg:py-16">
-    @if (loading()) {
-    <section class="grid min-h-[70vh] place-items-center">
-      <div class="text-center">
-        <div class="mx-auto h-9 w-9 animate-spin border-2 border-border border-t-primary"></div>
-        <p class="mt-5 text-sm text-text-secondary">Loading your registration...</p>
-      </div>
-    </section>
-    } @else if (error()) {
-    <section class="mx-auto mt-10 max-w-xl border border-border bg-surface p-9 text-center shadow-sm">
-      <span class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">Registration</span>
-      <h1 class="mt-4 font-serif text-4xl tracking-tighter text-text-primary">
-        Registration unavailable
-      </h1>
-      <p class="mt-4 text-sm leading-7 text-text-secondary">{{ error() }}</p>
-
-      <div class="mt-7 flex flex-wrap justify-center gap-3">
-        <button type="button"
-          class="bg-primary px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.15em] text-white transition hover:opacity-90"
-          (click)="loadRegistration()">
-          Try again
-        </button>
-
-        <button type="button"
-          class="border border-border bg-surface px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.15em] text-text-primary transition hover:border-primary hover:text-primary"
-          (click)="goToRegistrations()">
-          My registrations
-        </button>
-      </div>
-    </section>
-    } @else if (registration(); as item) {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      loadingView="spinner"
+      loadingLabel="Loading your registration..."
+      (retry)="loadRegistration()">
+      <ng-template>
+      @if (registration(); as item) {
     <header class="mb-9">
       <button type="button"
         class="mb-7 cursor-pointer text-[10px] font-extrabold uppercase tracking-[0.14em] text-text-secondary transition hover:text-primary"
@@ -217,6 +195,8 @@
       </button>
     </footer>
     }
+      </ng-template>
+    </app-async-state>
 
     @if (showFeedbackPopup()) {
     @if (feedbackEventId(); as selectedEventId) {

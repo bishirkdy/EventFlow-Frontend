@@ -5,11 +5,12 @@
       <p class="text-gray-600 dark:text-gray-400 mt-1">Check whether a certificate is authentic</p>
     </div>
 
-    @if (loading()) {
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center text-gray-500 dark:text-gray-400">
-        Verifying certificate...
-      </div>
-    } @else if (result(); as cert) {
+    <app-async-state
+      [loading]="loading()"
+      loadingView="text"
+      loadingLabel="Verifying certificate...">
+      <ng-template>
+      @if (result(); as cert) {
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center">
         @if (cert.isValid) {
           <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
@@ -69,5 +70,7 @@
         </a>
       </div>
     }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

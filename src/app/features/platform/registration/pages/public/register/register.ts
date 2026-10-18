@@ -11,11 +11,12 @@ import { Event } from '../../../../../../core/models/event';
 import { RegistrationFormSubmit } from '../../../../../../core/models/registration';
 import { ApiResponse } from '@/core/models/common';
 import { createAsyncAction, createRawAsyncState } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RegistrationFormComponent],
+  imports: [RegistrationFormComponent, AsyncState],
   templateUrl: './register.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

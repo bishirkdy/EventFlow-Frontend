@@ -1,23 +1,12 @@
 <div class="min-h-screen" style="background: var(--color-background); color: var(--color-text-primary)">
-  @if (loading()) {
-    <main class="grid min-h-screen place-items-center px-6">
-      <div class="text-center">
-        <div class="mx-auto h-9 w-9 animate-spin rounded-full border-2" style="border-color: var(--color-border); border-top-color: var(--color-primary)"></div>
-        <p class="mt-5 text-sm" style="color: var(--color-text-secondary)">Preparing your registration...</p>
-      </div>
-    </main>
-  } @else if (error()) {
-    <main class="grid min-h-screen place-items-center px-6">
-      <section class="w-full max-w-md rounded-3xl border p-8 text-center shadow-sm" style="background: var(--color-surface); border-color: var(--color-border)">
-        <span class="text-[10px] font-extrabold uppercase tracking-[0.2em]" style="color: var(--color-primary)">Registration</span>
-        <h1 class="mt-3 font-serif text-4xl tracking-[-0.04em]" style="color: var(--color-text-primary)">Registration unavailable</h1>
-        <p class="mt-4 text-sm leading-7" style="color: var(--color-text-secondary)">{{ error() }}</p>
-        <button type="button" class="mt-7 rounded-xl px-6 py-3 text-[11px] font-extrabold uppercase tracking-[0.15em] transition hover:-translate-y-0.5" style="background: var(--color-primary); color: #fff" (click)="loadRegistrationForm()">
-          Try again
-        </button>
-      </section>
-    </main>
-  } @else if (registrationForm(); as form) {
+  <app-async-state
+    [loading]="loading()"
+    [error]="error()"
+    loadingView="spinner"
+    loadingLabel="Preparing your registration..."
+    (retry)="loadRegistrationForm()">
+    <ng-template>
+    @if (registrationForm(); as form) {
     @if (!form.isActive) {
       <main class="grid min-h-screen place-items-center px-6">
         <section class="w-full max-w-md rounded-3xl border p-8 text-center shadow-sm" style="background: var(--color-surface); border-color: var(--color-border)">
@@ -37,4 +26,6 @@
       </main>
     }
   }
+    </ng-template>
+  </app-async-state>
 </div>

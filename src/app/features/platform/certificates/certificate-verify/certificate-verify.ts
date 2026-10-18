@@ -5,11 +5,12 @@ import { CertificateService } from 'core/services/registration/certificate.servi
 import { CertificateVerifyModel } from '@/core/models/certificate';
 import { ApiResponse } from '@/core/models/common';
 import { createRawAsyncState } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-certificate-verify',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AsyncState],
   templateUrl: './certificate-verify.html',
 })
 

@@ -9,11 +9,12 @@ import { RegistrationModel } from '../../../../../../core/models/registration';
 import { FeedbackComponent } from '@/features/platform/feedback/feedback';
 import { ApiResponse } from '@/core/models/common';
 import { createRawAsyncState } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-public-registration-details',
   standalone: true,
-  imports: [DatePipe, RegistrationStatusComponent, TicketComponent, FeedbackComponent],
+  imports: [DatePipe, RegistrationStatusComponent, TicketComponent, FeedbackComponent, AsyncState],
   templateUrl: './registration-details.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

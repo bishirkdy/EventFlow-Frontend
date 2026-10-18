@@ -5,12 +5,12 @@ import { CertificateService } from 'core/services/registration/certificate.servi
 import { CertificateModel } from '@/core/models/certificate';
 import { map } from 'rxjs';
 import { createAsyncAction, createRawAsyncState } from 'core/state';
-import { ErrorState } from '../../../../shared/components/error-state/error-state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-certificate',
   standalone: true,
-  imports: [CommonModule, RouterModule, ErrorState],
+  imports: [CommonModule, RouterModule, AsyncState],
   templateUrl: './my-certificate.html',
 })
 

@@ -7,11 +7,12 @@ import { RegistrationService } from '../../../../../../core/services/registratio
 import { RegistrationModel } from '../../../../../../core/models/registration';
 import { ApiResponse } from '@/core/models/common';
 import { createRawAsyncState } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-registrations',
   standalone: true,
-  imports: [DatePipe, RegistrationStatusComponent , RouterLink],
+  imports: [DatePipe, RegistrationStatusComponent , RouterLink, AsyncState],
   templateUrl: './my-registrations.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

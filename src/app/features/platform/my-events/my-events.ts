@@ -14,11 +14,11 @@ import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
 import { createAsyncAction } from 'core/state';
-import { Skeleton } from '../../../shared/components/skeleton/skeleton';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent, Skeleton, CapitalizePipe],
+  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent, CapitalizePipe, AsyncState],
   templateUrl: './my-events.html',
   styleUrl: './my-events.css',
 })
@@ -71,7 +71,6 @@ export class MyEvents implements OnInit {
   );
 
   private readonly loadAction = createAsyncAction(() => this.eventService.getMyEvents(), {
-    toastErrors: true,
     errorFallback: 'Failed to load events',
     onSuccess: (response) => {
       const events = response.data ?? [];
@@ -86,6 +85,7 @@ export class MyEvents implements OnInit {
   });
 
   readonly loading = this.loadAction.pending;
+  readonly error = this.loadAction.error;
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
@@ -99,8 +99,12 @@ export class MyEvents implements OnInit {
     this.openAction.run(event);
   }
 
-  private loadEvents(): void {
+  loadEvents(): void {
     this.loadAction.run();
+  }
+
+  goToEvents(): void {
+    void this.router.navigate(['/events']);
   }
 
   private loadEventRoles(eventId: string): void {

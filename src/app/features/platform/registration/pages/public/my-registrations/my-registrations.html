@@ -24,63 +24,19 @@
       </button>
     </header>
 
-    @if (loading()) {
-      <section class="mt-8 flex min-h-64 items-center justify-center border border-border bg-surface">
-        <div class="flex flex-col items-center gap-4">
-          <div
-            class="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-secondary"
-            role="status"
-            aria-label="Loading registrations"
-          ></div>
-
-          <p class="text-sm text-text-secondary">
-            Loading your registrations...
-          </p>
-        </div>
-      </section>
-    }
-
-    @else if (error()) {
-      <section class="mt-8 border border-border bg-surface px-6 py-12 text-center">
-        <h2 class="text-xl font-semibold text-text-primary">
-          Unable to load registrations
-        </h2>
-
-        <p class="mt-2 text-sm text-text-secondary">
-          {{ error() }}
-        </p>
-
-        <button
-          type="button"
-          class="mt-5 inline-flex items-center justify-center border border-secondary bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white hover:text-secondary"
-          (click)="loadRegistrations()"
-        >
-          Try Again
-        </button>
-      </section>
-    }
-
-    @else if (registrations().length === 0) {
-      <section class="mt-8 flex min-h-72 flex-col items-center justify-center border border-border bg-surface px-6 py-12 text-center">
-        <h2 class="text-xl font-semibold text-text-primary">
-          No registrations yet
-        </h2>
-
-        <p class="mt-2 max-w-md text-sm leading-6 text-text-secondary">
-          You haven't registered for this event yet. Start your registration to see your details here.
-        </p>
-
-        <button
-          type="button"
-          class="mt-6 inline-flex items-center justify-center border border-secondary bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white hover:text-secondary"
-          (click)="registerAgain()"
-        >
-          Start Registration
-        </button>
-      </section>
-    }
-
-    @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="registrations().length === 0"
+      loadingView="spinner"
+      loadingLabel="Loading your registrations..."
+      emptyTitle="No registrations yet"
+      emptyMessage="You haven't registered for this event yet. Start your registration to see your details here."
+      emptyActionLabel="Start Registration"
+      (retry)="loadRegistrations()"
+      (emptyAction)="registerAgain()"
+    >
+      <ng-template>
       <section class="mt-8 grid gap-4">
         @for (registration of registrations(); track registration.id) {
           <article
@@ -125,6 +81,7 @@
           </article>
         }
       </section>
-    }
+      </ng-template>
+    </app-async-state>
   </main>
 </div>

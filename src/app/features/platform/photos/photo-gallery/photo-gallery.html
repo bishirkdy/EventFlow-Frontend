@@ -62,40 +62,17 @@
       </div>
     </header>
 
-    @if (loading()) {
-      <div
-        class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5"
-        aria-label="Loading photos"
-        aria-busy="true"
-      >
-        @for (slot of skeletonSlots; track slot) {
-          <div class="overflow-hidden border border-border bg-surface">
-            <div class="aspect-square animate-pulse bg-muted"></div>
-
-            <div class="space-y-2 p-3">
-              <div class="h-3 w-2/3 animate-pulse bg-muted"></div>
-
-              <div class="h-3 w-1/3 animate-pulse bg-muted"></div>
-            </div>
-          </div>
-        }
-      </div>
-    } @else if (photos().length === 0) {
-      <div
-        class="flex min-h-80 flex-col items-center justify-center border border-dashed border-border bg-surface px-6 py-16 text-center"
-      >
-        <div class="flex h-16 w-16 items-center justify-center bg-muted text-text-secondary">
-          <lucide-icon [img]="Images" [size]="32" [strokeWidth]="1.5" />
-        </div>
-
-        <h2 class="mt-5 text-lg font-semibold">No photos yet</h2>
-
-        <p class="mt-2 max-w-sm text-sm leading-6 text-text-secondary">
-          Photos will appear here once photographers upload them. Check back later to explore the
-          gallery.
-        </p>
-      </div>
-    } @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="photos().length === 0"
+      skeleton="cards"
+      [skeletonCount]="12"
+      emptyTitle="No photos yet"
+      emptyMessage="Photos will appear here once photographers upload them. Check back later to explore the gallery."
+      (retry)="loadPhotos()"
+    >
+      <ng-template>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
         @for (photo of photos(); track photo.photoId) {
           <button
@@ -197,6 +174,7 @@
           </button>
         </nav>
       }
-    }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

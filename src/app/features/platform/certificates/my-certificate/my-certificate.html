@@ -5,13 +5,14 @@
       <p class="text-gray-600 dark:text-gray-400 mt-1">Your participation certificate for this event</p>
     </div>
 
-    @if (loading()) {
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center text-gray-500 dark:text-gray-400">
-        Loading your certificate...
-      </div>
-    } @else if (error()) {
-      <app-error-state [message]="error()!" [showRetry]="true" (retry)="load()" />
-    } @else if (certificate(); as cert) {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      loadingView="text"
+      loadingLabel="Loading your certificate..."
+      (retry)="load()">
+      <ng-template>
+      @if (certificate(); as cert) {
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-border p-8 text-center">
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
           <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -69,5 +70,7 @@
         </a>
       </div>
     }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

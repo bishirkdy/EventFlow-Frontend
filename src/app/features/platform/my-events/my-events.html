@@ -9,31 +9,19 @@
       </p>
     </div>
 
-    <!-- Loading -->
-    @if (loading()) {
-      <div class="mt-8">
-        <app-skeleton variant="cards" [count]="6" />
-      </div>
-    }
-
-    <!-- Empty -->
-    @else if (events().length === 0) {
-      <div class="mt-8 flex min-h-72 flex-col items-center justify-center px-6 py-16 text-center">
-        <h2 class="mt-5 text-lg font-semibold text-text-primary">No registered events</h2>
-
-        <p class="mt-2 max-w-md text-sm text-text-secondary">
-          You haven't registered for any events yet. Explore available events and register to see
-          them here
-        </p>
-
-        <a
-          routerLink="/events"
-          class="mt-5 inline-flex border border-secondary bg-secondary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-secondary-dark"
-        >
-          Explore Events
-        </a>
-      </div>
-    } @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="events().length === 0"
+      skeleton="cards"
+      [skeletonCount]="6"
+      emptyTitle="No registered events"
+      emptyMessage="You haven't registered for any events yet. Explore available events and register to see them here"
+      emptyActionLabel="Explore Events"
+      (retry)="loadEvents()"
+      (emptyAction)="goToEvents()"
+    >
+      <ng-template>
       <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         @for (event of events(); track event.id) {
           <div
@@ -134,7 +122,8 @@
           </div>
         }
       </div>
-    }
+      </ng-template>
+    </app-async-state>
   </div>
 
   @if (showFeedbackPopup()) {

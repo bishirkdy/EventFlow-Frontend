@@ -53,7 +53,7 @@ describe('MyCertificates', () => {
 
     expect(component.certificates()).toEqual(certificates);
     expect(component.loading()).toBe(false);
-    expect(component.error()).toBe(false);
+    expect(component.error()).toBeNull();
   });
 
   it('shows the empty state when no certificates exist', async () => {
@@ -62,7 +62,7 @@ describe('MyCertificates', () => {
     await fixture.whenStable();
 
     expect(component.certificates()).toEqual([]);
-    expect(component.error()).toBe(false);
+    expect(component.error()).toBeNull();
   });
 
   it('flags an error when the request fails', async () => {
@@ -70,7 +70,7 @@ describe('MyCertificates', () => {
     component.load();
     await fixture.whenStable();
 
-    expect(component.error()).toBe(true);
+    expect(component.error()).toBeTruthy();
     expect(component.loading()).toBe(false);
   });
 

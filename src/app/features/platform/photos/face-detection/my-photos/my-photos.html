@@ -114,34 +114,17 @@
       }
     </section>
 
-    <!-- Loading State -->
-    @if (loading()) {
-      <div class="flex flex-col items-center justify-center border border-border bg-surface px-4 py-16 text-center">
-        <span class="size-8 animate-spin rounded-full border-2 border-primary border-r-transparent"></span>
-        <p class="mt-4 font-medium text-text-primary">
-          Loading event photos...
-        </p>
-        <p class="mt-1 text-sm text-text-secondary">
-          Please wait while we load the gallery.
-        </p>
-      </div>
-    } @else if (allPhotos().length === 0) {
-      <!-- Empty Gallery -->
-      <div class="border border-border bg-surface px-4 py-16 text-center">
-        <div class="mx-auto flex size-14 items-center justify-center bg-primary/10 text-primary">
-          <lucide-icon [img]="Camera" [size]="26" />
-        </div>
-
-        <h3 class="mt-4 font-semibold text-text-primary">
-          No event photos available
-        </h3>
-
-        <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">
-          There are no photos available in this event gallery yet.
-          Please check back later.
-        </p>
-      </div>
-    } @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="allPhotos().length === 0"
+      loadingView="spinner"
+      loadingLabel="Loading event photos..."
+      emptyTitle="No event photos available"
+      emptyMessage="There are no photos available in this event gallery yet. Please check back later."
+      (retry)="reload()"
+    >
+      <ng-template>
       <!-- Matching Results -->
       <section class="mb-10">
         <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -233,7 +216,8 @@
           </div>
         }
       </section>
-    }
+      </ng-template>
+    </app-async-state>
 
   </div>
 
