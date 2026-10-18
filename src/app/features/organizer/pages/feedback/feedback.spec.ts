@@ -125,6 +125,6 @@ describe('OrganizerFeedbackComponent', () => {
 
     expect(component.loading()).toBe(false);
     expect(component.results()).toBeNull();
-    expect(notify.error).toHaveBeenCalled();
+    expect(component.error()).toBeTruthy();
   });
 });

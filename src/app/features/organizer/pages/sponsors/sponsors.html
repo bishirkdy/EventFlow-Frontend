@@ -34,17 +34,19 @@
       </div>
     </div>
 
-    @if (loading()) {
-      <div class="py-20 text-center text-sm text-text-secondary">Loading sponsors...</div>
-    } @else if (!sponsors().length) {
-      <div class="border-b border-border py-24 text-center">
-        <h2 class="text-2xl font-semibold text-text-primary">No sponsors yet</h2>
-        <p class="mt-2 text-sm text-text-secondary">Add partners and give every level a distinct presence.</p>
-        <button type="button" (click)="create()" class="mt-7 bg-primary px-6 py-3 text-sm font-semibold text-white hover:opacity-90">
-          Add first sponsor
-        </button>
-      </div>
-    } @else {
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="!sponsors().length"
+      loadingView="text"
+      loadingLabel="Loading sponsors..."
+      emptyTitle="No sponsors yet"
+      emptyMessage="Add partners and give every level a distinct presence."
+      emptyActionLabel="Add first sponsor"
+      (retry)="load()"
+      (emptyAction)="create()"
+    >
+      <ng-template>
       <div class="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-3">
         @for (s of sponsors(); track s.id) {
           <article class="group bg-surface p-5 sm:p-7">
@@ -81,6 +83,7 @@
           </article>
         }
       </div>
-    }
+      </ng-template>
+    </app-async-state>
   </div>
 </div>

@@ -5,16 +5,16 @@ import { SpeakerModel } from '../../../../core/models/speaker';
 import { SpeakerService } from '../../../../core/services/speaker/speaker.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { createAsyncAction } from 'core/state';
-import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
-@Component({ selector:'app-speakers', standalone:true, imports:[Skeleton, CapitalizePipe], templateUrl:'./speakers.html', styleUrl:'./speakers.css' })
+@Component({ selector:'app-speakers', standalone:true, imports:[CapitalizePipe, AsyncState], templateUrl:'./speakers.html', styleUrl:'./speakers.css' })
 export class Speakers implements OnInit {
  private readonly service=inject(SpeakerService); private readonly route=inject(ActivatedRoute); private readonly router=inject(Router); private readonly toastr=inject(NotificationService); private readonly state=inject(OrganizerEventStateService);
  speakers=signal<SpeakerModel[]>([]); deleting=signal<string|null>(null); eventId='';
- private readonly loadAction=createAsyncAction(()=>this.service.getSpeakers(this.eventId),{toastErrors:true,errorFallback:'Failed to load speakers.',onSuccess:r=>this.speakers.set(r.data??[])});
+ private readonly loadAction=createAsyncAction(()=>this.service.getSpeakers(this.eventId),{errorFallback:'Failed to load speakers.',onSuccess:r=>this.speakers.set(r.data??[])});
  private readonly removeAction=createAsyncAction((id:string)=>this.service.deleteSpeaker(this.eventId,id),{onSettled:()=>this.deleting.set(null),onSuccess:r=>{if(r.isSuccess){this.toastr.success(r.message||'Speaker deleted.');this.load();}else this.toastr.error(r.message||'Delete failed.');}});
- loading=this.loadAction.pending;
+ loading=this.loadAction.pending; readonly error=this.loadAction.error;
  activeCount = computed(() => this.speakers().filter(speaker => speaker.isActive).length);
  organizationCount = computed(() => new Set(this.speakers().map(speaker => speaker.organization?.trim()).filter(Boolean)).size);
  ngOnInit(){this.eventId=this.findEventId(); if(!this.eventId){this.toastr.error('Event ID not found.');return;} this.state.setEventId(this.eventId); this.load();}

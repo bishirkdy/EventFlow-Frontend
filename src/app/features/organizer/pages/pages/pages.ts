@@ -7,11 +7,12 @@ import { EventPageModel } from '../../../../core/models/event-page';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-pages',
   standalone: true,
-  imports: [CapitalizePipe],
+  imports: [CapitalizePipe, AsyncState],
   templateUrl: './pages.html',
   styleUrl: './pages.css',
 })
@@ -30,7 +31,6 @@ export class Pages implements OnInit {
   private readonly loadAction = createAsyncAction(
     (eventId: string) => this.pageService.getManagePages(eventId),
     {
-      toastErrors: true,
       errorFallback: 'Failed to load event pages.',
       onSuccess: (response) => this.pages.set(response.data ?? []),
     },
@@ -81,6 +81,7 @@ export class Pages implements OnInit {
   );
 
   loading = this.loadAction.pending;
+  readonly error = this.loadAction.error;
 
   ngOnInit(): void {
     this.loadPages();

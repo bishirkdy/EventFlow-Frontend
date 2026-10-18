@@ -18,26 +18,18 @@
     </a>
   </div>
 
-  <!-- Loading State -->
-  @if (loading()) {
-    <div
-      class="flex min-h-48 w-full items-center justify-center border border-border bg-surface px-6 py-10 text-sm text-text-secondary"
-    >
-      Loading feedback...
-    </div>
-  } @else if (!results()) {
-    <!-- Empty Data State -->
-    <div
-      class="flex min-h-48 w-full flex-col items-center justify-center border border-dashed border-border bg-surface px-6 py-10 text-center"
-    >
-      <h2 class="text-base font-semibold text-text-primary">
-        No feedback data available
-      </h2>
-      <p class="mt-1 text-sm text-text-secondary">
-        Feedback statistics will appear here when data becomes available.
-      </p>
-    </div>
-  } @else {
+  <app-async-state
+    [loading]="loading()"
+    [error]="error()"
+    [empty]="!results()"
+    layout="inline"
+    loadingView="text"
+    loadingLabel="Loading feedback..."
+    emptyTitle="No feedback data available"
+    emptyMessage="Feedback statistics will appear here when data becomes available."
+    (retry)="load()"
+  >
+    <ng-template>
     <!-- Summary Statistics -->
     <div class="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3">
       <div
@@ -282,5 +274,6 @@
         </div>
       }
     </section>
-  }
+    </ng-template>
+  </app-async-state>
 </div>

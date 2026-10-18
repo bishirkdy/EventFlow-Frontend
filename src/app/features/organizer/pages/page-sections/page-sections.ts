@@ -7,11 +7,12 @@ import { EventPageSectionService } from '../../../../core/services/event-page-se
 import { PageSectionModel } from '../../../../core/models/event-page-section';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-page-sections',
   standalone: true,
-  imports: [CapitalizePipe],
+  imports: [CapitalizePipe, AsyncState],
   templateUrl: './page-sections.html',
   styleUrl: './page-sections.css',
 })
@@ -29,7 +30,6 @@ export class PageSections implements OnInit {
   private readonly loadAction = createAsyncAction(
     () => this.pageSectionService.getManageSections(this.pageId),
     {
-      toastErrors: true,
       errorFallback: 'Failed to load page sections.',
       onSuccess: (response) => this.sections.set(response.data ?? []),
     },
@@ -70,6 +70,7 @@ export class PageSections implements OnInit {
   );
 
   loading = this.loadAction.pending;
+  readonly error = this.loadAction.error;
 
   ngOnInit(): void {
     this.pageId = this.route.snapshot.paramMap.get('pageId') ?? '';

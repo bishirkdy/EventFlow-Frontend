@@ -22,50 +22,19 @@
     </button>
   </div>
 
-  <!-- Loading -->
-  @if (loading()) {
-    <div class="flex min-h-56 items-center justify-center border border-border bg-surface">
-      <div class="text-center">
-        <div
-          class="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-border border-t-primary"
-        ></div>
-
-        <p class="text-sm text-text-muted">
-          Loading sections...
-        </p>
-      </div>
-    </div>
-  }
-
-  <!-- Empty -->
-  @if (!loading() && sections().length === 0) {
-    <div class="border border-border bg-surface px-6 py-14 text-center">
-      <div
-        class="mx-auto flex h-12 w-12 items-center justify-center border border-border bg-background text-xl text-text-muted"
-      >
-        +
-      </div>
-
-      <h2 class="mt-5 text-lg font-medium text-text-primary">
-        No sections yet
-      </h2>
-
-      <p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">
-        Add sections to start building the content and layout of this page.
-      </p>
-
-      <button
-        type="button"
-        (click)="createSection()"
-        class="mt-6 cursor-pointer bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-      >
-        Add First Section
-      </button>
-    </div>
-  }
-
-  <!-- Sections -->
-  @if (!loading() && sections().length > 0) {
+  <app-async-state
+    [loading]="loading()"
+    [error]="error()"
+    [empty]="sections().length === 0"
+    loadingView="spinner"
+    loadingLabel="Loading sections..."
+    emptyTitle="No sections yet"
+    emptyMessage="Add sections to start building the content and layout of this page."
+    emptyActionLabel="Add First Section"
+    (retry)="loadSections()"
+    (emptyAction)="createSection()"
+  >
+    <ng-template>
     <div class="overflow-hidden border border-border bg-surface">
       <div class="overflow-x-auto">
         <table class="w-full min-w-[800px] text-left">
@@ -194,5 +163,6 @@
         </table>
       </div>
     </div>
-  }
+    </ng-template>
+  </app-async-state>
 </div>

@@ -6,11 +6,12 @@ import { FeedbackService } from '../../../../core/services/feedback/feedback.ser
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { FeedbackResults, FeedbackTargetType } from '../../../../core/models/feedback';
 import { createAsyncAction } from 'core/state';
+import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-organizer-feedback',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, RouterLink],
+  imports: [DatePipe, DecimalPipe, RouterLink, AsyncState],
   templateUrl: './feedback.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -28,7 +29,6 @@ export class OrganizerFeedbackComponent implements OnInit {
       return this.feedbackService.results(this.eventId);
     },
     {
-      toastErrors: true,
       errorFallback: 'Unable to load feedback results.',
       onSuccess: (response) => {
         if (response) {
@@ -39,6 +39,7 @@ export class OrganizerFeedbackComponent implements OnInit {
   );
 
   readonly loading = this.loadAction.pending;
+  readonly error = this.loadAction.error;
 
   readonly targetLabels: Record<number, string> = {
     [FeedbackTargetType.Event]: 'Event',
@@ -48,6 +49,10 @@ export class OrganizerFeedbackComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.load();
+  }
+
+  load(): void {
     this.loadAction.run();
   }
 

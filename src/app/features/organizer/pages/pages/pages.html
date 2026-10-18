@@ -16,32 +16,20 @@
     </button>
   </div>
 
-  <!-- Loading -->
-  @if (loading()) {
-    <div class="py-12 text-center text-sm text-text-secondary">Loading pages...</div>
-  }
-
-  <!-- Empty -->
-  @else if (pages().length === 0) {
-    <div class="border border-border bg-surface px-6 py-12 text-center">
-      <h2 class="text-lg font-medium text-text-primary">No pages yet</h2>
-
-      <p class="mt-2 text-sm text-text-secondary">
-        Create your first event page to start building your website.
-      </p>
-
-      <button
-        type="button"
-        (click)="createPage()"
-        class="mt-6 cursor-pointer bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-      >
-        Create Page
-      </button>
-    </div>
-  }
-
-  <!-- Pages -->
-  @else {
+  <app-async-state
+    [loading]="loading()"
+    [error]="error()"
+    [empty]="pages().length === 0"
+    layout="inline"
+    loadingView="text"
+    loadingLabel="Loading pages..."
+    emptyTitle="No pages yet"
+    emptyMessage="Create your first event page to start building your website."
+    emptyActionLabel="Create Page"
+    (retry)="loadPages()"
+    (emptyAction)="createPage()"
+  >
+    <ng-template>
     <div class="overflow-hidden border border-border bg-surface">
       <div class="overflow-x-auto">
         <table class="w-full text-left">
@@ -168,5 +156,6 @@
         </table>
       </div>
     </div>
-  }
+    </ng-template>
+  </app-async-state>
 </div>

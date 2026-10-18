@@ -12,8 +12,21 @@
         <div class="pl-4 pt-4 sm:pl-6"><span class="text-xs uppercase tracking-widest text-text-muted">Feature</span><strong class="mt-1 block text-sm text-secondary">Enabled</strong></div>
       </div>
     </div>
-    @if (loading()) { <div class="pt-8"><app-skeleton variant="cards" [count]="6" /></div> }
-    @else if (!speakers().length) { <div class="border-b border-border py-24 text-center"><h2 class="text-2xl font-semibold text-text-primary">No speakers yet</h2><p class="mx-auto mt-2 max-w-md text-sm text-text-secondary">Add the first speaker to start building your conference roster.</p><button (click)="create()" class="mt-7 bg-primary px-6 py-3 text-sm font-semibold text-white">Add first speaker</button></div> }
-    @else { <div class="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-3">@for (speaker of speakers(); track speaker.id) {<article class="group bg-surface p-5 sm:p-6"><div class="aspect-[4/3] overflow-hidden bg-background">@if (speaker.imageUrl) {<img [src]="speaker.imageUrl" [alt]="speaker.name" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]" loading="lazy"/>} @else {<div class="grid h-full place-items-center text-4xl font-semibold text-text-muted">{{ speaker.name.charAt(0) }}</div>}</div><div class="pt-5"><div class="flex items-start justify-between gap-4"><div><h2 class="text-xl font-semibold text-text-primary">{{ speaker.name | capitalize }}</h2><p class="mt-1 text-sm text-secondary">{{ (speaker.designation | capitalize) || 'Speaker' }}</p></div><span class="text-[10px] uppercase tracking-widest" [class.text-secondary]="speaker.isActive" [class.text-text-muted]="!speaker.isActive">{{ speaker.isActive ? 'Active' : 'Hidden' }}</span></div>@if (speaker.organization) {<p class="mt-2 text-xs font-medium uppercase tracking-wider text-text-muted">{{ speaker.organization }}</p>}@if (speaker.bio) {<p class="mt-4 line-clamp-3 text-sm leading-6 text-text-secondary">{{ speaker.bio }}</p>}<div class="mt-6 flex items-center gap-5 border-t border-border pt-4 text-sm"><button (click)="view(speaker.id)" class="font-semibold text-primary hover:opacity-70">View</button><button (click)="edit(speaker.id)" class="text-text-secondary hover:text-text-primary">Edit</button><button [disabled]="deleting()===speaker.id" (click)="remove(speaker.id)" class="text-text-muted hover:text-red-600 disabled:opacity-50">{{deleting()===speaker.id?'Deleting…':'Delete'}}</button></div></div></article>}</div> }
+    <app-async-state
+      [loading]="loading()"
+      [error]="error()"
+      [empty]="!speakers().length"
+      skeleton="cards"
+      [skeletonCount]="6"
+      emptyTitle="No speakers yet"
+      emptyMessage="Add the first speaker to start building your conference roster."
+      emptyActionLabel="Add first speaker"
+      (retry)="load()"
+      (emptyAction)="create()"
+    >
+      <ng-template>
+      <div class="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-3">@for (speaker of speakers(); track speaker.id) {<article class="group bg-surface p-5 sm:p-6"><div class="aspect-[4/3] overflow-hidden bg-background">@if (speaker.imageUrl) {<img [src]="speaker.imageUrl" [alt]="speaker.name" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]" loading="lazy"/>} @else {<div class="grid h-full place-items-center text-4xl font-semibold text-text-muted">{{ speaker.name.charAt(0) }}</div>}</div><div class="pt-5"><div class="flex items-start justify-between gap-4"><div><h2 class="text-xl font-semibold text-text-primary">{{ speaker.name | capitalize }}</h2><p class="mt-1 text-sm text-secondary">{{ (speaker.designation | capitalize) || 'Speaker' }}</p></div><span class="text-[10px] uppercase tracking-widest" [class.text-secondary]="speaker.isActive" [class.text-text-muted]="!speaker.isActive">{{ speaker.isActive ? 'Active' : 'Hidden' }}</span></div>@if (speaker.organization) {<p class="mt-2 text-xs font-medium uppercase tracking-wider text-text-muted">{{ speaker.organization }}</p>}@if (speaker.bio) {<p class="mt-4 line-clamp-3 text-sm leading-6 text-text-secondary">{{ speaker.bio }}</p>}<div class="mt-6 flex items-center gap-5 border-t border-border pt-4 text-sm"><button (click)="view(speaker.id)" class="font-semibold text-primary hover:opacity-70">View</button><button (click)="edit(speaker.id)" class="text-text-secondary hover:text-text-primary">Edit</button><button [disabled]="deleting()===speaker.id" (click)="remove(speaker.id)" class="text-text-muted hover:text-red-600 disabled:opacity-50">{{deleting()===speaker.id?'Deleting…':'Delete'}}</button></div></div></article>}</div>
+      </ng-template>
+    </app-async-state>
   </div>
 </div>
