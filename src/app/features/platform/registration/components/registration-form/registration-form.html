@@ -116,6 +116,10 @@
               placeholder="+91 00000 00000"
               class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
             />
+
+            @if (form.controls.phone.invalid && form.controls.phone.touched) {
+              <p class="text-xs font-medium text-error">Enter a valid phone number.</p>
+            }
           </div>
 
           <div class="space-y-2.5">

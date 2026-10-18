@@ -31,6 +31,7 @@ import {
 import { RegistrationFormSubmit } from '../../../../../core/models/registration';
 import { Router } from '@angular/router';
 import { emailValidator } from '@/shared/validators/email.validator';
+import { phoneValidator } from '@/shared/validators/phone.validator';
 
 @Component({
   selector: 'app-registration-form',
@@ -53,7 +54,7 @@ export class RegistrationFormComponent {
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     email: ['', [Validators.required, emailValidator]],
-    phone: [''],
+    phone: ['', phoneValidator],
     organization: [''],
     designation: [''],
   });
