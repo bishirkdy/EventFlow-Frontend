@@ -35,6 +35,9 @@ describe('AcceptInvitation', () => {
             snapshot: {
               paramMap: {
                 get: () => 'test-token'
+              },
+              routeConfig: {
+                path: 'photographer-invitation/:token'
               }
             }
           }
@@ -68,6 +71,21 @@ describe('AcceptInvitation', () => {
     expect(navigate).toHaveBeenCalledWith(['/login'], {
       queryParams: {
         returnUrl: '/photographer/event-1/photos',
+        email: 'test@example.com'
+      }
+    });
+  });
+
+  it('returns to the invitation page after login when the invitation is still pending', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.invitation.set({ ...mockInvitation, status: 0 });
+    component.goToLogin();
+
+    expect(navigate).toHaveBeenCalledWith(['/login'], {
+      queryParams: {
+        returnUrl: '/photographer-invitation/test-token',
         email: 'test@example.com'
       }
     });

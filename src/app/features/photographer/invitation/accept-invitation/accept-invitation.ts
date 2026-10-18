@@ -33,7 +33,7 @@ export class AcceptInvitation implements OnInit {
 
   readonly errorMessage = signal<string | null>(null);
 
-  readonly step = signal<'validate' | 'register' | 'complete'>('validate');
+  readonly step = signal<'validate' | 'register'>('validate');
 
   private readonly userAction = createAsyncAction(() => this.authService.loadCurrentUser(), {
     errorFallback: 'Unable to load the current user.',
@@ -120,9 +120,9 @@ export class AcceptInvitation implements OnInit {
           return;
         }
 
-        this.step.set('complete');
-
         this.notification.success('Account created successfully!');
+
+        this.finishNewAccount();
       }
     }
   );
@@ -142,6 +142,7 @@ export class AcceptInvitation implements OnInit {
   private invitationValidated = false;
   private authenticationChecked = false;
   private redirectStarted = false;
+  private acceptanceStarted = false;
 
   ngOnInit(): void {
     const token = this.route.snapshot.paramMap.get('token');
@@ -178,14 +179,30 @@ export class AcceptInvitation implements OnInit {
   }
 
   private handleInvitationAfterAuthentication(): void {
-    if (!this.invitationValidated || !this.authenticationChecked || this.redirectStarted) {
+    if (!this.invitationValidated || !this.authenticationChecked) {
       return;
     }
 
     const invitation = this.invitation();
 
-    // Only accepted invitations use this automatic redirect.
-    if (!invitation || invitation.status !== 1) {
+    if (!invitation) {
+      return;
+    }
+
+    // An accepted invitation only needs a session to reach the workspace.
+    if (invitation.status === 1) {
+      this.redirectToAcceptedInvitation(invitation);
+      return;
+    }
+
+    // A pending invitation is accepted automatically for the matching account.
+    if (invitation.status === 0 && this.authUser() && this.emailsMatch()) {
+      this.acceptAutomatically();
+    }
+  }
+
+  private redirectToAcceptedInvitation(invitation: InvitationData): void {
+    if (this.redirectStarted) {
       return;
     }
 
@@ -211,7 +228,6 @@ export class AcceptInvitation implements OnInit {
       return;
     }
 
-    // Preserve the destination before navigating away to login.
     this.redirectStarted = true;
 
     void this.router.navigate(['/login'], {
@@ -219,6 +235,28 @@ export class AcceptInvitation implements OnInit {
         returnUrl,
         email: invitation.email
       }
+    });
+  }
+
+  private acceptAutomatically(): void {
+    if (this.acceptanceStarted) {
+      return;
+    }
+
+    this.acceptanceStarted = true;
+    this.acceptExistingAction.run();
+  }
+
+  private finishNewAccount(): void {
+    this.authService.loadCurrentUser().subscribe((user) => {
+      if (user) {
+        this.navigateToDashboard();
+        return;
+      }
+
+      // The email already had an account, so no session was issued: sign in
+      // and let the invitation accept itself on the way back.
+      this.goToLogin();
     });
   }
 
@@ -251,10 +289,27 @@ export class AcceptInvitation implements OnInit {
 
     void this.router.navigate(['/login'], {
       queryParams: {
-        returnUrl: this.dashboardUrl(invitation.eventId, invitation.type),
+        returnUrl: this.loginReturnUrl(invitation),
         email: invitation.email
       }
     });
+  }
+
+  private loginReturnUrl(invitation: InvitationData): string {
+    // A pending invitation has to come back to this page so it can accept
+    // itself once the user is signed in.
+    if (invitation.status === 0) {
+      return this.invitationUrl();
+    }
+
+    return this.dashboardUrl(invitation.eventId, invitation.type);
+  }
+
+  private invitationUrl(): string {
+    const path = this.route.snapshot.routeConfig?.path ?? '';
+    const resolved = path.replace(':token', this.token());
+
+    return resolved ? `/${resolved}` : this.router.url;
   }
 
   acceptForExistingUser(): void {
