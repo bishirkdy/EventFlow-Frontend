@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-background text-text-primary">
   @if (loading()) {
-    <div class="flex min-h-[60vh] items-center justify-center bg-background">
+    <div class="flex min-h-dvh items-center justify-center">
       <div class="flex flex-col items-center gap-4">
         <div class="text-center">
           <p class="text-sm font-semibold text-text-primary">Loading dashboard</p>
@@ -93,7 +93,7 @@
             @if (analyticsLoading()) {
               <div class="flex items-center gap-2 text-sm text-text-muted">
                 <span
-                  class="h-3 w-3 animate-spin border-2 border-primary-light border-t-primary"
+                  class="h-3 w-3 rounded-full animate-spin border-2 border-primary-light border-t-primary"
                 ></span>
                 Loading analytics...
               </div>
@@ -442,7 +442,7 @@
             @if (invitationsLoading()) {
               <div class="flex flex-col items-center justify-center px-6 py-12 text-center">
                 <div
-                  class="h-7 w-7 animate-spin border-3 border-primary-light border-t-primary"
+                  class="h-7 w-7 rounded-full animate-spin border-3 border-primary-light border-t-primary"
                 ></div>
                 <p class="mt-3 text-sm text-text-secondary">Loading invitations...</p>
               </div>

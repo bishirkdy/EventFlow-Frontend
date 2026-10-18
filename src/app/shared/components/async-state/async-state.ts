@@ -5,26 +5,6 @@ import { Loading } from '../loading/loading';
 import { ErrorState } from '../error-state/error-state';
 import { EmptyState } from '../empty-state/empty-state';
 
-/**
- * Standardises the four async branches (loading / error / empty / content) so
- * pages don't hand-roll the same `@if (loading()) ... @else if (error()) ...`
- * block in every component.
- *
- * Usage:
- * <app-async-state
- *   [loading]="loading()"
- *   [error]="error()"
- *   [empty]="items().length === 0"
- *   skeleton="cards"
- *   [skeletonCount]="6"
- *   emptyTitle="No events yet"
- *   (retry)="load()">
- *   <ng-template>
- *     <!-- real content, only rendered once loaded -->
- *   </ng-template>
- * </app-async-state>
- */
-
 @Component({
   selector: 'app-async-state',
   imports: [NgTemplateOutlet, Skeleton, Loading, ErrorState, EmptyState],
