@@ -1,7 +1,13 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { LucideAngularModule, Home, Menu, X, LucideAlignHorizontalJustifyStart } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  Home,
+  Menu,
+  X,
+  LucideAlignHorizontalJustifyStart
+} from 'lucide-angular';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { ORGANIZER_NAVIGATION, OrganizerNavGroup } from '../../config/organizer-navigation';
 import { EventService } from '../../../../core/services/event/event.service';
@@ -13,15 +19,21 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 import { Event as EventModel } from '../../../../core/models/event';
 import { TitleCasePipe } from '@angular/common';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-organizer-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule , TitleCasePipe, CapitalizePipe],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    LucideAngularModule,
+    TitleCasePipe,
+    CapitalizePipe
+  ],
   templateUrl: './organizer-layout.html',
-  styleUrl: './organizer-layout.css',
+  styleUrl: './organizer-layout.css'
 })
-
 export class OrganizerLayout {
   private readonly organizerEventState = inject(OrganizerEventStateService);
   private readonly route = inject(ActivatedRoute);
@@ -37,17 +49,14 @@ export class OrganizerLayout {
 
   mobileMenuOpen = signal(false);
 
-  // Lucide icons to the template
   readonly homeIcon = Home;
-  readonly home = LucideAlignHorizontalJustifyStart
+  readonly home = LucideAlignHorizontalJustifyStart;
   readonly menuIcon = Menu;
   readonly closeIcon = X;
 
   private readonly eventAction = createAsyncAction(
     (eventId: string) =>
-      this.eventService.getEventById(eventId).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+      this.eventService.getEventById(eventId).pipe(map((response) => ({ eventId, response }))),
     {
       toastErrors: true,
       errorFallback: 'This event could not be loaded.',
@@ -64,15 +73,15 @@ export class OrganizerLayout {
         this.organizerEventState.setEvent(event);
         this.loadNavigation(eventId);
         this.setupWebsite(eventId);
-      },
-    },
+      }
+    }
   );
 
   private readonly navAction = createAsyncAction(
     (eventId: string) =>
       forkJoin({
         features: this.eventFeatureService.getFeatures(eventId),
-        access: this.roleService.getMyPermissions(eventId).pipe(catchError(() => of(null))),
+        access: this.roleService.getMyPermissions(eventId).pipe(catchError(() => of(null)))
       }),
     {
       onError: () => this.showFallbackNavigation(),
@@ -80,34 +89,30 @@ export class OrganizerLayout {
         const enabledFeatures = new Set(
           (features.data ?? [])
             .filter((feature) => feature.isEnabled)
-            .map((feature) => feature.featureCode),
+            .map((feature) => feature.featureCode)
         );
 
         const permissions = new Set(
-          (access?.data?.permissions ?? []).map((name) => name.toLowerCase()),
+          (access?.data?.permissions ?? []).map((name) => name.toLowerCase())
         );
 
         this.organizerEventState.setPermissions(permissions);
 
-        const visibleGroups = ORGANIZER_NAVIGATION
-          .map((group) => ({
-            ...group,
-            items: group.items.filter(
-              (item) =>
-                (!item.feature || enabledFeatures.has(item.feature)) &&
-                (!item.permission || permissions.has(item.permission.toLowerCase())),
-            ),
-          }))
-          .filter((group) => group.items.length > 0);
+        const visibleGroups = ORGANIZER_NAVIGATION.map((group) => ({
+          ...group,
+          items: group.items.filter(
+            (item) =>
+              (!item.feature || enabledFeatures.has(item.feature)) &&
+              (!item.permission || permissions.has(item.permission.toLowerCase()))
+          )
+        })).filter((group) => group.items.length > 0);
 
         this.navGroups.set(visibleGroups);
-      },
-    },
+      }
+    }
   );
 
-  readonly loading = computed(
-    () => this.eventAction.pending() || this.navAction.pending(),
-  );
+  readonly loading = computed(() => this.eventAction.pending() || this.navAction.pending());
 
   ngOnInit(): void {
     this.eventFeatureService.changed$
@@ -118,7 +123,6 @@ export class OrganizerLayout {
         }
       });
 
-    // Re-run whenever the event in the URL changes,
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => this.loadEvent(params.get('eventId')));
@@ -132,7 +136,6 @@ export class OrganizerLayout {
       return;
     }
 
-    // Store event ID for child organizer pages
     this.organizerEventState.setEventId(eventId);
 
     this.eventAction.run(eventId);
@@ -144,7 +147,7 @@ export class OrganizerLayout {
     this.pageService.ensureWebsite(eventId).subscribe({
       error: () => {
         // Never block the workspace on background setup.
-      },
+      }
     });
   }
 
@@ -156,8 +159,8 @@ export class OrganizerLayout {
     this.navGroups.set(
       ORGANIZER_NAVIGATION.map((group) => ({
         ...group,
-        items: group.items.filter((item) => !item.feature && !item.permission),
-      })).filter((group) => group.items.length > 0),
+        items: group.items.filter((item) => !item.feature && !item.permission)
+      })).filter((group) => group.items.length > 0)
     );
   }
 

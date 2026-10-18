@@ -1,6 +1,5 @@
 <div class="min-h-screen bg-background p-6 md:p-8">
   <div class="mx-auto max-w-7xl">
-    <!-- Header -->
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">My Registered Events</h1>
 
@@ -22,106 +21,103 @@
       (emptyAction)="goToEvents()"
     >
       <ng-template>
-      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        @for (event of events(); track event.id) {
-          <div
-            class="group flex h-full flex-col overflow-hidden border border-border bg-surface shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <!-- Event Image -->
-            <div class="h-48 w-full shrink-0 overflow-hidden bg-background-secondary">
-              @if (event.images.length > 0) {
-                <img
-                  [src]="event.images[0].url"
-                  [alt]="event.name"
-                  class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                />
-              } @else {
-                <div class="flex h-full w-full items-center justify-center bg-background-secondary">
-                  <span class="text-sm text-text-muted"> No image </span>
-                </div>
-              }
-            </div>
-
-            <!-- Event Content -->
-            <div class="flex flex-1 flex-col p-5">
-              <div class="flex items-start justify-between gap-3">
-                <span
-                  class="border border-secondary bg-secondary-light px-3 py-1 text-xs font-medium text-secondary"
-                >
-                  {{ event.eventType | capitalize }}
-                </span>
-
-                <span
-                  class="px-3 py-1 text-xs font-medium"
-                  [class.bg-green-50]="event.status === 'Published'"
-                  [class.text-green-700]="event.status === 'Published'"
-                  [class.bg-orange-50]="event.status === 'Draft'"
-                  [class.text-orange-700]="event.status === 'Draft'"
-                >
-                  {{ event.status | capitalize }}
-                </span>
-              </div>
-
-              <!-- Name -->
-              <h2 class="mt-5 line-clamp-1 text-lg font-semibold text-text-primary">
-                {{ event.name | capitalize }}
-              </h2>
-
-              <!-- Description -->
-              @if (event.description) {
-                <p class="mt-2 line-clamp-2 min-h-10 text-sm text-text-secondary">
-                  {{ event.description | truncateWords: 50 }}
-                </p>
-              } @else {
-                <p class="mt-2 min-h-10 text-sm text-text-muted">No description available.</p>
-              }
-
-              <!-- Date -->
-              <div class="mt-5 border-t border-border pt-4">
-                <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Event Date
-                </p>
-
-                <p class="mt-1 text-sm font-medium text-text-primary">
-                  {{ event.startDate | date: 'mediumDate' }}
-                  -
-                  {{ event.endDate | date: 'mediumDate' }}
-                </p>
-              </div>
-
-              <div class="mt-auto">
-                @if (event.status === 'Published' && isEligibleForParticipantActions(event.id)) {
-                  <div class="mt-5 flex flex-wrap gap-3 border-t border-border pt-4">
-                    <a
-                      [routerLink]="registrationLink(event.id)"
-                      class="flex-1 items-center justify-center hover:bg-white border hover:border-secondary hover:text-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
-                    >
-                      {{ isRegistered(event.id) ? 'My Registration' : 'Register' }}
-                    </a>
-                    @if (isRegistered(event.id)) {
-                      <button
-                        type="button"
-                        (click)="openFeedbackPopup(event.id)"
-                        class="flex-1 items-center justify-center cursor-pointer border border-border px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-tertiary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
-                      >
-                        Feedback
-                      </button>
-                    }
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          @for (event of events(); track event.id) {
+            <div
+              class="group flex h-full flex-col overflow-hidden border border-border bg-surface shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div class="h-48 w-full shrink-0 overflow-hidden bg-background-secondary">
+                @if (event.images.length > 0) {
+                  <img
+                    [src]="event.images[0].url"
+                    [alt]="event.name"
+                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+                } @else {
+                  <div
+                    class="flex h-full w-full items-center justify-center bg-background-secondary"
+                  >
+                    <span class="text-sm text-text-muted"> No image </span>
                   </div>
                 }
+              </div>
 
-                <button
-                  type="button"
-                  (click)="openEvent(event)"
-                  class="mt-3 block w-full border cursor-pointer hover:bg-white hover:text-secondary border-secondary bg-secondary px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
-                >
-                  Open Event
-                </button>
+              <div class="flex flex-1 flex-col p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <span
+                    class="border border-secondary bg-secondary-light px-3 py-1 text-xs font-medium text-secondary"
+                  >
+                    {{ event.eventType | capitalize }}
+                  </span>
+
+                  <span
+                    class="px-3 py-1 text-xs font-medium"
+                    [class.bg-green-50]="event.status === 'Published'"
+                    [class.text-green-700]="event.status === 'Published'"
+                    [class.bg-orange-50]="event.status === 'Draft'"
+                    [class.text-orange-700]="event.status === 'Draft'"
+                  >
+                    {{ event.status | capitalize }}
+                  </span>
+                </div>
+
+                <h2 class="mt-5 line-clamp-1 text-lg font-semibold text-text-primary">
+                  {{ event.name | capitalize }}
+                </h2>
+
+                @if (event.description) {
+                  <p class="mt-2 line-clamp-2 min-h-10 text-sm text-text-secondary">
+                    {{ event.description | truncateWords: 50 }}
+                  </p>
+                } @else {
+                  <p class="mt-2 min-h-10 text-sm text-text-muted">No description available.</p>
+                }
+
+                <div class="mt-5 border-t border-border pt-4">
+                  <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
+                    Event Date
+                  </p>
+
+                  <p class="mt-1 text-sm font-medium text-text-primary">
+                    {{ event.startDate | date: 'mediumDate' }}
+                    -
+                    {{ event.endDate | date: 'mediumDate' }}
+                  </p>
+                </div>
+
+                <div class="mt-auto">
+                  @if (event.status === 'Published' && isEligibleForParticipantActions(event.id)) {
+                    <div class="mt-5 flex flex-wrap gap-3 border-t border-border pt-4">
+                      <a
+                        [routerLink]="registrationLink(event.id)"
+                        class="flex-1 items-center justify-center hover:bg-white border hover:border-secondary hover:text-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                      >
+                        {{ isRegistered(event.id) ? 'My Registration' : 'Register' }}
+                      </a>
+                      @if (isRegistered(event.id)) {
+                        <button
+                          type="button"
+                          (click)="openFeedbackPopup(event.id)"
+                          class="flex-1 items-center justify-center cursor-pointer border border-border px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-tertiary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                        >
+                          Feedback
+                        </button>
+                      }
+                    </div>
+                  }
+
+                  <button
+                    type="button"
+                    (click)="openEvent(event)"
+                    class="mt-3 block w-full border cursor-pointer hover:bg-white hover:text-secondary border-secondary bg-secondary px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                  >
+                    Open Event
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
       </ng-template>
     </app-async-state>
   </div>

@@ -10,7 +10,7 @@ describe('EventJourney', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideRouter([])],
-      imports: [EventJourney],
+      imports: [EventJourney]
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventJourney);

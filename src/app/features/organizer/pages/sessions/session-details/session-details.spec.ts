@@ -10,7 +10,7 @@ describe('SessionDetails', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SessionDetails],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(SessionDetails);

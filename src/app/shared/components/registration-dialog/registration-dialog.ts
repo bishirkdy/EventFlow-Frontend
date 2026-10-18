@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { RegistrationDialogService } from '../../../core/services/ui/registration-dialog.service';
@@ -16,18 +10,18 @@ import { NotificationService } from '../../../core/services/ui/notification.serv
 import {
   RegistrationFormModel,
   RegistrationFormSubmit,
-  RegistrationScope,
+  RegistrationScope
 } from '../../../core/models/registration';
 import { Event } from '../../../core/models/event';
 import { ApiResponse } from '../../../core/models/common';
-import { createAsyncAction, createRawAsyncState } from 'core/state';
+import { createAsyncAction, createRawAsyncState } from '@/core/state';
 
 @Component({
   selector: 'app-registration-dialog',
   standalone: true,
   imports: [RegistrationFormComponent],
   templateUrl: './registration-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationDialog {
   protected readonly service = inject(RegistrationDialogService);
@@ -42,11 +36,11 @@ export class RegistrationDialog {
 
   private readonly formState = createRawAsyncState<ApiResponse<RegistrationFormModel>>(
     () => this.registrationFormService.get(this.eventId()),
-    { autoLoad: false, errorFallback: 'Unable to load the registration form.' },
+    { autoLoad: false, errorFallback: 'Unable to load the registration form.' }
   );
   private readonly eventState = createRawAsyncState<ApiResponse<Event>>(
     () => this.eventService.getEventById(this.eventId()),
-    { autoLoad: false },
+    { autoLoad: false }
   );
 
   protected readonly loading = this.formState.loading;
@@ -71,7 +65,7 @@ export class RegistrationDialog {
       return this.registrationService.create(this.eventId(), {
         ...request,
         scopeType: config?.scopeType ?? RegistrationScope.Event,
-        scopeId: config?.scopeId ?? null,
+        scopeId: config?.scopeId ?? null
       });
     },
     {
@@ -87,8 +81,8 @@ export class RegistrationDialog {
         this.service.close();
         void this.router.navigate(['/events', eventId, 'registrations', registrationId]);
       },
-      errorFallback: 'Unable to submit your registration.',
-    },
+      errorFallback: 'Unable to submit your registration.'
+    }
   );
 
   protected readonly submitting = this.submitAction.pending;

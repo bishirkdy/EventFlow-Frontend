@@ -5,19 +5,18 @@ import { RouterModule } from '@angular/router';
 
 import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 
-import { NotificationService } from 'core/services/ui/notification.service';
-import { EmailValidator } from 'core/validators/email.validator';
+import { NotificationService } from '@/core/services/ui/notification.service';
+import { EmailValidator } from '@/core/validators/email.validator';
 import { PhotographerService } from '@/core/services/photographer/photographer.service';
 import { PhotographerInvitationModel } from '@/core/models/photographer';
-import { createAsyncAction, createAsyncState } from 'core/state';
-
+import { createAsyncAction, createAsyncState } from '@/core/state';
 
 @Component({
   selector: 'app-photographer-management',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './photographer-management.html',
-  styleUrl: './photographer-management.css',
+  styleUrl: './photographer-management.css'
 })
 export class PhotographerManagement implements OnInit {
   private readonly eventState = inject(OrganizerEventStateService);
@@ -30,7 +29,7 @@ export class PhotographerManagement implements OnInit {
 
   private readonly invitationsState = createAsyncState<PhotographerInvitationModel[]>(
     () => this.photographerService.getInvitations(this.eventId()),
-    { initial: [], errorFallback: 'Unable to load invitations.' },
+    { initial: [], errorFallback: 'Unable to load invitations.' }
   );
 
   private readonly inviteAction = createAsyncAction(
@@ -39,41 +38,34 @@ export class PhotographerManagement implements OnInit {
       errorFallback: 'Failed to send invitation.',
       onSuccess: (response) => {
         if (!response.isSuccess) {
-          this.notification.error(
-            response.message || 'Failed to send invitation.',
-          );
+          this.notification.error(response.message || 'Failed to send invitation.');
           return;
         }
 
-        this.notification.success(
-          'Photographer invitation sent successfully.',
-        );
+        this.notification.success('Photographer invitation sent successfully.');
 
         this.newEmail.set('');
         this.loadInvitations();
-      },
-    },
+      }
+    }
   );
 
   private readonly revokeAction = createAsyncAction(
-    (eventId: string, invitationId: string) => this.photographerService.revoke(eventId, invitationId),
+    (eventId: string, invitationId: string) =>
+      this.photographerService.revoke(eventId, invitationId),
     {
       errorFallback: 'Failed to revoke invitation.',
       onSuccess: (response) => {
         if (!response.isSuccess) {
-          this.notification.error(
-            response.message || 'Failed to revoke invitation.',
-          );
+          this.notification.error(response.message || 'Failed to revoke invitation.');
           return;
         }
 
-        this.notification.success(
-          'Invitation revoked successfully.',
-        );
+        this.notification.success('Invitation revoked successfully.');
 
         this.loadInvitations();
-      },
-    },
+      }
+    }
   );
 
   readonly invitations = this.invitationsState.data;
@@ -139,35 +131,6 @@ export class PhotographerManagement implements OnInit {
     this.revokeAction.run(eventId, invitationId);
   }
 
-  // resendInvitation(invitation: PhotographerInvitationModel): void {
-  //   const eventId = this.eventId();
-
-  //   if (!eventId) {
-  //     this.notification.error('Event could not be identified.');
-  //     return;
-  //   }
-
-  //   this.photographerService
-  //     .resend(eventId, invitation.invitationId)
-  //     .subscribe({
-  //       next: (response) => {
-  //         if (!response.isSuccess) {
-  //           this.notification.error(
-  //             response.message || 'Failed to resend invitation.',
-  //           );
-  //           return;
-  //         }
-
-  //         this.notification.success(
-  //           'Invitation resent successfully.',
-  //         );
-
-  //         this.loadInvitations();
-  //       },
-  //       error: () => {},
-  //     });
-  // }
-
   getStatusLabel(status: number): string {
     switch (status) {
       case 0:
@@ -204,7 +167,7 @@ export class PhotographerManagement implements OnInit {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
+      minute: '2-digit'
     });
   }
 }

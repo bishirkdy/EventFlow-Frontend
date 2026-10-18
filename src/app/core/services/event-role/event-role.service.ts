@@ -8,15 +8,14 @@ import {
   EventAccessModel,
   EventRoleModel,
   EventTeamMemberModel,
-  TeamAnalyticsModel,
+  TeamAnalyticsModel
 } from '../../models/event-role';
 import { AuthService } from '../auth/auth.service';
 import { EVENT_ROLE_ENDPOINTS } from '../../api/endpoints/event-role/event-role.endpoints';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-
 export class EventRoleService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
@@ -26,7 +25,7 @@ export class EventRoleService {
     const currentUser = this.authService.currentUser();
     if (currentUser) {
       return this.http.get<ApiResponse<EventRoleModel[]>>(
-        this.api.getUrl(EVENT_ROLE_ENDPOINTS.myRoles(eventId, currentUser.id)),
+        this.api.getUrl(EVENT_ROLE_ENDPOINTS.myRoles(eventId, currentUser.id))
       );
     }
 
@@ -36,45 +35,45 @@ export class EventRoleService {
           // A real 401 lets the auth interceptor refresh the session (or send
           // the user to login) instead of the guard treating it as "no roles".
           return throwError(
-            () => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' }),
+            () => new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' })
           );
         }
 
         return this.http.get<ApiResponse<EventRoleModel[]>>(
-          this.api.getUrl(EVENT_ROLE_ENDPOINTS.myRoles(eventId, user.id)),
+          this.api.getUrl(EVENT_ROLE_ENDPOINTS.myRoles(eventId, user.id))
         );
-      }),
+      })
     );
   }
 
   getMyPermissions(eventId: string): Observable<ApiResponse<EventAccessModel>> {
     return this.http.get<ApiResponse<EventAccessModel>>(
-      this.api.getUrl(EVENT_ROLE_ENDPOINTS.myPermissions(eventId)),
+      this.api.getUrl(EVENT_ROLE_ENDPOINTS.myPermissions(eventId))
     );
   }
 
   getTeam(eventId: string): Observable<ApiResponse<EventTeamMemberModel[]>> {
     return this.http.get<ApiResponse<EventTeamMemberModel[]>>(
-      this.api.getUrl(EVENT_ROLE_ENDPOINTS.team(eventId)),
+      this.api.getUrl(EVENT_ROLE_ENDPOINTS.team(eventId))
     );
   }
 
   getTeamAnalytics(eventId: string): Observable<ApiResponse<TeamAnalyticsModel>> {
     return this.http.get<ApiResponse<TeamAnalyticsModel>>(
-      this.api.getUrl(EVENT_ROLE_ENDPOINTS.teamAnalytics(eventId)),
+      this.api.getUrl(EVENT_ROLE_ENDPOINTS.teamAnalytics(eventId))
     );
   }
 
   assignOrganizer(eventId: string, email: string): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
       this.api.getUrl(EVENT_ROLE_ENDPOINTS.organizers(eventId)),
-      { email },
+      { email }
     );
   }
 
   removeOrganizer(eventId: string, userId: string): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(
-      this.api.getUrl(EVENT_ROLE_ENDPOINTS.removeOrganizer(eventId, userId)),
+      this.api.getUrl(EVENT_ROLE_ENDPOINTS.removeOrganizer(eventId, userId))
     );
   }
 }

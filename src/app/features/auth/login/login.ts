@@ -5,14 +5,14 @@ import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginRequest } from '../../../core/models/auth';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrl: './login.css'
 })
 export class Login {
   private readonly authService = inject(AuthService);
@@ -30,8 +30,8 @@ export class Login {
     {
       successMessage: 'Login successful.',
       onSuccess: () => this.router.navigateByUrl(this.returnTarget()),
-      errorFallback: 'Login failed.',
-    },
+      errorFallback: 'Login failed.'
+    }
   );
 
   ngOnInit(): void {

@@ -6,5 +6,5 @@ export const PHOTO_ENDPOINTS = {
     `/v1/events/${encodeURIComponent(eventId)}/photos/${encodeURIComponent(photoId)}`,
 
   toggleVisibility: (eventId: string, photoId: string) =>
-    `/v1/events/${encodeURIComponent(eventId)}/photos/${encodeURIComponent(photoId)}/visibility`,
+    `/v1/events/${encodeURIComponent(eventId)}/photos/${encodeURIComponent(photoId)}/visibility`
 } as const;

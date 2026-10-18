@@ -1,25 +1,19 @@
 export const CERTIFICATE_ENDPOINTS = {
-  settings: (eventId: string) =>
-    `/v1/events/${eventId}/certificates/settings`,
+  settings: (eventId: string) => `/v1/events/${eventId}/certificates/settings`,
 
-  templateImage: (eventId: string) =>
-    `/v1/events/${eventId}/certificates/settings/template-image`,
+  templateImage: (eventId: string) => `/v1/events/${eventId}/certificates/settings/template-image`,
 
   preview: (eventId: string, sampleName?: string) =>
     `/v1/events/${eventId}/certificates/settings/preview` +
     (sampleName ? `?sampleName=${encodeURIComponent(sampleName)}` : ''),
 
-  eligibility: (eventId: string) =>
-    `/v1/events/${eventId}/certificates/eligibility`,
+  eligibility: (eventId: string) => `/v1/events/${eventId}/certificates/eligibility`,
 
-  generate: (eventId: string) =>
-    `/v1/events/${eventId}/certificates/generate`,
+  generate: (eventId: string) => `/v1/events/${eventId}/certificates/generate`,
 
-  collection: (eventId: string) =>
-    `/v1/events/${eventId}/certificates`,
+  collection: (eventId: string) => `/v1/events/${eventId}/certificates`,
 
-  mine: (eventId: string) =>
-    `/v1/events/${eventId}/certificates/my`,
+  mine: (eventId: string) => `/v1/events/${eventId}/certificates/my`,
 
   myAcrossEvents: '/v1/certificates/my',
 
@@ -29,6 +23,5 @@ export const CERTIFICATE_ENDPOINTS = {
   download: (eventId: string, certificateId: string) =>
     `/v1/events/${eventId}/certificates/${certificateId}/download`,
 
-  verify: (certificateNumber: string) =>
-    `/v1/certificates/${certificateNumber}/verify`,
+  verify: (certificateNumber: string) => `/v1/certificates/${certificateNumber}/verify`
 } as const;

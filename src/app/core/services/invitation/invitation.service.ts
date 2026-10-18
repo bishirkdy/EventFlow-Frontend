@@ -8,11 +8,11 @@ import { INVITATION_ENDPOINTS } from '@/core/api/endpoints/invitation/invitation
 import {
   EventInvitationModel,
   InvitationData,
-  InvitationScopeType,
+  InvitationScopeType
 } from '@/core/models/invitation';
 import {
   AcceptInvitationResponse,
-  CreatePhotographerAccountRequest,
+  CreatePhotographerAccountRequest
 } from '@/core/models/photographer';
 
 export interface InviteAttendanceStaffRequest {
@@ -22,7 +22,7 @@ export interface InviteAttendanceStaffRequest {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class InvitationService {
   private readonly http = inject(HttpClient);
@@ -30,80 +30,71 @@ export class InvitationService {
 
   getByToken(token: string): Observable<ApiResponse<InvitationData>> {
     return this.http.get<ApiResponse<InvitationData>>(
-      this.api.getUrl(INVITATION_ENDPOINTS.getByToken(token)),
+      this.api.getUrl(INVITATION_ENDPOINTS.getByToken(token))
     );
   }
 
   acceptWithNewAccount(
     token: string,
-    request: CreatePhotographerAccountRequest,
+    request: CreatePhotographerAccountRequest
   ): Observable<ApiResponse<AcceptInvitationResponse>> {
     return this.http.post<ApiResponse<AcceptInvitationResponse>>(
       this.api.getUrl(INVITATION_ENDPOINTS.accept(token)),
-      request,
+      request
     );
   }
 
   acceptForExistingUser(token: string): Observable<ApiResponse<AcceptInvitationResponse>> {
     return this.http.post<ApiResponse<AcceptInvitationResponse>>(
       this.api.getUrl(INVITATION_ENDPOINTS.acceptExisting(token)),
-      {},
+      {}
     );
   }
 
-  getOrganizerInvitations(
-    eventId: string,
-  ): Observable<ApiResponse<EventInvitationModel[]>> {
+  getOrganizerInvitations(eventId: string): Observable<ApiResponse<EventInvitationModel[]>> {
     return this.http.get<ApiResponse<EventInvitationModel[]>>(
-      this.api.getUrl(INVITATION_ENDPOINTS.organizerInvitations(eventId)),
+      this.api.getUrl(INVITATION_ENDPOINTS.organizerInvitations(eventId))
     );
   }
 
-  inviteOrganizer(
-    eventId: string,
-    email: string,
-  ): Observable<ApiResponse<unknown>> {
+  inviteOrganizer(eventId: string, email: string): Observable<ApiResponse<unknown>> {
     return this.http.post<ApiResponse<unknown>>(
       this.api.getUrl(INVITATION_ENDPOINTS.inviteOrganizer(eventId)),
-      { email },
+      { email }
     );
   }
 
   revokeOrganizerInvitation(
     eventId: string,
-    invitationId: string,
+    invitationId: string
   ): Observable<ApiResponse<unknown>> {
     return this.http.delete<ApiResponse<unknown>>(
-      this.api.getUrl(INVITATION_ENDPOINTS.revokeOrganizerInvitation(eventId, invitationId)),
+      this.api.getUrl(INVITATION_ENDPOINTS.revokeOrganizerInvitation(eventId, invitationId))
     );
   }
 
-  getAttendanceStaffInvitations(
-    eventId: string,
-  ): Observable<ApiResponse<EventInvitationModel[]>> {
+  getAttendanceStaffInvitations(eventId: string): Observable<ApiResponse<EventInvitationModel[]>> {
     return this.http.get<ApiResponse<EventInvitationModel[]>>(
-      this.api.getUrl(INVITATION_ENDPOINTS.attendanceStaffInvitations(eventId)),
+      this.api.getUrl(INVITATION_ENDPOINTS.attendanceStaffInvitations(eventId))
     );
   }
 
   inviteAttendanceStaff(
     eventId: string,
-    request: InviteAttendanceStaffRequest,
+    request: InviteAttendanceStaffRequest
   ): Observable<ApiResponse<unknown>> {
     return this.http.post<ApiResponse<unknown>>(
       this.api.getUrl(INVITATION_ENDPOINTS.inviteAttendanceStaff(eventId)),
-      request,
+      request
     );
   }
 
   revokeAttendanceStaffInvitation(
     eventId: string,
-    invitationId: string,
+    invitationId: string
   ): Observable<ApiResponse<unknown>> {
     return this.http.delete<ApiResponse<unknown>>(
-      this.api.getUrl(
-        INVITATION_ENDPOINTS.revokeAttendanceStaffInvitation(eventId, invitationId),
-      ),
+      this.api.getUrl(INVITATION_ENDPOINTS.revokeAttendanceStaffInvitation(eventId, invitationId))
     );
   }
 }

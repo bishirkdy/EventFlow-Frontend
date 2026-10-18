@@ -10,13 +10,16 @@ import {
   LucideAngularModule,
   Plus,
   QrCode,
-  Trash2,
+  Trash2
 } from 'lucide-angular';
-import { CertificateService } from 'core/services/registration/certificate.service';
-import { NotificationService } from 'core/services/ui/notification.service';
-import { CertificateFieldAlign, CertificateTemplateFieldModel } from '@/core/models/certificate';
-import { CertificateSettingsModel, CertificateTemplateMode } from '@/core/models/certificate';
-
+import { CertificateService } from '@/core/services/registration/certificate.service';
+import { NotificationService } from '@/core/services/ui/notification.service';
+import {
+  CertificateFieldAlign,
+  CertificateSettingsModel,
+  CertificateTemplateFieldModel,
+  CertificateTemplateMode
+} from '@/core/models/certificate';
 
 interface FieldOption {
   key: string;
@@ -34,21 +37,80 @@ const FIELD_OPTIONS: FieldOption[] = [
   { key: 'issueDate', label: 'Date of issue' },
   { key: 'certificateNumber', label: 'Certificate number' },
   { key: 'verificationQr', label: 'Verification QR' },
-  { key: 'customText', label: 'Custom text' },
+  { key: 'customText', label: 'Custom text' }
 ];
 
 const FIELD_PRESETS: Record<string, Partial<CertificateTemplateFieldModel>> = {
-  title: { xPercent: 10, yPercent: 5, widthPercent: 80, fontSizePt: 30, bold: true, fontColor: '#1D4ED8' },
+  title: {
+    xPercent: 10,
+    yPercent: 5,
+    widthPercent: 80,
+    fontSizePt: 30,
+    bold: true,
+    fontColor: '#1D4ED8'
+  },
   subtitle: { xPercent: 10, yPercent: 15, widthPercent: 80, fontSizePt: 13, fontColor: '#6B7280' },
-  customText: { xPercent: 20, yPercent: 27, widthPercent: 60, fontSizePt: 14, fontColor: '#374151', text: 'This is to certify that' },
-  participantName: { xPercent: 10, yPercent: 35, widthPercent: 80, fontSizePt: 36, bold: true, fontColor: '#111827' },
-  eventTitle: { xPercent: 10, yPercent: 52, widthPercent: 80, fontSizePt: 22, bold: true, fontColor: '#2563EB' },
-  eventDates: { xPercent: 10, yPercent: 62, widthPercent: 80, fontSizePt: 13, fontColor: '#4B5563' },
-  signatoryName: { xPercent: 8, yPercent: 82, widthPercent: 28, fontSizePt: 14, bold: true, fontColor: '#111827' },
-  signatoryTitle: { xPercent: 8, yPercent: 88, widthPercent: 28, fontSizePt: 11, fontColor: '#6B7280' },
+  customText: {
+    xPercent: 20,
+    yPercent: 27,
+    widthPercent: 60,
+    fontSizePt: 14,
+    fontColor: '#374151',
+    text: 'This is to certify that'
+  },
+  participantName: {
+    xPercent: 10,
+    yPercent: 35,
+    widthPercent: 80,
+    fontSizePt: 36,
+    bold: true,
+    fontColor: '#111827'
+  },
+  eventTitle: {
+    xPercent: 10,
+    yPercent: 52,
+    widthPercent: 80,
+    fontSizePt: 22,
+    bold: true,
+    fontColor: '#2563EB'
+  },
+  eventDates: {
+    xPercent: 10,
+    yPercent: 62,
+    widthPercent: 80,
+    fontSizePt: 13,
+    fontColor: '#4B5563'
+  },
+  signatoryName: {
+    xPercent: 8,
+    yPercent: 82,
+    widthPercent: 28,
+    fontSizePt: 14,
+    bold: true,
+    fontColor: '#111827'
+  },
+  signatoryTitle: {
+    xPercent: 8,
+    yPercent: 88,
+    widthPercent: 28,
+    fontSizePt: 11,
+    fontColor: '#6B7280'
+  },
   issueDate: { xPercent: 70, yPercent: 82, widthPercent: 22, fontSizePt: 12, fontColor: '#111827' },
-  certificateNumber: { xPercent: 35, yPercent: 93, widthPercent: 30, fontSizePt: 9, fontColor: '#6B7280' },
-  verificationQr: { xPercent: 82, yPercent: 80, widthPercent: 12, fontSizePt: 10, fontColor: '#111827' },
+  certificateNumber: {
+    xPercent: 35,
+    yPercent: 93,
+    widthPercent: 30,
+    fontSizePt: 9,
+    fontColor: '#6B7280'
+  },
+  verificationQr: {
+    xPercent: 82,
+    yPercent: 80,
+    widthPercent: 12,
+    fontSizePt: 10,
+    fontColor: '#111827'
+  }
 };
 
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
@@ -68,7 +130,7 @@ interface DragState {
   standalone: true,
   imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './template-editor.html',
-  styleUrl: './template-editor.css',
+  styleUrl: './template-editor.css'
 })
 export class CertificateTemplateEditor {
   private readonly certificateService = inject(CertificateService);
@@ -93,7 +155,15 @@ export class CertificateTemplateEditor {
   readonly selectedKey = signal<string | null>(null);
 
   readonly fieldOptions = FIELD_OPTIONS;
-  readonly fontFamilies = ['Lato', 'Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Georgia', 'Calibri'];
+  readonly fontFamilies = [
+    'Lato',
+    'Arial',
+    'Times New Roman',
+    'Courier New',
+    'Verdana',
+    'Georgia',
+    'Calibri'
+  ];
   readonly aligns: CertificateFieldAlign[] = ['Left', 'Center', 'Right'];
 
   readonly ImagePlus = ImagePlus;
@@ -188,7 +258,7 @@ export class CertificateTemplateEditor {
       bold: false,
       align: 'Center',
       fontFamily: 'Lato',
-      ...preset,
+      ...preset
     };
 
     this.fieldsChange.emit([...this.fields(), field]);
@@ -211,7 +281,7 @@ export class CertificateTemplateEditor {
     }
 
     this.fieldsChange.emit(
-      this.fields().map((field) => (field.key === key ? { ...field, ...patch } : field)),
+      this.fields().map((field) => (field.key === key ? { ...field, ...patch } : field))
     );
   }
 
@@ -227,7 +297,7 @@ export class CertificateTemplateEditor {
       startClientX: event.clientX,
       startClientY: event.clientY,
       startXPercent: field.xPercent,
-      startYPercent: field.yPercent,
+      startYPercent: field.yPercent
     };
   }
 
@@ -247,7 +317,7 @@ export class CertificateTemplateEditor {
 
     this.patchSelected({
       xPercent: clamp(this.drag.startXPercent + deltaX),
-      yPercent: clamp(this.drag.startYPercent + deltaY),
+      yPercent: clamp(this.drag.startYPercent + deltaY)
     });
   }
 
@@ -297,7 +367,7 @@ export class CertificateTemplateEditor {
       error: () => {
         this.uploading.set(false);
         this.notification.error('Certificate image upload failed.');
-      },
+      }
     });
   }
 
@@ -319,7 +389,7 @@ export class CertificateTemplateEditor {
       error: () => {
         this.uploading.set(false);
         this.notification.error('Certificate image removal failed.');
-      },
+      }
     });
   }
 }

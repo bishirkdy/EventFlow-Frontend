@@ -9,5 +9,5 @@ export const SECTION_ENDPOINTS = {
     `/v1/section/${eventId}/sections/${sectionId}`,
 
   deleteSection: (eventId: string, sectionId: string) =>
-    `/v1/section/${eventId}/sections/${sectionId}`,
+    `/v1/section/${eventId}/sections/${sectionId}`
 } as const;

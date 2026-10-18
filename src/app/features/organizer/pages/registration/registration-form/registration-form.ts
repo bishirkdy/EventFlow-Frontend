@@ -3,23 +3,20 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import {
-  CapacityMode,
-  RegistrationFieldType,
-} from '../../../../../core/models/registration';
+import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration';
 import { RegistrationFormService } from '../../../../../core/services/registration/registration-form.service';
 import {
   RegistrationFormFieldModel,
-  UpsertRegistrationFormRequest,
+  UpsertRegistrationFormRequest
 } from '../../../../../core/models/registration';
 import { EditableField } from '../../../../../core/models/registration';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-registration-form-page',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './registration-form.html',
+  templateUrl: './registration-form.html'
 })
 export class RegistrationFormPageComponent {
   protected readonly eventState = inject(OrganizerEventStateService);
@@ -41,14 +38,16 @@ export class RegistrationFormPageComponent {
       errorFallback: 'Unable to load registration form.',
       onError: (err) => {
         const message =
-          (err as {
-            status?: number;
-            error?: {
+          (
+            err as {
+              status?: number;
+              error?: {
+                message?: string;
+                errors?: string[];
+              };
               message?: string;
-              errors?: string[];
-            };
-            message?: string;
-          }).error?.errors?.[0] ??
+            }
+          ).error?.errors?.[0] ??
           (err as { error?: { message?: string }; message?: string }).error?.message ??
           (err as { message?: string }).message ??
           'Unable to load registration form.';
@@ -80,8 +79,8 @@ export class RegistrationFormPageComponent {
         } else {
           this.prepareCreateForm();
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly upsertAction = createAsyncAction(
@@ -103,8 +102,8 @@ export class RegistrationFormPageComponent {
         this.applyModel(response.data);
 
         this.toastr.success(response.message || 'Registration form saved.');
-      },
-    },
+      }
+    }
   );
 
   protected readonly loading = this.loadAction.pending;
@@ -119,46 +118,46 @@ export class RegistrationFormPageComponent {
     capacity: [0],
     enableWaitlist: [false],
     opensAtUtc: [''],
-    closesAtUtc: [''],
+    closesAtUtc: ['']
   });
 
   protected readonly fieldTypes = [
     {
       value: RegistrationFieldType.Text,
-      label: 'Text',
+      label: 'Text'
     },
     {
       value: RegistrationFieldType.TextArea,
-      label: 'Long text',
+      label: 'Long text'
     },
     {
       value: RegistrationFieldType.Email,
-      label: 'Email',
+      label: 'Email'
     },
     {
       value: RegistrationFieldType.Phone,
-      label: 'Phone',
+      label: 'Phone'
     },
     {
       value: RegistrationFieldType.Number,
-      label: 'Number',
+      label: 'Number'
     },
     {
       value: RegistrationFieldType.Date,
-      label: 'Date',
+      label: 'Date'
     },
     {
       value: RegistrationFieldType.Select,
-      label: 'Select',
+      label: 'Select'
     },
     {
       value: RegistrationFieldType.Radio,
-      label: 'Radio',
+      label: 'Radio'
     },
     {
       value: RegistrationFieldType.Checkbox,
-      label: 'Checkbox',
-    },
+      label: 'Checkbox'
+    }
   ];
 
   constructor() {
@@ -180,8 +179,8 @@ export class RegistrationFormPageComponent {
         fieldType: RegistrationFieldType.Text,
         isRequired: false,
         optionsJson: null,
-        validationJson: null,
-      },
+        validationJson: null
+      }
     ]);
   }
 
@@ -203,7 +202,10 @@ export class RegistrationFormPageComponent {
   }
 
   protected isChoiceField(field: EditableField): boolean {
-    return field.fieldType === RegistrationFieldType.Select || field.fieldType === RegistrationFieldType.Radio;
+    return (
+      field.fieldType === RegistrationFieldType.Select ||
+      field.fieldType === RegistrationFieldType.Radio
+    );
   }
 
   protected hasValidationRules(field: EditableField): boolean {
@@ -212,27 +214,23 @@ export class RegistrationFormPageComponent {
       RegistrationFieldType.TextArea,
       RegistrationFieldType.Email,
       RegistrationFieldType.Phone,
-      RegistrationFieldType.Number,
+      RegistrationFieldType.Number
     ].includes(field.fieldType);
   }
 
   protected updateFieldOptions(index: number, value: string): void {
     this.fields.update((items) =>
       items.map((item, itemIndex) =>
-        itemIndex === index
-          ? { ...item, optionsJson: value.trim() || null }
-          : item,
-      ),
+        itemIndex === index ? { ...item, optionsJson: value.trim() || null } : item
+      )
     );
   }
 
   protected updateFieldValidation(index: number, value: string): void {
     this.fields.update((items) =>
       items.map((item, itemIndex) =>
-        itemIndex === index
-          ? { ...item, validationJson: value.trim() || null }
-          : item,
-      ),
+        itemIndex === index ? { ...item, validationJson: value.trim() || null } : item
+      )
     );
   }
 
@@ -291,8 +289,8 @@ export class RegistrationFormPageComponent {
         isRequired: field.isRequired,
         displayOrder: index,
         optionsJson: field.optionsJson,
-        validationJson: field.validationJson,
-      })),
+        validationJson: field.validationJson
+      }))
     };
 
     this.error.set(null);
@@ -326,7 +324,7 @@ export class RegistrationFormPageComponent {
       capacity: 0,
       enableWaitlist: false,
       opensAtUtc: '',
-      closesAtUtc: '',
+      closesAtUtc: ''
     });
   }
 
@@ -354,7 +352,7 @@ export class RegistrationFormPageComponent {
       capacity: model.capacity ?? 0,
       enableWaitlist: model.enableWaitlist,
       opensAtUtc: this.toLocalDateTime(model.opensAtUtc),
-      closesAtUtc: this.toLocalDateTime(model.closesAtUtc),
+      closesAtUtc: this.toLocalDateTime(model.closesAtUtc)
     });
 
     this.fields.set(
@@ -367,8 +365,8 @@ export class RegistrationFormPageComponent {
           fieldType: field.fieldType,
           isRequired: field.isRequired,
           optionsJson: field.optionsJson,
-          validationJson: field.validationJson,
-        })),
+          validationJson: field.validationJson
+        }))
     );
   }
 

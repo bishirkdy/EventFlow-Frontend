@@ -1,6 +1,8 @@
 <div class="min-h-full bg-[#faf9f7] text-primary">
   <header class="border-b border-[#e3e0dc] bg-white">
-    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+    <div
+      class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between"
+    >
       <div>
         <div
           class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-(--color-secondary)"
@@ -28,9 +30,7 @@
           [disabled]="saving() || loading()"
           class="border border-primary bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {{
-            saving() ? 'Saving...' : formId() ? 'Save form' : 'Create form'
-          }}
+          {{ saving() ? 'Saving...' : formId() ? 'Save form' : 'Create form' }}
         </button>
       </div>
     </div>
@@ -40,9 +40,7 @@
     @if (loading()) {
       <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         @for (item of [1, 2, 3]; track item) {
-          <section
-            class="animate-pulse border border-[#e3e0dc] bg-white p-6"
-          >
+          <section class="animate-pulse border border-[#e3e0dc] bg-white p-6">
             <div class="h-4 w-32 bg-[#e9e6e2]"></div>
             <div class="mt-3 h-3 w-64 bg-[#f1efec]"></div>
             <div class="mt-6 h-10 bg-[#f1efec]"></div>
@@ -52,9 +50,7 @@
       </div>
     } @else if (error() && !formId()) {
       <section class="border border-red-200 bg-white p-6">
-        <h2 class="text-sm font-semibold text-red-800">
-          Unable to load registration
-        </h2>
+        <h2 class="text-sm font-semibold text-red-800">Unable to load registration</h2>
 
         <p class="mt-1 text-sm text-red-700">
           {{ error() }}
@@ -66,24 +62,16 @@
         (submit)="$event.preventDefault(); save()"
       >
         <div class="space-y-6">
-          <!-- Registration Details -->
           <section class="border border-[#e3e0dc] bg-white">
             <div class="border-b border-[#e3e0dc] px-6 py-5">
-              <h2 class="text-base font-semibold text-primary">
-                Registration details
-              </h2>
+              <h2 class="text-base font-semibold text-primary">Registration details</h2>
 
-              <p class="mt-1 text-sm text-[#77736e]">
-                Basic information shown to attendees.
-              </p>
+              <p class="mt-1 text-sm text-[#77736e]">Basic information shown to attendees.</p>
             </div>
 
             <div class="space-y-5 p-6">
               <div>
-                <label
-                  for="name"
-                  class="block text-sm font-medium text-[#3d3935]"
-                >
+                <label for="name" class="block text-sm font-medium text-[#3d3935]">
                   Form name
                 </label>
 
@@ -94,21 +82,13 @@
                   class="mt-2 w-full border border-[#d8d4cf] bg-white px-3.5 py-2.5 text-sm text-primary outline-none transition focus:border-primary"
                 />
 
-                @if (
-                  form.controls.name.invalid &&
-                  form.controls.name.touched
-                ) {
-                  <p class="mt-1 text-xs text-red-600">
-                    A form name is required.
-                  </p>
+                @if (form.controls.name.invalid && form.controls.name.touched) {
+                  <p class="mt-1 text-xs text-red-600">A form name is required.</p>
                 }
               </div>
 
               <div>
-                <label
-                  for="description"
-                  class="block text-sm font-medium text-[#3d3935]"
-                >
+                <label for="description" class="block text-sm font-medium text-[#3d3935]">
                   Description
                 </label>
 
@@ -120,13 +100,9 @@
                 ></textarea>
               </div>
 
-              <div
-                class="flex items-center justify-between border-t border-[#e3e0dc] pt-5"
-              >
+              <div class="flex items-center justify-between border-t border-[#e3e0dc] pt-5">
                 <div>
-                  <p class="text-sm font-medium text-[#3d3935]">
-                    Registration active
-                  </p>
+                  <p class="text-sm font-medium text-[#3d3935]">Registration active</p>
 
                   <p class="mt-1 text-xs text-[#77736e]">
                     Allow attendees to submit registrations.
@@ -137,11 +113,7 @@
                   type="button"
                   role="switch"
                   [attr.aria-checked]="form.controls.isActive.value"
-                  (click)="
-                    form.controls.isActive.setValue(
-                      !form.controls.isActive.value
-                    )
-                  "
+                  (click)="form.controls.isActive.setValue(!form.controls.isActive.value)"
                   [class.bg-primary]="form.controls.isActive.value"
                   [class.bg-[#d8d4cf]]="!form.controls.isActive.value"
                   class="relative h-6 w-11 shrink-0 rounded-full transition"
@@ -156,12 +128,9 @@
             </div>
           </section>
 
-          <!-- Capacity & Availability -->
           <section class="border border-[#e3e0dc] bg-white">
             <div class="border-b border-[#e3e0dc] px-6 py-5">
-              <h2 class="text-base font-semibold text-primary">
-                Capacity & availability
-              </h2>
+              <h2 class="text-base font-semibold text-primary">Capacity & availability</h2>
 
               <p class="mt-1 text-sm text-[#77736e]">
                 Define when and how many attendees can register.
@@ -170,9 +139,7 @@
 
             <div class="space-y-6 p-6">
               <div>
-                <p class="text-sm font-medium text-[#3d3935]">
-                  Capacity
-                </p>
+                <p class="text-sm font-medium text-[#3d3935]">Capacity</p>
 
                 <div class="mt-3 grid gap-3 sm:grid-cols-2">
                   <button
@@ -182,9 +149,7 @@
                     [class.bg-[#f7f5f2]]="isLimited()"
                     class="border border-[#d8d4cf] p-4 text-left transition hover:border-primary"
                   >
-                    <span class="text-sm font-semibold text-primary">
-                      Limited
-                    </span>
+                    <span class="text-sm font-semibold text-primary"> Limited </span>
 
                     <span class="mt-1 block text-xs leading-5 text-[#77736e]">
                       Set a maximum approved capacity.
@@ -198,9 +163,7 @@
                     [class.bg-[#f7f5f2]]="!isLimited()"
                     class="border border-[#d8d4cf] p-4 text-left transition hover:border-primary"
                   >
-                    <span class="text-sm font-semibold text-primary">
-                      Unlimited
-                    </span>
+                    <span class="text-sm font-semibold text-primary"> Unlimited </span>
 
                     <span class="mt-1 block text-xs leading-5 text-[#77736e]">
                       No approval capacity limit.
@@ -211,10 +174,7 @@
 
               @if (isLimited()) {
                 <div class="max-w-xs">
-                  <label
-                    for="capacity"
-                    class="block text-sm font-medium text-[#3d3935]"
-                  >
+                  <label for="capacity" class="block text-sm font-medium text-[#3d3935]">
                     Maximum attendees
                   </label>
 
@@ -228,13 +188,9 @@
                 </div>
               }
 
-              <div
-                class="flex items-center justify-between border-t border-[#e3e0dc] pt-5"
-              >
+              <div class="flex items-center justify-between border-t border-[#e3e0dc] pt-5">
                 <div>
-                  <p class="text-sm font-medium text-[#3d3935]">
-                    Enable waitlist
-                  </p>
+                  <p class="text-sm font-medium text-[#3d3935]">Enable waitlist</p>
 
                   <p class="mt-1 text-xs text-[#77736e]">
                     Allow attendees to wait when capacity is reached.
@@ -246,38 +202,23 @@
                   role="switch"
                   [attr.aria-checked]="form.controls.enableWaitlist.value"
                   (click)="
-                    form.controls.enableWaitlist.setValue(
-                      !form.controls.enableWaitlist.value
-                    )
+                    form.controls.enableWaitlist.setValue(!form.controls.enableWaitlist.value)
                   "
-                  [class.bg-primary]="
-                    form.controls.enableWaitlist.value
-                  "
-                  [class.bg-[#d8d4cf]]="
-                    !form.controls.enableWaitlist.value
-                  "
+                  [class.bg-primary]="form.controls.enableWaitlist.value"
+                  [class.bg-[#d8d4cf]]="!form.controls.enableWaitlist.value"
                   class="relative h-6 w-11 shrink-0 rounded-full transition"
                 >
                   <span
-                    [class.translate-x-6]="
-                      form.controls.enableWaitlist.value
-                    "
-                    [class.translate-x-1]="
-                      !form.controls.enableWaitlist.value
-                    "
+                    [class.translate-x-6]="form.controls.enableWaitlist.value"
+                    [class.translate-x-1]="!form.controls.enableWaitlist.value"
                     class="absolute left-0 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition"
                   ></span>
                 </button>
               </div>
 
-              <div
-                class="grid gap-5 border-t border-[#e3e0dc] pt-5 md:grid-cols-2"
-              >
+              <div class="grid gap-5 border-t border-[#e3e0dc] pt-5 md:grid-cols-2">
                 <div>
-                  <label
-                    for="opens"
-                    class="block text-sm font-medium text-[#3d3935]"
-                  >
+                  <label for="opens" class="block text-sm font-medium text-[#3d3935]">
                     Opens
                   </label>
 
@@ -290,10 +231,7 @@
                 </div>
 
                 <div>
-                  <label
-                    for="closes"
-                    class="block text-sm font-medium text-[#3d3935]"
-                  >
+                  <label for="closes" class="block text-sm font-medium text-[#3d3935]">
                     Closes
                   </label>
 
@@ -308,15 +246,12 @@
             </div>
           </section>
 
-          <!-- Attendee Fields -->
           <section class="border border-[#e3e0dc] bg-white">
             <div
               class="flex flex-col gap-4 border-b border-[#e3e0dc] px-6 py-5 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
-                <h2 class="text-base font-semibold text-primary">
-                  Attendee fields
-                </h2>
+                <h2 class="text-base font-semibold text-primary">Attendee fields</h2>
 
                 <p class="mt-1 text-sm text-[#77736e]">
                   Choose what information attendees provide.
@@ -335,25 +270,16 @@
             <div class="divide-y divide-[#e3e0dc]">
               @if (fields().length === 0) {
                 <div class="px-6 py-12 text-center">
-                  <p class="text-sm font-medium text-primary">
-                    No custom fields
-                  </p>
+                  <p class="text-sm font-medium text-primary">No custom fields</p>
 
                   <p class="mt-1 text-sm text-[#77736e]">
-                    Add a field when you need information beyond the attendee
-                    basics.
+                    Add a field when you need information beyond the attendee basics.
                   </p>
                 </div>
               } @else {
-                @for (
-                  field of fields();
-                  track field.fieldKey;
-                  let i = $index
-                ) {
+                @for (field of fields(); track field.fieldKey; let i = $index) {
                   <div class="space-y-4 p-5">
-                    <div
-                      class="flex items-center justify-between gap-4"
-                    >
+                    <div class="flex items-center justify-between gap-4">
                       <div class="flex items-center gap-3">
                         <span
                           class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f1efec] text-xs font-semibold text-[#5f5a54]"
@@ -361,9 +287,7 @@
                           {{ i + 1 }}
                         </span>
 
-                        <span class="text-sm font-semibold text-primary">
-                          Field {{ i + 1 }}
-                        </span>
+                        <span class="text-sm font-semibold text-primary"> Field {{ i + 1 }} </span>
                       </div>
 
                       <div class="flex items-center gap-1">
@@ -410,15 +334,14 @@
                           [value]="field.label"
                           (input)="
                             fields.update((items) =>
-                                items.map(
-                                  (x, j) =>
-                                    j === i
-                                      ? {
-                                          ...x,
-                                          label: fieldLabel.value,
-                                        }
-                                      : x
-                                )
+                              items.map((x, j) =>
+                                j === i
+                                  ? {
+                                      ...x,
+                                      label: fieldLabel.value
+                                    }
+                                  : x
+                              )
                             )
                           "
                           class="mt-2 w-full border border-[#d8d4cf] bg-white px-3 py-2.5 text-sm text-primary outline-none transition focus:border-primary"
@@ -438,18 +361,15 @@
                           #fieldType
                           [value]="field.fieldType"
                           (change)="
-                            fields.update(
-                              (items) =>
-                                items.map(
-                                  (x, j) =>
-                                    j === i
-                                      ? {
-                                          ...x,
-                                          fieldType:
-                                            +fieldType.value,
-                                        }
-                                      : x
-                                )
+                            fields.update((items) =>
+                              items.map((x, j) =>
+                                j === i
+                                  ? {
+                                      ...x,
+                                      fieldType: +fieldType.value
+                                    }
+                                  : x
+                              )
                             )
                           "
                           class="mt-2 w-full border border-[#d8d4cf] bg-white px-3 py-2.5 text-sm text-primary outline-none transition focus:border-primary"
@@ -477,11 +397,7 @@
                         [value]="field.fieldKey"
                         (input)="
                           fields.update((items) =>
-                            items.map((x, j) =>
-                              j === i
-                                ? { ...x, fieldKey: fieldKey.value }
-                                : x
-                            )
+                            items.map((x, j) => (j === i ? { ...x, fieldKey: fieldKey.value } : x))
                           )
                         "
                         class="mt-2 w-full border border-[#d8d4cf] bg-white px-3 py-2.5 text-sm text-primary outline-none transition focus:border-primary"
@@ -499,27 +415,21 @@
                         type="checkbox"
                         [checked]="field.isRequired"
                         (change)="
-                          fields.update(
-                            (items) =>
-                              items.map(
-                                (x, j) =>
-                                  j === i
-                                    ? {
-                                        ...x,
-                                        isRequired:
-                                          fieldRequired.checked,
-                                      }
-                                    : x
-                              )
+                          fields.update((items) =>
+                            items.map((x, j) =>
+                              j === i
+                                ? {
+                                    ...x,
+                                    isRequired: fieldRequired.checked
+                                  }
+                                : x
+                            )
                           )
                         "
                         class="h-4 w-4 border-[#c8c3bd] text-primary focus:ring-primary"
                       />
 
-                      <label
-                        [for]="'field-required-' + i"
-                        class="text-sm text-[#5f5a54]"
-                      >
+                      <label [for]="'field-required-' + i" class="text-sm text-[#5f5a54]">
                         Required field
                       </label>
                     </div>
@@ -541,9 +451,7 @@
                           (input)="updateFieldOptions(i, fieldOptions.value)"
                           class="mt-2 w-full resize-y border border-[#d8d4cf] bg-white px-3 py-2.5 font-mono text-xs text-primary outline-none transition focus:border-primary"
                         ></textarea>
-                        <p class="mt-1 text-[11px] text-[#918b84]">
-                          Example: ["General", "VIP"]
-                        </p>
+                        <p class="mt-1 text-[11px] text-[#918b84]">Example: ["General", "VIP"]</p>
                       </div>
                     }
 
@@ -577,14 +485,9 @@
           </section>
         </div>
 
-        <!-- Sidebar -->
         <aside class="space-y-6">
           <section class="border border-[#e3e0dc] bg-white p-5">
-            <p
-              class="text-xs font-semibold uppercase tracking-wider text-[#918b84]"
-            >
-              Form status
-            </p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-[#918b84]">Form status</p>
 
             <div class="mt-4 flex items-center gap-2">
               <span
@@ -595,16 +498,16 @@
 
               <span class="text-sm font-medium text-[#3d3935]">
                 {{
-                  form.controls.isActive.value ? 'Registration is active' : 'Registration is inactive'
+                  form.controls.isActive.value
+                    ? 'Registration is active'
+                    : 'Registration is inactive'
                 }}
               </span>
             </div>
           </section>
 
           <section class="border border-[#e3e0dc] bg-white p-5">
-            <p
-              class="text-xs font-semibold uppercase tracking-wider text-[#918b84]"
-            >
+            <p class="text-xs font-semibold uppercase tracking-wider text-[#918b84]">
               Configuration
             </p>
 
@@ -621,11 +524,7 @@
                 <dt class="text-[#77736e]">Capacity</dt>
 
                 <dd class="font-medium text-primary">
-                  {{
-                    isLimited()
-                      ? form.controls.capacity.value
-                      : 'Unlimited'
-                  }}
+                  {{ isLimited() ? form.controls.capacity.value : 'Unlimited' }}
                 </dd>
               </div>
 
@@ -633,11 +532,7 @@
                 <dt class="text-[#77736e]">Waitlist</dt>
 
                 <dd class="font-medium text-primary">
-                  {{
-                    form.controls.enableWaitlist.value
-                      ? 'Enabled'
-                      : 'Disabled'
-                  }}
+                  {{ form.controls.enableWaitlist.value ? 'Enabled' : 'Disabled' }}
                 </dd>
               </div>
             </dl>

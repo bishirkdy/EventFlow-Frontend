@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AcceptInvitation } from './accept-invitation';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { InvitationType } from '../../../../core/models/invitation';
@@ -69,8 +68,8 @@ describe('AcceptInvitation', () => {
     expect(navigate).toHaveBeenCalledWith(['/login'], {
       queryParams: {
         returnUrl: '/photographer/event-1/photos',
-        email: 'test@example.com',
-      },
+        email: 'test@example.com'
+      }
     });
   });
 

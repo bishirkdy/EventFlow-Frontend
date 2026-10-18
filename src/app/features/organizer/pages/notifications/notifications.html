@@ -1,24 +1,13 @@
 <div class="w-full space-y-8 p-6">
-  <!-- Page Header -->
   <div>
-    <h2 class="text-2xl font-bold tracking-tight text-text-primary">
-      Notifications
-    </h2>
-    <p class="mt-1 text-sm text-text-secondary">
-      Queue event announcements and targeted email.
-    </p>
+    <h2 class="text-2xl font-bold tracking-tight text-text-primary">Notifications</h2>
+    <p class="mt-1 text-sm text-text-secondary">Queue event announcements and targeted email.</p>
   </div>
 
-  <!-- Email Form -->
   <div class="w-full space-y-6 border border-border bg-surface p-6">
-    <!-- First Row: Recipient and Subject -->
     <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-      <!-- Recipient Email -->
       <div>
-        <label
-          for="recipientEmail"
-          class="mb-2 block text-sm font-semibold text-text-primary"
-        >
+        <label for="recipientEmail" class="mb-2 block text-sm font-semibold text-text-primary">
           Recipient email
         </label>
 
@@ -32,12 +21,8 @@
         />
       </div>
 
-      <!-- Email Subject -->
       <div>
-        <label
-          for="subject"
-          class="mb-2 block text-sm font-semibold text-text-primary"
-        >
+        <label for="subject" class="mb-2 block text-sm font-semibold text-text-primary">
           Email subject
         </label>
 
@@ -52,19 +37,11 @@
       </div>
     </div>
 
-    <!-- Second Row: Full-Width Message -->
     <div class="w-full">
       <div class="mb-2 flex items-center justify-between gap-3">
-        <label
-          for="message"
-          class="block text-sm font-semibold text-text-primary"
-        >
-          Message
-        </label>
+        <label for="message" class="block text-sm font-semibold text-text-primary"> Message </label>
 
-        <span class="text-xs text-text-muted">
-          Email content
-        </span>
+        <span class="text-xs text-text-muted"> Email content </span>
       </div>
 
       <textarea
@@ -80,13 +57,10 @@
       </p>
     </div>
 
-    <!-- Form Actions -->
     <div
       class="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between"
     >
-      <p class="text-xs text-text-muted">
-        Review the recipient and message before queuing.
-      </p>
+      <p class="text-xs text-text-muted">Review the recipient and message before queuing.</p>
 
       <button
         type="button"
@@ -98,24 +72,19 @@
     </div>
   </div>
 
-  <!-- Notification Queue -->
   <section class="w-full space-y-4">
     <div
       class="flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <div>
-        <h3 class="text-lg font-semibold text-text-primary">
-          Notification Queue
-        </h3>
+        <h3 class="text-lg font-semibold text-text-primary">Notification Queue</h3>
 
         <p class="mt-1 text-sm text-text-secondary">
           Track queued email notifications and their status.
         </p>
       </div>
 
-      <span class="text-sm font-medium text-text-muted">
-        {{ items().length }} notifications
-      </span>
+      <span class="text-sm font-medium text-text-muted"> {{ items().length }} notifications </span>
     </div>
 
     @if (items().length > 0) {
@@ -170,17 +139,13 @@
         </table>
       </div>
     } @else {
-      <!-- Empty State -->
       <div
         class="flex min-h-48 w-full flex-col items-center justify-center border border-dashed border-border px-6 py-12 text-center"
       >
-        <h4 class="text-sm font-semibold text-text-primary">
-          No notifications yet
-        </h4>
+        <h4 class="text-sm font-semibold text-text-primary">No notifications yet</h4>
 
         <p class="mt-1 max-w-sm text-sm text-text-secondary">
-          Queued email notifications will appear here when you send your first
-          message.
+          Queued email notifications will appear here when you send your first message.
         </p>
       </div>
     }

@@ -16,7 +16,7 @@ const form = {
   enableWaitlist: false,
   opensAtUtc: null,
   closesAtUtc: null,
-  fields: [],
+  fields: []
 };
 
 describe('RegistrationFormComponent', () => {
@@ -25,7 +25,7 @@ describe('RegistrationFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationFormComponent],
+      imports: [RegistrationFormComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationFormComponent);

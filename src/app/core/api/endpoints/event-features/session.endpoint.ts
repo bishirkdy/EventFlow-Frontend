@@ -10,5 +10,5 @@ export const SESSION_ENDPOINTS = {
     `/v1/session/${eventId}/sessions/${sessionId}`,
 
   deleteSession: (eventId: string, sessionId: string) =>
-    `/v1/session/${eventId}/sessions/${sessionId}`,
+    `/v1/session/${eventId}/sessions/${sessionId}`
 } as const;

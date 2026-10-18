@@ -1,5 +1,4 @@
 <div class="mx-auto mb-8 max-w-5xl">
-  <!-- Back -->
   <button
     type="button"
     (click)="cancel()"
@@ -9,16 +8,13 @@
     Back to Pages
   </button>
 
-  <!-- Header -->
   <div class="mb-12">
     <h1 class="text-4xl font-medium tracking-tight text-text-primary">Create Page</h1>
 
     <p class="mt-2 text-base text-text-secondary">Create a new page for your event website.</p>
   </div>
 
-  <!-- Form -->
   <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-10">
-    <!-- Page Name -->
     <div>
       <label for="name" class="mb-5 block text-base font-medium text-text-primary">
         Page name
@@ -37,7 +33,6 @@
       }
     </div>
 
-    <!-- Slug -->
     <div>
       <label for="slug" class="mb-5 block text-base font-medium text-text-primary"> Slug </label>
 
@@ -60,7 +55,6 @@
       }
     </div>
 
-    <!-- Page Type -->
     <div>
       <label for="pageType" class="mb-5 block text-base font-medium text-text-primary">
         Page type
@@ -85,7 +79,6 @@
       }
     </div>
 
-    <!-- Actions -->
     <div class="flex items-center justify-end gap-6 border-t border-border pt-8">
       <button
         type="button"

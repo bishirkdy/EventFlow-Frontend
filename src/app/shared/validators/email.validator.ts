@@ -6,9 +6,7 @@ export function isValidEmail(value: string): boolean {
   return EMAIL_PATTERN.test(value.trim());
 }
 
-export const emailValidator: ValidatorFn = (
-  control: AbstractControl,
-): ValidationErrors | null => {
+export const emailValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value;
 
   if (value === null || value === undefined || String(value).trim() === '') {

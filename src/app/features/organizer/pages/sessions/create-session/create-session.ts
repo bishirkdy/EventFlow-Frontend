@@ -10,7 +10,7 @@ import { VenueModel } from '../../../../../core/models/venue';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../../core/models/event';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
@@ -18,7 +18,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [FormsModule, CapitalizePipe],
   templateUrl: './create-session.html',
-  styleUrl: './create-session.css',
+  styleUrl: './create-session.css'
 })
 export class CreateSession implements OnInit {
   private readonly router = inject(Router);
@@ -44,8 +44,8 @@ export class CreateSession implements OnInit {
     {
       toastErrors: true,
       errorFallback: 'Failed to load venues.',
-      onSuccess: (response) => this.venues.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.venues.set(response.data ?? [])
+    }
   );
 
   private readonly sectionsAction = createAsyncAction(
@@ -53,8 +53,8 @@ export class CreateSession implements OnInit {
     {
       errorFallback: 'Failed to load sections.',
       onError: () => this.error.set('Failed to load sections.'),
-      onSuccess: (response) => this.sections.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.sections.set(response.data ?? [])
+    }
   );
 
   private readonly createAction = createAsyncAction(
@@ -62,9 +62,8 @@ export class CreateSession implements OnInit {
     {
       successMessage: 'Session created successfully.',
       errorFallback: 'Failed to create session.',
-      onSuccess: () =>
-        this.router.navigate(['/organizer', this.eventId, 'sessions']),
-    },
+      onSuccess: () => this.router.navigate(['/organizer', this.eventId, 'sessions'])
+    }
   );
 
   loadingVenues = this.venuesAction.pending;
@@ -80,7 +79,7 @@ export class CreateSession implements OnInit {
     startTime: null,
     endTime: null,
     venueId: null,
-    allowRegistration: false,
+    allowRegistration: false
   };
 
   ngOnInit(): void {
@@ -95,9 +94,15 @@ export class CreateSession implements OnInit {
     const currentEvent = this.organizerEventState.event();
     if (currentEvent) {
       this.event.set(currentEvent);
-      this.eventStartLocal.set(this.toEventLocalDateTime(currentEvent.startDate, currentEvent.timeZone));
-      this.eventEndLocal.set(this.toEventLocalDateTime(currentEvent.endDate, currentEvent.timeZone));
-      this.eventWindowLabel.set(`${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} — ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`);
+      this.eventStartLocal.set(
+        this.toEventLocalDateTime(currentEvent.startDate, currentEvent.timeZone)
+      );
+      this.eventEndLocal.set(
+        this.toEventLocalDateTime(currentEvent.endDate, currentEvent.timeZone)
+      );
+      this.eventWindowLabel.set(
+        `${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} â€” ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`
+      );
     }
     this.sectionsAction.run();
     this.venuesAction.run();
@@ -133,7 +138,11 @@ export class CreateSession implements OnInit {
       return;
     }
 
-    if (this.session.startTime && this.session.endTime && this.session.startTime >= this.session.endTime) {
+    if (
+      this.session.startTime &&
+      this.session.endTime &&
+      this.session.startTime >= this.session.endTime
+    ) {
       this.error.set('Session end time must be after the start time.');
       return;
     }
@@ -159,7 +168,7 @@ export class CreateSession implements OnInit {
       endTime: this.session.endTime || null,
       venueId: this.session.venueId || null,
       allowRegistration: this.session.allowRegistration ?? false,
-      image: this.selectedImage() ?? undefined,
+      image: this.selectedImage() ?? undefined
     };
 
     this.createAction.run(request);
@@ -171,8 +180,12 @@ export class CreateSession implements OnInit {
 
     const parts = new Intl.DateTimeFormat('en-CA', {
       timeZone,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23'
     }).formatToParts(date);
     const get = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
     return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}`;
@@ -182,7 +195,9 @@ export class CreateSession implements OnInit {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
     return new Intl.DateTimeFormat('en-IN', {
-      dateStyle: 'medium', timeStyle: 'short', timeZone,
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone
     }).format(date);
   }
 

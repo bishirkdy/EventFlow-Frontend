@@ -8,15 +8,21 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [CapitalizePipe],
   templateUrl: './website-navigation.html',
-  styleUrl: './website-navigation.css',
+  styleUrl: './website-navigation.css'
 })
 export class WebsiteNavigation {
   readonly data = input.required<EventWebsiteData>();
 
   visibleItems(): NavigationItemModel[] {
-    const publishedPageIds = new Set(this.data().pages.filter(page => page.isPublished).map(page => page.id));
+    const publishedPageIds = new Set(
+      this.data()
+        .pages.filter((page) => page.isPublished)
+        .map((page) => page.id)
+    );
     const items = this.data()
-      .navigationItems.filter((item) => item.isVisible && (!item.pageId || publishedPageIds.has(item.pageId)))
+      .navigationItems.filter(
+        (item) => item.isVisible && (!item.pageId || publishedPageIds.has(item.pageId))
+      )
       .sort((a, b) => a.displayOrder - b.displayOrder);
 
     return items;

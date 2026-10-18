@@ -18,10 +18,11 @@ describe('MyRegistrationsComponent', () => {
         {
           provide: RegistrationService,
           useValue: {
-            getMine: () => of({ isSuccess: true, statusCode: 200, message: 'Success', data: [], errors: null }),
-          },
-        },
-      ],
+            getMine: () =>
+              of({ isSuccess: true, statusCode: 200, message: 'Success', data: [], errors: null })
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyRegistrationsComponent);

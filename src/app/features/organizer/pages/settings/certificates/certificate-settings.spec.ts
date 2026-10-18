@@ -3,7 +3,7 @@ import { CertificateSettings } from './certificate-settings';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
-import { NotificationService } from 'core/services/ui/notification.service';
+import { NotificationService } from '@/core/services/ui/notification.service';
 import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 
 describe('CertificateSettings', () => {
@@ -24,25 +24,25 @@ describe('CertificateSettings', () => {
             parent: null,
             snapshot: {
               paramMap: {
-                get: () => 'event-1',
-              },
-            },
-          },
+                get: () => 'event-1'
+              }
+            }
+          }
         },
         {
           provide: NotificationService,
           useValue: {
             success: vi.fn(),
-            error: vi.fn(),
-          },
+            error: vi.fn()
+          }
         },
         {
           provide: OrganizerEventStateService,
           useValue: {
-            eventId: () => 'event-1',
-          },
-        },
-      ],
+            eventId: () => 'event-1'
+          }
+        }
+      ]
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -50,36 +50,40 @@ describe('CertificateSettings', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    httpMock.expectOne((req) => req.url.includes('/certificates/settings')).flush({
-      isSuccess: true,
-      statusCode: 200,
-      message: 'ok',
-      data: {
-        eventId: 'event-1',
-        title: 'Certificate of Participation',
-        subtitle: '',
-        signatoryName: null,
-        signatoryTitle: null,
-        themeColor: '#2563EB',
-        requireApprovedRegistration: true,
-        minAttendancePercent: null,
-        updatedAtUtc: null,
-        templateMode: 'Classic',
-        templateFields: [],
-        backgroundImageUrl: null,
-        backgroundImageWidth: 0,
-        backgroundImageHeight: 0,
-      },
-      errors: null,
-    });
+    httpMock
+      .expectOne((req) => req.url.includes('/certificates/settings'))
+      .flush({
+        isSuccess: true,
+        statusCode: 200,
+        message: 'ok',
+        data: {
+          eventId: 'event-1',
+          title: 'Certificate of Participation',
+          subtitle: '',
+          signatoryName: null,
+          signatoryTitle: null,
+          themeColor: '#2563EB',
+          requireApprovedRegistration: true,
+          minAttendancePercent: null,
+          updatedAtUtc: null,
+          templateMode: 'Classic',
+          templateFields: [],
+          backgroundImageUrl: null,
+          backgroundImageWidth: 0,
+          backgroundImageHeight: 0
+        },
+        errors: null
+      });
 
-    httpMock.expectOne((req) => req.url.includes('/certificates')).flush({
-      isSuccess: true,
-      statusCode: 200,
-      message: 'ok',
-      data: [],
-      errors: null,
-    });
+    httpMock
+      .expectOne((req) => req.url.includes('/certificates'))
+      .flush({
+        isSuccess: true,
+        statusCode: 200,
+        message: 'ok',
+        data: [],
+        errors: null
+      });
   });
 
   afterEach(() => {
@@ -122,9 +126,7 @@ describe('CertificateSettings', () => {
   it('should require a selection before generating selected', () => {
     const notification = TestBed.inject(NotificationService) as any;
     component.generateSelected();
-    expect(notification.error).toHaveBeenCalledWith(
-      'Select at least one eligible registration.'
-    );
+    expect(notification.error).toHaveBeenCalledWith('Select at least one eligible registration.');
   });
 
   it('should style revoked status differently', () => {

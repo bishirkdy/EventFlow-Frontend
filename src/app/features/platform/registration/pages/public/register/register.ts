@@ -1,16 +1,25 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../../core/services/ui/notification.service';
 
 import { RegistrationFormComponent } from '../../../components/registration-form/registration-form';
 import { RegistrationFormService } from '../../../../../../core/services/registration/registration-form.service';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
-import { RegistrationFormModel } from '../../../../../../core/models/registration';
+import {
+  RegistrationFormModel,
+  RegistrationFormSubmit
+} from '../../../../../../core/models/registration';
 import { EventService } from '../../../../../../core/services/event/event.service';
 import { Event } from '../../../../../../core/models/event';
-import { RegistrationFormSubmit } from '../../../../../../core/models/registration';
 import { ApiResponse } from '@/core/models/common';
-import { createAsyncAction, createRawAsyncState } from 'core/state';
+import { createAsyncAction, createRawAsyncState } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -18,11 +27,9 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [RegistrationFormComponent, AsyncState],
   templateUrl: './register.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class RegisterComponent implements OnInit {
-
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly registrationFormService = inject(RegistrationFormService);
@@ -35,11 +42,11 @@ export class RegisterComponent implements OnInit {
   private readonly routeError = signal<string | null>(null);
   private readonly formState = createRawAsyncState<ApiResponse<RegistrationFormModel>>(
     () => this.registrationFormService.get(this.eventId),
-    { autoLoad: false, errorFallback: 'Unable to load the registration form.' },
+    { autoLoad: false, errorFallback: 'Unable to load the registration form.' }
   );
   private readonly eventState = createRawAsyncState<ApiResponse<Event>>(
     () => this.eventService.getEventById(this.eventId),
-    { autoLoad: false },
+    { autoLoad: false }
   );
 
   protected readonly loading = this.formState.loading;
@@ -57,8 +64,7 @@ export class RegisterComponent implements OnInit {
   });
 
   private readonly submitAction = createAsyncAction(
-    (request: RegistrationFormSubmit) =>
-      this.registrationService.create(this.eventId, request),
+    (request: RegistrationFormSubmit) => this.registrationService.create(this.eventId, request),
     {
       onSuccess: (response) => {
         if (!response.isSuccess || !response.data) {
@@ -69,8 +75,8 @@ export class RegisterComponent implements OnInit {
         this.toastr.success('Your registration was submitted successfully.');
         this.router.navigate(['/events', this.eventId, 'registrations', response.data.id]);
       },
-      errorFallback: 'Unable to submit your registration.',
-    },
+      errorFallback: 'Unable to submit your registration.'
+    }
   );
 
   protected readonly submitting = this.submitAction.pending;

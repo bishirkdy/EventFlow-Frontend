@@ -7,26 +7,29 @@ import { ApiResponse } from '../../models/common';
 import {
   FeedbackResults,
   SubmitFeedbackPayload,
-  SubmitFeedbackResult,
+  SubmitFeedbackResult
 } from '../../models/feedback';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class FeedbackService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  submit(eventId: string, payload: SubmitFeedbackPayload): Observable<ApiResponse<SubmitFeedbackResult>> {
+  submit(
+    eventId: string,
+    payload: SubmitFeedbackPayload
+  ): Observable<ApiResponse<SubmitFeedbackResult>> {
     return this.http.post<ApiResponse<SubmitFeedbackResult>>(
       this.api.getUrl(FEEDBACK_ENDPOINTS.submit(eventId)),
-      payload,
+      payload
     );
   }
 
   results(eventId: string): Observable<ApiResponse<FeedbackResults>> {
     return this.http.get<ApiResponse<FeedbackResults>>(
-      this.api.getUrl(FEEDBACK_ENDPOINTS.results(eventId)),
+      this.api.getUrl(FEEDBACK_ENDPOINTS.results(eventId))
     );
   }
 }

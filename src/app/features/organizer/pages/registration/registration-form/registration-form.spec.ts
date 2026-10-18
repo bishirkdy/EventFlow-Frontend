@@ -7,7 +7,7 @@ describe('RegistrationFormPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationFormPageComponent],
+      imports: [RegistrationFormPageComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationFormPageComponent);

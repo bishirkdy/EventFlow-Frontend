@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { Event as EventModel } from '../../../../core/models/event';
-import { EventTeamMemberModel } from '../../../../core/models/event-role';
+import { EventTeamMemberModel, TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { EventFeatureModel } from '../../../../core/models/event-feature';
 
 import { EventService } from '../../../../core/services/event/event.service';
@@ -18,15 +18,14 @@ import { EventInvitationModel } from '../../../../core/models/invitation';
 import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
-  ProgrammeAnalyticsModel,
+  ProgrammeAnalyticsModel
 } from '../../../../core/models/event';
 import {
   CertificateAnalyticsModel,
-  RegistrationAnalyticsModel,
+  RegistrationAnalyticsModel
 } from '../../../../core/models/registration';
 import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
-import { TeamAnalyticsModel } from '../../../../core/models/event-role';
-import { createAsyncAction, createRawAsyncState } from 'core/state';
+import { createAsyncAction, createRawAsyncState } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { isValidEmail } from '@/shared/validators/email.validator';
 
@@ -35,7 +34,7 @@ import { isValidEmail } from '@/shared/validators/email.validator';
   standalone: true,
   imports: [DatePipe, RouterLink, CapitalizePipe],
   templateUrl: './owner-dashboard.html',
-  styleUrl: './owner-dashboard.css',
+  styleUrl: './owner-dashboard.css'
 })
 export class OwnerDashboard implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -64,15 +63,13 @@ export class OwnerDashboard implements OnInit {
     {
       errorFallback: 'Failed to load event.',
       onError: () => this.toastr.error('Failed to load event.'),
-      onSuccess: (response) => this.event.set(response.data),
-    },
+      onSuccess: (response) => this.event.set(response.data)
+    }
   );
 
   private readonly rolesAction = createAsyncAction(
     (eventId: string) =>
-      this.roleService.getMyRoles(eventId).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+      this.roleService.getMyRoles(eventId).pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Unable to verify your event role.',
       onError: () => {
@@ -99,8 +96,8 @@ export class OwnerDashboard implements OnInit {
 
         this.teamLoading.set(false);
         this.team.set([]);
-      },
-    },
+      }
+    }
   );
 
   private readonly featuresAction = createAsyncAction(
@@ -116,8 +113,8 @@ export class OwnerDashboard implements OnInit {
         const enabledFeatures = (response.data ?? []).filter((feature) => feature.isEnabled);
 
         this.features.set(enabledFeatures);
-      },
-    },
+      }
+    }
   );
 
   private readonly inviteAction = createAsyncAction(
@@ -137,16 +134,16 @@ export class OwnerDashboard implements OnInit {
         if (this.eventId) {
           this.loadOrganizerInvitations(this.eventId);
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly organizerInvitationsAction = createAsyncAction(
     (eventId: string) => this.invitationService.getOrganizerInvitations(eventId),
     {
       onError: () => this.organizerInvitations.set([]),
-      onSuccess: (response) => this.organizerInvitations.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.organizerInvitations.set(response.data ?? [])
+    }
   );
 
   private readonly revokeInvitationAction = createAsyncAction(
@@ -166,8 +163,8 @@ export class OwnerDashboard implements OnInit {
         if (this.eventId) {
           this.loadOrganizerInvitations(this.eventId);
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly removeAction = createAsyncAction(
@@ -178,8 +175,8 @@ export class OwnerDashboard implements OnInit {
       onSuccess: (response) => {
         this.toastr.success(response.message || 'Organizer removed successfully.');
         this.loadTeam(this.eventId!);
-      },
-    },
+      }
+    }
   );
 
   private readonly claimAction = createAsyncAction(
@@ -191,8 +188,8 @@ export class OwnerDashboard implements OnInit {
         if (this.eventId) {
           this.loadRoles(this.eventId);
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly teamAction = createAsyncAction(
@@ -200,21 +197,34 @@ export class OwnerDashboard implements OnInit {
     {
       onError: () => this.team.set([]),
       onSuccess: (response) => this.team.set(response.data ?? []),
-      onSettled: () => this.teamLoading.set(false),
-    },
+      onSettled: () => this.teamLoading.set(false)
+    }
   );
 
-  private readonly analyticsState = createRawAsyncState(() =>
-    forkJoin({
-      overview: this.eventService.getOverviewAnalytics(this.eventId!).pipe(catchError(() => of(null))),
-      programme: this.eventService.getProgrammeAnalytics(this.eventId!).pipe(catchError(() => of(null))),
-      content: this.eventService.getContentAnalytics(this.eventId!).pipe(catchError(() => of(null))),
-      registrations: this.registrationService.getRegistrationAnalytics(this.eventId!, 30).pipe(catchError(() => of(null))),
-      certificates: this.registrationService.getCertificateAnalytics(this.eventId!).pipe(catchError(() => of(null))),
-      attendance: this.operationsService.attendanceAnalytics(this.eventId!, 30).pipe(catchError(() => of(null))),
-      team: this.roleService.getTeamAnalytics(this.eventId!).pipe(catchError(() => of(null))),
-    }),
-    { autoLoad: false },
+  private readonly analyticsState = createRawAsyncState(
+    () =>
+      forkJoin({
+        overview: this.eventService
+          .getOverviewAnalytics(this.eventId!)
+          .pipe(catchError(() => of(null))),
+        programme: this.eventService
+          .getProgrammeAnalytics(this.eventId!)
+          .pipe(catchError(() => of(null))),
+        content: this.eventService
+          .getContentAnalytics(this.eventId!)
+          .pipe(catchError(() => of(null))),
+        registrations: this.registrationService
+          .getRegistrationAnalytics(this.eventId!, 30)
+          .pipe(catchError(() => of(null))),
+        certificates: this.registrationService
+          .getCertificateAnalytics(this.eventId!)
+          .pipe(catchError(() => of(null))),
+        attendance: this.operationsService
+          .attendanceAnalytics(this.eventId!, 30)
+          .pipe(catchError(() => of(null))),
+        team: this.roleService.getTeamAnalytics(this.eventId!).pipe(catchError(() => of(null)))
+      }),
+    { autoLoad: false }
   );
 
   readonly loading = this.eventAction.pending;
@@ -229,9 +239,15 @@ export class OwnerDashboard implements OnInit {
   readonly overviewAnalytics = computed(() => this.analyticsState.data()?.overview?.data ?? null);
   readonly programmeAnalytics = computed(() => this.analyticsState.data()?.programme?.data ?? null);
   readonly contentAnalytics = computed(() => this.analyticsState.data()?.content?.data ?? null);
-  readonly registrationAnalytics = computed(() => this.analyticsState.data()?.registrations?.data ?? null);
-  readonly certificateAnalytics = computed(() => this.analyticsState.data()?.certificates?.data ?? null);
-  readonly attendanceAnalytics = computed(() => this.analyticsState.data()?.attendance?.data ?? null);
+  readonly registrationAnalytics = computed(
+    () => this.analyticsState.data()?.registrations?.data ?? null
+  );
+  readonly certificateAnalytics = computed(
+    () => this.analyticsState.data()?.certificates?.data ?? null
+  );
+  readonly attendanceAnalytics = computed(
+    () => this.analyticsState.data()?.attendance?.data ?? null
+  );
   readonly teamAnalytics = computed(() => this.analyticsState.data()?.team?.data ?? null);
 
   ngOnInit(): void {

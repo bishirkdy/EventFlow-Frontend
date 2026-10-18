@@ -14,7 +14,7 @@ describe('Login', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Login],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(Login);
@@ -45,8 +45,8 @@ describe('Login returnUrl round-trip', () => {
       providers: [
         ...provideComponentTestProviders({}, queryParams),
         { provide: AuthService, useValue: authService },
-        { provide: NotificationService, useValue: toastr },
-      ],
+        { provide: NotificationService, useValue: toastr }
+      ]
     }).compileComponents();
 
     router = TestBed.inject(Router);

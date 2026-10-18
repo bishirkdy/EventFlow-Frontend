@@ -12,17 +12,17 @@ import {
   Images,
   Maximize2,
   ArrowLeft,
-  ScanFace,
+  ScanFace
 } from 'lucide-angular';
 import { Photo } from '@/core/models/photographer';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-photo-gallery',
   standalone: true,
   imports: [CommonModule, LucideAngularModule, RouterLink, AsyncState],
-  templateUrl: './photo-gallery.html',
+  templateUrl: './photo-gallery.html'
 })
 export class PhotoGallery implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -70,8 +70,8 @@ export class PhotoGallery implements OnInit {
           this.totalCount.set(0);
           this.loadError.set('Unable to load photos for this event.');
         }
-      },
-    },
+      }
+    }
   );
 
   readonly loading = this.loadAction.pending;
@@ -83,11 +83,11 @@ export class PhotoGallery implements OnInit {
   readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
 
   readonly startItem = computed(() =>
-    this.totalCount() === 0 ? 0 : (this.currentPage() - 1) * this.pageSize() + 1,
+    this.totalCount() === 0 ? 0 : (this.currentPage() - 1) * this.pageSize() + 1
   );
 
   readonly endItem = computed(() =>
-    Math.min(this.currentPage() * this.pageSize(), this.totalCount()),
+    Math.min(this.currentPage() * this.pageSize(), this.totalCount())
   );
 
   readonly skeletonSlots = Array.from({ length: 12 }, (_, i) => i);
@@ -131,7 +131,7 @@ export class PhotoGallery implements OnInit {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
+      day: 'numeric'
     });
   }
 

@@ -7,5 +7,5 @@ export const EVENT_FEATURE_ENDPOINTS = {
   disable: (eventId: string, featureId: string) =>
     `/v1/events/${eventId}/features/${featureId}/disable`,
 
-  reset: (eventId: string) => `/v1/events/${eventId}/features/reset`,
+  reset: (eventId: string) => `/v1/events/${eventId}/features/reset`
 } as const;

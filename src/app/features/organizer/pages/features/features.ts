@@ -5,7 +5,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { EventFeatureService } from '../../../../core/services/event-feature/event-feature.service';
 import { EventFeatureModel } from '../../../../core/models/event-feature';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
 
 @Component({
@@ -13,7 +13,7 @@ import { AsyncState } from '../../../../shared/components/async-state/async-stat
   standalone: true,
   imports: [AsyncState],
   templateUrl: './features.html',
-  styleUrl: './features.css',
+  styleUrl: './features.css'
 })
 export class Features implements OnInit {
   private readonly eventFeatureService = inject(EventFeatureService);
@@ -30,8 +30,8 @@ export class Features implements OnInit {
       toastErrors: true,
       errorFallback: 'Failed to load event features.',
       onError: () => this.error.set('Failed to load event features.'),
-      onSuccess: (response) => this.features.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.features.set(response.data ?? [])
+    }
   );
 
   private readonly toggleAction = createAsyncAction(
@@ -46,16 +46,14 @@ export class Features implements OnInit {
       onSettled: () => this.updatingFeatureId.set(null),
       onSuccess: ({ feature, enabling }) => {
         this.features.update((features) =>
-          features.map((item) =>
-            item.id === feature.id ? { ...item, isEnabled: enabling } : item,
-          ),
+          features.map((item) => (item.id === feature.id ? { ...item, isEnabled: enabling } : item))
         );
 
         this.toastr.success(
-          enabling ? 'Feature enabled successfully.' : 'Feature disabled successfully.',
+          enabling ? 'Feature enabled successfully.' : 'Feature disabled successfully.'
         );
-      },
-    },
+      }
+    }
   );
 
   private readonly resetAction = createAsyncAction(
@@ -63,8 +61,8 @@ export class Features implements OnInit {
     {
       successMessage: 'Features reset successfully.',
       errorFallback: 'Failed to reset features.',
-      onSuccess: (response) => this.features.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.features.set(response.data ?? [])
+    }
   );
 
   loading = this.loadAction.pending;

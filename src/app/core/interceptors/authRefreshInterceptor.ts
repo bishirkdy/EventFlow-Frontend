@@ -2,14 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { Router } from '@angular/router';
-import {
-  catchError,
-  finalize,
-  Observable,
-  shareReplay,
-  switchMap,
-  throwError,
-} from 'rxjs';
+import { catchError, finalize, Observable, shareReplay, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';
 
 let refreshRequest$: Observable<boolean> | null = null;
@@ -62,17 +55,13 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
     void router.navigateByUrl(
       returnUrl === '/'
         ? router.createUrlTree(['/login'])
-        : router.createUrlTree(['/login'], { queryParams: { returnUrl } }),
+        : router.createUrlTree(['/login'], { queryParams: { returnUrl } })
     );
   }
 
   return next(req).pipe(
     catchError((error: unknown) => {
-      if (
-        !(error instanceof HttpErrorResponse) ||
-        error.status !== 401 ||
-        isAuthRequest
-      ) {
+      if (!(error instanceof HttpErrorResponse) || error.status !== 401 || isAuthRequest) {
         return throwError(() => error);
       }
 
@@ -85,22 +74,20 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (!refreshRequest$) {
         refreshRequest$ = auth.refresh().pipe(
-          switchMap(refreshed =>
-            refreshed
-              ? auth.loadCurrentUser().pipe(switchMap(user => [!!user]))
-              : [false],
+          switchMap((refreshed) =>
+            refreshed ? auth.loadCurrentUser().pipe(switchMap((user) => [!!user])) : [false]
           ),
           finalize(() => {
             refreshRequest$ = null;
           }),
-          shareReplay(1),
+          shareReplay(1)
         );
       }
 
       const currentRefreshRequest = refreshRequest$;
 
       return currentRefreshRequest.pipe(
-        switchMap(refreshed => {
+        switchMap((refreshed) => {
           if (!refreshed) {
             auth.clearCurrentUser();
             redirectToLogin();
@@ -109,12 +96,12 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
 
           return next(req);
         }),
-        catchError(refreshError => {
+        catchError((refreshError) => {
           auth.clearCurrentUser();
           redirectToLogin();
           return throwError(() => refreshError);
-        }),
+        })
       );
-    }),
+    })
   );
 };

@@ -4,12 +4,12 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { NavigationItemService } from '../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { NavigationItemModel } from '../../../../core/models/navigation-item';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 @Component({
   selector: 'app-navigation',
   standalone: true,
   templateUrl: './navigation.html',
-  styleUrl: './navigation.css',
+  styleUrl: './navigation.css'
 })
 export class Navigation implements OnInit {
   private readonly router = inject(Router);
@@ -22,8 +22,9 @@ export class Navigation implements OnInit {
     {
       toastErrors: true,
       errorFallback: 'Failed to load navigation items.',
-      onSuccess: (r) => this.items.set([...(r.data ?? [])].sort((a, b) => a.displayOrder - b.displayOrder)),
-    },
+      onSuccess: (r) =>
+        this.items.set([...(r.data ?? [])].sort((a, b) => a.displayOrder - b.displayOrder))
+    }
   );
   private readonly deleteAction = createAsyncAction(
     (id: string, item: NavigationItemModel) => this.service.deleteItem(id, item.id),
@@ -32,18 +33,19 @@ export class Navigation implements OnInit {
       onSuccess: (r) => {
         this.toastr.success(r.message);
         this.loadItems();
-      },
-    },
+      }
+    }
   );
   private readonly toggleAction = createAsyncAction(
-    (id: string, item: NavigationItemModel) => this.service.setVisibility(id, item.id, !item.isVisible),
+    (id: string, item: NavigationItemModel) =>
+      this.service.setVisibility(id, item.id, !item.isVisible),
     {
       errorFallback: 'Failed to update visibility.',
       onSuccess: (r) => {
         this.toastr.success(r.message);
         this.loadItems();
-      },
-    },
+      }
+    }
   );
   private readonly reorderAction = createAsyncAction(
     (id: string, ids: string[]) => this.service.reorderItems(id, ids),
@@ -52,8 +54,8 @@ export class Navigation implements OnInit {
       onSuccess: (r) => {
         this.toastr.success(r.message);
         this.loadItems();
-      },
-    },
+      }
+    }
   );
   readonly loading = this.loadAction.pending;
   ngOnInit(): void {
@@ -91,6 +93,9 @@ export class Navigation implements OnInit {
       t = i + direction;
     if (i < 0 || t < 0 || t >= list.length) return;
     [list[i], list[t]] = [list[t], list[i]];
-    this.reorderAction.run(id, list.map((x) => x.id));
+    this.reorderAction.run(
+      id,
+      list.map((x) => x.id)
+    );
   }
 }

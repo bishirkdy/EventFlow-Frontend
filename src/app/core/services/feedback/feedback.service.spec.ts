@@ -11,7 +11,7 @@ describe('FeedbackService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
 
     service = TestBed.inject(FeedbackService);
@@ -34,25 +34,25 @@ describe('FeedbackService', () => {
         targetType: FeedbackTargetType.Event,
         targetId: null,
         rating: 4,
-        comment: 'Nice event',
+        comment: 'Nice event'
       })
-      .subscribe(r => (response = r));
+      .subscribe((r) => (response = r));
 
     const req = httpMock.expectOne(
-      r => r.url.includes('/v1/events/event-1/feedback') && r.method === 'POST',
+      (r) => r.url.includes('/v1/events/event-1/feedback') && r.method === 'POST'
     );
     expect(req.request.body).toEqual({
       targetType: FeedbackTargetType.Event,
       targetId: null,
       rating: 4,
-      comment: 'Nice event',
+      comment: 'Nice event'
     });
 
     req.flush({
       isSuccess: true,
       statusCode: 200,
       message: 'ok',
-      data: { feedbackId: 'f-1', rating: 4, submittedAtUtc: '2026-10-04T00:00:00Z' },
+      data: { feedbackId: 'f-1', rating: 4, submittedAtUtc: '2026-10-04T00:00:00Z' }
     });
 
     expect(response.data.feedbackId).toBe('f-1');
@@ -61,16 +61,16 @@ describe('FeedbackService', () => {
   it('results fetches the results endpoint', () => {
     let response: any;
 
-    service.results('event-1').subscribe(r => (response = r));
+    service.results('event-1').subscribe((r) => (response = r));
 
     const req = httpMock.expectOne(
-      r => r.url.includes('/v1/events/event-1/feedback/results') && r.method === 'GET',
+      (r) => r.url.includes('/v1/events/event-1/feedback/results') && r.method === 'GET'
     );
     req.flush({
       isSuccess: true,
       statusCode: 200,
       message: 'ok',
-      data: { totalCount: 2, averageRating: 4.5 },
+      data: { totalCount: 2, averageRating: 4.5 }
     });
 
     expect(response.data.totalCount).toBe(2);

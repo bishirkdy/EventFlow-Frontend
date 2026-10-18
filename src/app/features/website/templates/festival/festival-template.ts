@@ -7,7 +7,7 @@ import { EventWebsiteShell } from '../../components/event-website-shell/event-we
   standalone: true,
   imports: [EventWebsiteShell],
   templateUrl: './festival-template.html',
-  styleUrl: './festival-template.css',
+  styleUrl: './festival-template.css'
 })
 export class FestivalTemplate {
   readonly data = input.required<EventWebsiteData>();

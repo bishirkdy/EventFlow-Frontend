@@ -4,15 +4,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { EventPageSectionService } from '../../../../../core/services/event-page-section/event-page-section.service';
-import { PageSectionModel, UpdatePageSectionModel } from '../../../../../core/models/event-page-section';
-import { createAsyncAction } from 'core/state';
+import {
+  PageSectionModel,
+  UpdatePageSectionModel
+} from '../../../../../core/models/event-page-section';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-edit-page-section',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './edit-page-section.html',
-  styleUrl: './edit-page-section.css',
+  styleUrl: './edit-page-section.css'
 })
 export class EditPageSection implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -43,8 +46,8 @@ export class EditPageSection implements OnInit {
         }
 
         this.setForm(section);
-      },
-    },
+      }
+    }
   );
 
   private readonly updateSectionAction = createAsyncAction(
@@ -53,8 +56,8 @@ export class EditPageSection implements OnInit {
     {
       successMessage: 'Page section updated successfully.',
       errorFallback: 'Failed to update page section.',
-      onSuccess: () => this.goBack(),
-    },
+      onSuccess: () => this.goBack()
+    }
   );
 
   readonly loading = this.loadAction.pending;
@@ -66,7 +69,7 @@ export class EditPageSection implements OnInit {
     content: [''],
     isVisible: [true],
     showRegistrationForm: [false],
-    configuration: [''],
+    configuration: ['']
   });
 
   ngOnInit(): void {
@@ -111,7 +114,7 @@ export class EditPageSection implements OnInit {
       content: section.content ?? '',
       isVisible: section.isVisible,
       showRegistrationForm: section.showRegistrationForm,
-      configuration: section.configuration ?? '',
+      configuration: section.configuration ?? ''
     });
 
     this.currentImageUrl.set(section.imageUrl);
@@ -131,7 +134,7 @@ export class EditPageSection implements OnInit {
 
     this.updateSectionAction.run({
       ...this.form.getRawValue(),
-      image: this.selectedImage() ?? undefined,
+      image: this.selectedImage() ?? undefined
     });
   }
 

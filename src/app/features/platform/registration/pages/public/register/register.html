@@ -1,31 +1,49 @@
-<div class="min-h-screen" style="background: var(--color-background); color: var(--color-text-primary)">
+<div
+  class="min-h-screen"
+  style="background: var(--color-background); color: var(--color-text-primary)"
+>
   <app-async-state
     [loading]="loading()"
     [error]="error()"
     loadingView="spinner"
     loadingLabel="Preparing your registration..."
-    (retry)="loadRegistrationForm()">
+    (retry)="loadRegistrationForm()"
+  >
     <ng-template>
-    @if (registrationForm(); as form) {
-    @if (!form.isActive) {
-      <main class="grid min-h-screen place-items-center px-6">
-        <section class="w-full max-w-md rounded-3xl border p-8 text-center shadow-sm" style="background: var(--color-surface); border-color: var(--color-border)">
-          <span class="text-[10px] font-extrabold uppercase tracking-[0.2em]" style="color: var(--color-primary)">Registration</span>
-          <h1 class="mt-3 font-serif text-4xl tracking-[-0.04em]" style="color: var(--color-text-primary)">Registration is closed</h1>
-          <p class="mt-4 text-sm leading-7" style="color: var(--color-text-secondary)">This event is not currently accepting registrations.</p>
-        </section>
-      </main>
-    } @else {
-      <main class="mx-auto w-full max-w-375 px-3 py-3 sm:px-5 sm:py-5 lg:px-7 lg:py-7">
-        <app-registration-form
-          [registrationForm]="form"
-          [event]="event()"
-          [submitting]="submitting()"
-          (submitted)="submitRegistration($event)"
-        />
-      </main>
-    }
-  }
+      @if (registrationForm(); as form) {
+        @if (!form.isActive) {
+          <main class="grid min-h-screen place-items-center px-6">
+            <section
+              class="w-full max-w-md rounded-3xl border p-8 text-center shadow-sm"
+              style="background: var(--color-surface); border-color: var(--color-border)"
+            >
+              <span
+                class="text-[10px] font-extrabold uppercase tracking-[0.2em]"
+                style="color: var(--color-primary)"
+                >Registration</span
+              >
+              <h1
+                class="mt-3 font-serif text-4xl tracking-[-0.04em]"
+                style="color: var(--color-text-primary)"
+              >
+                Registration is closed
+              </h1>
+              <p class="mt-4 text-sm leading-7" style="color: var(--color-text-secondary)">
+                This event is not currently accepting registrations.
+              </p>
+            </section>
+          </main>
+        } @else {
+          <main class="mx-auto w-full max-w-375 px-3 py-3 sm:px-5 sm:py-5 lg:px-7 lg:py-7">
+            <app-registration-form
+              [registrationForm]="form"
+              [event]="event()"
+              [submitting]="submitting()"
+              (submitted)="submitRegistration($event)"
+            />
+          </main>
+        }
+      }
     </ng-template>
   </app-async-state>
 </div>

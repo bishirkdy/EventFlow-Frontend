@@ -46,10 +46,10 @@ export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
           error,
           error.status === 403
             ? 'You do not have permission to perform this action.'
-            : 'The request failed. Please try again.',
-        ),
+            : 'The request failed. Please try again.'
+        )
       );
       return throwError(() => error);
-    }),
+    })
   );
 };

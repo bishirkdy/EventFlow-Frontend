@@ -10,7 +10,7 @@ const ticket = {
   qrCodeValue: 'ticket-qr-value',
   issuedAtUtc: '2026-09-30T00:00:00Z',
   revokedAtUtc: null,
-  isActive: true,
+  isActive: true
 };
 
 describe('TicketComponent', () => {
@@ -19,7 +19,7 @@ describe('TicketComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TicketComponent],
+      imports: [TicketComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TicketComponent);

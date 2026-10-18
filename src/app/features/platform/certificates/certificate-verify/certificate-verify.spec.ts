@@ -21,12 +21,12 @@ describe('CertificateVerify', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => 'CERT-20261003-ABC123',
-              },
-            },
-          },
-        },
-      ],
+                get: () => 'CERT-20261003-ABC123'
+              }
+            }
+          }
+        }
+      ]
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -56,9 +56,9 @@ describe('CertificateVerify', () => {
           status: 'Generated',
           isValid: true,
           issuedAtUtc: '2026-10-03T10:00:00Z',
-          revokedAtUtc: null,
+          revokedAtUtc: null
         },
-        errors: null,
+        errors: null
       });
 
     expect(component.loading()).toBe(false);
@@ -78,9 +78,9 @@ describe('CertificateVerify', () => {
           status: 'Generated',
           isValid: true,
           issuedAtUtc: '2026-10-03T10:00:00Z',
-          revokedAtUtc: null,
+          revokedAtUtc: null
         },
-        errors: null,
+        errors: null
       });
 
     expect(component.loading()).toBe(false);
@@ -98,7 +98,7 @@ describe('CertificateVerify', () => {
           statusCode: 404,
           message: 'Certificate not found.',
           data: null,
-          errors: ['Certificate not found.'],
+          errors: ['Certificate not found.']
         },
         { status: 404, statusText: 'Not Found' }
       );

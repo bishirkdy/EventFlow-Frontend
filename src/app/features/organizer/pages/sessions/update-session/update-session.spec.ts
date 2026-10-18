@@ -10,7 +10,7 @@ describe('UpdateSession', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UpdateSession],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(UpdateSession);

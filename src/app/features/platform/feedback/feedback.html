@@ -9,7 +9,6 @@
     class="flex h-dvh w-full min-h-0 flex-col overflow-hidden bg-surface lg:h-[90dvh] lg:max-w-4xl"
     (click)="$event.stopPropagation()"
   >
-    <!-- Header -->
     <header
       class="flex shrink-0 items-center justify-between gap-4 border-b border-border bg-surface px-5 py-4 md:px-8"
     >
@@ -21,7 +20,8 @@
         </h2>
 
         <p class="mt-1 hidden text-sm text-text-secondary sm:block">
-          Tell us all about the event you attended. Your feedback helps organizers improve future events.
+          Tell us all about the event you attended. Your feedback helps organizers improve future
+          events.
         </p>
       </div>
 
@@ -38,7 +38,6 @@
     <main class="min-h-0 flex-1 overflow-y-auto">
       <div class="mx-auto w-full max-w-2xl p-4 md:p-8">
         @if (submitted()) {
-          <!-- Success state -->
           <div class="border border-border bg-surface p-8 text-center md:p-12">
             <div
               class="mx-auto flex h-14 w-14 items-center justify-center border border-green-200 bg-green-50 text-2xl font-semibold text-green-700"
@@ -72,7 +71,6 @@
             </div>
           </div>
         } @else if (loading()) {
-          <!-- Loading state -->
           <div
             class="flex min-h-64 flex-col items-center justify-center border border-border bg-surface p-8 text-center"
           >
@@ -87,7 +85,6 @@
             <p class="mt-1 text-sm text-text-secondary">Please wait while we prepare your form.</p>
           </div>
         } @else {
-          <!-- Feedback form -->
           <form
             class="space-y-7 border border-border bg-surface p-5 md:p-8"
             (submit)="$event.preventDefault(); submit()"
@@ -100,7 +97,6 @@
               </p>
             </div>
 
-            <!-- Feedback target type -->
             <fieldset>
               <legend class="text-sm font-medium text-text-primary">
                 What is your feedback about?
@@ -155,7 +151,6 @@
               </div>
             }
 
-            <!-- Rating -->
             <fieldset>
               <legend class="text-sm font-medium text-text-primary">
                 Your rating
@@ -194,7 +189,6 @@
               }
             </fieldset>
 
-            <!-- Comments -->
             <div>
               <div class="flex items-center justify-between gap-3">
                 <label for="feedback-comment" class="text-sm font-medium text-text-primary">

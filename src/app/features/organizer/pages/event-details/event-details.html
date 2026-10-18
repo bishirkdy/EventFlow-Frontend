@@ -1,7 +1,6 @@
 <div class="min-h-screen bg-background p-6 md:p-8">
   @if (event(); as currentEvent) {
     <div class="w-full">
-      <!-- Header -->
       <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 class="text-2xl font-semibold text-text-primary">
@@ -23,7 +22,6 @@
         }
       </div>
 
-      <!-- Event Image -->
       @if (currentEvent.images.length > 0) {
         <div class="mb-6 overflow-hidden border border-border bg-surface shadow-sm">
           <img
@@ -34,9 +32,7 @@
         </div>
       }
 
-      <!-- Event Details -->
       <div class="grid gap-4 md:grid-cols-2">
-        <!-- Event Name -->
         <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Event Name</p>
 
@@ -45,7 +41,6 @@
           </p>
         </div>
 
-        <!-- Event Type -->
         <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Event Type</p>
 
@@ -54,7 +49,6 @@
           </p>
         </div>
 
-        <!-- Start Date -->
         <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Start Date</p>
 
@@ -63,7 +57,6 @@
           </p>
         </div>
 
-        <!-- End Date -->
         <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">End Date</p>
 
@@ -72,7 +65,6 @@
           </p>
         </div>
 
-        <!-- Timezone -->
         <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Timezone</p>
 
@@ -81,7 +73,6 @@
           </p>
         </div>
 
-        <!-- Status -->
         <div class="border border-border bg-surface p-5">
           <p class="text-sm text-text-muted">Status</p>
 
@@ -90,7 +81,6 @@
           </p>
         </div>
 
-        <!-- Description -->
         @if (currentEvent.description) {
           <div class="border border-border bg-surface p-5 md:col-span-2">
             <p class="text-sm text-text-muted">Description</p>
@@ -103,7 +93,6 @@
       </div>
     </div>
   } @else {
-    <!-- Loading -->
     <div class="border border-border bg-surface p-10 text-center">
       <p class="text-sm text-text-secondary">Loading event...</p>
     </div>

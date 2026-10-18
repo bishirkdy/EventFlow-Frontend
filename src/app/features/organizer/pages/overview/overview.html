@@ -3,7 +3,6 @@
     <div class="border-b border-border bg-surface">
       <div class="mx-auto px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         <div class="relative overflow-hidden border border-border">
-          <!-- Background -->
           <div class="absolute inset-0">
             @if (currentEvent.images.length > 0) {
               <img
@@ -18,12 +17,9 @@
             }
           </div>
 
-          <!-- Hero Content -->
           <div class="relative px-5 py-7 sm:px-7 sm:py-9 lg:px-8 lg:py-10">
             <div class="flex flex-col gap-6 sm:flex-row sm:items-start">
-              <!-- Event Information -->
               <div class="min-w-0 flex-1">
-                <!-- Meta -->
                 <div class="flex flex-wrap items-center gap-2">
                   <span
                     class="inline-flex items-center gap-1.5 bg-surface/90 px-3 py-1 text-xs font-medium text-text-primary"
@@ -45,18 +41,18 @@
                   </span>
 
                   @if (currentEvent.subType) {
-                    <span class="text-xs text-white/80"> · {{ currentEvent.subType | capitalize }} </span>
+                    <span class="text-xs text-white/80">
+                      · {{ currentEvent.subType | capitalize }}
+                    </span>
                   }
                 </div>
 
-                <!-- Name -->
                 <h1
                   class="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl"
                 >
                   {{ currentEvent.name | capitalize }}
                 </h1>
 
-                <!-- Description -->
                 <p class="mt-3 max-w-3xl text-sm leading-6 text-white/85">
                   {{
                     currentEvent.description
@@ -65,7 +61,6 @@
                   }}
                 </p>
 
-                <!-- Dates -->
                 <div
                   class="mt-5 flex flex-col gap-2 text-sm text-white/85 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5"
                 >
@@ -94,7 +89,6 @@
       </div>
     </div>
 
-    <!-- Navigation -->
     <div class="border-b border-border bg-surface">
       <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="flex gap-5 overflow-x-auto sm:gap-6">
@@ -143,13 +137,11 @@
       </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div class="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <main class="min-w-0 space-y-6">
           <section class="overflow-hidden border border-border bg-surface">
             <div class="grid sm:grid-cols-3">
-              <!-- Event Type -->
               <div class="border-b border-border p-5 lg:border-r lg:border-b-0">
                 <p class="text-sm text-text-muted">Event Type</p>
 
@@ -158,7 +150,6 @@
                 </p>
               </div>
 
-              <!-- Start Date -->
               <div class="border-b border-border p-5 sm:border-r lg:border-b-0">
                 <p class="text-sm text-text-muted">Starts</p>
 
@@ -167,7 +158,6 @@
                 </p>
               </div>
 
-              <!-- Timezone -->
               <div class="p-5">
                 <p class="text-sm text-text-muted">Time Zone</p>
 
@@ -181,7 +171,6 @@
             </div>
           </section>
 
-          <!-- EVENT ANALYTICS -->
           <section class="overflow-hidden border border-border bg-surface">
             <div
               class="flex flex-col gap-3 border-b border-border px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6"
@@ -205,7 +194,6 @@
                   <p class="text-sm text-text-secondary">No analytics data is available yet.</p>
                 } @else {
                   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <!-- Registrations -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Registrations</p>
 
@@ -221,7 +209,6 @@
                       </p>
                     </div>
 
-                    <!-- Approved -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Approved</p>
 
@@ -235,7 +222,6 @@
                       </p>
                     </div>
 
-                    <!-- Pending / Waitlisted -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Pending / Waitlisted</p>
 
@@ -253,7 +239,6 @@
                       </p>
                     </div>
 
-                    <!-- Checked In -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm text-text-muted">Checked In</p>
 
@@ -270,7 +255,6 @@
                   </div>
 
                   <div class="grid gap-4 lg:grid-cols-2">
-                    <!-- Registration Trend -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">
                         Registrations — last 14 days
@@ -310,7 +294,6 @@
                         </p>
                       }
 
-                      <!-- Status Split -->
                       @if ((registrationAnalytics()?.total ?? 0) > 0) {
                         <div class="mt-4">
                           <div class="flex h-3 overflow-hidden rounded-full bg-border">
@@ -386,7 +369,6 @@
                       }
                     </div>
 
-                    <!-- Attendance Rhythm -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Check-ins by hour</p>
 
@@ -478,9 +460,7 @@
                     </div>
                   </div>
 
-                  <!-- PROGRAMME + CONTENT -->
                   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-                    <!-- Sessions -->
                     <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Sessions</p>
 
@@ -493,7 +473,6 @@
                       </p>
                     </div>
 
-                    <!-- Sections -->
                     <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Sections</p>
 
@@ -506,7 +485,6 @@
                       </p>
                     </div>
 
-                    <!-- Venues -->
                     <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Venues</p>
 
@@ -519,7 +497,6 @@
                       </p>
                     </div>
 
-                    <!-- Speakers -->
                     <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Speakers</p>
 
@@ -532,7 +509,6 @@
                       </p>
                     </div>
 
-                    <!-- Sponsors -->
                     <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Sponsors</p>
 
@@ -545,7 +521,6 @@
                       </p>
                     </div>
 
-                    <!-- Website -->
                     <div class="min-w-0 border border-border bg-background p-4">
                       <p class="text-xs text-text-muted">Website</p>
 
@@ -564,9 +539,7 @@
                     </div>
                   </div>
 
-                  <!-- TEAM / CERTIFICATES / MEDIA / FEEDBACK -->
                   <div class="grid gap-4 lg:grid-cols-2">
-                    <!-- Team -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Team</p>
 
@@ -609,7 +582,6 @@
                       }
                     </div>
 
-                    <!-- Certificates -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Certificates</p>
 
@@ -647,7 +619,6 @@
                       </p>
                     </div>
 
-                    <!-- Media -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Media &amp; Content</p>
 
@@ -687,7 +658,6 @@
                       }
                     </div>
 
-                    <!-- Feedback -->
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Feedback</p>
 
@@ -721,7 +691,6 @@
                     </div>
                   </div>
 
-                  <!-- REJECTION REASONS -->
                   @if ((registrationAnalytics()?.topRejectionReasons?.length ?? 0) > 0) {
                     <div class="border border-border bg-background p-5">
                       <p class="text-sm font-medium text-text-primary">Top rejection reasons</p>
@@ -749,7 +718,6 @@
             }
           </section>
 
-          <!-- EVENT IMAGES -->
           @if (currentEvent.images.length > 0) {
             <section class="overflow-hidden border border-border bg-surface">
               <div class="border-b border-border px-5 py-5 sm:px-6">
@@ -772,8 +740,6 @@
             </section>
           }
         </main>
-
-        <!-- RIGHT SIDEBAR -->
 
         <aside class="min-w-0 space-y-6 xl:sticky xl:top-6">
           <section class="overflow-hidden border border-border bg-surface">
@@ -808,7 +774,6 @@
             </div>
 
             <div class="divide-y divide-border">
-              <!-- Start -->
               <div class="px-5 py-5">
                 <div class="flex items-start gap-3">
                   <div
@@ -869,8 +834,6 @@
             </div>
           </section>
 
-          <!-- EVENT INFORMATION -->
-
           <section class="overflow-hidden border border-border bg-surface">
             <div class="border-b border-border px-5 py-5">
               <h2 class="font-semibold text-text-primary">Event Information</h2>
@@ -879,7 +842,6 @@
             </div>
 
             <div class="divide-y divide-border">
-              <!-- Sub Type -->
               <div class="px-5 py-4">
                 <p class="text-xs text-text-muted">Sub Type</p>
 
@@ -888,7 +850,6 @@
                 </p>
               </div>
 
-              <!-- Timezone -->
               <div class="px-5 py-4">
                 <p class="text-xs text-text-muted">Time Zone</p>
 
@@ -897,7 +858,6 @@
                 </p>
               </div>
 
-              <!-- Created -->
               <div class="px-5 py-4">
                 <p class="text-xs text-text-muted">Created</p>
 
@@ -906,7 +866,6 @@
                 </p>
               </div>
 
-              <!-- Updated -->
               @if (currentEvent.updatedAt) {
                 <div class="px-5 py-4">
                   <p class="text-xs text-text-muted">Last Updated</p>
@@ -919,7 +878,6 @@
             </div>
           </section>
 
-          <!-- ABOUT EVENT -->
           <section class="overflow-hidden border border-border bg-surface">
             <div class="border-b border-border px-5 py-5 sm:px-6">
               <h2 class="text-lg font-semibold text-text-primary">About Event</h2>
@@ -936,8 +894,6 @@
             </div>
           </section>
 
-          <!-- CREATED BY -->
-
           <section class="border border-border bg-surface p-5">
             <p class="text-xs font-medium uppercase tracking-wide text-text-muted">Created By</p>
 
@@ -949,7 +905,6 @@
       </div>
     </div>
   } @else {
-    <!-- LOADING -->
     <div class="flex min-h-125 items-center justify-center px-4">
       <div class="text-center">
         <div

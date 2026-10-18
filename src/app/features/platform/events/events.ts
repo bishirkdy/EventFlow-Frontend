@@ -6,7 +6,7 @@ import { EventService } from '../../../core/services/event/event.service';
 import { EventTypeService } from '../../../core/services/event-type/event-type.service';
 import { Event } from '../../../core/models/event';
 import { EventTypeModel } from '../../../core/models/event-type';
-import { createAsyncState } from 'core/state';
+import { createAsyncState } from '@/core/state';
 import { AsyncState } from '../../../shared/components/async-state/async-state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
@@ -17,7 +17,7 @@ type EventSort = 'date-asc' | 'date-desc' | 'name-asc';
   standalone: true,
   imports: [DatePipe, RouterLink, LucideAngularModule, AsyncState, CapitalizePipe],
   templateUrl: './events.html',
-  styleUrl: './events.css',
+  styleUrl: './events.css'
 })
 export class Events implements OnInit {
   private readonly eventService = inject(EventService);
@@ -25,12 +25,12 @@ export class Events implements OnInit {
 
   private readonly eventsState = createAsyncState<Event[]>(
     () => this.eventService.getPublicEvents(12),
-    { initial: [], errorFallback: 'Unable to load public events.' },
+    { initial: [], errorFallback: 'Unable to load public events.' }
   );
 
   private readonly eventTypesState = createAsyncState<EventTypeModel[]>(
     () => this.eventTypeService.getEventTypes(),
-    { initial: [] },
+    { initial: [] }
   );
 
   readonly events = this.eventsState.data;
@@ -64,21 +64,21 @@ export class Events implements OnInit {
   });
 
   readonly heroImage = computed(
-    () => this.events().find((event) => event.images?.length)?.images[0]?.url ?? null,
+    () => this.events().find((event) => event.images?.length)?.images[0]?.url ?? null
   );
 
   readonly hasActiveFilters = computed(
-    () => this.search().trim().length > 0 || this.typeFilter() !== 'all',
+    () => this.search().trim().length > 0 || this.typeFilter() !== 'all'
   );
 
   readonly emptyTitle = computed(() =>
-    this.hasActiveFilters() ? 'No matching events' : 'No upcoming events',
+    this.hasActiveFilters() ? 'No matching events' : 'No upcoming events'
   );
 
   readonly emptyMessage = computed(() =>
     this.hasActiveFilters()
       ? 'Try a different search term or clear the filters.'
-      : 'Published events will appear here.',
+      : 'Published events will appear here.'
   );
 
   ngOnInit(): void {

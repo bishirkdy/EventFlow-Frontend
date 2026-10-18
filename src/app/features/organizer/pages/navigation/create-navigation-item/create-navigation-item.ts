@@ -8,7 +8,7 @@ import { NavigationItemService } from '../../../../../core/services/navigation-i
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../../core/models/event-page';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
@@ -16,7 +16,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [ReactiveFormsModule, CapitalizePipe],
   templateUrl: './create-navigation-item.html',
-  styleUrl: './create-navigation-item.css',
+  styleUrl: './create-navigation-item.css'
 })
 export class CreateNavigationItem implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -40,17 +40,15 @@ export class CreateNavigationItem implements OnInit {
       },
       onSuccess: (r) => {
         this.pageOptions = [...(r.data ?? [])].sort(
-          (a, b) => Number(b.isPublished) - Number(a.isPublished),
+          (a, b) => Number(b.isPublished) - Number(a.isPublished)
         );
-      },
-    },
+      }
+    }
   );
 
   private readonly createItemAction = createAsyncAction(
     (id: string, payload: { label: string; pageId: string }) =>
-      this.service.createItem(id, payload).pipe(
-        map((r) => ({ id, r })),
-      ),
+      this.service.createItem(id, payload).pipe(map((r) => ({ id, r }))),
     {
       errorFallback: 'Failed to create navigation item.',
       onSettled: () => {
@@ -59,18 +57,14 @@ export class CreateNavigationItem implements OnInit {
       onSuccess: ({ id, r }) => {
         this.toastr.success(r.message);
 
-        this.router.navigate([
-          '/organizer',
-          id,
-          'navigation',
-        ]);
-      },
-    },
+        this.router.navigate(['/organizer', id, 'navigation']);
+      }
+    }
   );
 
   readonly form = this.fb.nonNullable.group({
     label: ['', [Validators.required, Validators.maxLength(100)]],
-    pageId: ['', Validators.required],
+    pageId: ['', Validators.required]
   });
 
   ngOnInit(): void {
@@ -99,15 +93,11 @@ export class CreateNavigationItem implements OnInit {
 
     this.createItemAction.run(id, {
       label: v.label.trim(),
-      pageId: v.pageId,
+      pageId: v.pageId
     });
   }
 
   cancel(): void {
-    this.router.navigate([
-      '/organizer',
-      this.state.eventId(),
-      'navigation',
-    ]);
+    this.router.navigate(['/organizer', this.state.eventId(), 'navigation']);
   }
 }

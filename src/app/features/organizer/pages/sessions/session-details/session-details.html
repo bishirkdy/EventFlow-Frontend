@@ -1,24 +1,16 @@
 <div class="min-h-full bg-background p-6">
   <div class="mx-auto max-w-4xl">
-
-    <!-- Header -->
     <div class="mb-6 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-text-primary">
-          Session Details
-        </h1>
+        <h1 class="text-2xl font-semibold text-text-primary">Session Details</h1>
 
-        <p class="mt-1 text-sm text-text-secondary">
-          View the details of this session.
-        </p>
+        <p class="mt-1 text-sm text-text-secondary">View the details of this session.</p>
       </div>
 
       <button
         type="button"
         (click)="goBack()"
-        class="border border-border px-4 py-2 text-sm
-               font-medium text-text-secondary
-               hover:bg-surface hover:text-text-primary"
+        class="border border-border px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface hover:text-text-primary"
       >
         Back
       </button>
@@ -34,192 +26,174 @@
     >
       <ng-template>
         @if (session(); as currentSession) {
-      <div class="border border-border bg-surface">
+          <div class="border border-border bg-surface">
+            <div class="flex items-center justify-between border-b border-border px-6 py-5">
+              <div>
+                <h2 class="text-xl font-semibold text-text-primary">
+                  {{ currentSession.title | capitalize }}
+                </h2>
 
-        <!-- Header -->
-        <div
-          class="flex items-center justify-between
-                 border-b border-border px-6 py-5"
-        >
-          <div>
-            <h2 class="text-xl font-semibold text-text-primary">
-              {{ currentSession.title | capitalize }}
-            </h2>
-
-            <p class="mt-1 text-sm text-text-muted">
-              {{ currentSession.sessionType | capitalize }}
-            </p>
-          </div>
-
-          <div class="flex gap-3">
-            <button
-              type="button"
-              (click)="editSession()"
-              class="border border-border px-4 py-2
-                     text-sm font-medium text-text-primary
-                     hover:bg-background"
-            >
-              Edit
-            </button>
-
-            <button
-              type="button"
-              [disabled]="deleting()"
-              (click)="deleteSession()"
-              class="border border-red-500/30 px-4 py-2
-                     text-sm font-medium text-red-500
-                     hover:bg-red-500/10
-                     disabled:cursor-not-allowed
-                     disabled:opacity-50"
-            >
-              @if (deleting()) {
-                Deleting...
-              } @else {
-                Delete
-              }
-            </button>
-          </div>
-        </div>
-
-        <!-- Details -->
-        <div class="divide-y divide-border">
-
-          <!-- Title -->
-          <div
-            class="grid grid-cols-1 gap-2 px-6 py-5
-                   sm:grid-cols-3"
-          >
-            <div class="text-sm font-medium text-text-secondary">
-              Title
-            </div>
-
-            <div
-              class="text-sm text-text-primary
-                     sm:col-span-2"
-            >
-              {{ currentSession.title | capitalize }}
-            </div>
-          </div>
-
-          <!-- Description -->
-          <div
-            class="grid grid-cols-1 gap-2 px-6 py-5
-                   sm:grid-cols-3"
-          >
-            <div class="text-sm font-medium text-text-secondary">
-              Description
-            </div>
-
-            <div
-              class="text-sm text-text-primary
-                     sm:col-span-2"
-            >
-              @if (currentSession.description) {
-                {{ currentSession.description }}
-              } @else {
-                <span class="text-text-muted">
-                  No description provided.
-                </span>
-              }
-            </div>
-          </div>
-
-          <!-- Session Type -->
-          <div
-            class="grid grid-cols-1 gap-2 px-6 py-5
-                   sm:grid-cols-3"
-          >
-            <div class="text-sm font-medium text-text-secondary">
-              Session Type
-            </div>
-
-            <div
-              class="text-sm text-text-primary
-                     sm:col-span-2"
-            >
-              {{ currentSession.sessionType | capitalize }}
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">Schedule</div>
-            <div class="text-sm text-text-primary sm:col-span-2">
-              @if (currentSession.startTime && currentSession.endTime) {
-                {{ currentSession.startTime | date:'medium' }} — {{ currentSession.endTime | date:'medium' }}
-              } @else { <span class="text-text-muted">Not scheduled</span> }
-            </div>
-          </div>
-          <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
-            <div class="text-sm font-medium text-text-secondary">Venue</div>
-            <div class="break-all text-sm text-text-muted sm:col-span-2">{{ venueName(currentSession.venueId) }}</div>
-          </div>
-
-          @if (speakerFeatureEnabled()) {
-            <div class="border-t border-border bg-background px-6 py-7">
-              <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-                <div>
-                  <p class="text-xs font-semibold uppercase tracking-widest text-secondary">Conference feature</p>
-                  <h3 class="mt-2 text-xl font-semibold text-text-primary">Session speakers</h3>
-                  <p class="mt-1 text-sm text-text-secondary">Assign active speaker profiles to this session.</p>
-                </div>
-                <span class="text-xs text-text-muted">{{ assignedSpeakerIds().size }} assigned</span>
+                <p class="mt-1 text-sm text-text-muted">
+                  {{ currentSession.sessionType | capitalize }}
+                </p>
               </div>
-              @if (speakers().length) {
-                <div class="mt-6 grid gap-px bg-border sm:grid-cols-2">
-                  @for (speaker of speakers(); track speaker.id) {
-                    <button type="button" (click)="toggleSpeaker(speaker)" [disabled]="speakerUpdating() === speaker.id" class="flex items-center gap-4 bg-surface p-4 text-left transition hover:bg-background disabled:opacity-60">
-                      <div class="h-14 w-14 shrink-0 overflow-hidden bg-background">@if (speaker.imageUrl) {<img [src]="speaker.imageUrl" [alt]="speaker.name" class="h-full w-full object-cover"/>} @else {<span class="grid h-full place-items-center font-semibold text-text-muted">{{ speaker.name.charAt(0) }}</span>}</div>
-                      <div class="min-w-0 flex-1"><p class="truncate font-semibold text-text-primary">{{ speaker.name | capitalize }}</p><p class="mt-1 truncate text-xs text-text-muted">{{ speaker.designation || 'Speaker' }}</p></div>
-                      <span class="shrink-0 text-[10px] font-semibold uppercase tracking-widest" [class.text-secondary]="isSpeakerAssigned(speaker.id)" [class.text-text-muted]="!isSpeakerAssigned(speaker.id)">{{ isSpeakerAssigned(speaker.id) ? 'Assigned' : 'Add' }}</span>
-                    </button>
+
+              <div class="flex gap-3">
+                <button
+                  type="button"
+                  (click)="editSession()"
+                  class="border border-border px-4 py-2 text-sm font-medium text-text-primary hover:bg-background"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  [disabled]="deleting()"
+                  (click)="deleteSession()"
+                  class="border border-red-500/30 px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  @if (deleting()) {
+                    Deleting...
+                  } @else {
+                    Delete
+                  }
+                </button>
+              </div>
+            </div>
+
+            <div class="divide-y divide-border">
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Title</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  {{ currentSession.title | capitalize }}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Description</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  @if (currentSession.description) {
+                    {{ currentSession.description }}
+                  } @else {
+                    <span class="text-text-muted"> No description provided. </span>
                   }
                 </div>
-              } @else { <p class="mt-5 text-sm text-text-muted">No active speaker profiles are available.</p> }
-            </div>
-          }
+              </div>
 
-          <!-- Capacity -->
-          <div
-            class="grid grid-cols-1 gap-2 px-6 py-5
-                   sm:grid-cols-3"
-          >
-            <div class="text-sm font-medium text-text-secondary">
-              Capacity
-            </div>
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Session Type</div>
 
-            <div
-              class="text-sm text-text-primary
-                     sm:col-span-2"
-            >
-              @if (currentSession.capacity !== null) {
-                {{ currentSession.capacity }}
-              } @else {
-                <span class="text-text-muted">
-                  No capacity limit
-                </span>
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  {{ currentSession.sessionType | capitalize }}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Schedule</div>
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  @if (currentSession.startTime && currentSession.endTime) {
+                    {{ currentSession.startTime | date: 'medium' }} —
+                    {{ currentSession.endTime | date: 'medium' }}
+                  } @else {
+                    <span class="text-text-muted">Not scheduled</span>
+                  }
+                </div>
+              </div>
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Venue</div>
+                <div class="break-all text-sm text-text-muted sm:col-span-2">
+                  {{ venueName(currentSession.venueId) }}
+                </div>
+              </div>
+
+              @if (speakerFeatureEnabled()) {
+                <div class="border-t border-border bg-background px-6 py-7">
+                  <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                    <div>
+                      <p class="text-xs font-semibold uppercase tracking-widest text-secondary">
+                        Conference feature
+                      </p>
+                      <h3 class="mt-2 text-xl font-semibold text-text-primary">Session speakers</h3>
+                      <p class="mt-1 text-sm text-text-secondary">
+                        Assign active speaker profiles to this session.
+                      </p>
+                    </div>
+                    <span class="text-xs text-text-muted"
+                      >{{ assignedSpeakerIds().size }} assigned</span
+                    >
+                  </div>
+                  @if (speakers().length) {
+                    <div class="mt-6 grid gap-px bg-border sm:grid-cols-2">
+                      @for (speaker of speakers(); track speaker.id) {
+                        <button
+                          type="button"
+                          (click)="toggleSpeaker(speaker)"
+                          [disabled]="speakerUpdating() === speaker.id"
+                          class="flex items-center gap-4 bg-surface p-4 text-left transition hover:bg-background disabled:opacity-60"
+                        >
+                          <div class="h-14 w-14 shrink-0 overflow-hidden bg-background">
+                            @if (speaker.imageUrl) {
+                              <img
+                                [src]="speaker.imageUrl"
+                                [alt]="speaker.name"
+                                class="h-full w-full object-cover"
+                              />
+                            } @else {
+                              <span
+                                class="grid h-full place-items-center font-semibold text-text-muted"
+                                >{{ speaker.name.charAt(0) }}</span
+                              >
+                            }
+                          </div>
+                          <div class="min-w-0 flex-1">
+                            <p class="truncate font-semibold text-text-primary">
+                              {{ speaker.name | capitalize }}
+                            </p>
+                            <p class="mt-1 truncate text-xs text-text-muted">
+                              {{ speaker.designation || 'Speaker' }}
+                            </p>
+                          </div>
+                          <span
+                            class="shrink-0 text-[10px] font-semibold uppercase tracking-widest"
+                            [class.text-secondary]="isSpeakerAssigned(speaker.id)"
+                            [class.text-text-muted]="!isSpeakerAssigned(speaker.id)"
+                            >{{ isSpeakerAssigned(speaker.id) ? 'Assigned' : 'Add' }}</span
+                          >
+                        </button>
+                      }
+                    </div>
+                  } @else {
+                    <p class="mt-5 text-sm text-text-muted">
+                      No active speaker profiles are available.
+                    </p>
+                  }
+                </div>
               }
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Capacity</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  @if (currentSession.capacity !== null) {
+                    {{ currentSession.capacity }}
+                  } @else {
+                    <span class="text-text-muted"> No capacity limit </span>
+                  }
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-3">
+                <div class="text-sm font-medium text-text-secondary">Section</div>
+
+                <div class="text-sm text-text-primary sm:col-span-2">
+                  {{ sectionName(currentSession.sectionId) | capitalize }}
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- Section -->
-          <div
-            class="grid grid-cols-1 gap-2 px-6 py-5
-                   sm:grid-cols-3"
-          >
-            <div class="text-sm font-medium text-text-secondary">
-              Section
-            </div>
-
-            <div
-              class="text-sm text-text-primary
-                     sm:col-span-2"
-            >
-              {{ sectionName(currentSession.sectionId) | capitalize }}
-            </div>
-          </div>
-
-        </div>
-      </div>
         }
       </ng-template>
     </app-async-state>

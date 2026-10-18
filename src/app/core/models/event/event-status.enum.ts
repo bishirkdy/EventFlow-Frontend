@@ -1,5 +1,1 @@
-﻿export type EventStatus =
-  | 'Draft'
-  | 'Published'
-  | 'Cancelled'
-  | 'Completed';
+﻿export type EventStatus = 'Draft' | 'Published' | 'Cancelled' | 'Completed';

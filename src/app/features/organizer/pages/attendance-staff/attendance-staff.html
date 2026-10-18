@@ -1,5 +1,4 @@
 <div class="space-y-6 p-6">
-  <!-- Header -->
   <div>
     <h2 class="text-2xl font-semibold text-text-primary">Attendance Staff</h2>
 
@@ -8,9 +7,7 @@
     </p>
   </div>
 
-  <!-- Invitation -->
   <div class="grid gap-3 border border-border bg-surface p-5 md:grid-cols-4">
-    <!-- Email -->
     <input
       type="email"
       class="min-h-11 border border-border bg-background px-4 py-3"
@@ -18,7 +15,6 @@
       placeholder="Staff email"
     />
 
-    <!-- Scope -->
     <select
       class="min-h-11 border border-border bg-background px-4 py-3"
       [(ngModel)]="scopeType"
@@ -29,7 +25,6 @@
       <option [ngValue]="3">Session</option>
     </select>
 
-    <!-- Scope selection -->
     @if (scopeType === 1) {
       <div
         class="flex min-h-11 items-center border border-border bg-background px-4 text-sm text-text-muted"
@@ -46,7 +41,6 @@
       </button>
     }
 
-    <!-- Invite -->
     <button
       type="button"
       class="min-h-11 bg-primary hover:bg-white hover:text-primary hover:border-primary border cursor-pointer px-5 py-3 font-semibold text-white disabled:opacity-50"
@@ -57,7 +51,6 @@
     </button>
   </div>
 
-  <!-- Invitations table -->
   <div class="overflow-x-auto border border-border bg-surface">
     <div class="border-b border-border px-4 py-3">
       <h3 class="text-sm font-semibold text-text-primary">Pending invitations</h3>
@@ -104,7 +97,9 @@
                   [disabled]="revokingInvitationId() === invitation.invitationId"
                   (click)="revokeInvitation(invitation.invitationId)"
                 >
-                  {{ revokingInvitationId() === invitation.invitationId ? 'Revoking...' : 'Revoke' }}
+                  {{
+                    revokingInvitationId() === invitation.invitationId ? 'Revoking...' : 'Revoke'
+                  }}
                 </button>
               }
             </td>
@@ -120,7 +115,6 @@
     </table>
   </div>
 
-  <!-- Staff table -->
   <div class="overflow-x-auto border border-border bg-surface">
     <div class="border-b border-border px-4 py-3">
       <h3 class="text-sm font-semibold text-text-primary">Assigned staff</h3>
@@ -172,14 +166,11 @@
   </div>
 </div>
 
-<!-- Backdrop -->
 @if (scopePopupOpen()) {
   <div class="fixed inset-0 z-40 bg-black/40" (click)="closeScopePopup()"></div>
 
-  <!-- Modal -->
   <div class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="pointer-events-auto w-full max-w-lg border border-border bg-surface shadow-xl">
-      <!-- Modal header -->
       <div class="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
           <h3 class="text-lg font-semibold text-text-primary">
@@ -200,7 +191,6 @@
         </button>
       </div>
 
-      <!-- Modal body -->
       <div class="max-h-96 overflow-y-auto p-3">
         @if (loadingScopes()) {
           <div class="px-4 py-10 text-center text-sm text-text-muted">Loading...</div>

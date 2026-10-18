@@ -1,10 +1,10 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin, map } from 'rxjs';
-import { NotificationService } from 'core/services/ui/notification.service';
+import { NotificationService } from '@/core/services/ui/notification.service';
 import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 import { PhotoService } from '@/core/services/photo/photo.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 import {
   Images,
@@ -14,7 +14,7 @@ import {
   Trash2,
   Eye,
   EyeOff,
-  RefreshCw,
+  RefreshCw
 } from 'lucide-angular';
 import { Photo } from '@/core/models/photographer';
 
@@ -22,7 +22,7 @@ import { Photo } from '@/core/models/photographer';
   selector: 'app-photo-moderation',
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
-  templateUrl: './photo-moderation-grid.html',
+  templateUrl: './photo-moderation-grid.html'
 })
 export class PhotoModerationGrid implements OnInit {
   private readonly eventState = inject(OrganizerEventStateService);
@@ -44,7 +44,7 @@ export class PhotoModerationGrid implements OnInit {
   readonly allSelected = computed(
     () =>
       this.photos().length > 0 &&
-      this.photos().every((photo) => this.selectedPhotoIds().has(photo.photoId)),
+      this.photos().every((photo) => this.selectedPhotoIds().has(photo.photoId))
   );
 
   readonly skeletonSlots = Array.from({ length: 12 }, (_, i) => i);
@@ -56,7 +56,7 @@ export class PhotoModerationGrid implements OnInit {
     Trash2,
     Eye,
     EyeOff,
-    RefreshCw,
+    RefreshCw
   };
 
   private readonly loadAction = createAsyncAction(
@@ -68,7 +68,7 @@ export class PhotoModerationGrid implements OnInit {
         this.eventId(),
         this.currentPage(),
         this.pageSize(),
-        visibleOnly,
+        visibleOnly
       );
     },
     {
@@ -88,15 +88,15 @@ export class PhotoModerationGrid implements OnInit {
         this.photos.set([]);
         this.totalCount.set(0);
         this.notification.error(response.message || 'Failed to load photos.');
-      },
-    },
+      }
+    }
   );
 
   private readonly toggleVisibilityAction = createAsyncAction(
     (photo: Photo, newVisibility: boolean) =>
-      this.photoService.toggleVisibility(this.eventId(), photo.photoId, newVisibility).pipe(
-        map((response) => ({ photo, newVisibility, response })),
-      ),
+      this.photoService
+        .toggleVisibility(this.eventId(), photo.photoId, newVisibility)
+        .pipe(map((response) => ({ photo, newVisibility, response }))),
     {
       errorFallback: 'Failed to update visibility.',
       onSuccess: ({ photo, newVisibility, response }) => {
@@ -114,20 +114,20 @@ export class PhotoModerationGrid implements OnInit {
         } else {
           this.photos.update((current) =>
             current.map((item) =>
-              item.photoId === photo.photoId ? { ...item, isVisible: newVisibility } : item,
-            ),
+              item.photoId === photo.photoId ? { ...item, isVisible: newVisibility } : item
+            )
           );
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly bulkVisibilityAction = createAsyncAction(
     (targets: Photo[], isVisible: boolean) =>
       forkJoin(
         targets.map((photo) =>
-          this.photoService.toggleVisibility(this.eventId(), photo.photoId, isVisible),
-        ),
+          this.photoService.toggleVisibility(this.eventId(), photo.photoId, isVisible)
+        )
       ).pipe(map((responses) => ({ targets, isVisible, responses }))),
     {
       errorFallback: 'Failed to update some photos. Refreshing the list.',
@@ -148,19 +148,20 @@ export class PhotoModerationGrid implements OnInit {
         const updatedIds = new Set(targets.map((photo) => photo.photoId));
 
         this.photos.update((current) =>
-          current.map((photo) => (updatedIds.has(photo.photoId) ? { ...photo, isVisible } : photo)),
+          current.map((photo) => (updatedIds.has(photo.photoId) ? { ...photo, isVisible } : photo))
         );
 
         this.clearSelection();
         this.notification.success(`Updated ${targets.length} photo(s).`);
-      },
-    },
+      }
+    }
   );
 
   private readonly deleteAction = createAsyncAction(
-    (photoId: string) => this.photoService.deletePhoto(this.eventId(), photoId).pipe(
-      map((response) => ({ photoId, response })),
-    ),
+    (photoId: string) =>
+      this.photoService
+        .deletePhoto(this.eventId(), photoId)
+        .pipe(map((response) => ({ photoId, response }))),
     {
       errorFallback: 'Failed to delete photo.',
       onSuccess: ({ photoId, response }) => {
@@ -177,8 +178,8 @@ export class PhotoModerationGrid implements OnInit {
         } else {
           this.notification.error(response.message || 'Failed to delete photo.');
         }
-      },
-    },
+      }
+    }
   );
 
   readonly loading = this.loadAction.pending;
@@ -253,7 +254,7 @@ export class PhotoModerationGrid implements OnInit {
     const selectedIds = [...this.selectedPhotoIds()];
 
     const targets = this.photos().filter(
-      (photo) => selectedIds.includes(photo.photoId) && photo.isVisible !== isVisible,
+      (photo) => selectedIds.includes(photo.photoId) && photo.isVisible !== isVisible
     );
 
     if (targets.length === 0) {
@@ -282,7 +283,7 @@ export class PhotoModerationGrid implements OnInit {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
+      minute: '2-digit'
     });
   }
 }

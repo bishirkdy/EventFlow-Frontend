@@ -29,7 +29,7 @@ import { EmptyState } from '../empty-state/empty-state';
   selector: 'app-async-state',
   imports: [NgTemplateOutlet, Skeleton, Loading, ErrorState, EmptyState],
   templateUrl: './async-state.html',
-  styleUrl: './async-state.css',
+  styleUrl: './async-state.css'
 })
 export class AsyncState {
   loading = input(false);

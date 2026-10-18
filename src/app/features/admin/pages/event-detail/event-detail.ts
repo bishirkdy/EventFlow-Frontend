@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { createAsyncState } from 'core/state';
+import { createAsyncState } from '@/core/state';
 import { AdminService } from '../../../../core/services/admin/admin.service';
 import { Event } from '../../../../core/models/event';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
@@ -10,7 +10,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 @Component({
   selector: 'app-admin-event-detail',
   imports: [RouterLink, DatePipe, AsyncState, CapitalizePipe],
-  templateUrl: './event-detail.html',
+  templateUrl: './event-detail.html'
 })
 export class AdminEventDetail {
   private readonly route = inject(ActivatedRoute);
@@ -20,7 +20,7 @@ export class AdminEventDetail {
 
   private readonly state = createAsyncState<Event>(
     () => this.adminService.getEventById(this.eventId),
-    { autoLoad: true, errorFallback: 'Event could not be loaded.' },
+    { autoLoad: true, errorFallback: 'Event could not be loaded.' }
   );
 
   readonly loading = this.state.loading;

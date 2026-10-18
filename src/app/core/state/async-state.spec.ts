@@ -9,7 +9,7 @@ const ok = <T>(data: T): ApiResponse<T> => ({
   statusCode: 200,
   message: 'ok',
   data,
-  errors: null,
+  errors: null
 });
 
 describe('createAsyncState', () => {
@@ -19,7 +19,7 @@ describe('createAsyncState', () => {
 
   it('starts with the initial value and is not loading until load() runs', () => {
     const state = TestBed.runInInjectionContext(() =>
-      createAsyncState<string>(() => of(ok('value')), { initial: '' }),
+      createAsyncState<string>(() => of(ok('value')), { initial: '' })
     );
 
     expect(state.data()).toBe('');
@@ -29,7 +29,7 @@ describe('createAsyncState', () => {
 
   it('unwraps ApiResponse data on a successful load', () => {
     const state = TestBed.runInInjectionContext(() =>
-      createAsyncState<string[]>(() => of(ok(['a', 'b']))),
+      createAsyncState<string[]>(() => of(ok(['a', 'b'])))
     );
 
     expect(state.data()).toBeNull();
@@ -44,8 +44,8 @@ describe('createAsyncState', () => {
   it('keeps the initial value when the API responds with null data', () => {
     const state = TestBed.runInInjectionContext(() =>
       createAsyncState<string[]>(() => of(ok<string[]>(null as unknown as string[])), {
-        initial: [],
-      }),
+        initial: []
+      })
     );
 
     state.load();
@@ -55,16 +55,19 @@ describe('createAsyncState', () => {
 
   it('surfaces a friendly error message when the request fails', () => {
     const state = TestBed.runInInjectionContext(() =>
-      createAsyncState<string>(() =>
-        throwError(
-          () =>
-            new HttpErrorResponse({
-              status: 500,
-              statusText: 'Server Error',
-              url: '/api/items',
-              error: { message: 'Loading failed.' },
-            }),
-      ), { errorFallback: 'Unable to load items.' }),
+      createAsyncState<string>(
+        () =>
+          throwError(
+            () =>
+              new HttpErrorResponse({
+                status: 500,
+                statusText: 'Server Error',
+                url: '/api/items',
+                error: { message: 'Loading failed.' }
+              })
+          ),
+        { errorFallback: 'Unable to load items.' }
+      )
     );
 
     state.load();
@@ -77,8 +80,8 @@ describe('createAsyncState', () => {
   it('falls back to the configured message for non-HTTP errors', () => {
     const state = TestBed.runInInjectionContext(() =>
       createAsyncState<string>(() => throwError(() => new Error('boom')), {
-        errorFallback: 'Unable to load items.',
-      }),
+        errorFallback: 'Unable to load items.'
+      })
     );
 
     state.load();
@@ -90,10 +93,8 @@ describe('createAsyncState', () => {
     let failing = true;
     const state = TestBed.runInInjectionContext(() =>
       createAsyncState<string>(() =>
-        failing
-          ? throwError(() => new Error('first attempt'))
-          : of(ok('recovered')),
-      ),
+        failing ? throwError(() => new Error('first attempt')) : of(ok('recovered'))
+      )
     );
 
     state.load();
@@ -109,7 +110,7 @@ describe('createAsyncState', () => {
   it('invokes onSuccess with the loaded data', () => {
     const onSuccess = vi.fn();
     const state = TestBed.runInInjectionContext(() =>
-      createAsyncState<string>(() => of(ok('value')), { onSuccess }),
+      createAsyncState<string>(() => of(ok('value')), { onSuccess })
     );
 
     state.load();
@@ -119,7 +120,7 @@ describe('createAsyncState', () => {
 
   it('runs the first load immediately when autoLoad is set', () => {
     const state = TestBed.runInInjectionContext(() =>
-      createAsyncState<string>(() => of(ok('value')), { autoLoad: true }),
+      createAsyncState<string>(() => of(ok('value')), { autoLoad: true })
     );
 
     expect(state.data()).toBe('value');
@@ -131,9 +132,7 @@ describe('createAsyncState observable values', () => {
 
   it('tracks loading synchronously while the request is in flight', () => {
     const pending = new Subject<ApiResponse<string>>();
-    const state = TestBed.runInInjectionContext(() =>
-      createAsyncState<string>(() => pending),
-    );
+    const state = TestBed.runInInjectionContext(() => createAsyncState<string>(() => pending));
 
     state.load();
     expect(state.loading()).toBe(true);
@@ -152,8 +151,8 @@ describe('createRawAsyncState', () => {
   it('stores the emitted value without unwrapping', () => {
     const state = TestBed.runInInjectionContext(() =>
       createRawAsyncState(() => of({ total: 3, items: ['a'] }), {
-        initial: { total: 0, items: [] as string[] },
-      }),
+        initial: { total: 0, items: [] as string[] }
+      })
     );
 
     state.load();
@@ -164,10 +163,7 @@ describe('createRawAsyncState', () => {
 
   it('supports composed streams such as forkJoin', () => {
     const state = TestBed.runInInjectionContext(() =>
-      createRawAsyncState(
-        () => forkJoin({ a: of(1), b: of('two') }),
-        { initial: { a: 0, b: '' } },
-      ),
+      createRawAsyncState(() => forkJoin({ a: of(1), b: of('two') }), { initial: { a: 0, b: '' } })
     );
 
     state.load();
@@ -178,8 +174,8 @@ describe('createRawAsyncState', () => {
   it('reports failures with the configured fallback', () => {
     const state = TestBed.runInInjectionContext(() =>
       createRawAsyncState(() => throwError(() => new Error('nope')), {
-        errorFallback: 'Unable to load dashboard.',
-      }),
+        errorFallback: 'Unable to load dashboard.'
+      })
     );
 
     state.load();

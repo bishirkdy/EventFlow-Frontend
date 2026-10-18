@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UpdateSectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -13,14 +13,13 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [FormsModule, AsyncState],
   templateUrl: './update-section.html',
-  styleUrl: './update-section.css',
+  styleUrl: './update-section.css'
 })
 export class UpdateSection implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly organizerEventState =
-    inject(OrganizerEventStateService);
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   sectionId = '';
   eventId = '';
@@ -44,10 +43,10 @@ export class UpdateSection implements OnInit {
           name: data.name,
           description: data.description ?? '',
           displayOrder: data.displayOrder,
-          isActive: data.isActive,
+          isActive: data.isActive
         };
-      },
-    },
+      }
+    }
   );
 
   private readonly updateAction = createAsyncAction(
@@ -57,13 +56,8 @@ export class UpdateSection implements OnInit {
       successMessage: 'Section updated successfully.',
       errorFallback: 'Failed to update section.',
       onSuccess: () =>
-        this.router.navigate([
-          '/organizer',
-          this.eventId,
-          'sections',
-          this.sectionId,
-        ]),
-    },
+        this.router.navigate(['/organizer', this.eventId, 'sections', this.sectionId])
+    }
   );
 
   loading = this.loadAction.pending;
@@ -73,13 +67,12 @@ export class UpdateSection implements OnInit {
     name: '',
     description: '',
     displayOrder: 1,
-    isActive: true,
+    isActive: true
   };
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
-    const sectionId =
-      this.route.snapshot.paramMap.get('sectionId');
+    const sectionId = this.route.snapshot.paramMap.get('sectionId');
 
     if (!eventId) {
       this.loadError.set('Event ID not found.');
@@ -117,21 +110,15 @@ export class UpdateSection implements OnInit {
 
     const request: UpdateSectionModel = {
       name: this.section.name.trim(),
-      description:
-        this.section.description?.trim() || undefined,
+      description: this.section.description?.trim() || undefined,
       displayOrder: this.section.displayOrder,
-      isActive: this.section.isActive,
+      isActive: this.section.isActive
     };
 
     this.updateAction.run(request);
   }
 
   cancel(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-      this.sectionId,
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections', this.sectionId]);
   }
 }

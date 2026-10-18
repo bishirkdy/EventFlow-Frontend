@@ -7,5 +7,5 @@ export const OPERATIONS_ENDPOINTS = {
   checkInManual: (e: string) => `/v1/operations/events/${e}/attendance/check-in/manual`,
   checkOut: (e: string, id: string) => `/v1/operations/events/${e}/attendance/${id}/check-out`,
   attendanceHistory: (e: string, u: string) => `/v1/operations/events/${e}/attendance/history/${u}`,
-  notifications: (e: string) => `/v1/operations/events/${e}/notifications`,
+  notifications: (e: string) => `/v1/operations/events/${e}/notifications`
 } as const;

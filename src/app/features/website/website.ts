@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  signal
+} from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -7,16 +15,15 @@ import { ActivatedRoute } from '@angular/router';
 import { WebsiteTemplateSelector } from './components/website-template-selector/website-template-selector';
 import { EventWebsiteService } from '../../core/services/website/event-website.service';
 import { EventWebsiteData } from '../../core/models/website';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 
 @Component({
   selector: 'app-website',
   standalone: true,
   imports: [WebsiteTemplateSelector],
   templateUrl: './website.html',
-  styleUrl: './website.css',
+  styleUrl: './website.css'
 })
-
 export class Website implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly websiteService = inject(EventWebsiteService);
@@ -45,19 +52,17 @@ export class Website implements OnInit {
             return of(null as unknown as EventWebsiteData);
           }
           return throwError(() => requestError);
-        }),
+        })
       );
     },
-    { errorFallback: 'Failed to load event website.' },
+    { errorFallback: 'Failed to load event website.' }
   );
 
   private readonly routeError = signal<string | null>(null);
 
   readonly data = this.websiteState.data;
   readonly loading = this.websiteState.loading;
-  readonly error = computed<string | null>(
-    () => this.routeError() ?? this.websiteState.error(),
-  );
+  readonly error = computed<string | null>(() => this.routeError() ?? this.websiteState.error());
   readonly pageSlug = signal<string | null>(null);
   readonly preview = signal(false);
   readonly notPublished = signal(false);

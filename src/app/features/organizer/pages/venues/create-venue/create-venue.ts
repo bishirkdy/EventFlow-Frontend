@@ -7,23 +7,21 @@ import { map } from 'rxjs';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { CreateVenueRequest } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-create-venue',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-venue.html',
-  styleUrl: './create-venue.css',
+  styleUrl: './create-venue.css'
 })
 export class CreateVenue {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly venueService = inject(VenueService);
-  private readonly organizerEventState = inject(
-    OrganizerEventStateService
-  );
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   selectedImage = signal<File | null>(null);
   imagePreview = signal<string | null>(null);
@@ -31,58 +29,30 @@ export class CreateVenue {
 
   private readonly createAction = createAsyncAction(
     (eventId: string, request: CreateVenueRequest) =>
-      this.venueService.createVenue(eventId, request).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+      this.venueService
+        .createVenue(eventId, request)
+        .pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Failed to create venue.',
-      onSuccess: ({ eventId }) =>
-        this.router.navigate([
-          '/organizer',
-          eventId,
-          'venues',
-        ]),
-    },
+      onSuccess: ({ eventId }) => this.router.navigate(['/organizer', eventId, 'venues'])
+    }
   );
 
   loading = this.createAction.pending;
 
   readonly form = this.fb.nonNullable.group({
-    name: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(200),
-      ],
-    ],
+    name: ['', [Validators.required, Validators.maxLength(200)]],
 
-    description: [
-      '',
-      [
-        Validators.maxLength(2000),
-      ],
-    ],
+    description: ['', [Validators.maxLength(2000)]],
 
-    address: [
-      '',
-      [
-        Validators.maxLength(500),
-      ],
-    ],
+    address: ['', [Validators.maxLength(500)]],
 
-    capacity: [
-      0,
-      [
-        Validators.required,
-        Validators.min(1),
-      ],
-    ],
+    capacity: [0, [Validators.required, Validators.min(1)]]
   });
 
   goBack(): void {
     this.location.back();
   }
-
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -113,7 +83,7 @@ export class CreateVenue {
       description: formValue.description.trim() || undefined,
       address: formValue.address.trim() || undefined,
       capacity: formValue.capacity,
-      image: this.selectedImage() ?? undefined,
+      image: this.selectedImage() ?? undefined
     };
 
     this.createAction.run(eventId, request);

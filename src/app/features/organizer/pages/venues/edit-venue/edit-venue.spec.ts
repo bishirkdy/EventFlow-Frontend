@@ -10,7 +10,7 @@ describe('EditVenue', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EditVenue],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditVenue);

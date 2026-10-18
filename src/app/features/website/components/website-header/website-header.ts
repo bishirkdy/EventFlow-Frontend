@@ -7,9 +7,8 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [CapitalizePipe],
   templateUrl: './website-header.html',
-  styleUrl: './website-header.css',
+  styleUrl: './website-header.css'
 })
-
 export class WebsiteHeader {
   readonly data = input.required<EventWebsiteData>();
   readonly templateLabel = input('Event');

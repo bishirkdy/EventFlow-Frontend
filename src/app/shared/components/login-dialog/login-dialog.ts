@@ -7,12 +7,12 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginRequest } from '../../../core/models/auth';
 import { LoginDialogService } from '../../../core/services/ui/login-dialog.service';
 import { NotificationService } from '../../../core/services/ui/notification.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-login-dialog',
   imports: [FormsModule, RouterLink, LucideAngularModule],
-  templateUrl: './login-dialog.html',
+  templateUrl: './login-dialog.html'
 })
 export class LoginDialog {
   readonly service = inject(LoginDialogService);
@@ -42,15 +42,14 @@ export class LoginDialog {
           this.toastr.error('Login failed.');
         }
       },
-      errorFallback: 'Login failed.',
-    },
+      errorFallback: 'Login failed.'
+    }
   );
 
   readonly showPassword = signal(false);
   readonly loading = this.loginAction.pending;
 
   @HostListener('document:keydown.escape')
-
   onEscape(): void {
     if (this.service.isOpen()) {
       this.service.close();
@@ -58,7 +57,7 @@ export class LoginDialog {
   }
 
   togglePassword(): void {
-    this.showPassword.update(value => !value);
+    this.showPassword.update((value) => !value);
   }
 
   submit(form: NgForm): void {

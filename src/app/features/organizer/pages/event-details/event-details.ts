@@ -7,13 +7,13 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 import { of } from 'rxjs';
 import { ParticipantStatus } from '@/core/models/registration';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-event-details',
   imports: [DatePipe, CapitalizePipe],
   templateUrl: './event-details.html',
-  styleUrl: './event-details.css',
+  styleUrl: './event-details.css'
 })
 export class EventDetails {
   private readonly route = inject(ActivatedRoute);
@@ -43,8 +43,8 @@ export class EventDetails {
         }
         this.eventState.setEventId(this.eventIdToLoad);
         this.eventState.setEvent(event);
-      },
-    },
+      }
+    }
   );
 
   private readonly publishAction = createAsyncAction(
@@ -55,8 +55,8 @@ export class EventDetails {
     },
     {
       successMessage: 'Event published successfully.',
-      errorFallback: 'Failed to publish event.',
-    },
+      errorFallback: 'Failed to publish event.'
+    }
   );
 
   readonly publishing = this.publishAction.pending;

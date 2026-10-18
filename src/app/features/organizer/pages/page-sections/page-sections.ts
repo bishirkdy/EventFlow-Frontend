@@ -6,7 +6,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { EventPageSectionService } from '../../../../core/services/event-page-section/event-page-section.service';
 import { PageSectionModel } from '../../../../core/models/event-page-section';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -14,7 +14,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [CapitalizePipe, AsyncState],
   templateUrl: './page-sections.html',
-  styleUrl: './page-sections.css',
+  styleUrl: './page-sections.css'
 })
 export class PageSections implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -31,8 +31,8 @@ export class PageSections implements OnInit {
     () => this.pageSectionService.getManageSections(this.pageId),
     {
       errorFallback: 'Failed to load page sections.',
-      onSuccess: (response) => this.sections.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.sections.set(response.data ?? [])
+    }
   );
 
   private readonly moveAction = createAsyncAction(
@@ -42,22 +42,22 @@ export class PageSections implements OnInit {
       onSuccess: (response) => {
         this.toastr.success(response.message);
         this.loadSections();
-      },
-    },
+      }
+    }
   );
 
   private readonly deleteAction = createAsyncAction(
     (section: PageSectionModel) =>
-      this.pageSectionService.deleteSection(this.pageId, section.id).pipe(
-        map((response) => ({ sectionId: section.id, response })),
-      ),
+      this.pageSectionService
+        .deleteSection(this.pageId, section.id)
+        .pipe(map((response) => ({ sectionId: section.id, response }))),
     {
       errorFallback: 'Failed to delete page section.',
       onSuccess: ({ sectionId, response }) => {
         this.sections.update((items) => items.filter((item) => item.id !== sectionId));
         this.toastr.success(response.message);
-      },
-    },
+      }
+    }
   );
 
   private readonly reorderAction = createAsyncAction(
@@ -65,8 +65,8 @@ export class PageSections implements OnInit {
     {
       errorFallback: 'Failed to reorder page sections.',
       onError: () => this.loadSections(),
-      onSuccess: (response) => this.toastr.success(response.message),
-    },
+      onSuccess: (response) => this.toastr.success(response.message)
+    }
   );
 
   loading = this.loadAction.pending;
@@ -106,7 +106,13 @@ export class PageSections implements OnInit {
 
   editSection(section: PageSectionModel): void {
     this.router.navigate([
-      '/organizer', this.eventId, 'pages', this.pageId, 'sections', section.id, 'edit',
+      '/organizer',
+      this.eventId,
+      'pages',
+      this.pageId,
+      'sections',
+      section.id,
+      'edit'
     ]);
   }
 

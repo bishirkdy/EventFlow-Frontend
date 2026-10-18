@@ -19,16 +19,15 @@
   </header>
 
   <main class="mx-auto max-w-7xl px-6">
-    <!-- Statistics -->
     <div class="grid grid-cols-2 border-b border-[#e3e0dc] lg:grid-cols-6">
       @for (
         card of [
           { label: 'Registrations', value: stats()?.total ?? 0 },
           { label: 'Pending', value: stats()?.pending ?? 0 },
-           { label: 'Rejected', value: stats()?.rejected ?? 0 },
+          { label: 'Rejected', value: stats()?.rejected ?? 0 },
           { label: 'Approved', value: stats()?.approved ?? 0 },
           { label: 'Waitlisted', value: stats()?.waitlisted ?? 0 },
-          { label: 'Active Tickets', value: stats()?.activeTickets ?? 0 },
+          { label: 'Active Tickets', value: stats()?.activeTickets ?? 0 }
         ];
         track card.label
       ) {
@@ -44,7 +43,6 @@
       }
     </div>
 
-    <!-- Header / Filters -->
     <section class="border-b border-[#e3e0dc] py-6">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
@@ -93,110 +91,107 @@
       (retry)="load()"
     >
       <ng-template>
-      <section class="divide-y divide-[#e3e0dc]">
-        @for (item of filteredRegistrations(); track item.id) {
-          <article
-            (click)="open(item.id)"
-            class="group cursor-pointer p-6 transition hover:bg-white"
-          >
-            <div class="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_auto]">
-              <!-- Registration information -->
-              <div class="min-w-0">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <h3 class="text-base font-semibold">
-                    {{ item.participant?.firstName }}
-                    {{ item.participant?.lastName }}
-                  </h3>
+        <section class="divide-y divide-[#e3e0dc]">
+          @for (item of filteredRegistrations(); track item.id) {
+            <article
+              (click)="open(item.id)"
+              class="group cursor-pointer p-6 transition hover:bg-white"
+            >
+              <div class="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_auto]">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <h3 class="text-base font-semibold">
+                      {{ item.participant?.firstName }}
+                      {{ item.participant?.lastName }}
+                    </h3>
 
-                  <span class="text-xs font-medium uppercase tracking-[0.08em] text-[#77716b]">
-                    {{ statusLabel(item.status) }}
+                    <span class="text-xs font-medium uppercase tracking-[0.08em] text-[#77716b]">
+                      {{ statusLabel(item.status) }}
+                    </span>
+                  </div>
+
+                  <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <p class="text-sm text-[#55514d]">
+                      {{ item.participant?.email }}
+                    </p>
+
+                    <span class="text-[#c0bbb5]">·</span>
+
+                    <p class="text-sm text-[#77716b]">
+                      {{ item.registrationNumber }}
+                    </p>
+
+                    <span class="text-[#c0bbb5]">·</span>
+
+                    <p class="text-xs text-[#99938d]">
+                      {{ item.registeredAtUtc | date: 'medium' }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-5 lg:justify-end">
+                  @if (item.status === RegistrationStatus.Pending) {
+                    <button
+                      type="button"
+                      (click)="approve(item, $event)"
+                      class="text-sm font-semibold transition-opacity hover:opacity-60"
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="reject(item, $event)"
+                      class="text-sm text-[#66615c] transition-opacity hover:text-[#202020]"
+                    >
+                      Reject
+                    </button>
+                  }
+
+                  @if (item.status === 1 || item.status === 4) {
+                    <button
+                      type="button"
+                      (click)="cancel(item, $event)"
+                      class="text-sm text-[#66615c] transition-opacity hover:text-[#202020]"
+                    >
+                      Cancel
+                    </button>
+                  }
+
+                  <span
+                    class="ml-2 text-lg text-[#aaa49e] transition-transform group-hover:translate-x-1"
+                  >
+                    →
                   </span>
                 </div>
-
-                <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <p class="text-sm text-[#55514d]">
-                    {{ item.participant?.email }}
-                  </p>
-
-                  <span class="text-[#c0bbb5]">·</span>
-
-                  <p class="text-sm text-[#77716b]">
-                    {{ item.registrationNumber }}
-                  </p>
-
-                  <span class="text-[#c0bbb5]">·</span>
-
-                  <p class="text-xs text-[#99938d]">
-                    {{ item.registeredAtUtc | date: 'medium' }}
-                  </p>
-                </div>
               </div>
+            </article>
+          }
+        </section>
 
-              <!-- Actions -->
-              <div class="flex items-center gap-5 lg:justify-end">
-                @if (item.status === RegistrationStatus.Pending) {
-                  <button
-                    type="button"
-                    (click)="approve(item, $event)"
-                    class="text-sm font-semibold transition-opacity hover:opacity-60"
-                  >
-                    Approve
-                  </button>
+        <footer class="flex items-center justify-between border-t border-[#e3e0dc] py-6">
+          <p class="text-xs text-[#77716b]">Page {{ pageNumber() }} of {{ totalPages() }}</p>
 
-                  <button
-                    type="button"
-                    (click)="reject(item, $event)"
-                    class="text-sm text-[#66615c] transition-opacity hover:text-[#202020]"
-                  >
-                    Reject
-                  </button>
-                }
+          <div class="flex items-center gap-5">
+            <button
+              type="button"
+              (click)="previousPage()"
+              [disabled]="pageNumber() === 1"
+              class="text-sm font-medium text-[#202020] transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:text-[#c5c0bb]"
+            >
+              Previous
+            </button>
 
-                @if (item.status === 1 || item.status === 4) {
-                  <button
-                    type="button"
-                    (click)="cancel(item, $event)"
-                    class="text-sm text-[#66615c] transition-opacity hover:text-[#202020]"
-                  >
-                    Cancel
-                  </button>
-                }
-
-                <span
-                  class="ml-2 text-lg text-[#aaa49e] transition-transform group-hover:translate-x-1"
-                >
-                  →
-                </span>
-              </div>
-            </div>
-          </article>
-        }
-      </section>
-
-      <!-- Pagination -->
-      <footer class="flex items-center justify-between border-t border-[#e3e0dc] py-6">
-        <p class="text-xs text-[#77716b]">Page {{ pageNumber() }} of {{ totalPages() }}</p>
-
-        <div class="flex items-center gap-5">
-          <button
-            type="button"
-            (click)="previousPage()"
-            [disabled]="pageNumber() === 1"
-            class="text-sm font-medium text-[#202020] transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:text-[#c5c0bb]"
-          >
-            Previous
-          </button>
-
-          <button
-            type="button"
-            (click)="nextPage()"
-            [disabled]="pageNumber() >= totalPages()"
-            class="text-sm font-medium text-[#202020] transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:text-[#c5c0bb]"
-          >
-            Next
-          </button>
-        </div>
-      </footer>
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="pageNumber() >= totalPages()"
+              class="text-sm font-medium text-[#202020] transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:text-[#c5c0bb]"
+            >
+              Next
+            </button>
+          </div>
+        </footer>
       </ng-template>
     </app-async-state>
   </main>

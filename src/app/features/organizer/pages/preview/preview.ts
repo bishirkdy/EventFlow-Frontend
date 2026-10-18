@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-preview',
   standalone: true,
-  template: '',
+  template: ''
 })
 export class Preview implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -14,7 +14,7 @@ export class Preview implements OnInit {
     const eventId = this.route.parent?.snapshot.paramMap.get('eventId');
     if (eventId) {
       void this.router.navigate(['/events', eventId], {
-        queryParams: { preview: '1' },
+        queryParams: { preview: '1' }
       });
     }
   }

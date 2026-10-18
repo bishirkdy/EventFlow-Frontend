@@ -2,10 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PhotographerManagement } from './photographer-management';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
-import { NotificationService } from 'core/services/ui/notification.service';
-import { EmailValidator } from 'core/validators/email.validator';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { NotificationService } from '@/core/services/ui/notification.service';
+import { EmailValidator } from '@/core/validators/email.validator';
 
 describe('PhotographerManagement', () => {
   let component: PhotographerManagement;

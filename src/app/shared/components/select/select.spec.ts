@@ -8,7 +8,7 @@ describe('Select', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Select],
+      imports: [Select]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Select);

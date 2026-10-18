@@ -6,14 +6,14 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-create-page',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-page.html',
-  styleUrl: './create-page.css',
+  styleUrl: './create-page.css'
 })
 export class CreatePage {
   private readonly fb = inject(FormBuilder);
@@ -24,31 +24,32 @@ export class CreatePage {
 
   private readonly createPageAction = createAsyncAction(
     (eventId: string, formValue: { name: string; slug: string; pageType: string }) =>
-      this.pageService.createPage(eventId, formValue).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+      this.pageService
+        .createPage(eventId, formValue)
+        .pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Failed to create event page.',
       onSuccess: ({ eventId, response }) => {
         this.toastr.success(response.message);
 
         this.router.navigate(['/organizer', eventId, 'pages']);
-      },
-    },
+      }
+    }
   );
 
   readonly saving = this.createPageAction.pending;
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(150)]],
-    slug: ['',
+    slug: [
+      '',
       [
         Validators.required,
         Validators.maxLength(150),
-        Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-      ],
+        Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+      ]
     ],
-    pageType: ['', [Validators.required, Validators.maxLength(50)]],
+    pageType: ['', [Validators.required, Validators.maxLength(50)]]
   });
 
   submit(): void {

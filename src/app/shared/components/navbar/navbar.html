@@ -1,12 +1,7 @@
 <header class="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur-md">
   <nav class="container-app">
     <div class="flex h-16 items-center justify-between">
-      <!-- Logo -->
-      <a
-        routerLink="/"
-        class="flex min-w-0 items-center gap-2.5"
-        (click)="closeMenu()"
-      >
+      <a routerLink="/" class="flex min-w-0 items-center gap-2.5" (click)="closeMenu()">
         <div
           class="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-sm font-bold text-white shadow-sm"
         >
@@ -18,7 +13,6 @@
         </span>
       </a>
 
-      <!-- Desktop Navigation -->
       <div class="hidden items-center gap-5 lg:flex xl:gap-6">
         @for (link of navLinks; track link.url) {
           <a
@@ -32,7 +26,6 @@
         }
       </div>
 
-      <!-- Desktop Actions -->
       <div class="hidden items-center gap-4 lg:flex">
         @if (currentUser()) {
           <a
@@ -46,7 +39,6 @@
         <app-user-menu [links]="userLinks()" />
       </div>
 
-      <!-- Mobile Actions -->
       <div class="flex items-center gap-2 lg:hidden">
         @if (currentUser()) {
           <a
@@ -75,14 +67,9 @@
       </div>
     </div>
 
-    <!-- Mobile Navigation Panel -->
     @if (isMenuOpen()) {
-      <div
-        id="mobile-navigation"
-        class="border-t border-border py-4 lg:hidden"
-      >
+      <div id="mobile-navigation" class="border-t border-border py-4 lg:hidden">
         <div class="flex flex-col gap-4">
-          <!-- User Profile -->
           @if (currentUser(); as user) {
             <div class="flex items-center gap-3 border border-border bg-surface-soft p-3">
               <div
@@ -103,11 +90,8 @@
             </div>
           }
 
-          <!-- Main Navigation -->
           <div class="flex flex-col gap-1">
-            <p
-              class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-text-secondary"
-            >
+            <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-text-secondary">
               Navigation
             </p>
 
@@ -124,7 +108,6 @@
             }
           </div>
 
-          <!-- Account Navigation -->
           @if (currentUser()) {
             <div class="border-t border-border pt-3">
               <p
@@ -156,7 +139,6 @@
               </button>
             </div>
           } @else {
-            <!-- Logged-out Account Navigation -->
             <div class="border-t border-border pt-3">
               <a
                 routerLink="/login"

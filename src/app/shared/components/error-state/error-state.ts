@@ -5,7 +5,7 @@ import { Button } from '../button/button';
   selector: 'app-error-state',
   imports: [Button],
   templateUrl: './error-state.html',
-  styleUrl: './error-state.css',
+  styleUrl: './error-state.css'
 })
 export class ErrorState {
   message = input('Something went wrong.');

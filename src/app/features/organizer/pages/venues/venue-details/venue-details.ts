@@ -5,7 +5,7 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
@@ -14,16 +14,14 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [CapitalizePipe, AsyncState],
   templateUrl: './venue-details.html',
-  styleUrl: './venue-details.css',
+  styleUrl: './venue-details.css'
 })
 export class VenueDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly venueService = inject(VenueService);
   private readonly toastr = inject(NotificationService);
-  private readonly organizerEventState = inject(
-    OrganizerEventStateService
-  );
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   venue = signal<VenueModel | null>(null);
   error = signal<string | null>(null);
@@ -43,8 +41,8 @@ export class VenueDetails implements OnInit {
         }
 
         this.venue.set(response.data);
-      },
-    },
+      }
+    }
   );
 
   loading = this.loadAction.pending;
@@ -70,20 +68,10 @@ export class VenueDetails implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'venues',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'venues']);
   }
 
   editVenue(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'venues',
-      this.venueId,
-      'edit',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'venues', this.venueId, 'edit']);
   }
 }

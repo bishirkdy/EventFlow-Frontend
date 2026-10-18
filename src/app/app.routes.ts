@@ -14,38 +14,38 @@ export const routes: Routes = [
     path: 'photographer-invitation/:token',
     loadComponent: () =>
       import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
-        (m) => m.AcceptInvitation,
-      ),
+        (m) => m.AcceptInvitation
+      )
   },
   {
     path: 'organizer-invitation/:token',
     loadComponent: () =>
       import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
-        (m) => m.AcceptInvitation,
-      ),
+        (m) => m.AcceptInvitation
+      )
   },
   {
     path: 'attendance-staff-invitation/:token',
     loadComponent: () =>
       import('./features/photographer/invitation/accept-invitation/accept-invitation').then(
-        (m) => m.AcceptInvitation,
-      ),
+        (m) => m.AcceptInvitation
+      )
   },
   {
     path: 'photographer',
     canActivate: [authGuard],
     loadChildren: () =>
       import('./features/photographer/dashboard/photographer-dashboard.routes').then(
-        (m) => m.photographerRoutes,
-      ),
+        (m) => m.photographerRoutes
+      )
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login)
   },
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register)
   },
   {
     path: '',
@@ -53,102 +53,102 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/platform/home/home').then((m) => m.Home),
+        loadComponent: () => import('./features/platform/home/home').then((m) => m.Home)
       },
       {
         path: 'about',
-        loadComponent: () => import('./features/platform/about/about').then((m) => m.About),
+        loadComponent: () => import('./features/platform/about/about').then((m) => m.About)
       },
       {
         path: 'contact',
-        loadComponent: () => import('./features/platform/contact/contact').then((m) => m.Contact),
+        loadComponent: () => import('./features/platform/contact/contact').then((m) => m.Contact)
       },
       {
         path: 'events',
-        loadComponent: () => import('./features/platform/events/events').then((m) => m.Events),
+        loadComponent: () => import('./features/platform/events/events').then((m) => m.Events)
       },
       {
         path: 'create-event',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/platform/create-event/create-event').then((m) => m.CreateEvent),
+          import('./features/platform/create-event/create-event').then((m) => m.CreateEvent)
       },
       {
         path: 'my-events',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/platform/my-events/my-events').then((m) => m.MyEvents),
+          import('./features/platform/my-events/my-events').then((m) => m.MyEvents)
       },
       {
         path: 'my-certificates',
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/platform/certificates/my-certificates/my-certificates').then(
-            (m) => m.MyCertificates,
-          ),
-      },
-    ],
+            (m) => m.MyCertificates
+          )
+      }
+    ]
   },
   {
     path: 'events/:eventId/attendance',
     canActivate: [authGuard, publicEventFeatureGuard('attendance')],
     loadComponent: () =>
       import('./features/platform/attendance-history/attendance-history').then(
-        (m) => m.AttendanceHistoryComponent,
-      ),
+        (m) => m.AttendanceHistoryComponent
+      )
   },
   {
     path: 'events/:eventId/gallery',
     canActivate: [publicEventFeatureGuard('gallery')],
     loadComponent: () =>
-      import('./features/platform/photos/photo-gallery/photo-gallery').then((m) => m.PhotoGallery),
+      import('./features/platform/photos/photo-gallery/photo-gallery').then((m) => m.PhotoGallery)
   },
   {
     path: 'events/:eventId/gallery/my',
     canActivate: [publicEventFeatureGuard('gallery')],
     loadComponent: () =>
       import('./features/platform/photos/face-detection/my-photos/my-photos').then(
-        (m) => m.MyPhotos,
-      ),
+        (m) => m.MyPhotos
+      )
   },
   {
     path: 'events/:eventId/gallery/selfie',
     canActivate: [publicEventFeatureGuard('gallery')],
     loadComponent: () =>
       import('./features/platform/photos/face-detection/selfie-capture/selfie-capture').then(
-        (m) => m.SelfieCapture,
-      ),
+        (m) => m.SelfieCapture
+      )
   },
   {
     path: 'events/:eventId/certificates',
     canActivate: [authGuard, publicEventFeatureGuard('certificates')],
     loadComponent: () =>
       import('./features/platform/certificates/my-certificate/my-certificate').then(
-        (m) => m.MyCertificate,
-      ),
+        (m) => m.MyCertificate
+      )
   },
   {
     path: 'events/:eventId/feedback',
     canActivate: [authGuard, publicEventFeatureGuard('feedback')],
     loadComponent: () =>
-      import('./features/platform/feedback/feedback').then((m) => m.FeedbackComponent),
+      import('./features/platform/feedback/feedback').then((m) => m.FeedbackComponent)
   },
   {
     path: 'verify/certificate/:certificateNumber',
     loadComponent: () =>
       import('./features/platform/certificates/certificate-verify/certificate-verify').then(
-        (m) => m.CertificateVerify,
-      ),
+        (m) => m.CertificateVerify
+      )
   },
   {
     path: 'events/:eventId/:slug',
     canActivate: [websiteAccessGuard],
-    loadComponent: () => import('./features/website/website').then((m) => m.Website),
+    loadComponent: () => import('./features/website/website').then((m) => m.Website)
   },
   {
     path: 'events/:eventId',
     canActivate: [websiteAccessGuard],
-    loadComponent: () => import('./features/website/website').then((m) => m.Website),
+    loadComponent: () => import('./features/website/website').then((m) => m.Website)
   },
   {
     path: 'attendance-staff/:eventId',
@@ -160,39 +160,37 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/attendance-staff/pages/dashboard/dashboard').then(
-            (m) => m.AttendanceStaffDashboard,
-          ),
+            (m) => m.AttendanceStaffDashboard
+          )
       },
       {
         path: 'scan',
         loadComponent: () =>
           import('./features/attendance-staff/pages/scanner/scanner').then(
-            (m) => m.AttendanceQrScanner,
-          ),
-      },
-    ],
+            (m) => m.AttendanceQrScanner
+          )
+      }
+    ]
   },
   {
     path: 'organizer',
     canActivate: [authGuard],
     loadChildren: () =>
-      import('./features/organizer/organizer.routes').then((m) => m.organizerRoutes),
+      import('./features/organizer/organizer.routes').then((m) => m.organizerRoutes)
   },
   {
     path: 'admin',
     canActivate: [authGuard, platformAdminGuard],
-    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes)
   },
   {
     path: 'owner/:eventId',
     canActivate: [authGuard, eventAccessGuard({ roles: ['Owner'] })],
     loadComponent: () =>
-      import('./features/owner/pages/owner-dashboard/owner-dashboard').then(
-        (m) => m.OwnerDashboard,
-      ),
+      import('./features/owner/pages/owner-dashboard/owner-dashboard').then((m) => m.OwnerDashboard)
   },
   {
     path: '**',
-    redirectTo: '',
-  },
+    redirectTo: ''
+  }
 ];

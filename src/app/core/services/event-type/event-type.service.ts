@@ -6,7 +6,7 @@ import { EVENT_TYPE_ENDPOINTS } from '../../api/endpoints/event-entpoints/event-
 import { Api } from '../../api/api';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class EventTypeService {
   private readonly http = inject(HttpClient);
@@ -14,7 +14,7 @@ export class EventTypeService {
 
   getEventTypes() {
     return this.http.get<ApiResponse<EventTypeModel[]>>(
-      this.api.getUrl(EVENT_TYPE_ENDPOINTS.getEventTypes),
+      this.api.getUrl(EVENT_TYPE_ENDPOINTS.getEventTypes)
     );
   }
 }

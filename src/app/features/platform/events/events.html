@@ -1,5 +1,4 @@
 <main class="min-h-screen bg-background">
-  <!-- Hero -->
   <section class="relative overflow-hidden bg-primary text-white">
     @if (heroImage(); as image) {
       <img
@@ -9,7 +8,9 @@
         class="absolute inset-0 h-full w-full object-cover opacity-30"
       />
     }
-    <div class="absolute inset-0 bg-linear-to-r from-primary via-primary/90 to-primary-dark/80"></div>
+    <div
+      class="absolute inset-0 bg-linear-to-r from-primary via-primary/90 to-primary-dark/80"
+    ></div>
 
     <div class="relative mx-auto max-w-7xl px-6 py-16 md:px-8 lg:py-24">
       <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">Discover</p>
@@ -54,9 +55,7 @@
     </div>
   </section>
 
-  <!-- Content -->
   <div class="mx-auto max-w-7xl px-6 py-8 md:px-8 lg:py-12">
-    <!-- Filter bar -->
     <div
       class="flex flex-col gap-3 rounded-none border border-border bg-surface p-4 lg:flex-row lg:items-center lg:justify-between"
     >
@@ -139,14 +138,16 @@
               <div class="flex flex-1 flex-col p-5">
                 <div class="flex items-center gap-2 text-xs text-text-muted">
                   <lucide-icon [img]="calendarIcon" [size]="14" [strokeWidth]="1.8" />
-                  <span>{{ event.startDate | date:'mediumDate' }}</span>
+                  <span>{{ event.startDate | date: 'mediumDate' }}</span>
                   @if (event.subType) {
                     <span class="opacity-60">·</span>
                     <span>{{ event.subType | capitalize }}</span>
                   }
                 </div>
 
-                <h2 class="mt-3 text-xl font-semibold text-text-primary">{{ event.name | capitalize }}</h2>
+                <h2 class="mt-3 text-xl font-semibold text-text-primary">
+                  {{ event.name | capitalize }}
+                </h2>
 
                 @if (event.description) {
                   <p class="mt-2 line-clamp-3 flex-1 text-sm leading-6 text-text-secondary">

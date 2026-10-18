@@ -7,7 +7,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [CapitalizePipe],
   templateUrl: './website-footer.html',
-  styleUrl: './website-footer.css',
+  styleUrl: './website-footer.css'
 })
 export class WebsiteFooter {
   readonly data = input.required<EventWebsiteData>();

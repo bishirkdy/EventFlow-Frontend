@@ -39,7 +39,7 @@ export class EventWebsiteService {
       features: this.eventFeatureService.getFeatures(eventId),
       pages: pages$,
       navigationItems: this.navigationItemService.getItems(eventId),
-      pageSections: pageSections$.pipe(map((result) => result.data ?? [])),
+      pageSections: pageSections$.pipe(map((result) => result.data ?? []))
     }).pipe(
       switchMap((response) => {
         const event = response.event.data ?? null;
@@ -50,7 +50,7 @@ export class EventWebsiteService {
         const enabled = new Set(
           features
             .filter((feature) => feature.isEnabled)
-            .map((feature) => feature.featureCode.toLowerCase()),
+            .map((feature) => feature.featureCode.toLowerCase())
         );
 
         const sessions$ = enabled.has('sessions')
@@ -74,7 +74,7 @@ export class EventWebsiteService {
           sessions: sessions$,
           venues: venues$,
           speakers: speakers$,
-          sponsors: sponsors$,
+          sponsors: sponsors$
         }).pipe(
           map(({ sessions, venues, speakers, sponsors }): EventWebsiteData => ({
             event,
@@ -86,10 +86,10 @@ export class EventWebsiteService {
             venues,
             speakers,
             sponsors,
-            navigationItems,
-          })),
+            navigationItems
+          }))
         );
-      }),
+      })
     );
   }
 }

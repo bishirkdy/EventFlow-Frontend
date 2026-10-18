@@ -4,7 +4,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-textarea',
   imports: [],
   templateUrl: './textarea.html',
-  styleUrl: './textarea.css',
+  styleUrl: './textarea.css'
 })
 export class Textarea {
   label = input<string>('');

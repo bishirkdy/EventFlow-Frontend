@@ -1,13 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin, map } from 'rxjs';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 import { AdminService } from '../../../../core/services/admin/admin.service';
-import {
-  AdminEventListItem,
-  AdminEventStats,
-  AdminUserStats,
-} from '../../../../core/models/admin';
+import { AdminEventListItem, AdminEventStats, AdminUserStats } from '../../../../core/models/admin';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
@@ -20,7 +16,7 @@ interface DashboardData {
 @Component({
   selector: 'app-admin-dashboard',
   imports: [RouterLink, AsyncState, CapitalizePipe],
-  templateUrl: './dashboard.html',
+  templateUrl: './dashboard.html'
 })
 export class AdminDashboard {
   private readonly admin = inject(AdminService);
@@ -30,7 +26,7 @@ export class AdminDashboard {
       forkJoin({
         events: this.admin.getEventStats(),
         users: this.admin.getUserStats(),
-        recentEvents: this.admin.getEvents({ page: 1, pageSize: 5 }),
+        recentEvents: this.admin.getEvents({ page: 1, pageSize: 5 })
       }).pipe(
         map(({ events, users, recentEvents }) => {
           if (!events.data || !users.data) {
@@ -40,11 +36,11 @@ export class AdminDashboard {
           return {
             events: events.data,
             users: users.data,
-            recentEvents: recentEvents.data?.items ?? [],
+            recentEvents: recentEvents.data?.items ?? []
           };
-        }),
+        })
       ),
-    { autoLoad: true, errorFallback: 'Failed to load platform statistics.' },
+    { autoLoad: true, errorFallback: 'Failed to load platform statistics.' }
   );
 
   readonly data = this.state.data;

@@ -9,7 +9,7 @@ interface SelectOption {
   selector: 'app-select',
   imports: [],
   templateUrl: './select.html',
-  styleUrl: './select.css',
+  styleUrl: './select.css'
 })
 export class Select {
   label = input<string>('');

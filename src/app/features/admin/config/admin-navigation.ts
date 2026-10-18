@@ -10,5 +10,5 @@ export interface AdminNavItem {
 export const ADMIN_NAVIGATION: AdminNavItem[] = [
   { label: 'Dashboard', route: 'dashboard', icon: LayoutDashboard },
   { label: 'Events', route: 'events', icon: CalendarDays },
-  { label: 'Users', route: 'users', icon: Users },
+  { label: 'Users', route: 'users', icon: Users }
 ];

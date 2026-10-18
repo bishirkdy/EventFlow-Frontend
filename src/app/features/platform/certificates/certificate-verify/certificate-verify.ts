@@ -1,19 +1,18 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CertificateService } from 'core/services/registration/certificate.service';
+import { CertificateService } from '@/core/services/registration/certificate.service';
 import { CertificateVerifyModel } from '@/core/models/certificate';
 import { ApiResponse } from '@/core/models/common';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-certificate-verify',
   standalone: true,
   imports: [CommonModule, RouterModule, AsyncState],
-  templateUrl: './certificate-verify.html',
+  templateUrl: './certificate-verify.html'
 })
-
 export class CertificateVerify implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly certificateService = inject(CertificateService);
@@ -23,13 +22,13 @@ export class CertificateVerify implements OnInit {
 
   private readonly verifyState = createRawAsyncState<ApiResponse<CertificateVerifyModel>>(
     () => this.certificateService.verify(this.certificateNumber),
-    { autoLoad: false, errorFallback: 'Certificate not found.' },
+    { autoLoad: false, errorFallback: 'Certificate not found.' }
   );
 
   readonly loading = this.verifyState.loading;
   readonly result = computed(() => {
     const response = this.verifyState.data();
-    return response?.isSuccess ? response.data ?? null : null;
+    return response?.isSuccess ? (response.data ?? null) : null;
   });
   readonly error = computed<string>(() => {
     const stateError = this.verifyState.error();
@@ -43,8 +42,7 @@ export class CertificateVerify implements OnInit {
   });
 
   ngOnInit(): void {
-    this.certificateNumber =
-      this.route.snapshot.paramMap.get('certificateNumber') ?? '';
+    this.certificateNumber = this.route.snapshot.paramMap.get('certificateNumber') ?? '';
 
     if (!this.certificateNumber) {
       this.paramError.set('Certificate number is missing.');
@@ -55,11 +53,11 @@ export class CertificateVerify implements OnInit {
   }
 
   formatDate(value: string | null): string {
-    if (!value) return '—';
+    if (!value) return 'â€”';
     return new Date(value).toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
+      day: 'numeric'
     });
   }
 }

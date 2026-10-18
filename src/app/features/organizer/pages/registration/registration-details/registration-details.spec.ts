@@ -9,7 +9,7 @@ describe('RegistrationDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RegistrationDetailsComponent],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationDetailsComponent);

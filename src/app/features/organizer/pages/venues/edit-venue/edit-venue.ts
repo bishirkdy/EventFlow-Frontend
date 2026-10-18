@@ -3,11 +3,10 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { VenueModel } from '../../../../../core/models/venue';
+import { UpdateVenueRequest, VenueModel } from '../../../../../core/models/venue';
 import { VenueService } from '../../../../../core/services/venue/venue.service';
-import { UpdateVenueRequest } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -15,7 +14,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [ReactiveFormsModule, AsyncState],
   templateUrl: './edit-venue.html',
-  styleUrl: './edit-venue.css',
+  styleUrl: './edit-venue.css'
 })
 export class EditVenue implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -50,12 +49,12 @@ export class EditVenue implements OnInit {
           name: venue.name,
           description: venue.description ?? '',
           address: venue.address ?? '',
-          capacity: venue.capacity,
+          capacity: venue.capacity
         });
         this.currentImageUrl.set(venue.imageUrl ?? null);
         this.imagePreview.set(venue.imageUrl ?? null);
-      },
-    },
+      }
+    }
   );
 
   private readonly updateAction = createAsyncAction(
@@ -64,8 +63,8 @@ export class EditVenue implements OnInit {
     {
       successMessage: 'Venue updated successfully',
       errorFallback: 'Failed to update venue.',
-      onSuccess: () => this.router.navigate(['/organizer', this.eventId, 'venues']),
-    },
+      onSuccess: () => this.router.navigate(['/organizer', this.eventId, 'venues'])
+    }
   );
 
   loading = this.loadAction.pending;
@@ -78,7 +77,7 @@ export class EditVenue implements OnInit {
 
     address: ['', [Validators.maxLength(500)]],
 
-    capacity: [0, [Validators.required, Validators.min(1)]],
+    capacity: [0, [Validators.required, Validators.min(1)]]
   });
 
   ngOnInit(): void {
@@ -128,7 +127,7 @@ export class EditVenue implements OnInit {
       description: formValue.description.trim(),
       address: formValue.address.trim(),
       capacity: formValue.capacity,
-      image: this.selectedImage() ?? undefined,
+      image: this.selectedImage() ?? undefined
     };
 
     this.updateAction.run(request);

@@ -1,10 +1,17 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EMPTY, map } from 'rxjs';
 import { OperationsService } from '../../../core/services/operations/operations.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 
 interface History {
   eventId: string;
@@ -19,7 +26,7 @@ interface History {
   standalone: true,
   imports: [DecimalPipe, RouterLink],
   templateUrl: './attendance-history.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttendanceHistoryComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -33,17 +40,15 @@ export class AttendanceHistoryComponent implements OnInit {
   private readonly historyState = createRawAsyncState<History | null>(
     () => {
       if (!this.eventId || !this.userId) return EMPTY;
-      return this.ops.history(this.eventId, this.userId).pipe(
-        map((response) => (response.data as History | null) ?? null),
-      );
+      return this.ops
+        .history(this.eventId, this.userId)
+        .pipe(map((response) => (response.data as History | null) ?? null));
     },
-    { autoLoad: false, initial: null },
+    { autoLoad: false, initial: null }
   );
 
   readonly data = this.historyState.data;
-  readonly loading = computed(
-    () => this.historyState.loading() || this.awaitingAuth(),
-  );
+  readonly loading = computed(() => this.historyState.loading() || this.awaitingAuth());
 
   ngOnInit(): void {
     const existing = this.auth.currentUser();
@@ -55,7 +60,7 @@ export class AttendanceHistoryComponent implements OnInit {
     // On a hard reload the session is restored asynchronously (app initializer
     // plus possible token refresh), so the signal can still be empty here.
     // Wait for the restore instead of giving up with an empty page.
-    this.auth.loadCurrentUser().subscribe(user => {
+    this.auth.loadCurrentUser().subscribe((user) => {
       if (user?.id) {
         this.fetch(user.id);
       } else {

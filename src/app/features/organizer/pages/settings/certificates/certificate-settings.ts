@@ -2,8 +2,8 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CertificateService } from 'core/services/registration/certificate.service';
-import { NotificationService } from 'core/services/ui/notification.service';
+import { CertificateService } from '@/core/services/registration/certificate.service';
+import { NotificationService } from '@/core/services/ui/notification.service';
 import {
   RefreshCw,
   Save,
@@ -19,23 +19,32 @@ import {
   Download,
   Ban,
   Eye,
-  LucideAngularModule,
+  LucideAngularModule
 } from 'lucide-angular';
 import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 import { CertificateTemplateEditor } from './template-editor/template-editor';
-import { CertificateSettingsModel, CertificateTemplateMode } from '@/core/models/certificate';
-import { CertificateEligibilityModel } from '@/core/models/certificate';
-import { CertificateModel } from '@/core/models/certificate';
-import { CertificateTemplateFieldModel } from '@/core/models/certificate';
+import {
+  CertificateEligibilityModel,
+  CertificateModel,
+  CertificateSettingsModel,
+  CertificateTemplateFieldModel,
+  CertificateTemplateMode
+} from '@/core/models/certificate';
 import { SettingsForm } from '@/core/models/certificate/certificate-generate-form.model';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-certificate-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, CertificateTemplateEditor, CapitalizePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideAngularModule,
+    CertificateTemplateEditor,
+    CapitalizePipe
+  ],
   templateUrl: './certificate-settings.html',
-  styleUrl: './certificate-settings.css',
+  styleUrl: './certificate-settings.css'
 })
 export class CertificateSettings implements OnInit {
   private readonly certificateService = inject(CertificateService);
@@ -86,7 +95,7 @@ export class CertificateSettings implements OnInit {
     signatoryTitle: '',
     themeColor: '#2563EB',
     requireApprovedRegistration: true,
-    minAttendancePercent: null,
+    minAttendancePercent: null
   };
 
   ngOnInit(): void {
@@ -112,7 +121,7 @@ export class CertificateSettings implements OnInit {
             signatoryTitle: response.data.signatoryTitle ?? '',
             themeColor: response.data.themeColor,
             requireApprovedRegistration: response.data.requireApprovedRegistration,
-            minAttendancePercent: response.data.minAttendancePercent,
+            minAttendancePercent: response.data.minAttendancePercent
           };
           this.applyTemplateFromSettings(response.data);
         }
@@ -121,7 +130,7 @@ export class CertificateSettings implements OnInit {
       error: () => {
         this.loadingSettings.set(false);
         this.notification.error('Failed to load certificate settings.');
-      },
+      }
     });
   }
 
@@ -166,7 +175,7 @@ export class CertificateSettings implements OnInit {
         requireApprovedRegistration: this.form.requireApprovedRegistration,
         minAttendancePercent: this.form.minAttendancePercent,
         templateMode,
-        templateFields,
+        templateFields
       })
       .subscribe({
         next: (response) => {
@@ -181,7 +190,7 @@ export class CertificateSettings implements OnInit {
         error: () => {
           this.savingSettings.set(false);
           this.notification.error('Failed to save certificate settings.');
-        },
+        }
       });
   }
 
@@ -202,7 +211,7 @@ export class CertificateSettings implements OnInit {
       error: () => {
         this.previewing.set(false);
         this.notification.error('Certificate preview failed.');
-      },
+      }
     });
   }
 
@@ -227,7 +236,7 @@ export class CertificateSettings implements OnInit {
       error: () => {
         this.loadingEligibility.set(false);
         this.notification.error('Failed to load eligibility preview.');
-      },
+      }
     });
   }
 
@@ -243,7 +252,7 @@ export class CertificateSettings implements OnInit {
       error: () => {
         this.loadingIssued.set(false);
         this.notification.error('Failed to load issued certificates.');
-      },
+      }
     });
   }
 
@@ -283,7 +292,9 @@ export class CertificateSettings implements OnInit {
           const result = response.data;
           const errors = result.errors ?? [];
           this.notification.success(
-            `Generated ${result.generated}, skipped ${result.skipped}` + (result.failed > 0 ? `, failed ${result.failed}` : '') + '.',
+            `Generated ${result.generated}, skipped ${result.skipped}` +
+              (result.failed > 0 ? `, failed ${result.failed}` : '') +
+              '.'
           );
 
           if (errors.length > 0) {
@@ -299,7 +310,7 @@ export class CertificateSettings implements OnInit {
       error: () => {
         this.generating.set(false);
         this.notification.error('Certificate generation failed.');
-      },
+      }
     });
   }
 
@@ -315,7 +326,7 @@ export class CertificateSettings implements OnInit {
       },
       error: () => {
         this.notification.error('Certificate download failed.');
-      },
+      }
     });
   }
 
@@ -332,7 +343,7 @@ export class CertificateSettings implements OnInit {
       },
       error: () => {
         this.notification.error('Failed to revoke certificate.');
-      },
+      }
     });
   }
 
@@ -342,11 +353,11 @@ export class CertificateSettings implements OnInit {
   }
 
   formatDate(value: string | null): string {
-    if (!value) return '—';
+    if (!value) return 'â€”';
     return new Date(value).toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
+      day: 'numeric'
     });
   }
 

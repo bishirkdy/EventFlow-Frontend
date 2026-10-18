@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { EVENT_PAGE_ENDPOINTS } from '../../api/endpoints/event-features/event-page.endpoint';
 import { ApiResponse } from '../../models/common';
-import { EventPageModel } from '../../models/event-page';
-import { CreateEventPageModel } from '../../models/event-page';
-import { UpdateEventPageModel } from '../../models/event-page';
+import {
+  CreateEventPageModel,
+  EventPageModel,
+  UpdateEventPageModel
+} from '../../models/event-page';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class EventPageService {
   private readonly http = inject(HttpClient);
@@ -17,72 +19,72 @@ export class EventPageService {
 
   getPages(eventId: string): Observable<ApiResponse<EventPageModel[]>> {
     return this.http.get<ApiResponse<EventPageModel[]>>(
-      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPages(eventId)),
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPages(eventId))
     );
   }
 
   /** Includes draft pages, only for organizer screens. */
   getManagePages(eventId: string): Observable<ApiResponse<EventPageModel[]>> {
     return this.http.get<ApiResponse<EventPageModel[]>>(
-      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getManagePages(eventId)),
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getManagePages(eventId))
     );
   }
 
   /** Includes draft pages, for the organizer website preview. */
   getPreviewPages(eventId: string): Observable<ApiResponse<EventPageModel[]>> {
     return this.http.get<ApiResponse<EventPageModel[]>>(
-      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPreviewPages(eventId)),
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPreviewPages(eventId))
     );
   }
 
   createPage(eventId: string, request: CreateEventPageModel): Observable<ApiResponse<string>> {
     return this.http.post<ApiResponse<string>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.createPage(eventId)),
-      request,
+      request
     );
   }
 
   updatePage(
     eventId: string,
     pageId: string,
-    request: UpdateEventPageModel,
+    request: UpdateEventPageModel
   ): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.updatePage(eventId, pageId)),
-      request,
+      request
     );
   }
 
   publishPage(eventId: string, pageId: string): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.publishPage(eventId, pageId)),
-      null,
+      null
     );
   }
 
   unpublishPage(eventId: string, pageId: string): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.unpublishPage(eventId, pageId)),
-      null,
+      null
     );
   }
 
   deletePage(eventId: string, pageId: string): Observable<ApiResponse<object | null>> {
     return this.http.delete<ApiResponse<object | null>>(
-      this.api.getUrl(EVENT_PAGE_ENDPOINTS.deletePage(eventId, pageId)),
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.deletePage(eventId, pageId))
     );
   }
 
   getPageById(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
     return this.http.get<ApiResponse<EventPageModel>>(
-      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPageById(eventId, pageId)),
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getPageById(eventId, pageId))
     );
   }
 
   /** Loads draft pages too, only for organizer screens. */
   getManagePageById(eventId: string, pageId: string): Observable<ApiResponse<EventPageModel>> {
     return this.http.get<ApiResponse<EventPageModel>>(
-      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getManagePageById(eventId, pageId)),
+      this.api.getUrl(EVENT_PAGE_ENDPOINTS.getManagePageById(eventId, pageId))
     );
   }
 
@@ -90,14 +92,14 @@ export class EventPageService {
   ensureWebsite(eventId: string): Observable<ApiResponse<object | null>> {
     return this.http.post<ApiResponse<object | null>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.ensureWebsite(eventId)),
-      {},
+      {}
     );
   }
 
   reorderPages(eventId: string, pageIds: string[]): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(EVENT_PAGE_ENDPOINTS.reorderPages(eventId)),
-      pageIds,
+      pageIds
     );
   }
 }

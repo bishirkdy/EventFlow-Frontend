@@ -31,7 +31,7 @@ export const platformAdminGuard: CanActivateFn = (_route, state) => {
   return authService.loadCurrentUser().pipe(
     map((user) => (user?.isPlatformAdmin ? true : deny())),
     catchError(() =>
-      of(router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } })),
-    ),
+      of(router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } }))
+    )
   );
 };

@@ -1,24 +1,16 @@
 <div class="min-h-full bg-background p-6">
   <div class="mx-auto max-w-3xl">
-
-    <!-- Header -->
     <div class="mb-6 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-text-primary">
-          Update Section
-        </h1>
+        <h1 class="text-2xl font-semibold text-text-primary">Update Section</h1>
 
-        <p class="mt-1 text-sm text-text-secondary">
-          Update the information for this section.
-        </p>
+        <p class="mt-1 text-sm text-text-secondary">Update the information for this section.</p>
       </div>
 
       <button
         type="button"
         (click)="cancel()"
-        class="border border-border px-4 py-2 text-sm
-               font-medium text-text-secondary
-               hover:bg-surface hover:text-text-primary"
+        class="border border-border px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface hover:text-text-primary"
       >
         Cancel
       </button>
@@ -33,173 +25,116 @@
       (retry)="reload()"
     >
       <ng-template>
-      <form
-        (ngSubmit)="updateSection()"
-        class="border border-border bg-surface"
-      >
+        <form (ngSubmit)="updateSection()" class="border border-border bg-surface">
+          <div class="border-b border-border px-6 py-5">
+            <h2 class="text-lg font-medium text-text-primary">Section Information</h2>
 
-        <div class="border-b border-border px-6 py-5">
-          <h2 class="text-lg font-medium text-text-primary">
-            Section Information
-          </h2>
-
-          <p class="mt-1 text-sm text-text-muted">
-            Update the section details below.
-          </p>
-        </div>
-
-        @if (error()) {
-          <div
-            class="border-b border-red-500/30 bg-red-500/10
-                   px-6 py-3 text-sm text-red-500"
-          >
-            {{ error() }}
-          </div>
-        }
-
-        <div class="space-y-6 p-6">
-
-          <!-- Name -->
-          <div>
-            <label
-              for="name"
-              class="mb-2 block text-sm font-medium
-                     text-text-primary"
-            >
-              Name
-            </label>
-
-            <input
-              id="name"
-              name="name"
-              type="text"
-              [(ngModel)]="section.name"
-              placeholder="Enter section name"
-              class="w-full border border-border bg-background
-                     px-4 py-3 text-sm text-text-primary
-                     outline-none placeholder:text-text-muted
-                     focus:border-primary"
-            />
+            <p class="mt-1 text-sm text-text-muted">Update the section details below.</p>
           </div>
 
-          <!-- Description -->
-          <div>
-            <label
-              for="description"
-              class="mb-2 block text-sm font-medium
-                     text-text-primary"
-            >
-              Description
-            </label>
+          @if (error()) {
+            <div class="border-b border-red-500/30 bg-red-500/10 px-6 py-3 text-sm text-red-500">
+              {{ error() }}
+            </div>
+          }
 
-            <textarea
-              id="description"
-              name="description"
-              rows="4"
-              [(ngModel)]="section.description"
-              placeholder="Enter section description"
-              class="w-full resize-none border border-border
-                     bg-background px-4 py-3 text-sm
-                     text-text-primary outline-none
-                     placeholder:text-text-muted
-                     focus:border-primary"
-            ></textarea>
-          </div>
-
-          <!-- Display Order -->
-          <div>
-            <label
-              for="displayOrder"
-              class="mb-2 block text-sm font-medium
-                     text-text-primary"
-            >
-              Display Order
-            </label>
-
-            <input
-              id="displayOrder"
-              name="displayOrder"
-              type="number"
-              min="1"
-              [(ngModel)]="section.displayOrder"
-              class="w-full border border-border bg-background
-                     px-4 py-3 text-sm text-text-primary
-                     outline-none focus:border-primary"
-            />
-
-            <p class="mt-1 text-xs text-text-muted">
-              Determines the order in which sections are displayed.
-            </p>
-          </div>
-
-          <!-- Active -->
-          <div
-            class="flex items-center justify-between
-                   border border-border px-4 py-4"
-          >
+          <div class="space-y-6 p-6">
             <div>
-              <p class="text-sm font-medium text-text-primary">
-                Active
-              </p>
+              <label for="name" class="mb-2 block text-sm font-medium text-text-primary">
+                Name
+              </label>
+
+              <input
+                id="name"
+                name="name"
+                type="text"
+                [(ngModel)]="section.name"
+                placeholder="Enter section name"
+                class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary"
+              />
+            </div>
+
+            <div>
+              <label for="description" class="mb-2 block text-sm font-medium text-text-primary">
+                Description
+              </label>
+
+              <textarea
+                id="description"
+                name="description"
+                rows="4"
+                [(ngModel)]="section.description"
+                placeholder="Enter section description"
+                class="w-full resize-none border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="displayOrder" class="mb-2 block text-sm font-medium text-text-primary">
+                Display Order
+              </label>
+
+              <input
+                id="displayOrder"
+                name="displayOrder"
+                type="number"
+                min="1"
+                [(ngModel)]="section.displayOrder"
+                class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+              />
 
               <p class="mt-1 text-xs text-text-muted">
-                Make this section visible and active.
+                Determines the order in which sections are displayed.
               </p>
             </div>
 
-            <button
-              type="button"
-              role="switch"
-              [attr.aria-checked]="section.isActive"
-              (click)="section.isActive = !section.isActive"
-              class="relative h-6 w-11 rounded-full transition"
-              [class.bg-primary]="section.isActive"
-              [class.bg-border]="!section.isActive"
-            >
-              <span
-                class="absolute top-1 h-4 w-4 rounded-full
-                       bg-white transition"
-                [class.left-6]="section.isActive"
-                [class.left-1]="!section.isActive"
-              ></span>
-            </button>
+            <div class="flex items-center justify-between border border-border px-4 py-4">
+              <div>
+                <p class="text-sm font-medium text-text-primary">Active</p>
+
+                <p class="mt-1 text-xs text-text-muted">Make this section visible and active.</p>
+              </div>
+
+              <button
+                type="button"
+                role="switch"
+                [attr.aria-checked]="section.isActive"
+                (click)="section.isActive = !section.isActive"
+                class="relative h-6 w-11 rounded-full transition"
+                [class.bg-primary]="section.isActive"
+                [class.bg-border]="!section.isActive"
+              >
+                <span
+                  class="absolute top-1 h-4 w-4 rounded-full bg-white transition"
+                  [class.left-6]="section.isActive"
+                  [class.left-1]="!section.isActive"
+                ></span>
+              </button>
+            </div>
           </div>
 
-        </div>
+          <div class="flex justify-end gap-3 border-t border-border px-6 py-4">
+            <button
+              type="button"
+              (click)="cancel()"
+              class="border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:bg-background"
+            >
+              Cancel
+            </button>
 
-        <!-- Actions -->
-        <div
-          class="flex justify-end gap-3 border-t border-border
-                 px-6 py-4"
-        >
-          <button
-            type="button"
-            (click)="cancel()"
-            class="border border-border px-5 py-2.5 text-sm
-                   font-medium text-text-secondary
-                   hover:bg-background"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            [disabled]="saving()"
-            class="bg-primary px-5 py-2.5 text-sm
-                   font-medium text-white transition
-                   hover:opacity-90
-                   disabled:cursor-not-allowed
-                   disabled:opacity-50"
-          >
-            @if (saving()) {
-              Updating...
-            } @else {
-              Update Section
-            }
-          </button>
-        </div>
-
-      </form>
+            <button
+              type="submit"
+              [disabled]="saving()"
+              class="bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (saving()) {
+                Updating...
+              } @else {
+                Update Section
+              }
+            </button>
+          </div>
+        </form>
       </ng-template>
     </app-async-state>
   </div>

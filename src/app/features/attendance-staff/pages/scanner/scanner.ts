@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  inject,
+  signal
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -27,7 +35,7 @@ export type StaffScope = {
 @Component({
   selector: 'app-attendance-qr-scanner',
   standalone: true,
-  templateUrl: './scanner.html',
+  templateUrl: './scanner.html'
 })
 export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
@@ -44,7 +52,9 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
   readonly scopes = signal<StaffScope[]>([]);
   readonly scopesLoaded = signal(false);
   readonly selectedScope = signal<StaffScope | null>(null);
-  readonly eventId = this.route.parent?.parent?.snapshot.paramMap.get('eventId') ?? this.route.parent?.snapshot.paramMap.get('eventId');
+  readonly eventId =
+    this.route.parent?.parent?.snapshot.paramMap.get('eventId') ??
+    this.route.parent?.snapshot.paramMap.get('eventId');
   private stream: MediaStream | null = null;
   private frame = 0;
 
@@ -55,19 +65,23 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     } else {
       // On hard reload the session restores asynchronously; wait for it so a
       // staff member's real assignments are used instead of a fallback scope.
-      this.auth.loadCurrentUser().subscribe(user => {
+      this.auth.loadCurrentUser().subscribe((user) => {
         if (user?.id) this.loadScopes(user.id);
         else this.scopesLoaded.set(true);
       });
     }
   }
 
-  ngAfterViewInit(): void { void this.start(); }
+  ngAfterViewInit(): void {
+    void this.start();
+  }
 
-  ngOnDestroy(): void { this.stop(); }
+  ngOnDestroy(): void {
+    this.stop();
+  }
 
   selectScope(key: string): void {
-    const scope = this.scopes().find(x => x.key === key);
+    const scope = this.scopes().find((x) => x.key === key);
     if (scope) this.selectedScope.set(scope);
   }
 
@@ -75,13 +89,20 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     if (!this.eventId || this.status() === 'scanning') return;
     this.status.set('starting');
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false
+      });
       this.video.nativeElement.srcObject = this.stream;
       await this.video.nativeElement.play();
-      const Detector = (globalThis as unknown as { BarcodeDetector?: BarcodeDetectorConstructorLike }).BarcodeDetector;
+      const Detector = (
+        globalThis as unknown as { BarcodeDetector?: BarcodeDetectorConstructorLike }
+      ).BarcodeDetector;
       if (!Detector) {
         this.status.set('ready');
-        this.message.set('Automatic QR scanning is unavailable in this browser. Use manual QR entry below.');
+        this.message.set(
+          'Automatic QR scanning is unavailable in this browser. Use manual QR entry below.'
+        );
         return;
       }
       this.status.set('scanning');
@@ -91,9 +112,14 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
         if (this.status() !== 'scanning') return;
         try {
           const codes = await detector.detect(this.video.nativeElement);
-          const value = codes.find(x => x.rawValue)?.rawValue;
-          if (value) { await this.verify(value); return; }
-        } catch { /* Camera frames can occasionally fail while focus changes. */ }
+          const value = codes.find((x) => x.rawValue)?.rawValue;
+          if (value) {
+            await this.verify(value);
+            return;
+          }
+        } catch {
+          /* Camera frames can occasionally fail while focus changes. */
+        }
         this.frame = requestAnimationFrame(scan);
       };
       this.frame = requestAnimationFrame(scan);
@@ -105,7 +131,7 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
 
   stop(): void {
     if (this.frame) cancelAnimationFrame(this.frame);
-    this.stream?.getTracks().forEach(track => track.stop());
+    this.stream?.getTracks().forEach((track) => track.stop());
     this.stream = null;
   }
 
@@ -122,12 +148,12 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     forkJoin({
       staff: this.operations.getStaff(this.eventId).pipe(catchError(() => of(null))),
       sections: this.sections.getSections(this.eventId).pipe(catchError(() => of(null))),
-      sessions: this.sessions.getSessions(this.eventId).pipe(catchError(() => of(null))),
+      sessions: this.sessions.getSessions(this.eventId).pipe(catchError(() => of(null)))
     }).subscribe(({ staff, sections, sessions }) => {
-      const mine = (staff?.data ?? []).filter(x => x.isActive && x.userId === me);
-      const sectionNames = new Map((sections?.data ?? []).map(s => [s.id, s.name]));
-      const sessionNames = new Map((sessions?.data ?? []).map(s => [s.id, s.title]));
-      const sessionSections = new Map((sessions?.data ?? []).map(s => [s.id, s.sectionId]));
+      const mine = (staff?.data ?? []).filter((x) => x.isActive && x.userId === me);
+      const sectionNames = new Map((sections?.data ?? []).map((s) => [s.id, s.name]));
+      const sessionNames = new Map((sessions?.data ?? []).map((s) => [s.id, s.title]));
+      const sessionSections = new Map((sessions?.data ?? []).map((s) => [s.id, s.sectionId]));
       const sessionsBySection = new Map<string, { id: string; title: string }[]>();
       for (const session of sessions?.data ?? []) {
         const list = sessionsBySection.get(session.sectionId) ?? [];
@@ -145,14 +171,14 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
             key: `section:${assignment.scopeId}`,
             label: `${sectionNames.get(assignment.scopeId) ?? 'Section'} — all sessions`,
             sectionId: assignment.scopeId,
-            sessionId: null,
+            sessionId: null
           });
           for (const session of sessionsBySection.get(assignment.scopeId) ?? []) {
             options.push({
               key: `session:${session.id}`,
               label: session.title,
               sectionId: assignment.scopeId,
-              sessionId: session.id,
+              sessionId: session.id
             });
           }
         } else if (assignment.scopeType === AttendanceScopeType.Session && assignment.scopeId) {
@@ -160,11 +186,13 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
             key: `session:${assignment.scopeId}`,
             label: sessionNames.get(assignment.scopeId) ?? 'Session',
             sectionId: sessionSections.get(assignment.scopeId) ?? null,
-            sessionId: assignment.scopeId,
+            sessionId: assignment.scopeId
           });
         }
       }
-      const unique = options.filter((option, index) => options.findIndex(x => x.key === option.key) === index);
+      const unique = options.filter(
+        (option, index) => options.findIndex((x) => x.key === option.key) === index
+      );
       if (unique.length === 0) {
         // Owners and organizers hold event.team.manage and legitimately scan
         // event-wide without an assignment row; the server still authorizes
@@ -172,7 +200,9 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
         unique.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
       }
       this.scopes.set(unique);
-      this.selectedScope.update(scope => scope && unique.some(x => x.key === scope.key) ? scope : unique[0]);
+      this.selectedScope.update((scope) =>
+        scope && unique.some((x) => x.key === scope.key) ? scope : unique[0]
+      );
       this.scopesLoaded.set(true);
     });
   }
@@ -183,24 +213,26 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     this.status.set('verifying');
     this.message.set('Verifying ticket and attendance permission...');
     const scope = this.selectedScope();
-    this.operations.checkInQr(this.eventId, value, scope?.sectionId ?? null, scope?.sessionId ?? null).subscribe({
-      next: response => {
-        if (response.isSuccess) {
-          this.status.set('success');
-          this.message.set(response.message || 'Participant checked in successfully.');
-          this.manualQr.set('');
-          this.notify.success(this.message());
-        } else {
+    this.operations
+      .checkInQr(this.eventId, value, scope?.sectionId ?? null, scope?.sessionId ?? null)
+      .subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.status.set('success');
+            this.message.set(response.message || 'Participant checked in successfully.');
+            this.manualQr.set('');
+            this.notify.success(this.message());
+          } else {
+            this.status.set('error');
+            this.message.set(response.message || 'Ticket verification failed.');
+            this.notify.error(null, this.message());
+          }
+        },
+        error: (error) => {
           this.status.set('error');
-          this.message.set(response.message || 'Ticket verification failed.');
-          this.notify.error(null, this.message());
+          this.message.set('Ticket verification failed.');
+          this.notify.error(error, this.message());
         }
-      },
-      error: error => {
-        this.status.set('error');
-        this.message.set('Ticket verification failed.');
-        this.notify.error(error, this.message());
-      },
-    });
+      });
   }
 }

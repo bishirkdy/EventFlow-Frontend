@@ -3,20 +3,20 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   {
     path: '',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Prerender
   },
 
   {
     path: 'about',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Prerender
   },
   {
     path: 'contact',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Prerender
   },
   {
     path: 'events',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Server
   },
 
   // Authenticated / personal pages must render on the client: the server has no
@@ -26,107 +26,107 @@ export const serverRoutes: ServerRoute[] = [
   // route so they are not swallowed by it.
   {
     path: 'events/:eventId/register',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'events/:eventId/my-registrations',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'events/:eventId/registrations/:registrationId',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'events/:eventId/certificates',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'events/:eventId/attendance',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'events/:eventId/feedback',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   // Public event website stays server rendered.
   {
     path: 'events/:eventId',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Server
   },
 
   {
     path: 'events/:eventId/:slug',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Server
   },
 
   {
     path: 'login',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'register',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'create-event',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'my-events',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'my-certificates',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'organizer/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'owner/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'attendance-staff/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'photographer/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'photographer-invitation/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'organizer-invitation/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: 'attendance-staff-invitation/**',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Client
   },
 
   {
     path: '**',
-    renderMode: RenderMode.Server,
-  },
+    renderMode: RenderMode.Server
+  }
 ];

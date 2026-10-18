@@ -8,7 +8,7 @@ import { VenueService } from '../../../../../core/services/venue/venue.service';
 import { VenueModel } from '../../../../../core/models/venue';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { Event as EventModel } from '../../../../../core/models/event';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
@@ -17,7 +17,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [FormsModule, CapitalizePipe, AsyncState],
   templateUrl: './update-session.html',
-  styleUrl: './update-session.css',
+  styleUrl: './update-session.css'
 })
 export class UpdateSession implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -45,8 +45,8 @@ export class UpdateSession implements OnInit {
     {
       toastErrors: true,
       errorFallback: 'Failed to load venues.',
-      onSuccess: (response) => this.venues.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.venues.set(response.data ?? [])
+    }
   );
 
   private readonly sessionAction = createAsyncAction(
@@ -69,12 +69,12 @@ export class UpdateSession implements OnInit {
           startTime: data.startTime ? this.toLocalDateTime(data.startTime) : null,
           endTime: data.endTime ? this.toLocalDateTime(data.endTime) : null,
           venueId: data.venueId,
-          allowRegistration: data.allowRegistration,
+          allowRegistration: data.allowRegistration
         };
         this.currentImageUrl.set(data.imageUrl ?? null);
         this.imagePreview.set(data.imageUrl ?? null);
-      },
-    },
+      }
+    }
   );
 
   private readonly updateAction = createAsyncAction(
@@ -84,8 +84,8 @@ export class UpdateSession implements OnInit {
       successMessage: 'Session updated successfully.',
       errorFallback: 'Failed to update session.',
       onSuccess: () =>
-        this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId]),
-    },
+        this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId])
+    }
   );
 
   loading = this.sessionAction.pending;
@@ -100,7 +100,7 @@ export class UpdateSession implements OnInit {
     startTime: null,
     endTime: null,
     venueId: null,
-    allowRegistration: false,
+    allowRegistration: false
   };
 
   ngOnInit(): void {
@@ -122,9 +122,15 @@ export class UpdateSession implements OnInit {
     const currentEvent = this.organizerEventState.event();
     if (currentEvent) {
       this.event.set(currentEvent);
-      this.eventStartLocal.set(this.toEventLocalDateTime(currentEvent.startDate, currentEvent.timeZone));
-      this.eventEndLocal.set(this.toEventLocalDateTime(currentEvent.endDate, currentEvent.timeZone));
-      this.eventWindowLabel.set(`${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} — ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`);
+      this.eventStartLocal.set(
+        this.toEventLocalDateTime(currentEvent.startDate, currentEvent.timeZone)
+      );
+      this.eventEndLocal.set(
+        this.toEventLocalDateTime(currentEvent.endDate, currentEvent.timeZone)
+      );
+      this.eventWindowLabel.set(
+        `${this.formatEventDate(currentEvent.startDate, currentEvent.timeZone)} â€” ${this.formatEventDate(currentEvent.endDate, currentEvent.timeZone)}`
+      );
     }
 
     this.reload();
@@ -161,7 +167,11 @@ export class UpdateSession implements OnInit {
       return;
     }
 
-    if (this.session.startTime && this.session.endTime && this.session.startTime >= this.session.endTime) {
+    if (
+      this.session.startTime &&
+      this.session.endTime &&
+      this.session.startTime >= this.session.endTime
+    ) {
       this.error.set('Session end time must be after the start time.');
       return;
     }
@@ -186,7 +196,7 @@ export class UpdateSession implements OnInit {
       endTime: this.session.endTime || null,
       venueId: this.session.venueId || null,
       allowRegistration: this.session.allowRegistration ?? false,
-      image: this.selectedImage() ?? undefined,
+      image: this.selectedImage() ?? undefined
     };
 
     this.updateAction.run(request);
@@ -197,8 +207,12 @@ export class UpdateSession implements OnInit {
     if (Number.isNaN(date.getTime())) return '';
     const parts = new Intl.DateTimeFormat('en-CA', {
       timeZone,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23'
     }).formatToParts(date);
     const get = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
     return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}`;
@@ -208,7 +222,9 @@ export class UpdateSession implements OnInit {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
     return new Intl.DateTimeFormat('en-IN', {
-      dateStyle: 'medium', timeStyle: 'short', timeZone,
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone
     }).format(date);
   }
 

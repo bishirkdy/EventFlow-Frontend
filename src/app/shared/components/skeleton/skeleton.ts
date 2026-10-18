@@ -6,7 +6,7 @@ export type SkeletonVariant = 'lines' | 'cards' | 'list' | 'table' | 'detail';
   selector: 'app-skeleton',
   imports: [],
   templateUrl: './skeleton.html',
-  styleUrl: './skeleton.css',
+  styleUrl: './skeleton.css'
 })
 export class Skeleton {
   variant = input<SkeletonVariant>('lines');
@@ -14,7 +14,7 @@ export class Skeleton {
   blockClass = input('h-4 w-full');
 
   readonly items = computed(() =>
-    Array.from({ length: Math.max(1, this.count()) }, (_, index) => index),
+    Array.from({ length: Math.max(1, this.count()) }, (_, index) => index)
   );
 
   readonly lineClasses = computed(() => `animate-pulse rounded bg-background ${this.blockClass()}`);

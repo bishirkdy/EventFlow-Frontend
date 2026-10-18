@@ -1,13 +1,14 @@
 @if (service.isOpen()) {
-  <div class="fixed inset-0 z-1000 flex items-start justify-center overflow-y-auto p-4 sm:p-6" role="presentation">
-    <!-- Backdrop -->
+  <div
+    class="fixed inset-0 z-1000 flex items-start justify-center overflow-y-auto p-4 sm:p-6"
+    role="presentation"
+  >
     <div
       class="absolute inset-0 bg-stone-950/55 backdrop-blur-md"
       (click)="close()"
       aria-hidden="true"
     ></div>
 
-    <!-- Dialog -->
     <div
       role="dialog"
       aria-modal="true"

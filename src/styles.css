@@ -46,7 +46,7 @@
 
 /* Tell Tailwind about the colors */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
   /* Brand */
   --color-primary: #b5473a;
@@ -89,9 +89,8 @@
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
-
 
 body {
   margin: 0;
@@ -139,7 +138,6 @@ body {
   font-weight: 600;
 }
 
-
 .text-body {
   font-size: 16px;
   line-height: 1.6;
@@ -151,8 +149,6 @@ body {
   line-height: 1.5;
   color: var(--color-text-secondary);
 }
-
-
 
 .eventflow-toast-host {
   position: fixed;
@@ -197,12 +193,26 @@ body {
   opacity: 0.65;
 }
 
-.eventflow-toast--success { border-left: 4px solid #16803c; }
-.eventflow-toast--info { border-left: 4px solid #2864c7; }
-.eventflow-toast--warning { border-left: 4px solid #c47a00; }
-.eventflow-toast--error { border-left: 4px solid #c62828; }
+.eventflow-toast--success {
+  border-left: 4px solid #16803c;
+}
+.eventflow-toast--info {
+  border-left: 4px solid #2864c7;
+}
+.eventflow-toast--warning {
+  border-left: 4px solid #c47a00;
+}
+.eventflow-toast--error {
+  border-left: 4px solid #c62828;
+}
 
 @keyframes eventflow-toast-in {
-  from { opacity: 0; transform: translateY(-0.35rem); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

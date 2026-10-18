@@ -9,7 +9,7 @@ export interface RegistrationDialogConfig {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegistrationDialogService {
   readonly isOpen = signal(false);

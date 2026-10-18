@@ -3,21 +3,18 @@ import { EventRoleModel } from '../models/event-role';
 export const eventWorkspaceUrl = (eventId: string, ...segments: string[]) => [
   '/organizer',
   eventId,
-  ...segments,
+  ...segments
 ];
 
 export const participantEventUrl = (eventId: string, ...segments: string[]) => [
   '/participant',
   eventId,
-  ...segments,
+  ...segments
 ];
 
 // Owners win over every other role, so the order below is the precedence:
 // owner, attendance staff, photographer, organizer, then plain participants.
-export const workspaceUrlForRoles = (
-  eventId: string,
-  roles: EventRoleModel[],
-): string[] | null => {
+export const workspaceUrlForRoles = (eventId: string, roles: EventRoleModel[]): string[] | null => {
   const names = roles.map((role) => role.roleName.trim().toLowerCase());
 
   if (names.length === 0) {

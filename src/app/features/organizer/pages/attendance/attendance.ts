@@ -5,7 +5,7 @@ import {
   ElementRef,
   ViewChild,
   inject,
-  signal,
+  signal
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
@@ -15,14 +15,14 @@ import { OrganizerEventStateService } from '../../services/organizer-event-state
 import { OperationsService } from '../../../../core/services/operations/operations.service';
 import { AttendanceDashboardModel } from '../../../../core/models/operations';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-attendance',
   standalone: true,
   imports: [FormsModule, DecimalPipe],
   templateUrl: './attendance.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttendanceComponent {
   @ViewChild('qrVideo')
@@ -49,8 +49,8 @@ export class AttendanceComponent {
       errorFallback: 'Unable to load attendance dashboard.',
       onSuccess: (data) => {
         if (data) this.dashboard.set(data);
-      },
-    },
+      }
+    }
   );
 
   private readonly checkInAction = createAsyncAction(
@@ -68,8 +68,8 @@ export class AttendanceComponent {
         } else {
           this.toast.error(r.message || 'Check-in failed');
         }
-      },
-    },
+      }
+    }
   );
 
   constructor() {
@@ -96,7 +96,7 @@ export class AttendanceComponent {
             this.scanning.set(false);
 
             this.checkIn();
-          },
+          }
         );
       } catch {
         this.scanning.set(false);

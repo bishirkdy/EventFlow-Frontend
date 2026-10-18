@@ -10,7 +10,7 @@ describe('EditPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EditPage],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditPage);

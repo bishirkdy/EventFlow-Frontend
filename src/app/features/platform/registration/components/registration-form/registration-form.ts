@@ -6,39 +6,37 @@ import {
   effect,
   inject,
   input,
-  output,
+  output
 } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   ReactiveFormsModule,
   ValidatorFn,
-  Validators,
+  Validators
 } from '@angular/forms';
 
 import { RegistrationFieldComponent } from '../registration-field/registration-field';
-import {
-  CapacityMode,
-  RegistrationFieldType,
-} from '../../../../../core/models/registration';
+import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration';
 import { Event } from '../../../../../core/models/event';
 
 import {
   RegistrationFormFieldModel,
-  RegistrationFormModel,
+  RegistrationFormModel
 } from '../../../../../core/models/registration';
 
 import { RegistrationFormSubmit } from '../../../../../core/models/registration';
 import { Router } from '@angular/router';
 import { emailValidator } from '@/shared/validators/email.validator';
 import { phoneValidator } from '@/shared/validators/phone.validator';
+import { trimmedRequiredValidator } from '@/shared/validators/required-trimmed.validator';
 
 @Component({
   selector: 'app-registration-form',
   standalone: true,
   imports: [DatePipe, ReactiveFormsModule, RegistrationFieldComponent],
   templateUrl: './registration-form.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationFormComponent {
   readonly registrationForm = input.required<RegistrationFormModel>();
@@ -56,13 +54,13 @@ export class RegistrationFormComponent {
     email: ['', [Validators.required, emailValidator]],
     phone: ['', phoneValidator],
     organization: [''],
-    designation: [''],
+    designation: ['']
   });
 
   protected readonly fieldControls = new Map<string, FormControl<string>>();
 
   protected readonly fields = computed(() =>
-    [...this.registrationForm().fields].sort((a, b) => a.displayOrder - b.displayOrder),
+    [...this.registrationForm().fields].sort((a, b) => a.displayOrder - b.displayOrder)
   );
 
   protected readonly remainingPlaces = computed(() => {
@@ -90,7 +88,7 @@ export class RegistrationFormComponent {
 
     return {
       start: event.startDate,
-      end: event.endDate,
+      end: event.endDate
     };
   });
 
@@ -102,7 +100,7 @@ export class RegistrationFormComponent {
     for (const field of fields) {
       this.fieldControls.set(
         field.fieldKey,
-        this.fb.nonNullable.control('', this.buildValidators(field)),
+        this.fb.nonNullable.control('', this.buildValidators(field))
       );
     }
   });
@@ -114,7 +112,7 @@ export class RegistrationFormComponent {
       validators.push(
         field.fieldType === RegistrationFieldType.Checkbox
           ? Validators.pattern(/^true$/)
-          : Validators.required,
+          : Validators.required
       );
     }
 
@@ -172,7 +170,7 @@ export class RegistrationFormComponent {
         maxLength: this.toNumber(rules['maxLength']),
         min: this.toNumber(rules['min']),
         max: this.toNumber(rules['max']),
-        pattern: typeof rules['pattern'] === 'string' ? rules['pattern'] : undefined,
+        pattern: typeof rules['pattern'] === 'string' ? rules['pattern'] : undefined
       };
     } catch {
       return {};
@@ -223,7 +221,7 @@ export class RegistrationFormComponent {
       phone: value.phone.trim() || null,
       organization: value.organization.trim() || null,
       designation: value.designation.trim() || null,
-      answers,
+      answers
     });
   }
 

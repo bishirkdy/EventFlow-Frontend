@@ -1,16 +1,11 @@
 <div class="space-y-8 p-6 lg:p-8">
-  <!-- Header -->
   <div
     class="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between"
   >
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-text-primary">
-        Page Sections
-      </h1>
+      <h1 class="text-2xl font-semibold tracking-tight text-text-primary">Page Sections</h1>
 
-      <p class="mt-1 text-sm text-text-secondary">
-        Manage the sections displayed on this page.
-      </p>
+      <p class="mt-1 text-sm text-text-secondary">Manage the sections displayed on this page.</p>
     </div>
 
     <button
@@ -35,134 +30,137 @@
     (emptyAction)="createSection()"
   >
     <ng-template>
-    <div class="overflow-hidden border border-border bg-surface">
-      <div class="overflow-x-auto">
-        <table class="w-full min-w-[800px] text-left">
-          <!-- Header -->
-          <thead class="border-b border-border bg-background">
-            <tr>
-              <th
-                class="w-24 px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Order
-              </th>
+      <div class="overflow-hidden border border-border bg-surface">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[800px] text-left">
+            <thead class="border-b border-border bg-background">
+              <tr>
+                <th
+                  class="w-24 px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Order
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Section
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Section
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Image
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Image
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Visibility
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Visibility
+                </th>
 
-              <th
-                class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-
-          <!-- Body -->
-          <tbody class="divide-y divide-border">
-            @for (section of sections(); track section.id) {
-              <tr class="transition hover:bg-background">
-                <!-- Order -->
-                <td class="px-5 py-4">
-                  <span
-                    class="inline-flex min-w-8 items-center justify-center border border-border px-2 py-1 text-sm font-medium text-text-primary"
-                  >
-                    {{ section.displayOrder }}
-                  </span>
-                </td>
-
-                <!-- Section -->
-                <td class="px-5 py-4">
-                  <div class="font-medium text-text-primary">
-                    {{ (section.title | capitalize) || 'Untitled section' }}
-                  </div>
-
-                  <div
-                    class="mt-1 text-xs uppercase tracking-wide text-text-muted"
-                  >
-                    {{ section.sectionType | capitalize }}
-                  </div>
-                </td>
-
-                <!-- Image -->
-                <td class="px-5 py-4">
-                  @if (section.imageUrl) {
-                    <img
-                      [src]="section.imageUrl"
-                      [alt]="section.title || 'Section image'"
-                      class="h-12 w-20 border border-border object-cover"
-                    />
-                  } @else {
-                    <div
-                      class="flex h-12 w-20 items-center justify-center border border-dashed border-border bg-background text-xs text-text-muted"
-                    >
-                      No image
-                    </div>
-                  }
-                </td>
-
-                <!-- Visibility -->
-                <td class="px-5 py-4">
-                  @if (section.isVisible) {
-                    <span
-                      class="inline-flex items-center gap-2 text-sm font-medium text-green-600"
-                    >
-                      <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
-                      Visible
-                    </span>
-                  } @else {
-                    <span
-                      class="inline-flex items-center gap-2 text-sm font-medium text-text-muted"
-                    >
-                      <span class="h-1.5 w-1.5 rounded-full bg-text-muted"></span>
-                      Hidden
-                    </span>
-                  }
-                </td>
-
-                <!-- Actions -->
-                <td class="px-5 py-4">
-                  <div class="flex justify-end gap-2">
-                    <button type="button" (click)="moveSection(section, -1)" class="cursor-pointer px-2 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary">Up</button>
-                    <button type="button" (click)="moveSection(section, 1)" class="cursor-pointer px-2 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary">Down</button>
-                    <button
-                      type="button"
-                      (click)="editSection(section)"
-                      class="cursor-pointer border border-border px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      type="button"
-                      (click)="deleteSection(section)"
-                      class="cursor-pointer border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+                <th
+                  class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Actions
+                </th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody class="divide-y divide-border">
+              @for (section of sections(); track section.id) {
+                <tr class="transition hover:bg-background">
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex min-w-8 items-center justify-center border border-border px-2 py-1 text-sm font-medium text-text-primary"
+                    >
+                      {{ section.displayOrder }}
+                    </span>
+                  </td>
+
+                  <td class="px-5 py-4">
+                    <div class="font-medium text-text-primary">
+                      {{ (section.title | capitalize) || 'Untitled section' }}
+                    </div>
+
+                    <div class="mt-1 text-xs uppercase tracking-wide text-text-muted">
+                      {{ section.sectionType | capitalize }}
+                    </div>
+                  </td>
+
+                  <td class="px-5 py-4">
+                    @if (section.imageUrl) {
+                      <img
+                        [src]="section.imageUrl"
+                        [alt]="section.title || 'Section image'"
+                        class="h-12 w-20 border border-border object-cover"
+                      />
+                    } @else {
+                      <div
+                        class="flex h-12 w-20 items-center justify-center border border-dashed border-border bg-background text-xs text-text-muted"
+                      >
+                        No image
+                      </div>
+                    }
+                  </td>
+
+                  <td class="px-5 py-4">
+                    @if (section.isVisible) {
+                      <span
+                        class="inline-flex items-center gap-2 text-sm font-medium text-green-600"
+                      >
+                        <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                        Visible
+                      </span>
+                    } @else {
+                      <span
+                        class="inline-flex items-center gap-2 text-sm font-medium text-text-muted"
+                      >
+                        <span class="h-1.5 w-1.5 rounded-full bg-text-muted"></span>
+                        Hidden
+                      </span>
+                    }
+                  </td>
+
+                  <td class="px-5 py-4">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        (click)="moveSection(section, -1)"
+                        class="cursor-pointer px-2 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary"
+                      >
+                        Up
+                      </button>
+                      <button
+                        type="button"
+                        (click)="moveSection(section, 1)"
+                        class="cursor-pointer px-2 py-1.5 text-sm font-medium text-text-secondary hover:text-text-primary"
+                      >
+                        Down
+                      </button>
+                      <button
+                        type="button"
+                        (click)="editSection(section)"
+                        class="cursor-pointer border border-border px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        (click)="deleteSection(section)"
+                        class="cursor-pointer border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </ng-template>
   </app-async-state>
 </div>

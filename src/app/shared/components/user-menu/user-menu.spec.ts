@@ -14,7 +14,7 @@ describe('UserMenu', () => {
   const authService = {
     currentUser: signal<any>(null),
     logout: vi.fn(() => of({})),
-    clearCurrentUser: vi.fn(),
+    clearCurrentUser: vi.fn()
   };
 
   function rootText(): string {
@@ -22,10 +22,8 @@ describe('UserMenu', () => {
   }
 
   function signInButton(): HTMLButtonElement | null {
-    const buttons = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('button'),
-    );
-    return buttons.find(button => button.textContent?.trim() === 'Sign in') ?? null;
+    const buttons = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button'));
+    return buttons.find((button) => button.textContent?.trim() === 'Sign in') ?? null;
   }
 
   async function setup(): Promise<void> {
@@ -36,8 +34,8 @@ describe('UserMenu', () => {
       imports: [UserMenu],
       providers: [
         ...provideComponentTestProviders(),
-        { provide: AuthService, useValue: authService },
-      ],
+        { provide: AuthService, useValue: authService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserMenu);
@@ -69,7 +67,7 @@ describe('UserMenu', () => {
       userName: 'jane',
       email: 'jane@example.com',
       firstName: 'Jane',
-      lastName: 'Doe',
+      lastName: 'Doe'
     });
     fixture.detectChanges();
 
@@ -84,17 +82,17 @@ describe('UserMenu', () => {
       userName: 'jane',
       email: 'jane@example.com',
       firstName: 'Jane',
-      lastName: 'Doe',
+      lastName: 'Doe'
     });
     component = fixture.componentInstance;
     fixture.componentRef.setInput('links', [
       { label: 'My Events', url: '/my-events' },
-      { label: 'Certificate', url: '/events/evt-1/certificates' },
+      { label: 'Certificate', url: '/events/evt-1/certificates' }
     ]);
     fixture.detectChanges();
 
     const avatar = (fixture.nativeElement as HTMLElement).querySelector(
-      'button[aria-haspopup="menu"]',
+      'button[aria-haspopup="menu"]'
     ) as HTMLButtonElement;
     avatar.click();
     fixture.detectChanges();

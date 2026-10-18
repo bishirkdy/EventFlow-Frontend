@@ -31,7 +31,7 @@ export const websiteAccessGuard: CanActivateFn = (route, state) => {
   }
 
   const loginUrl = router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url },
+    queryParams: { returnUrl: state.url }
   });
 
   return roleService.getMyPermissions(eventId).pipe(
@@ -45,6 +45,6 @@ export const websiteAccessGuard: CanActivateFn = (route, state) => {
         return of(loginUrl);
       }
       return of(router.createUrlTree(['/']));
-    }),
+    })
   );
 };

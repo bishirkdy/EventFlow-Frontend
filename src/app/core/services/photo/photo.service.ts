@@ -5,12 +5,11 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../models/common';
 import { environment } from '../../../../environments/environment';
 import { PHOTO_ENDPOINTS } from '@/core/api/endpoints/photo-endpoint/photo.endpoint';
-import { UploadedPhoto } from '@/core/models/photographer';
+import { Photo, UploadedPhoto } from '@/core/models/photographer';
 import { PaginatedResponseModel } from '@/core/models/common';
-import { Photo } from '@/core/models/photographer';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class PhotoService {
   private readonly http = inject(HttpClient);
@@ -22,7 +21,7 @@ export class PhotoService {
 
     return this.http.post<ApiResponse<UploadedPhoto>>(
       `${this.apiUrl}${PHOTO_ENDPOINTS.uploadPhoto(eventId)}`,
-      formData,
+      formData
     );
   }
 
@@ -30,7 +29,7 @@ export class PhotoService {
     eventId: string,
     page: number,
     pageSize: number,
-    visibleOnly?: boolean,
+    visibleOnly?: boolean
   ): Observable<ApiResponse<PaginatedResponseModel<Photo>>> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
 
@@ -40,24 +39,24 @@ export class PhotoService {
 
     return this.http.get<ApiResponse<PaginatedResponseModel<Photo>>>(
       `${this.apiUrl}${PHOTO_ENDPOINTS.getPhotos(eventId)}`,
-      { params },
+      { params }
     );
   }
 
   deletePhoto(eventId: string, photoId: string): Observable<ApiResponse<object>> {
     return this.http.delete<ApiResponse<object>>(
-      `${this.apiUrl}${PHOTO_ENDPOINTS.deletePhoto(eventId, photoId)}`,
+      `${this.apiUrl}${PHOTO_ENDPOINTS.deletePhoto(eventId, photoId)}`
     );
   }
 
   toggleVisibility(
     eventId: string,
     photoId: string,
-    isVisible: boolean,
+    isVisible: boolean
   ): Observable<ApiResponse<object>> {
     return this.http.patch<ApiResponse<object>>(
       `${this.apiUrl}${PHOTO_ENDPOINTS.toggleVisibility(eventId, photoId)}`,
-      { isVisible },
+      { isVisible }
     );
   }
 }

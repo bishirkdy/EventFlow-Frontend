@@ -12,7 +12,7 @@ describe('MyCertificates', () => {
 
   const certificateService = {
     getAllMine: vi.fn(() => of({ data: [] as CertificateModel[] })),
-    download: vi.fn(() => of(new Blob())),
+    download: vi.fn(() => of(new Blob()))
   };
 
   beforeEach(async () => {
@@ -23,8 +23,8 @@ describe('MyCertificates', () => {
       imports: [MyCertificates],
       providers: [
         ...provideComponentTestProviders(),
-        { provide: CertificateService, useValue: certificateService },
-      ],
+        { provide: CertificateService, useValue: certificateService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyCertificates);
@@ -43,8 +43,8 @@ describe('MyCertificates', () => {
         eventId: 'evt-1',
         certificateNumber: 'EF-0001',
         eventName: 'Dotnet Conf',
-        status: 'Issued',
-      },
+        status: 'Issued'
+      }
     ] as CertificateModel[];
 
     certificateService.getAllMine.mockReturnValue(of({ data: certificates }));
@@ -78,7 +78,7 @@ describe('MyCertificates', () => {
     const certificate = {
       id: 'c1',
       eventId: 'evt-1',
-      certificateNumber: 'EF-0001',
+      certificateNumber: 'EF-0001'
     } as CertificateModel;
 
     component.download(certificate);

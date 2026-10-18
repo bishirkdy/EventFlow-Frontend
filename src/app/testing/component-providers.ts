@@ -15,7 +15,7 @@ type RouteParams = Record<string, string>;
  */
 export function provideComponentTestProviders(
   routeParams: RouteParams = {},
-  queryParams: RouteParams = {},
+  queryParams: RouteParams = {}
 ): (Provider | EnvironmentProviders)[] {
   const paramMap = convertToParamMap(routeParams);
   const queryParamMap = convertToParamMap(queryParams);
@@ -39,8 +39,8 @@ export function provideComponentTestProviders(
         firstChild: null,
         children: [],
         parent: null,
-        root: null,
-      },
-    },
+        root: null
+      }
+    }
   ];
 }

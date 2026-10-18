@@ -3,5 +3,5 @@
   Approved = 2,
   Rejected = 3,
   Cancelled = 4,
-  Waitlisted = 5,
+  Waitlisted = 5
 }

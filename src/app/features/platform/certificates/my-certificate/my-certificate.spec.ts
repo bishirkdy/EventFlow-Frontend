@@ -3,7 +3,7 @@ import { MyCertificate } from './my-certificate';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
-import { NotificationService } from 'core/services/ui/notification.service';
+import { NotificationService } from '@/core/services/ui/notification.service';
 
 describe('MyCertificate', () => {
   let component: MyCertificate;
@@ -22,19 +22,19 @@ describe('MyCertificate', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => 'event-1',
-              },
-            },
-          },
+                get: () => 'event-1'
+              }
+            }
+          }
         },
         {
           provide: NotificationService,
           useValue: {
             success: vi.fn(),
-            error: vi.fn(),
-          },
-        },
-      ],
+            error: vi.fn()
+          }
+        }
+      ]
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -58,7 +58,7 @@ describe('MyCertificate', () => {
         statusCode: 200,
         message: 'ok',
         data: [],
-        errors: null,
+        errors: null
       });
 
     expect(component.loading()).toBe(false);
@@ -72,7 +72,7 @@ describe('MyCertificate', () => {
         statusCode: 200,
         message: 'ok',
         data: [],
-        errors: null,
+        errors: null
       });
 
     expect(component.loading()).toBe(false);
@@ -97,15 +97,13 @@ describe('MyCertificate', () => {
             eventName: 'TechConf',
             status: 'Generated',
             issuedAtUtc: '2026-10-03T10:00:00Z',
-            revokedAtUtc: null,
-          },
+            revokedAtUtc: null
+          }
         ],
-        errors: null,
+        errors: null
       });
 
-    expect(component.certificate()?.certificateNumber).toBe(
-      'CERT-20261003-ABC123'
-    );
+    expect(component.certificate()?.certificateNumber).toBe('CERT-20261003-ABC123');
   });
 
   it('should format dates safely', () => {
@@ -116,10 +114,10 @@ describe('MyCertificate', () => {
         statusCode: 200,
         message: 'ok',
         data: [],
-        errors: null,
+        errors: null
       });
 
-    expect(component.formatDate(null)).toBe('—');
+    expect(component.formatDate(null)).toBe('â€”');
     expect(component.formatDate('2026-10-03T10:00:00Z')).toContain('2026');
   });
 });

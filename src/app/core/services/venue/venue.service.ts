@@ -3,13 +3,11 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../models/common';
 import { Api } from '../../api/api';
-import { VenueModel } from '../../models/venue';
-import { CreateVenueRequest } from '../../models/venue';
-import { UpdateVenueRequest } from '../../models/venue';
+import { CreateVenueRequest, UpdateVenueRequest, VenueModel } from '../../models/venue';
 import { VENUE_ENDPOINTS } from '../../api/endpoints/event-features/venue.endpoint';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class VenueService {
   private readonly http = inject(HttpClient);
@@ -17,27 +15,27 @@ export class VenueService {
 
   getVenues(eventId: string): Observable<ApiResponse<VenueModel[]>> {
     return this.http.get<ApiResponse<VenueModel[]>>(
-      this.api.getUrl(VENUE_ENDPOINTS.getVenues(eventId)),
+      this.api.getUrl(VENUE_ENDPOINTS.getVenues(eventId))
     );
   }
 
   createVenue(eventId: string, request: CreateVenueRequest): Observable<ApiResponse<VenueModel>> {
     return this.http.post<ApiResponse<VenueModel>>(
       this.api.getUrl(VENUE_ENDPOINTS.createVenue(eventId)),
-      this.toFormData(request),
+      this.toFormData(request)
     );
   }
 
   getVenueById(eventId: string, venueId: string): Observable<ApiResponse<VenueModel>> {
     return this.http.get<ApiResponse<VenueModel>>(
-      this.api.getUrl(VENUE_ENDPOINTS.getVenueById(eventId, venueId)),
+      this.api.getUrl(VENUE_ENDPOINTS.getVenueById(eventId, venueId))
     );
   }
 
   updateVenue(eventId: string, venueId: string, request: UpdateVenueRequest): Observable<void> {
     return this.http.put<void>(
       this.api.getUrl(VENUE_ENDPOINTS.updateVenue(eventId, venueId)),
-      this.toFormData(request),
+      this.toFormData(request)
     );
   }
 
@@ -53,7 +51,7 @@ export class VenueService {
 
   deleteVenue(eventId: string, venueId: string): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(
-      this.api.getUrl(VENUE_ENDPOINTS.deleteVenue(eventId, venueId)),
+      this.api.getUrl(VENUE_ENDPOINTS.deleteVenue(eventId, venueId))
     );
   }
 }

@@ -1,27 +1,23 @@
 export const REGISTRATION_ENDPOINTS = {
-  collection: (eventId: string) =>
-    `/v1/events/${eventId}/registrations`,
+  collection: (eventId: string) => `/v1/events/${eventId}/registrations`,
 
   byId: (eventId: string, registrationId: string) =>
     `/v1/events/${eventId}/registrations/${registrationId}`,
 
   organizerById: (eventId: string, registrationId: string) =>
-  `/v1/events/${eventId}/registrations/organizer/${registrationId}`,
+    `/v1/events/${eventId}/registrations/organizer/${registrationId}`,
 
   manage: (eventId: string, registrationId: string) =>
     `/v1/events/${eventId}/registrations/${registrationId}/manage`,
 
-  mine: (eventId: string) =>
-    `/v1/events/${eventId}/registrations/me`,
+  mine: (eventId: string) => `/v1/events/${eventId}/registrations/me`,
 
-  stats: (eventId: string) =>
-    `/v1/events/${eventId}/registrations/stats`,
+  stats: (eventId: string) => `/v1/events/${eventId}/registrations/stats`,
 
   analytics: (eventId: string, days = 30) =>
     `/v1/events/${eventId}/registrations/analytics?days=${days}`,
 
-  certificateAnalytics: (eventId: string) =>
-    `/v1/events/${eventId}/certificates/analytics`,
+  certificateAnalytics: (eventId: string) => `/v1/events/${eventId}/certificates/analytics`,
 
   approve: (eventId: string, registrationId: string) =>
     `/v1/events/${eventId}/registrations/${registrationId}/approve`,
@@ -36,5 +32,5 @@ export const REGISTRATION_ENDPOINTS = {
     `/v1/events/${eventId}/registrations/${registrationId}/waitlist`,
 
   promote: (eventId: string, registrationId: string) =>
-    `/v1/events/${eventId}/registrations/${registrationId}/promote`,
+    `/v1/events/${eventId}/registrations/${registrationId}/promote`
 } as const;

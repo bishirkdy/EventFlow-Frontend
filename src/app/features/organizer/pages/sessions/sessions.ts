@@ -9,14 +9,14 @@ import { SectionService } from '../../../../core/services/section/section.servic
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
-import { createAsyncAction, createAsyncState } from 'core/state';
+import { createAsyncAction, createAsyncState } from '@/core/state';
 
 @Component({
   selector: 'app-sessions',
   standalone: true,
   imports: [DatePipe, CapitalizePipe, AsyncState],
   templateUrl: './sessions.html',
-  styleUrl: './sessions.css',
+  styleUrl: './sessions.css'
 })
 export class Sessions implements OnInit {
   private readonly router = inject(Router);
@@ -29,12 +29,12 @@ export class Sessions implements OnInit {
 
   private readonly sessionsState = createAsyncState<SessionModel[]>(
     () => this.sessionService.getSessions(this.eventId),
-    { initial: [], autoLoad: false, errorFallback: 'Failed to load sessions.' },
+    { initial: [], autoLoad: false, errorFallback: 'Failed to load sessions.' }
   );
 
   private readonly sectionsState = createAsyncState<SectionModel[]>(
     () => this.sectionService.getSections(this.eventId),
-    { initial: [], autoLoad: false },
+    { initial: [], autoLoad: false }
   );
 
   private readonly deleteAction = createAsyncAction(
@@ -43,8 +43,8 @@ export class Sessions implements OnInit {
       successMessage: 'Session deleted successfully.',
       errorFallback: 'Failed to delete session.',
       onSuccess: () => this.loadSessions(),
-      onSettled: () => this.deleting.set(null),
-    },
+      onSettled: () => this.deleting.set(null)
+    }
   );
 
   sessions = this.sessionsState.data;
@@ -54,7 +54,7 @@ export class Sessions implements OnInit {
   deleting = signal<string | null>(null);
 
   sectionName(sectionId: string): string {
-    return this.sections().find((section) => section.id === sectionId)?.name ?? '—';
+    return this.sections().find((section) => section.id === sectionId)?.name ?? 'â€”';
   }
 
   ngOnInit(): void {

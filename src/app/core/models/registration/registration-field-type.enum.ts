@@ -7,5 +7,5 @@
   Date = 6,
   Select = 7,
   Radio = 8,
-  Checkbox = 9,
+  Checkbox = 9
 }

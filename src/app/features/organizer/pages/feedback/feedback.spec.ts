@@ -21,7 +21,7 @@ describe('OrganizerFeedbackComponent', () => {
       { rating: 4, count: 1 },
       { rating: 3, count: 1 },
       { rating: 2, count: 0 },
-      { rating: 1, count: 0 },
+      { rating: 1, count: 0 }
     ],
     targets: [
       {
@@ -29,8 +29,8 @@ describe('OrganizerFeedbackComponent', () => {
         targetId: 'event-1',
         targetName: 'Test Event',
         count: 4,
-        averageRating: 4.25,
-      },
+        averageRating: 4.25
+      }
     ],
     recentFeedback: [
       {
@@ -40,14 +40,14 @@ describe('OrganizerFeedbackComponent', () => {
         targetName: 'Test Event',
         rating: 5,
         comment: 'Loved it',
-        submittedAtUtc: '2026-10-04T00:00:00Z',
-      },
-    ],
+        submittedAtUtc: '2026-10-04T00:00:00Z'
+      }
+    ]
   };
 
   function flushResults(payload: any = resultsPayload) {
     httpMock
-      .expectOne(r => r.url.includes('/feedback/results') && r.method === 'GET')
+      .expectOne((r) => r.url.includes('/feedback/results') && r.method === 'GET')
       .flush({ isSuccess: true, statusCode: 200, message: 'ok', data: payload });
   }
 
@@ -65,16 +65,16 @@ describe('OrganizerFeedbackComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => 'event-1',
-              },
-            },
-          },
+                get: () => 'event-1'
+              }
+            }
+          }
         },
         {
           provide: NotificationService,
-          useValue: notify,
-        },
-      ],
+          useValue: notify
+        }
+      ]
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -103,7 +103,13 @@ describe('OrganizerFeedbackComponent', () => {
   });
 
   it('returns zero percent when there are no responses', () => {
-    flushResults({ ...resultsPayload, totalCount: 0, ratingDistribution: [], targets: [], recentFeedback: [] });
+    flushResults({
+      ...resultsPayload,
+      totalCount: 0,
+      ratingDistribution: [],
+      targets: [],
+      recentFeedback: []
+    });
 
     expect(component.distributionPercent(3)).toBe(0);
     expect(component.results()!.totalCount).toBe(0);
@@ -120,8 +126,11 @@ describe('OrganizerFeedbackComponent', () => {
 
   it('shows an error state when loading fails', () => {
     httpMock
-      .expectOne(r => r.url.includes('/feedback/results'))
-      .flush({ isSuccess: false, statusCode: 500, message: 'boom', data: null }, { status: 500, statusText: 'Server Error' });
+      .expectOne((r) => r.url.includes('/feedback/results'))
+      .flush(
+        { isSuccess: false, statusCode: 500, message: 'boom', data: null },
+        { status: 500, statusText: 'Server Error' }
+      );
 
     expect(component.loading()).toBe(false);
     expect(component.results()).toBeNull();

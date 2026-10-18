@@ -9,7 +9,7 @@ const ok = <T>(data: T): ApiResponse<T> => ({
   statusCode: 200,
   message: 'ok',
   data,
-  errors: null,
+  errors: null
 });
 
 describe('createAsyncAction', () => {
@@ -19,15 +19,13 @@ describe('createAsyncAction', () => {
     notification.error.mockClear();
     notification.success.mockClear();
     TestBed.configureTestingModule({
-      providers: [{ provide: NotificationService, useValue: notification }],
+      providers: [{ provide: NotificationService, useValue: notification }]
     });
   });
 
   it('toggles pending while the request is in flight', () => {
     const response$ = new Subject<ApiResponse<void>>();
-    const action = TestBed.runInInjectionContext(() =>
-      createAsyncAction(() => response$),
-    );
+    const action = TestBed.runInInjectionContext(() => createAsyncAction(() => response$));
 
     expect(action.pending()).toBe(false);
 
@@ -46,8 +44,8 @@ describe('createAsyncAction', () => {
     const action = TestBed.runInInjectionContext(() =>
       createAsyncAction(() => of(ok('entity-1')), {
         successMessage: 'Saved.',
-        onSuccess,
-      }),
+        onSuccess
+      })
     );
 
     action.run();
@@ -60,8 +58,8 @@ describe('createAsyncAction', () => {
   it('records a friendly error message when the request fails', () => {
     const action = TestBed.runInInjectionContext(() =>
       createAsyncAction(() => throwError(() => new Error('nope')), {
-        errorFallback: 'Could not save.',
-      }),
+        errorFallback: 'Could not save.'
+      })
     );
 
     action.run();
@@ -74,7 +72,7 @@ describe('createAsyncAction', () => {
   it('passes action arguments through to the request factory', () => {
     const factory = vi.fn((_id: string, _name: string) => of(ok(undefined)));
     const action = TestBed.runInInjectionContext(() =>
-      createAsyncAction((id: string, name: string) => factory(id, name)),
+      createAsyncAction((id: string, name: string) => factory(id, name))
     );
 
     action.run('42', 'Venue');
@@ -85,9 +83,7 @@ describe('createAsyncAction', () => {
   it('clears the previous error when the action runs again', () => {
     let failing = true;
     const action = TestBed.runInInjectionContext(() =>
-      createAsyncAction(() =>
-        failing ? throwError(() => new Error('nope')) : of(ok(undefined)),
-      ),
+      createAsyncAction(() => (failing ? throwError(() => new Error('nope')) : of(ok(undefined))))
     );
 
     action.run();
@@ -102,7 +98,7 @@ describe('createAsyncAction', () => {
   it('invokes onSettled after failures as well as successes', () => {
     const onSettled = vi.fn();
     const action = TestBed.runInInjectionContext(() =>
-      createAsyncAction(() => throwError(() => new Error('nope')), { onSettled }),
+      createAsyncAction(() => throwError(() => new Error('nope')), { onSettled })
     );
 
     action.run();
@@ -112,7 +108,7 @@ describe('createAsyncAction', () => {
 
   it('stays silent on failures by default so the interceptor owns toasts', () => {
     const action = TestBed.runInInjectionContext(() =>
-      createAsyncAction(() => throwError(() => new Error('nope'))),
+      createAsyncAction(() => throwError(() => new Error('nope')))
     );
 
     action.run();
@@ -125,8 +121,8 @@ describe('createAsyncAction', () => {
     const action = TestBed.runInInjectionContext(() =>
       createAsyncAction(() => throwError(() => new Error('nope')), {
         toastErrors: true,
-        errorFallback: 'Failed to open event',
-      }),
+        errorFallback: 'Failed to open event'
+      })
     );
 
     action.run();

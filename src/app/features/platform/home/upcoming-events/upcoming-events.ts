@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { EventService } from '../../../../core/services/event/event.service';
 import { Event as EventModel } from '../../../../core/models/event';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 import { AsyncState } from '../../../../shared/components/async-state/async-state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
@@ -11,17 +11,17 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   selector: 'app-upcoming-events',
   imports: [RouterLink, AsyncState, CapitalizePipe],
   templateUrl: './upcoming-events.html',
-  styleUrl: './upcoming-events.css',
+  styleUrl: './upcoming-events.css'
 })
 export class UpcomingEvents implements OnInit {
   private readonly eventService = inject(EventService);
 
   private readonly eventsState = createRawAsyncState<EventModel[]>(
     () =>
-      this.eventService.getPublicEvents(3).pipe(
-        map((response) => (response.data ?? []).slice(0, 3)),
-      ),
-    { initial: [], errorFallback: 'Unable to load upcoming events.' },
+      this.eventService
+        .getPublicEvents(3)
+        .pipe(map((response) => (response.data ?? []).slice(0, 3))),
+    { initial: [], errorFallback: 'Unable to load upcoming events.' }
   );
 
   readonly events = this.eventsState.data;
@@ -39,6 +39,11 @@ export class UpcomingEvents implements OnInit {
   formatDate(date: string, timeZone?: string): string {
     const value = new Date(date);
     if (Number.isNaN(value.getTime())) return date;
-    return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric', ...(timeZone ? { timeZone } : {}) }).format(value);
+    return new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      ...(timeZone ? { timeZone } : {})
+    }).format(value);
   }
 }

@@ -5,16 +5,18 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { CERTIFICATE_ENDPOINTS } from '../../api/endpoints/registration/certificate.endpoint';
 import { ApiResponse } from '../../models/common';
-import { CertificateSettingsModel } from '@/core/models/certificate';
-import { CertificateSettingsRequest } from '@/core/models/certificate';
-import { CertificateEligibilityModel } from '@/core/models/certificate';
-import { GenerateCertificatesRequest } from '@/core/models/certificate';
-import { CertificateGenerationResultModel } from '@/core/models/certificate';
-import { CertificateModel } from '@/core/models/certificate';
-import { CertificateVerifyModel } from '@/core/models/certificate';
+import {
+  CertificateEligibilityModel,
+  CertificateGenerationResultModel,
+  CertificateModel,
+  CertificateSettingsModel,
+  CertificateSettingsRequest,
+  CertificateVerifyModel,
+  GenerateCertificatesRequest
+} from '@/core/models/certificate';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CertificateService {
   private readonly http = inject(HttpClient);
@@ -22,95 +24,95 @@ export class CertificateService {
 
   getSettings(eventId: string): Observable<ApiResponse<CertificateSettingsModel>> {
     return this.http.get<ApiResponse<CertificateSettingsModel>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.settings(eventId)),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.settings(eventId))
     );
   }
 
   updateSettings(
     eventId: string,
-    request: CertificateSettingsRequest,
+    request: CertificateSettingsRequest
   ): Observable<ApiResponse<CertificateSettingsModel>> {
     return this.http.put<ApiResponse<CertificateSettingsModel>>(
       this.api.getUrl(CERTIFICATE_ENDPOINTS.settings(eventId)),
-      request,
+      request
     );
   }
 
   uploadTemplateImage(
     eventId: string,
-    file: File,
+    file: File
   ): Observable<ApiResponse<CertificateSettingsModel>> {
     const form = new FormData();
     form.append('image', file, file.name);
 
     return this.http.post<ApiResponse<CertificateSettingsModel>>(
       this.api.getUrl(CERTIFICATE_ENDPOINTS.templateImage(eventId)),
-      form,
+      form
     );
   }
 
   deleteTemplateImage(eventId: string): Observable<ApiResponse<CertificateSettingsModel>> {
     return this.http.delete<ApiResponse<CertificateSettingsModel>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.templateImage(eventId)),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.templateImage(eventId))
     );
   }
 
   previewCertificate(eventId: string, sampleName?: string): Observable<Blob> {
     return this.http.get(this.api.getUrl(CERTIFICATE_ENDPOINTS.preview(eventId, sampleName)), {
-      responseType: 'blob',
+      responseType: 'blob'
     });
   }
 
   getEligibility(eventId: string): Observable<ApiResponse<CertificateEligibilityModel>> {
     return this.http.get<ApiResponse<CertificateEligibilityModel>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.eligibility(eventId)),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.eligibility(eventId))
     );
   }
 
   generate(
     eventId: string,
-    request: GenerateCertificatesRequest = { registrationIds: null },
+    request: GenerateCertificatesRequest = { registrationIds: null }
   ): Observable<ApiResponse<CertificateGenerationResultModel>> {
     return this.http.post<ApiResponse<CertificateGenerationResultModel>>(
       this.api.getUrl(CERTIFICATE_ENDPOINTS.generate(eventId)),
-      request,
+      request
     );
   }
 
   list(eventId: string): Observable<ApiResponse<CertificateModel[]>> {
     return this.http.get<ApiResponse<CertificateModel[]>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.collection(eventId)),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.collection(eventId))
     );
   }
 
   getMine(eventId: string): Observable<ApiResponse<CertificateModel[]>> {
     return this.http.get<ApiResponse<CertificateModel[]>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.mine(eventId)),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.mine(eventId))
     );
   }
 
   getAllMine(): Observable<ApiResponse<CertificateModel[]>> {
     return this.http.get<ApiResponse<CertificateModel[]>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.myAcrossEvents),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.myAcrossEvents)
     );
   }
 
   revoke(eventId: string, certificateId: string): Observable<ApiResponse<CertificateModel>> {
     return this.http.post<ApiResponse<CertificateModel>>(
       this.api.getUrl(CERTIFICATE_ENDPOINTS.revoke(eventId, certificateId)),
-      {},
+      {}
     );
   }
 
   download(eventId: string, certificateId: string): Observable<Blob> {
     return this.http.get(this.api.getUrl(CERTIFICATE_ENDPOINTS.download(eventId, certificateId)), {
-      responseType: 'blob',
+      responseType: 'blob'
     });
   }
 
   verify(certificateNumber: string): Observable<ApiResponse<CertificateVerifyModel>> {
     return this.http.get<ApiResponse<CertificateVerifyModel>>(
-      this.api.getUrl(CERTIFICATE_ENDPOINTS.verify(certificateNumber)),
+      this.api.getUrl(CERTIFICATE_ENDPOINTS.verify(certificateNumber))
     );
   }
 }

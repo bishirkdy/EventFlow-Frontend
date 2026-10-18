@@ -1,8 +1,79 @@
-import { Component, inject, signal } from '@angular/core'; import { Location } from '@angular/common'; import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'; import { Router } from '@angular/router'; import { map } from 'rxjs'; import { NotificationService } from '../../../../../core/services/ui/notification.service';
-import { SpeakerService } from '../../../../../core/services/speaker/speaker.service'; import { OrganizerEventStateService } from '../../../services/organizer-event-state.service'; import { CreateSpeakerModel } from '../../../../../core/models/speaker'; import { createAsyncAction } from 'core/state'; import { emailValidator } from '@/shared/validators/email.validator';
-@Component({selector:'app-create-speaker',standalone:true,imports:[ReactiveFormsModule],templateUrl:'./create-speaker.html',styleUrl:'./create-speaker.css'})
-export class CreateSpeaker { private fb=inject(FormBuilder);private service=inject(SpeakerService);private router=inject(Router);private location=inject(Location);private toastr=inject(NotificationService);private state=inject(OrganizerEventStateService);image=signal<File|null>(null);preview=signal<string|null>(null);
- form=this.fb.nonNullable.group({name:['',[Validators.required,Validators.maxLength(200)]],designation:['',[Validators.maxLength(200)]],organization:['',[Validators.maxLength(200)]],email:['',[emailValidator,Validators.maxLength(320)]],bio:['',[Validators.maxLength(4000)]],displayOrder:[0,[Validators.min(0)]]});
- private readonly createSpeakerAction=createAsyncAction((eventId:string,req:CreateSpeakerModel)=>this.service.createSpeaker(eventId,req).pipe(map(r=>({eventId,r}))),{onSuccess:({eventId,r})=>{if(r.isSuccess){this.toastr.success(r.message||'Speaker created.');this.router.navigate(['/organizer',eventId,'speakers']);}else this.toastr.error(r.message||'Create failed.');}});
- loading=this.createSpeakerAction.pending;
- back(){this.location.back()} pick(e:Event){const f=(e.target as HTMLInputElement).files?.[0]??null;this.image.set(f);this.preview.set(f?URL.createObjectURL(f):null)} submit(){if(this.form.invalid){this.form.markAllAsTouched();return;}const eventId=this.state.eventId();if(!eventId){this.toastr.error('Event ID not found.');return;}const v=this.form.getRawValue();const req:CreateSpeakerModel={...v,name:v.name.trim(),bio:v.bio.trim()||undefined,designation:v.designation.trim()||undefined,organization:v.organization.trim()||undefined,email:v.email.trim()||undefined,image:this.image()??undefined};this.createSpeakerAction.run(eventId,req);}}
+import { Component, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { map } from 'rxjs';
+import { NotificationService } from '../../../../../core/services/ui/notification.service';
+import { SpeakerService } from '../../../../../core/services/speaker/speaker.service';
+import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
+import { CreateSpeakerModel } from '../../../../../core/models/speaker';
+import { createAsyncAction } from '@/core/state';
+import { emailValidator } from '@/shared/validators/email.validator';
+@Component({
+  selector: 'app-create-speaker',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './create-speaker.html',
+  styleUrl: './create-speaker.css'
+})
+export class CreateSpeaker {
+  private fb = inject(FormBuilder);
+  private service = inject(SpeakerService);
+  private router = inject(Router);
+  private location = inject(Location);
+  private toastr = inject(NotificationService);
+  private state = inject(OrganizerEventStateService);
+  image = signal<File | null>(null);
+  preview = signal<string | null>(null);
+  form = this.fb.nonNullable.group({
+    name: ['', [Validators.required, Validators.maxLength(200)]],
+    designation: ['', [Validators.maxLength(200)]],
+    organization: ['', [Validators.maxLength(200)]],
+    email: ['', [emailValidator, Validators.maxLength(320)]],
+    bio: ['', [Validators.maxLength(4000)]],
+    displayOrder: [0, [Validators.min(0)]]
+  });
+  private readonly createSpeakerAction = createAsyncAction(
+    (eventId: string, req: CreateSpeakerModel) =>
+      this.service.createSpeaker(eventId, req).pipe(map((r) => ({ eventId, r }))),
+    {
+      onSuccess: ({ eventId, r }) => {
+        if (r.isSuccess) {
+          this.toastr.success(r.message || 'Speaker created.');
+          this.router.navigate(['/organizer', eventId, 'speakers']);
+        } else this.toastr.error(r.message || 'Create failed.');
+      }
+    }
+  );
+  loading = this.createSpeakerAction.pending;
+  back() {
+    this.location.back();
+  }
+  pick(e: Event) {
+    const f = (e.target as HTMLInputElement).files?.[0] ?? null;
+    this.image.set(f);
+    this.preview.set(f ? URL.createObjectURL(f) : null);
+  }
+  submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const eventId = this.state.eventId();
+    if (!eventId) {
+      this.toastr.error('Event ID not found.');
+      return;
+    }
+    const v = this.form.getRawValue();
+    const req: CreateSpeakerModel = {
+      ...v,
+      name: v.name.trim(),
+      bio: v.bio.trim() || undefined,
+      designation: v.designation.trim() || undefined,
+      organization: v.organization.trim() || undefined,
+      email: v.email.trim() || undefined,
+      image: this.image() ?? undefined
+    };
+    this.createSpeakerAction.run(eventId, req);
+  }
+}

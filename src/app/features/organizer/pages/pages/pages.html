@@ -1,5 +1,4 @@
 <div class="space-y-6 p-6 lg:p-8">
-  <!-- Header -->
   <div class="flex items-center justify-between border-b border-border pb-5">
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Pages</h1>
@@ -30,132 +29,143 @@
     (emptyAction)="createPage()"
   >
     <ng-template>
-    <div class="overflow-hidden border border-border bg-surface">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead class="border-b border-border bg-background">
-            <tr>
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Page
-              </th>
+      <div class="overflow-hidden border border-border bg-surface">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="border-b border-border bg-background">
+              <tr>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Page
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Type
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Type
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Slug
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Slug
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Order
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Order
+                </th>
 
-              <th
-                class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Status
-              </th>
+                <th
+                  class="px-5 py-4 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Status
+                </th>
 
-              <th
-                class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
+                <th
+                  class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-text-secondary"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
 
-          <tbody class="divide-y divide-border">
-            @for (page of pages(); track trackById($index, page)) {
-              <tr class="transition hover:bg-background">
-                <td class="px-5 py-4">
-                  <div class="font-medium text-text-primary">
-                    {{ page.name | capitalize }}
-                  </div>
-                </td>
+            <tbody class="divide-y divide-border">
+              @for (page of pages(); track trackById($index, page)) {
+                <tr class="transition hover:bg-background">
+                  <td class="px-5 py-4">
+                    <div class="font-medium text-text-primary">
+                      {{ page.name | capitalize }}
+                    </div>
+                  </td>
 
-                <td class="px-5 py-4 text-sm text-text-secondary">
-                  {{ page.pageType | capitalize }}
-                </td>
+                  <td class="px-5 py-4 text-sm text-text-secondary">
+                    {{ page.pageType | capitalize }}
+                  </td>
 
-                <td class="px-5 py-4 font-mono text-sm text-text-secondary">/{{ page.slug }}</td>
+                  <td class="px-5 py-4 font-mono text-sm text-text-secondary">/{{ page.slug }}</td>
 
-                <td class="px-5 py-4 text-sm text-text-secondary">
-                  {{ page.displayOrder }}
-                </td>
+                  <td class="px-5 py-4 text-sm text-text-secondary">
+                    {{ page.displayOrder }}
+                  </td>
 
-                <td class="px-5 py-4">
-                  @if (page.isPublished) {
-                    <span class="text-sm font-medium text-green-600"> Published </span>
-                  } @else {
-                    <span class="text-sm font-medium text-text-muted"> Draft </span>
-                  }
-                </td>
+                  <td class="px-5 py-4">
+                    @if (page.isPublished) {
+                      <span class="text-sm font-medium text-green-600"> Published </span>
+                    } @else {
+                      <span class="text-sm font-medium text-text-muted"> Draft </span>
+                    }
+                  </td>
 
-                <td class="px-5 py-4">
-                  <div class="flex justify-end gap-2 text-sm">
-                    <button type="button" (click)="movePage(page, -1)" class="cursor-pointer px-2 py-1.5 font-medium text-text-secondary hover:text-text-primary">Up</button>
-                    <button type="button" (click)="movePage(page, 1)" class="cursor-pointer px-2 py-1.5 font-medium text-text-secondary hover:text-text-primary">Down</button>
-                    <button
-                      type="button"
-                      (click)="pageDetails(page)"
-                      class="cursor-pointer border border-border px-3 py-1.5 font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
-                    >
-                      View
-                    </button>
-
-                    @if (canPreview()) {
+                  <td class="px-5 py-4">
+                    <div class="flex justify-end gap-2 text-sm">
                       <button
                         type="button"
-                        (click)="previewPage(page)"
+                        (click)="movePage(page, -1)"
+                        class="cursor-pointer px-2 py-1.5 font-medium text-text-secondary hover:text-text-primary"
+                      >
+                        Up
+                      </button>
+                      <button
+                        type="button"
+                        (click)="movePage(page, 1)"
+                        class="cursor-pointer px-2 py-1.5 font-medium text-text-secondary hover:text-text-primary"
+                      >
+                        Down
+                      </button>
+                      <button
+                        type="button"
+                        (click)="pageDetails(page)"
                         class="cursor-pointer border border-border px-3 py-1.5 font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
                       >
-                        Preview
+                        View
                       </button>
-                    }
 
-                    @if (page.isPublished) {
+                      @if (canPreview()) {
+                        <button
+                          type="button"
+                          (click)="previewPage(page)"
+                          class="cursor-pointer border border-border px-3 py-1.5 font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+                        >
+                          Preview
+                        </button>
+                      }
+
+                      @if (page.isPublished) {
+                        <button
+                          type="button"
+                          (click)="unpublishPage(page)"
+                          class="cursor-pointer rounded-md border border-border px-3 py-1.5 font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+                        >
+                          Unpublish
+                        </button>
+                      } @else {
+                        <button
+                          type="button"
+                          (click)="publishPage(page)"
+                          class="cursor-pointer rounded-md bg-primary px-3 py-1.5 font-medium text-white transition hover:opacity-90"
+                        >
+                          Publish
+                        </button>
+                      }
+
                       <button
                         type="button"
-                        (click)="unpublishPage(page)"
-                        class="cursor-pointer rounded-md border border-border px-3 py-1.5 font-medium text-text-secondary transition hover:bg-background hover:text-text-primary"
+                        (click)="deletePage(page)"
+                        class="cursor-pointer rounded-md border border-red-200 px-3 py-1.5 font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
                       >
-                        Unpublish
+                        Delete
                       </button>
-                    } @else {
-                      <button
-                        type="button"
-                        (click)="publishPage(page)"
-                        class="cursor-pointer rounded-md bg-primary px-3 py-1.5 font-medium text-white transition hover:opacity-90"
-                      >
-                        Publish
-                      </button>
-                    }
-
-
-                    <button
-                      type="button"
-                      (click)="deletePage(page)"
-                      class="cursor-pointer rounded-md border border-red-200 px-3 py-1.5 font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </ng-template>
   </app-async-state>
 </div>

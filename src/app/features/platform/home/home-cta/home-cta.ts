@@ -5,6 +5,6 @@ import { RouterLink } from '@angular/router';
   selector: 'app-home-cta',
   imports: [RouterLink],
   templateUrl: './home-cta.html',
-  styleUrl: './home-cta.css',
+  styleUrl: './home-cta.css'
 })
 export class HomeCta {}

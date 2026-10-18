@@ -23,7 +23,7 @@ import { provideComponentTestProviders } from '../../../testing/component-provid
         <p class="projected-content">Loaded content</p>
       </ng-template>
     </app-async-state>
-  `,
+  `
 })
 class Host {
   loading = false;
@@ -46,7 +46,7 @@ describe('AsyncState', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Host],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(Host);

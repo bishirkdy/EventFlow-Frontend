@@ -3,13 +3,13 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideAngularModule, Menu, X } from 'lucide-angular';
 import { UserMenu, UserMenuLink } from '../user-menu/user-menu';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink, RouterLinkActive, UserMenu, LucideAngularModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrl: './navbar.css'
 })
 export class Navbar {
   isMenuOpen = signal(false);
@@ -27,14 +27,14 @@ export class Navbar {
     onSettled: () => {
       this.authService.clearCurrentUser();
       void this.router.navigate(['/']);
-    },
+    }
   });
 
   readonly navLinks: { label: string; url: string }[] = [
     { label: 'Home', url: '' },
     { label: 'Events', url: '/events' },
     { label: 'About', url: '/about' },
-    { label: 'Contact', url: '/contact' },
+    { label: 'Contact', url: '/contact' }
   ];
 
   // Platform admins only get the console link; regular users get their pages.
@@ -45,7 +45,7 @@ export class Navbar {
 
     return [
       { label: 'My Events', url: '/my-events' },
-      { label: 'My Certificates', url: '/my-certificates' },
+      { label: 'My Certificates', url: '/my-certificates' }
     ];
   });
 

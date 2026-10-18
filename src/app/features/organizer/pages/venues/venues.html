@@ -1,6 +1,5 @@
 <div class="min-h-full bg-background px-6 py-8 md:px-10 md:py-10">
   <div class="mx-auto max-w-6xl">
-    <!-- Header -->
     <div class="mb-10 flex items-end justify-between gap-6">
       <div>
         <h1 class="text-3xl font-semibold tracking-tight text-text-primary">Venues</h1>
@@ -36,7 +35,6 @@
           @for (venue of venues(); track venue.id) {
             <div class="group border-b border-border py-6 transition">
               <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                <!-- Venue Info -->
                 <div class="min-w-0">
                   <div class="flex items-center gap-3">
                     <h2 class="text-lg font-medium text-text-primary">
@@ -63,7 +61,6 @@
                   }
                 </div>
 
-                <!-- Actions -->
                 <div class="flex shrink-0 items-center gap-5">
                   <button
                     type="button"

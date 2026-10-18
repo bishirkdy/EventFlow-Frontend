@@ -7,7 +7,7 @@ import { ApiResponse } from '../../models/common';
 import { EventFeatureModel } from '../../models/event-feature';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class EventFeatureService {
   private readonly http = inject(HttpClient);
@@ -19,7 +19,7 @@ export class EventFeatureService {
 
   getFeatures(eventId: string): Observable<ApiResponse<EventFeatureModel[]>> {
     return this.http.get<ApiResponse<EventFeatureModel[]>>(
-      this.api.getUrl(EVENT_FEATURE_ENDPOINTS.getFeatures(eventId)),
+      this.api.getUrl(EVENT_FEATURE_ENDPOINTS.getFeatures(eventId))
     );
   }
 
@@ -27,7 +27,7 @@ export class EventFeatureService {
     return this.http
       .post<ApiResponse<object>>(
         this.api.getUrl(EVENT_FEATURE_ENDPOINTS.enable(eventId, featureId)),
-        {},
+        {}
       )
       .pipe(tap(() => this.changedSubject.next(eventId)));
   }
@@ -36,7 +36,7 @@ export class EventFeatureService {
     return this.http
       .post<ApiResponse<object>>(
         this.api.getUrl(EVENT_FEATURE_ENDPOINTS.disable(eventId, featureId)),
-        {},
+        {}
       )
       .pipe(tap(() => this.changedSubject.next(eventId)));
   }
@@ -45,7 +45,7 @@ export class EventFeatureService {
     return this.http
       .post<ApiResponse<EventFeatureModel[]>>(
         this.api.getUrl(EVENT_FEATURE_ENDPOINTS.reset(eventId)),
-        {},
+        {}
       )
       .pipe(tap(() => this.changedSubject.next(eventId)));
   }

@@ -1,5 +1,4 @@
 <div class="space-y-8 p-6 lg:p-8">
-
   <div>
     <button
       type="button"
@@ -9,31 +8,17 @@
       ← Back to Page Sections
     </button>
 
-    <h1 class="mt-6 text-3xl font-semibold text-text-primary">
-      Edit Page Section
-    </h1>
+    <h1 class="mt-6 text-3xl font-semibold text-text-primary">Edit Page Section</h1>
 
-    <p class="mt-2 text-sm text-text-secondary">
-      Update this page section.
-    </p>
+    <p class="mt-2 text-sm text-text-secondary">Update this page section.</p>
   </div>
 
   @if (loading()) {
-    <div class="py-12 text-sm text-text-muted">
-      Loading section...
-    </div>
+    <div class="py-12 text-sm text-text-muted">Loading section...</div>
   } @else {
-
-    <form
-      [formGroup]="form"
-      (ngSubmit)="updateSection()"
-      class="max-w-3xl space-y-8"
-    >
-
+    <form [formGroup]="form" (ngSubmit)="updateSection()" class="max-w-3xl space-y-8">
       <div>
-        <label class="mb-2 block text-sm font-medium text-text-primary">
-          Section Type
-        </label>
+        <label class="mb-2 block text-sm font-medium text-text-primary"> Section Type </label>
 
         <input
           type="text"
@@ -43,9 +28,7 @@
       </div>
 
       <div>
-        <label class="mb-2 block text-sm font-medium text-text-primary">
-          Title
-        </label>
+        <label class="mb-2 block text-sm font-medium text-text-primary"> Title </label>
 
         <input
           type="text"
@@ -55,9 +38,7 @@
       </div>
 
       <div>
-        <label class="mb-2 block text-sm font-medium text-text-primary">
-          Content
-        </label>
+        <label class="mb-2 block text-sm font-medium text-text-primary"> Content </label>
 
         <textarea
           rows="6"
@@ -68,9 +49,7 @@
 
       @if (currentImageUrl()) {
         <div>
-          <label class="mb-2 block text-sm font-medium text-text-primary">
-            Current Image
-          </label>
+          <label class="mb-2 block text-sm font-medium text-text-primary"> Current Image </label>
 
           <img
             [src]="currentImageUrl()!"
@@ -81,9 +60,7 @@
       }
 
       <div>
-        <label class="mb-2 block text-sm font-medium text-text-primary">
-          Replace Image
-        </label>
+        <label class="mb-2 block text-sm font-medium text-text-primary"> Replace Image </label>
 
         <input
           type="file"
@@ -100,18 +77,9 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <input
-          id="isVisible"
-          type="checkbox"
-          formControlName="isVisible"
-        />
+        <input id="isVisible" type="checkbox" formControlName="isVisible" />
 
-        <label
-          for="isVisible"
-          class="text-sm text-text-primary"
-        >
-          Visible
-        </label>
+        <label for="isVisible" class="text-sm text-text-primary"> Visible </label>
       </div>
 
       <div class="flex items-start gap-3">
@@ -131,9 +99,7 @@
       </div>
 
       <div>
-        <label class="mb-2 block text-sm font-medium text-text-primary">
-          Configuration
-        </label>
+        <label class="mb-2 block text-sm font-medium text-text-primary"> Configuration </label>
 
         <textarea
           rows="5"
@@ -159,7 +125,6 @@
           {{ saving() ? 'Updating...' : 'Update Section' }}
         </button>
       </div>
-
     </form>
   }
 </div>

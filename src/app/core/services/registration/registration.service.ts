@@ -5,27 +5,20 @@ import { Observable } from 'rxjs';
 import { Api } from '../../api/api';
 import { REGISTRATION_ENDPOINTS } from '../../api/endpoints/registration/registration.endpoint';
 
-import {
-  RegistrationModel,
-  RegistrationStatsModel,
-} from '../../models/registration';
-import { PaginatedResponseModel } from '../../models/common';
-import {
-  CertificateAnalyticsModel,
-  RegistrationAnalyticsModel,
-} from '../../models/registration';
+import { RegistrationModel, RegistrationStatsModel } from '../../models/registration';
+import { ApiResponse, PaginatedResponseModel } from '../../models/common';
+import { CertificateAnalyticsModel, RegistrationAnalyticsModel } from '../../models/registration';
 import { RegistrationStatus } from '../../models/registration';
 
-import { ApiResponse } from '../../models/common';
 import {
   CancelRegistrationRequest,
   CreateRegistrationRequest,
   RejectRegistrationRequest,
-  UpdateRegistrationRequest,
+  UpdateRegistrationRequest
 } from '../../models/registration';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegistrationService {
   private readonly http = inject(HttpClient);
@@ -33,56 +26,58 @@ export class RegistrationService {
 
   create(
     eventId: string,
-    request: CreateRegistrationRequest,
+    request: CreateRegistrationRequest
   ): Observable<ApiResponse<RegistrationModel>> {
     return this.http.post<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.collection(eventId)),
-      request,
+      request
     );
   }
 
   update(
     eventId: string,
     registrationId: string,
-    request: UpdateRegistrationRequest,
+    request: UpdateRegistrationRequest
   ): Observable<ApiResponse<RegistrationModel>> {
     return this.http.put<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.byId(eventId, registrationId)),
-      request,
+      request
     );
   }
 
   get(eventId: string, registrationId: string): Observable<ApiResponse<RegistrationModel>> {
     return this.http.get<ApiResponse<RegistrationModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.byId(eventId, registrationId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.byId(eventId, registrationId))
     );
   }
 
   getById(eventId: string, registrationId: string): Observable<ApiResponse<RegistrationModel>> {
     return this.http.get<ApiResponse<RegistrationModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.byId(eventId, registrationId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.byId(eventId, registrationId))
     );
   }
 
-  getByIdForOrganizer(eventId: string, registrationId: string,
+  getByIdForOrganizer(
+    eventId: string,
+    registrationId: string
   ): Observable<ApiResponse<RegistrationModel>> {
     return this.http.get<ApiResponse<RegistrationModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.organizerById(eventId, registrationId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.organizerById(eventId, registrationId))
     );
   }
 
   getForManagement(
     eventId: string,
-    registrationId: string,
+    registrationId: string
   ): Observable<ApiResponse<RegistrationModel>> {
     return this.http.get<ApiResponse<RegistrationModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.manage(eventId, registrationId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.manage(eventId, registrationId))
     );
   }
 
   getMine(eventId: string): Observable<ApiResponse<RegistrationModel[]>> {
     return this.http.get<ApiResponse<RegistrationModel[]>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.mine(eventId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.mine(eventId))
     );
   }
 
@@ -91,82 +86,82 @@ export class RegistrationService {
     pageNumber = 1,
     pageSize = 20,
     status?: RegistrationStatus | null,
-    search?: string,
+    search?: string
   ): Observable<ApiResponse<PaginatedResponseModel<RegistrationModel>>> {
     const params = new URLSearchParams({
       page: String(pageNumber),
-      pageSize: String(pageSize),
+      pageSize: String(pageSize)
     });
 
     if (status !== undefined && status !== null) params.set('status', String(status));
     if (search?.trim()) params.set('search', search.trim());
 
     return this.http.get<ApiResponse<PaginatedResponseModel<RegistrationModel>>>(
-      this.api.getUrl(`${REGISTRATION_ENDPOINTS.collection(eventId)}?${params.toString()}`),
+      this.api.getUrl(`${REGISTRATION_ENDPOINTS.collection(eventId)}?${params.toString()}`)
     );
   }
 
   getStats(eventId: string): Observable<ApiResponse<RegistrationStatsModel>> {
     return this.http.get<ApiResponse<RegistrationStatsModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.stats(eventId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.stats(eventId))
     );
   }
 
   getRegistrationAnalytics(
     eventId: string,
-    days = 30,
+    days = 30
   ): Observable<ApiResponse<RegistrationAnalyticsModel>> {
     return this.http.get<ApiResponse<RegistrationAnalyticsModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.analytics(eventId, days)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.analytics(eventId, days))
     );
   }
 
   getCertificateAnalytics(eventId: string): Observable<ApiResponse<CertificateAnalyticsModel>> {
     return this.http.get<ApiResponse<CertificateAnalyticsModel>>(
-      this.api.getUrl(REGISTRATION_ENDPOINTS.certificateAnalytics(eventId)),
+      this.api.getUrl(REGISTRATION_ENDPOINTS.certificateAnalytics(eventId))
     );
   }
 
   approve(eventId: string, registrationId: string): Observable<ApiResponse<RegistrationModel>> {
     return this.http.post<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.approve(eventId, registrationId)),
-      {},
+      {}
     );
   }
 
   reject(
     eventId: string,
     registrationId: string,
-    request: RejectRegistrationRequest,
+    request: RejectRegistrationRequest
   ): Observable<ApiResponse<RegistrationModel>> {
     return this.http.post<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.reject(eventId, registrationId)),
-      request,
+      request
     );
   }
 
   cancel(
     eventId: string,
     registrationId: string,
-    request: CancelRegistrationRequest = {},
+    request: CancelRegistrationRequest = {}
   ): Observable<ApiResponse<RegistrationModel>> {
     return this.http.post<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.cancel(eventId, registrationId)),
-      request,
+      request
     );
   }
 
   waitlist(eventId: string, registrationId: string): Observable<ApiResponse<RegistrationModel>> {
     return this.http.post<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.waitlist(eventId, registrationId)),
-      {},
+      {}
     );
   }
 
   promote(eventId: string, registrationId: string): Observable<ApiResponse<RegistrationModel>> {
     return this.http.post<ApiResponse<RegistrationModel>>(
       this.api.getUrl(REGISTRATION_ENDPOINTS.promote(eventId, registrationId)),
-      {},
+      {}
     );
   }
 }

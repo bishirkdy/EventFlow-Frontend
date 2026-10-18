@@ -18,7 +18,7 @@ import {
   FormInput,
   Camera,
   Award,
-  MessageSquare,
+  MessageSquare
 } from 'lucide-angular';
 
 export interface OrganizerNavItem {
@@ -39,8 +39,8 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
     label: 'Workspace',
     items: [
       { label: 'Overview', route: 'overview', icon: LayoutDashboard },
-      { label: 'Event Details', route: 'event/details', icon: Settings2 },
-    ],
+      { label: 'Event Details', route: 'event/details', icon: Settings2 }
+    ]
   },
   {
     label: 'Event Website',
@@ -48,8 +48,8 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
       { label: 'Website Preview', route: 'preview', icon: Eye, permission: 'event.preview' },
       { label: 'Pages', route: 'pages', icon: FileText },
       { label: 'Navigation', route: 'navigation', icon: Menu },
-      { label: 'Features', route: 'features', icon: List },
-    ],
+      { label: 'Features', route: 'features', icon: List }
+    ]
   },
   {
     label: 'Programme',
@@ -58,8 +58,8 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
       { label: 'Sessions', route: 'sessions', icon: CalendarDays, feature: 'sessions' },
       { label: 'Venues', route: 'venues', icon: MapPin, feature: 'venues' },
       { label: 'Speakers', route: 'speakers', icon: Mic2, feature: 'speakers' },
-      { label: 'Sponsors', route: 'sponsors', icon: Handshake, feature: 'sponsors' },
-    ],
+      { label: 'Sponsors', route: 'sponsors', icon: Handshake, feature: 'sponsors' }
+    ]
   },
   {
     label: 'Registration',
@@ -68,27 +68,27 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
         label: 'Registration Management',
         route: 'registration/registrations',
         icon: ClipboardList,
-        feature: 'registration',
+        feature: 'registration'
       },
       {
         label: 'Form Builder',
         route: 'registration/form',
         icon: FormInput,
-        feature: 'registration',
+        feature: 'registration'
       },
       {
         label: 'Participants',
         route: 'registration/participants',
         icon: Users,
-        feature: 'registration',
+        feature: 'registration'
       },
       {
         label: 'Certificates',
         route: 'certificates',
         icon: Award,
-        feature: 'certificates',
-      },
-    ],
+        feature: 'certificates'
+      }
+    ]
   },
   {
     label: 'Attendance',
@@ -99,16 +99,16 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
         route: 'attendance-staff',
         icon: UserCog,
         feature: 'attendance',
-        permission: 'event.team.manage',
-      },
-    ],
+        permission: 'event.team.manage'
+      }
+    ]
   },
   {
     label: 'Communication',
     items: [
       { label: 'Notifications', route: 'notifications', icon: Bell },
-      { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' },
-    ],
+      { label: 'Feedback', route: 'feedback', icon: MessageSquare, feature: 'feedback' }
+    ]
   },
   {
     label: 'Media',
@@ -118,9 +118,9 @@ export const ORGANIZER_NAVIGATION: OrganizerNavGroup[] = [
         route: 'photographers',
         icon: Camera,
         feature: 'gallery',
-        permission: 'event.team.manage',
+        permission: 'event.team.manage'
       },
-      { label: 'Photo Moderation', route: 'photos', icon: Eye, feature: 'gallery' },
-    ],
-  },
+      { label: 'Photo Moderation', route: 'photos', icon: Eye, feature: 'gallery' }
+    ]
+  }
 ];

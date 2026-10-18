@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SectionModel } from '../../../../core/models/section';
 import { SectionService } from '../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import { createAsyncAction, createAsyncState } from 'core/state';
+import { createAsyncAction, createAsyncState } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
@@ -13,20 +13,19 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [CapitalizePipe, AsyncState],
   templateUrl: './sections.html',
-  styleUrl: './sections.css',
+  styleUrl: './sections.css'
 })
 export class Sections implements OnInit {
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly organizerEventState =
-    inject(OrganizerEventStateService);
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   private eventId = '';
   private readonly routeError = signal<string | null>(null);
 
   private readonly sectionsState = createAsyncState<SectionModel[]>(
     () => this.sectionService.getSections(this.eventId),
-    { initial: [], autoLoad: false, errorFallback: 'Failed to load sections.' },
+    { initial: [], autoLoad: false, errorFallback: 'Failed to load sections.' }
   );
 
   private readonly deleteAction = createAsyncAction(
@@ -35,8 +34,8 @@ export class Sections implements OnInit {
       successMessage: 'Section deleted successfully.',
       errorFallback: 'Failed to delete section.',
       onSuccess: () => this.loadSections(),
-      onSettled: () => this.deleting.set(null),
-    },
+      onSettled: () => this.deleting.set(null)
+    }
   );
 
   sections = this.sectionsState.data;
@@ -62,37 +61,19 @@ export class Sections implements OnInit {
   }
 
   createSection(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-      'create',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections', 'create']);
   }
 
   viewSection(sectionId: string): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-      sectionId,
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections', sectionId]);
   }
 
   editSection(sectionId: string): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-      sectionId,
-      'edit',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections', sectionId, 'edit']);
   }
 
   deleteSection(sectionId: string): void {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this section?'
-    );
+    const confirmed = window.confirm('Are you sure you want to delete this section?');
 
     if (!confirmed) {
       return;

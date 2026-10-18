@@ -3,15 +3,12 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Api } from '../../api/api';
 import { ApiResponse } from '../../models/common';
-import { UserProfile } from '../../models/auth';
-import { LoginRequest } from '../../models/auth';
-import { RegisterRequest } from '../../models/auth';
+import { LoginRequest, RegisterRequest, UserProfile } from '../../models/auth';
 import { AUTH_ENDPOINTS } from '../../api/endpoints/auth-entpoints/auth-endpoints';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
@@ -50,7 +47,7 @@ export class AuthService {
       catchError(() => {
         this.clearCurrentUser();
         return of(null);
-      }),
+      })
     );
   }
 
@@ -59,14 +56,9 @@ export class AuthService {
   }
 
   refresh(): Observable<boolean> {
-    return this.http
-    .post<ApiResponse<unknown>>(
-      this.api.getUrl(AUTH_ENDPOINTS.refresh),
-      {},
-    )
-    .pipe(
+    return this.http.post<ApiResponse<unknown>>(this.api.getUrl(AUTH_ENDPOINTS.refresh), {}).pipe(
       map((response) => response.isSuccess === true),
-      catchError(() => of(false)),
+      catchError(() => of(false))
     );
-}
+  }
 }

@@ -10,7 +10,7 @@ import {
   Clock,
   ArrowRight,
   CalendarDays,
-  CheckCircle,
+  CheckCircle
 } from 'lucide-angular';
 import { Button } from '../../../shared/components/button/button';
 import { isValidEmail } from '@/shared/validators/email.validator';
@@ -26,7 +26,7 @@ interface ContactDetail {
   standalone: true,
   imports: [FormsModule, RouterLink, LucideAngularModule, Button],
   templateUrl: './contact.html',
-  styleUrl: './contact.css',
+  styleUrl: './contact.css'
 })
 export class Contact {
   readonly sent = signal(false);
@@ -43,7 +43,7 @@ export class Contact {
   readonly details: ContactDetail[] = [
     { label: 'Email', value: 'support@eventflow.com', icon: Mail },
     { label: 'Phone', value: '+91 9048931894', icon: Phone },
-    { label: 'Office', value: 'Calicut, Kerala, India', icon: MapPin },
+    { label: 'Office', value: 'Calicut, Kerala, India', icon: MapPin }
   ];
 
   submit(form: NgForm): void {

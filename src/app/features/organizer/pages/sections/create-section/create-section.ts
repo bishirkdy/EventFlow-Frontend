@@ -5,20 +5,19 @@ import { Router } from '@angular/router';
 import { CreateSectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-create-section',
   standalone: true,
   imports: [FormsModule],
   templateUrl: './create-section.html',
-  styleUrl: './create-section.css',
+  styleUrl: './create-section.css'
 })
 export class CreateSection implements OnInit {
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
-  private readonly organizerEventState =
-    inject(OrganizerEventStateService);
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   eventId = '';
 
@@ -29,13 +28,8 @@ export class CreateSection implements OnInit {
     {
       successMessage: 'Section created successfully.',
       errorFallback: 'Failed to create section.',
-      onSuccess: () =>
-        this.router.navigate([
-          '/organizer',
-          this.eventId,
-          'sections',
-        ]),
-    },
+      onSuccess: () => this.router.navigate(['/organizer', this.eventId, 'sections'])
+    }
   );
 
   saving = this.createAction.pending;
@@ -44,7 +38,7 @@ export class CreateSection implements OnInit {
     name: '',
     description: '',
     displayOrder: 1,
-    isActive: true,
+    isActive: true
   };
 
   ngOnInit(): void {
@@ -75,17 +69,13 @@ export class CreateSection implements OnInit {
       name: this.section.name.trim(),
       description: this.section.description?.trim() || undefined,
       displayOrder: this.section.displayOrder,
-      isActive: this.section.isActive,
+      isActive: this.section.isActive
     };
 
     this.createAction.run(request);
   }
 
   cancel(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections']);
   }
 }

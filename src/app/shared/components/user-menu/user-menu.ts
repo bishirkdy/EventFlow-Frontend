@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginDialogService } from '../../../core/services/ui/login-dialog.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 export interface UserMenuLink {
   label: string;
@@ -13,7 +13,7 @@ export interface UserMenuLink {
 @Component({
   selector: 'app-user-menu',
   imports: [RouterLink],
-  templateUrl: './user-menu.html',
+  templateUrl: './user-menu.html'
 })
 export class UserMenu {
   readonly links = input<UserMenuLink[]>([]);
@@ -24,7 +24,7 @@ export class UserMenu {
   private readonly host = inject(ElementRef);
 
   private readonly signOutAction = createAsyncAction(() => this.authService.logout(), {
-    onSettled: () => this.authService.clearCurrentUser(),
+    onSettled: () => this.authService.clearCurrentUser()
   });
 
   readonly isOpen = signal(false);
@@ -45,7 +45,7 @@ export class UserMenu {
   }
 
   toggle(): void {
-    this.isOpen.update(value => !value);
+    this.isOpen.update((value) => !value);
   }
 
   signIn(): void {
@@ -72,7 +72,7 @@ export class UserMenu {
     const user = this.user();
     if (!user) return '';
     const full = [user.firstName, user.lastName]
-      .map(value => value?.trim())
+      .map((value) => value?.trim())
       .filter(Boolean)
       .join(' ');
     return full || user.userName || user.email;

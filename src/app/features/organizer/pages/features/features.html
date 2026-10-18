@@ -1,10 +1,7 @@
 <div class="p-6 lg:p-8">
-  <!-- Header -->
   <div class="flex items-start justify-between border-b border-border pb-6">
     <div>
-      <h1 class="text-2xl font-semibold text-text-primary">
-        Event Features
-      </h1>
+      <h1 class="text-2xl font-semibold text-text-primary">Event Features</h1>
 
       <p class="mt-1 text-sm text-text-secondary">
         Choose the features available for this event website.
@@ -25,7 +22,6 @@
     </button>
   </div>
 
-  <!-- Loading / Error / Empty / Content -->
   <app-async-state
     class="mt-6 block"
     [loading]="loading()"
@@ -41,7 +37,6 @@
       <div class="divide-y divide-border border-y border-border">
         @for (feature of features(); track feature.id) {
           <div class="flex items-center justify-between gap-6 py-5">
-            <!-- Feature information -->
             <div class="min-w-0">
               <h3 class="text-sm font-medium text-text-primary">
                 {{ feature.featureName }}
@@ -54,7 +49,6 @@
               }
             </div>
 
-            <!-- Toggle -->
             <button
               type="button"
               role="switch"

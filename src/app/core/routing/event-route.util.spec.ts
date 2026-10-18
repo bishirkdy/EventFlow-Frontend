@@ -13,7 +13,7 @@ describe('workspaceUrlForRoles', () => {
   it('routes attendance staff to the scanner workspace', () => {
     expect(workspaceUrlForRoles('evt-1', roles('AttendanceStaff'))).toEqual([
       '/attendance-staff',
-      'evt-1',
+      'evt-1'
     ]);
   });
 
@@ -21,7 +21,7 @@ describe('workspaceUrlForRoles', () => {
     expect(workspaceUrlForRoles('evt-1', roles('Photographer'))).toEqual([
       '/photographer',
       'evt-1',
-      'photos',
+      'photos'
     ]);
   });
 
@@ -29,7 +29,7 @@ describe('workspaceUrlForRoles', () => {
     expect(workspaceUrlForRoles('evt-1', roles('Organizer'))).toEqual([
       '/organizer',
       'evt-1',
-      'overview',
+      'overview'
     ]);
   });
 
@@ -37,7 +37,7 @@ describe('workspaceUrlForRoles', () => {
     expect(workspaceUrlForRoles('evt-1', roles('EventAdmin'))).toEqual([
       '/organizer',
       'evt-1',
-      'overview',
+      'overview'
     ]);
   });
 
@@ -48,7 +48,7 @@ describe('workspaceUrlForRoles', () => {
   it('prefers the owner workspace when several roles are held', () => {
     expect(workspaceUrlForRoles('evt-1', roles('Participant', 'Organizer', 'Owner'))).toEqual([
       '/owner',
-      'evt-1',
+      'evt-1'
     ]);
   });
 

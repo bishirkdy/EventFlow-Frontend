@@ -11,7 +11,7 @@ import { SessionModel } from '../../../core/models/session';
 import { SpeakerModel } from '../../../core/models/speaker';
 import { VenueModel } from '../../../core/models/venue';
 import { LucideAngularModule, X } from 'lucide-angular';
-import { createAsyncAction, createRawAsyncState } from 'core/state';
+import { createAsyncAction, createRawAsyncState } from '@/core/state';
 
 interface FeedbackTargets {
   sessions: SessionModel[];
@@ -23,7 +23,7 @@ interface FeedbackTargets {
   selector: 'app-feedback',
   standalone: true,
   imports: [LucideAngularModule],
-  templateUrl: './feedback.html',
+  templateUrl: './feedback.html'
 })
 export class FeedbackComponent implements OnInit {
   private readonly feedbackService = inject(FeedbackService);
@@ -50,22 +50,22 @@ export class FeedbackComponent implements OnInit {
       return forkJoin({
         sessions: this.sessions.getSessions(eventId).pipe(
           map((response) => response.data ?? []),
-          catchError(() => of([] as SessionModel[])),
+          catchError(() => of([] as SessionModel[]))
         ),
         speakers: this.speakers.getSpeakers(eventId).pipe(
           map((response) => response.data ?? []),
-          catchError(() => of([] as SpeakerModel[])),
+          catchError(() => of([] as SpeakerModel[]))
         ),
         venues: this.venues.getVenues(eventId).pipe(
           map((response) => response.data ?? []),
-          catchError(() => of([] as VenueModel[])),
-        ),
+          catchError(() => of([] as VenueModel[]))
+        )
       });
     },
     {
       initial: { sessions: [], speakers: [], venues: [] },
-      errorFallback: 'Unable to load feedback options.',
-    },
+      errorFallback: 'Unable to load feedback options.'
+    }
   );
 
   private readonly submitAction = createAsyncAction(
@@ -81,8 +81,8 @@ export class FeedbackComponent implements OnInit {
         }
       },
       toastErrors: true,
-      errorFallback: 'Unable to submit feedback.',
-    },
+      errorFallback: 'Unable to submit feedback.'
+    }
   );
 
   readonly submitting = this.submitAction.pending;
@@ -100,7 +100,7 @@ export class FeedbackComponent implements OnInit {
 
   readonly targetTypeOptions = computed(() => {
     const options: Array<{ value: FeedbackTargetType; label: string }> = [
-      { value: FeedbackTargetType.Event, label: 'The event' },
+      { value: FeedbackTargetType.Event, label: 'The event' }
     ];
     if (this.sessionList().length > 0) {
       options.push({ value: FeedbackTargetType.Session, label: 'A session' });
@@ -129,7 +129,7 @@ export class FeedbackComponent implements OnInit {
 
   readonly needsTarget = computed(() => this.targetType() !== FeedbackTargetType.Event);
   readonly canSubmit = computed(
-    () => !this.submitting() && this.rating() >= 1 && (!this.needsTarget() || !!this.targetId()),
+    () => !this.submitting() && this.rating() >= 1 && (!this.needsTarget() || !!this.targetId())
   );
 
   ngOnInit(): void {
@@ -166,7 +166,7 @@ export class FeedbackComponent implements OnInit {
       targetType: this.targetType(),
       targetId: this.needsTarget() ? this.targetId() : this.eventId(),
       rating: this.rating(),
-      comment: this.comment().trim() || null,
+      comment: this.comment().trim() || null
     });
   }
 

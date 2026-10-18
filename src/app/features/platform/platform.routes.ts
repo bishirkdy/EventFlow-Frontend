@@ -4,8 +4,6 @@ export const PLATFORM_ROUTES: Routes = [
   {
     path: 'registration',
     loadChildren: () =>
-      import('./registration/registration.routes').then(
-        (m) => m.REGISTRATION_ROUTES,
-      ),
-  },
+      import('./registration/registration.routes').then((m) => m.REGISTRATION_ROUTES)
+  }
 ];

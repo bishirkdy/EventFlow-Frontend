@@ -9,7 +9,7 @@ describe('RegistrationStatusComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationStatusComponent],
+      imports: [RegistrationStatusComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationStatusComponent);

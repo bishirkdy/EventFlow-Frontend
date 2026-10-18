@@ -8,7 +8,7 @@ const SHOW_DELAY_MS = 150;
   selector: 'app-progress-bar',
   imports: [],
   templateUrl: './progress-bar.html',
-  styleUrl: './progress-bar.css',
+  styleUrl: './progress-bar.css'
 })
 export class ProgressBar {
   readonly visible = signal(false);

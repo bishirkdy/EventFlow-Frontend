@@ -1,15 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiResponse } from '../../models/common';
-import { PageSectionModel } from '../../models/event-page-section';
+import {
+  CreatePageSectionModel,
+  PageSectionModel,
+  UpdatePageSectionModel
+} from '../../models/event-page-section';
 import { Api } from '../../api/api';
 import { HttpClient } from '@angular/common/http';
 import { PAGE_SECTION_ENDPOINTS } from '../../api/endpoints/event-features/event-page-section.endpoints';
 import { Observable } from 'rxjs';
-import { CreatePageSectionModel } from '../../models/event-page-section';
-import { UpdatePageSectionModel } from '../../models/event-page-section';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class EventPageSectionService {
   private readonly http = inject(HttpClient);
@@ -17,28 +19,28 @@ export class EventPageSectionService {
 
   getSections(pageId: string): Observable<ApiResponse<PageSectionModel[]>> {
     return this.http.get<ApiResponse<PageSectionModel[]>>(
-      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSections(pageId)),
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSections(pageId))
     );
   }
 
   /** Every published page section of an event, in one request. */
   getSectionsByEvent(eventId: string): Observable<ApiResponse<PageSectionModel[]>> {
     return this.http.get<ApiResponse<PageSectionModel[]>>(
-      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSectionsByEvent(eventId)),
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSectionsByEvent(eventId))
     );
   }
 
   /** Includes draft pages' sections, for the organizer website preview. */
   getSectionsByEventPreview(eventId: string): Observable<ApiResponse<PageSectionModel[]>> {
     return this.http.get<ApiResponse<PageSectionModel[]>>(
-      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSectionsByEventPreview(eventId)),
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getSectionsByEventPreview(eventId))
     );
   }
 
   /** Includes hidden sections, only for organizer screens. */
   getManageSections(pageId: string): Observable<ApiResponse<PageSectionModel[]>> {
     return this.http.get<ApiResponse<PageSectionModel[]>>(
-      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getManageSections(pageId)),
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.getManageSections(pageId))
     );
   }
 
@@ -67,11 +69,15 @@ export class EventPageSectionService {
 
     return this.http.post<ApiResponse<string>>(
       this.api.getUrl(PAGE_SECTION_ENDPOINTS.createSection(pageId)),
-      formData,
+      formData
     );
   }
 
-  updateSection(pageId: string,sectionId: string,request: UpdatePageSectionModel): Observable<ApiResponse<object | null>> {
+  updateSection(
+    pageId: string,
+    sectionId: string,
+    request: UpdatePageSectionModel
+  ): Observable<ApiResponse<object | null>> {
     const formData = new FormData();
 
     formData.append('sectionType', request.sectionType);
@@ -96,20 +102,20 @@ export class EventPageSectionService {
 
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(PAGE_SECTION_ENDPOINTS.updateSection(pageId, sectionId)),
-      formData,
+      formData
     );
   }
 
   deleteSection(pageId: string, sectionId: string): Observable<ApiResponse<object | null>> {
     return this.http.delete<ApiResponse<object | null>>(
-      this.api.getUrl(PAGE_SECTION_ENDPOINTS.deleteSection(pageId, sectionId)),
+      this.api.getUrl(PAGE_SECTION_ENDPOINTS.deleteSection(pageId, sectionId))
     );
   }
 
   reorderSections(pageId: string, sectionIds: string[]): Observable<ApiResponse<object | null>> {
     return this.http.put<ApiResponse<object | null>>(
       this.api.getUrl(PAGE_SECTION_ENDPOINTS.reorderSections(pageId)),
-      sectionIds,
+      sectionIds
     );
   }
 }

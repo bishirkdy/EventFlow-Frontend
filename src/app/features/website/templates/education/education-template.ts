@@ -7,7 +7,7 @@ import { EventWebsiteShell } from '../../components/event-website-shell/event-we
   standalone: true,
   imports: [EventWebsiteShell],
   templateUrl: './education-template.html',
-  styleUrl: './education-template.css',
+  styleUrl: './education-template.css'
 })
 export class EducationTemplate {
   readonly data = input.required<EventWebsiteData>();

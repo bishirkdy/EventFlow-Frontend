@@ -9,7 +9,7 @@ import { OrganizerEventStateService } from '../../../services/organizer-event-st
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { EventPageModel } from '../../../../../core/models/event-page';
 import { NavigationItemModel } from '../../../../../core/models/navigation-item';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
@@ -17,7 +17,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [ReactiveFormsModule, CapitalizePipe],
   templateUrl: './edit-navigation-item.html',
-  styleUrl: './edit-navigation-item.css',
+  styleUrl: './edit-navigation-item.css'
 })
 export class EditNavigationItem implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -45,17 +45,14 @@ export class EditNavigationItem implements OnInit {
       },
       onSuccess: (r) => {
         this.pageOptions = [...(r.data ?? [])].sort(
-          (a, b) => Number(b.isPublished) - Number(a.isPublished),
+          (a, b) => Number(b.isPublished) - Number(a.isPublished)
         );
-      },
-    },
+      }
+    }
   );
 
   private readonly loadItemAction = createAsyncAction(
-    (id: string, itemId: string) =>
-      this.service.getItems(id).pipe(
-        map((r) => ({ itemId, r })),
-      ),
+    (id: string, itemId: string) => this.service.getItems(id).pipe(map((r) => ({ itemId, r }))),
     {
       toastErrors: true,
       errorFallback: 'Failed to load navigation item.',
@@ -63,8 +60,7 @@ export class EditNavigationItem implements OnInit {
         this.loading = false;
       },
       onSuccess: ({ itemId, r }) => {
-        const item =
-          r.data?.find((x) => x.id === itemId) ?? null;
+        const item = r.data?.find((x) => x.id === itemId) ?? null;
 
         if (!item) {
           this.toastr.error('Navigation item not found.');
@@ -76,21 +72,15 @@ export class EditNavigationItem implements OnInit {
         this.form.patchValue({
           label: item.label,
           pageId: item.pageId,
-          isVisible: item.isVisible,
+          isVisible: item.isVisible
         });
-      },
-    },
+      }
+    }
   );
 
   private readonly updateItemAction = createAsyncAction(
-    (
-      id: string,
-      itemId: string,
-      payload: { label: string; pageId: string; isVisible: boolean },
-    ) =>
-      this.service.updateItem(id, itemId, payload).pipe(
-        map((r) => ({ id, r })),
-      ),
+    (id: string, itemId: string, payload: { label: string; pageId: string; isVisible: boolean }) =>
+      this.service.updateItem(id, itemId, payload).pipe(map((r) => ({ id, r }))),
     {
       errorFallback: 'Failed to update navigation item.',
       onSettled: () => {
@@ -99,19 +89,15 @@ export class EditNavigationItem implements OnInit {
       onSuccess: ({ id, r }) => {
         this.toastr.success(r.message);
 
-        this.router.navigate([
-          '/organizer',
-          id,
-          'navigation',
-        ]);
-      },
-    },
+        this.router.navigate(['/organizer', id, 'navigation']);
+      }
+    }
   );
 
   readonly form = this.fb.nonNullable.group({
     label: ['', [Validators.required, Validators.maxLength(100)]],
     pageId: ['', Validators.required],
-    isVisible: [true],
+    isVisible: [true]
   });
 
   ngOnInit(): void {
@@ -131,15 +117,9 @@ export class EditNavigationItem implements OnInit {
 
   submit(): void {
     const id = this.state.eventId();
-    const itemId =
-      this.route.snapshot.paramMap.get('itemId') ?? '';
+    const itemId = this.route.snapshot.paramMap.get('itemId') ?? '';
 
-    if (
-      this.form.invalid ||
-      !id ||
-      !itemId ||
-      !this.item
-    ) {
+    if (this.form.invalid || !id || !itemId || !this.item) {
       this.form.markAllAsTouched();
       return;
     }
@@ -151,15 +131,11 @@ export class EditNavigationItem implements OnInit {
     this.updateItemAction.run(id, itemId, {
       label: v.label.trim(),
       pageId: v.pageId,
-      isVisible: v.isVisible,
+      isVisible: v.isVisible
     });
   }
 
   cancel(): void {
-    this.router.navigate([
-      '/organizer',
-      this.state.eventId(),
-      'navigation',
-    ]);
+    this.router.navigate(['/organizer', this.state.eventId(), 'navigation']);
   }
 }

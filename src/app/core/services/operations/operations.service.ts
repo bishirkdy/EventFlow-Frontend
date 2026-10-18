@@ -9,65 +9,65 @@ import {
   AttendanceModel,
   AttendanceStaffModel,
   AttendanceAnalyticsModel,
-  NotificationModel,
+  NotificationModel
 } from '../../models/operations';
 @Injectable({ providedIn: 'root' })
 export class OperationsService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
-  
+
   getStaff(e: string) {
     return this.http.get<ApiResponse<AttendanceStaffModel[]>>(
-      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceStaff(e)),
+      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceStaff(e))
     );
   }
   assignStaff(e: string, b: { email: string; scopeType: number; scopeId: string | null }) {
     return this.http.post<ApiResponse<AttendanceStaffModel>>(
       this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceStaff(e)),
-      b,
+      b
     );
   }
   revokeStaff(e: string, id: string) {
     return this.http.delete<ApiResponse<null>>(
-      this.api.getUrl(`${OPERATIONS_ENDPOINTS.attendanceStaff(e)}/${id}`),
+      this.api.getUrl(`${OPERATIONS_ENDPOINTS.attendanceStaff(e)}/${id}`)
     );
   }
   dashboard(e: string) {
     return this.http.get<ApiResponse<AttendanceDashboardModel>>(
-      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceDashboard(e)),
+      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceDashboard(e))
     );
   }
   checkInQr(e: string, q: string, sectionId: string | null, s: string | null) {
     return this.http.post<ApiResponse<AttendanceModel>>(
       this.api.getUrl(OPERATIONS_ENDPOINTS.checkInQr(e)),
-      { qrCode: q, sectionId, sessionId: s, method: 1 },
+      { qrCode: q, sectionId, sessionId: s, method: 1 }
     );
   }
   checkInManual(e: string, r: string, sectionId: string | null, s: string | null) {
     return this.http.post<ApiResponse<AttendanceModel>>(
       this.api.getUrl(OPERATIONS_ENDPOINTS.checkInManual(e)),
-      { registrationId: r, sectionId, sessionId: s },
+      { registrationId: r, sectionId, sessionId: s }
     );
   }
   checkOut(e: string, id: string) {
     return this.http.post<ApiResponse<AttendanceModel>>(
       this.api.getUrl(OPERATIONS_ENDPOINTS.checkOut(e, id)),
-      {},
+      {}
     );
   }
   history(e: string, u: string) {
     return this.http.get<ApiResponse<unknown>>(
-      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceHistory(e, u)),
+      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceHistory(e, u))
     );
   }
   attendanceAnalytics(e: string, days = 30) {
     return this.http.get<ApiResponse<AttendanceAnalyticsModel>>(
-      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceAnalytics(e, days)),
+      this.api.getUrl(OPERATIONS_ENDPOINTS.attendanceAnalytics(e, days))
     );
   }
   notifications(e: string) {
     return this.http.get<ApiResponse<NotificationModel[]>>(
-      this.api.getUrl(OPERATIONS_ENDPOINTS.notifications(e)),
+      this.api.getUrl(OPERATIONS_ENDPOINTS.notifications(e))
     );
   }
   queueNotification(
@@ -78,11 +78,11 @@ export class OperationsService {
       subject: string;
       body: string;
       scheduledAtUtc: string | null;
-    },
+    }
   ) {
     return this.http.post<ApiResponse<NotificationModel>>(
       this.api.getUrl(OPERATIONS_ENDPOINTS.notifications(e)),
-      b,
+      b
     );
   }
 }

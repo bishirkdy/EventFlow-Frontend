@@ -27,7 +27,7 @@ describe('MyEvents', () => {
       status,
       startDate: '2026-01-01T00:00:00Z',
       endDate: '2026-01-02T00:00:00Z',
-      images: [],
+      images: []
     } as unknown as Event;
   }
 
@@ -43,8 +43,8 @@ describe('MyEvents', () => {
         { provide: EventRoleService, useValue: roleService },
         { provide: EventService, useValue: eventService },
         { provide: RegistrationService, useValue: registrationService },
-        { provide: NotificationService, useValue: { success: vi.fn(), error: vi.fn() } },
-      ],
+        { provide: NotificationService, useValue: { success: vi.fn(), error: vi.fn() } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyEvents);
@@ -61,9 +61,9 @@ describe('MyEvents', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const register = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
-    ).find(anchor => anchor.textContent?.trim() === 'Register');
+    const register = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('a')).find(
+      (anchor) => anchor.textContent?.trim() === 'Register'
+    );
 
     expect(register?.getAttribute('href')).toBe('/events/evt-9/register');
   });
@@ -85,9 +85,9 @@ describe('MyEvents', () => {
     await fixture.whenStable();
 
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    const links = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
-    ).map(anchor => anchor.textContent?.trim());
+    const links = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('a')).map(
+      (anchor) => anchor.textContent?.trim()
+    );
     expect(links).not.toContain('Register');
     expect(text).not.toContain('My Registration');
     expect(text).toContain('Open Event');
@@ -102,13 +102,13 @@ describe('MyEvents openEvent role routing', () => {
   const toastr = { success: vi.fn(), error: vi.fn() };
   const eventService = {
     getMyEvents: vi.fn(() => of({ data: [] })),
-    publishEvent: vi.fn(() => of({})),
+    publishEvent: vi.fn(() => of({}))
   };
   const testEvent = { id: 'evt-1' } as Event;
 
   function withRoles(...roleNames: string[]): void {
     roleService.getMyRoles.mockReturnValue(
-      of({ data: roleNames.map(roleName => ({ roleName })) }),
+      of({ data: roleNames.map((roleName) => ({ roleName })) })
     );
   }
 
@@ -122,8 +122,8 @@ describe('MyEvents openEvent role routing', () => {
         ...provideComponentTestProviders(),
         { provide: EventRoleService, useValue: roleService },
         { provide: NotificationService, useValue: toastr },
-        { provide: EventService, useValue: eventService },
-      ],
+        { provide: EventService, useValue: eventService }
+      ]
     }).compileComponents();
 
     router = TestBed.inject(Router);

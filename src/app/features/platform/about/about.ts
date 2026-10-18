@@ -7,7 +7,7 @@ import {
   Heart,
   ShieldCheck,
   Sparkles,
-  ArrowRight,
+  ArrowRight
 } from 'lucide-angular';
 
 interface AboutValue {
@@ -21,7 +21,7 @@ interface AboutValue {
   standalone: true,
   imports: [RouterLink, LucideAngularModule],
   templateUrl: './about.html',
-  styleUrl: './about.css',
+  styleUrl: './about.css'
 })
 export class About {
   readonly ArrowRight = ArrowRight;
@@ -31,25 +31,25 @@ export class About {
       title: 'Built for organizers',
       description:
         'Every tool in EventFlow starts from a real event problem — planning, registrations, schedules, check-in and follow-ups.',
-      icon: Target,
+      icon: Target
     },
     {
       title: 'Connected experience',
       description:
         'Your event website, participants, media and analytics live in one workspace, so nothing is scattered or lost.',
-      icon: Sparkles,
+      icon: Sparkles
     },
     {
       title: 'Simple by default',
       description:
         'Powerful features stay out of the way until you need them. Anyone can launch a professional event in minutes.',
-      icon: Heart,
+      icon: Heart
     },
     {
       title: 'Reliable and secure',
       description:
         'Your data and your participants are handled with care, from role-based access to safe, verified check-in.',
-      icon: ShieldCheck,
-    },
+      icon: ShieldCheck
+    }
   ];
 }

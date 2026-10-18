@@ -6,14 +6,14 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 
 import { EventPageService } from '../../../../../core/services/event-page/event-page.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-edit-page',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './edit-page.html',
-  styleUrl: './edit-page.css',
+  styleUrl: './edit-page.css'
 })
 export class EditPage implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -48,25 +48,25 @@ export class EditPage implements OnInit {
         this.form.patchValue({
           name: page.name,
           slug: page.slug,
-          pageType: page.pageType,
+          pageType: page.pageType
         });
-      },
-    },
+      }
+    }
   );
 
   private readonly updateAction = createAsyncAction(
     (eventId: string, formValue: { name: string; slug: string; pageType: string }) =>
-      this.pageService.updatePage(eventId, this.pageId ?? '', formValue).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+      this.pageService
+        .updatePage(eventId, this.pageId ?? '', formValue)
+        .pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Failed to update page.',
       onSuccess: ({ eventId, response }) => {
         this.toastr.success(response.message);
 
         this.router.navigate(['/organizer', eventId, 'pages']);
-      },
-    },
+      }
+    }
   );
 
   readonly loading = this.loadAction.pending;
@@ -80,12 +80,11 @@ export class EditPage implements OnInit {
       [
         Validators.required,
         Validators.maxLength(150),
-        Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-      ],
+        Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+      ]
     ],
 
-    pageType: ['', [Validators.required, Validators.maxLength(50)]],
-
+    pageType: ['', [Validators.required, Validators.maxLength(50)]]
   });
 
   ngOnInit(): void {
@@ -131,9 +130,10 @@ export class EditPage implements OnInit {
       return;
     }
 
-    const url = !slug || slug === 'home'
-      ? `/events/${eventId}?preview=1`
-      : `/events/${eventId}/${encodeURIComponent(this.pageSlug)}?preview=1`;
+    const url =
+      !slug || slug === 'home'
+        ? `/events/${eventId}?preview=1`
+        : `/events/${eventId}/${encodeURIComponent(this.pageSlug)}?preview=1`;
 
     window.open(url, '_blank');
   }

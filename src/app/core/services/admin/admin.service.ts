@@ -8,7 +8,7 @@ import {
   AdminEventListItem,
   AdminEventStats,
   AdminUserListItem,
-  AdminUserStats,
+  AdminUserStats
 } from '../../models/admin';
 import { Event } from '../../models/event';
 import { ADMIN_ENDPOINTS } from '../../api/endpoints/admin-endpoints/admin-endpoints';
@@ -27,42 +27,40 @@ export interface AdminUsersQuery {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  getEvents(query: AdminEventsQuery = {}): Observable<ApiResponse<PaginatedResponseModel<AdminEventListItem>>> {
+  getEvents(
+    query: AdminEventsQuery = {}
+  ): Observable<ApiResponse<PaginatedResponseModel<AdminEventListItem>>> {
     return this.http.get<ApiResponse<PaginatedResponseModel<AdminEventListItem>>>(
       this.api.getUrl(ADMIN_ENDPOINTS.events),
-      { params: this.buildParams(query) },
+      { params: this.buildParams(query) }
     );
   }
 
   getEventById(eventId: string): Observable<ApiResponse<Event>> {
-    return this.http.get<ApiResponse<Event>>(
-      this.api.getUrl(ADMIN_ENDPOINTS.eventById(eventId)),
-    );
+    return this.http.get<ApiResponse<Event>>(this.api.getUrl(ADMIN_ENDPOINTS.eventById(eventId)));
   }
 
   getEventStats(): Observable<ApiResponse<AdminEventStats>> {
-    return this.http.get<ApiResponse<AdminEventStats>>(
-      this.api.getUrl(ADMIN_ENDPOINTS.eventStats),
-    );
+    return this.http.get<ApiResponse<AdminEventStats>>(this.api.getUrl(ADMIN_ENDPOINTS.eventStats));
   }
 
-  getUsers(query: AdminUsersQuery = {}): Observable<ApiResponse<PaginatedResponseModel<AdminUserListItem>>> {
+  getUsers(
+    query: AdminUsersQuery = {}
+  ): Observable<ApiResponse<PaginatedResponseModel<AdminUserListItem>>> {
     return this.http.get<ApiResponse<PaginatedResponseModel<AdminUserListItem>>>(
       this.api.getUrl(ADMIN_ENDPOINTS.users),
-      { params: this.buildParams(query) },
+      { params: this.buildParams(query) }
     );
   }
 
   getUserStats(): Observable<ApiResponse<AdminUserStats>> {
-    return this.http.get<ApiResponse<AdminUserStats>>(
-      this.api.getUrl(ADMIN_ENDPOINTS.userStats),
-    );
+    return this.http.get<ApiResponse<AdminUserStats>>(this.api.getUrl(ADMIN_ENDPOINTS.userStats));
   }
 
   private buildParams(query: AdminEventsQuery & AdminUsersQuery): HttpParams {

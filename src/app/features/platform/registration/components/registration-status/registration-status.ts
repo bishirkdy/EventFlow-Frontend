@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { RegistrationStatus } from '../../../../../core/models/registration';
 
@@ -11,7 +6,7 @@ import { RegistrationStatus } from '../../../../../core/models/registration';
   selector: 'app-registration-status',
   standalone: true,
   templateUrl: './registration-status.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrationStatusComponent {
   readonly status = input.required<RegistrationStatus>();
@@ -33,38 +28,37 @@ export class RegistrationStatusComponent {
     }
   });
 
-
   protected readonly tone = computed(() => {
     switch (this.status()) {
       case RegistrationStatus.Approved:
         return {
           color: 'var(--color-success)',
           background: '#f0fdf4',
-          border: '#bbf7d0',
+          border: '#bbf7d0'
         };
       case RegistrationStatus.Rejected:
         return {
           color: 'var(--color-error)',
           background: '#fef2f2',
-          border: '#fecaca',
+          border: '#fecaca'
         };
       case RegistrationStatus.Cancelled:
         return {
           color: 'var(--color-text-secondary)',
           background: 'var(--color-surface-soft)',
-          border: 'var(--color-border)',
+          border: 'var(--color-border)'
         };
       case RegistrationStatus.Waitlisted:
         return {
           color: 'var(--color-warning)',
           background: '#fffbeb',
-          border: '#fde68a',
+          border: '#fde68a'
         };
       default:
         return {
           color: 'var(--color-info)',
           background: '#eff6ff',
-          border: '#bfdbfe',
+          border: '#bfdbfe'
         };
     }
   });

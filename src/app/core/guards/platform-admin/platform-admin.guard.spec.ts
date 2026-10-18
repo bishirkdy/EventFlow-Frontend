@@ -15,7 +15,7 @@ describe('platformAdminGuard', () => {
   function setup(initialUser: UserProfile | null, failProbe = false) {
     currentUser = signal<UserProfile | null>(initialUser);
     loadCurrentUser = vi.fn(() =>
-      failProbe ? throwError(() => new Error('unauthorized')) : of(currentUser()),
+      failProbe ? throwError(() => new Error('unauthorized')) : of(currentUser())
     );
 
     TestBed.configureTestingModule({
@@ -26,16 +26,16 @@ describe('platformAdminGuard', () => {
           useValue: {
             currentUser,
             isPlatformAdmin: computed(() => currentUser()?.isPlatformAdmin === true),
-            loadCurrentUser,
-          },
-        },
-      ],
+            loadCurrentUser
+          }
+        }
+      ]
     });
   }
 
   async function run(): Promise<any> {
     const result = TestBed.runInInjectionContext(() =>
-      platformAdminGuard({} as never, { url: '/admin/dashboard' } as never),
+      platformAdminGuard({} as never, { url: '/admin/dashboard' } as never)
     );
 
     if (result instanceof UrlTree || typeof result === 'boolean') {
@@ -46,14 +46,28 @@ describe('platformAdminGuard', () => {
   }
 
   it('allows a cached platform administrator', async () => {
-    setup({ id: '1', userName: 'admin', email: 'a@b.c', firstName: 'A', lastName: 'B', isPlatformAdmin: true });
+    setup({
+      id: '1',
+      userName: 'admin',
+      email: 'a@b.c',
+      firstName: 'A',
+      lastName: 'B',
+      isPlatformAdmin: true
+    });
 
     expect(await run()).toBe(true);
     expect(loadCurrentUser).not.toHaveBeenCalled();
   });
 
   it('blocks a signed-in non-admin and redirects home', async () => {
-    setup({ id: '2', userName: 'user', email: 'u@b.c', firstName: 'U', lastName: 'B', isPlatformAdmin: false });
+    setup({
+      id: '2',
+      userName: 'user',
+      email: 'u@b.c',
+      firstName: 'U',
+      lastName: 'B',
+      isPlatformAdmin: false
+    });
     const notification = TestBed.inject(NotificationService);
     const errorSpy = vi.spyOn(notification, 'error');
 
@@ -67,7 +81,14 @@ describe('platformAdminGuard', () => {
   it('loads the profile when none is cached and allows an administrator', async () => {
     setup(null);
     loadCurrentUser.mockReturnValue(
-      of({ id: '1', userName: 'admin', email: 'a@b.c', firstName: 'A', lastName: 'B', isPlatformAdmin: true }),
+      of({
+        id: '1',
+        userName: 'admin',
+        email: 'a@b.c',
+        firstName: 'A',
+        lastName: 'B',
+        isPlatformAdmin: true
+      })
     );
 
     expect(await run()).toBe(true);

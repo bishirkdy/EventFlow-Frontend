@@ -83,13 +83,11 @@
         </p>
       </div>
     } @else {
-      <!-- Photo Grid -->
       <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         @for (photo of photos(); track photo.photoId) {
           <article
             class="group overflow-hidden border border-border bg-white transition-shadow hover:shadow-lg"
           >
-            <!-- Image -->
             <div class="relative aspect-square overflow-hidden bg-muted">
               <img
                 [src]="photo.thumbnailUrl || photo.imageUrl"
@@ -98,7 +96,6 @@
                 loading="lazy"
               />
 
-              <!-- Visibility Status -->
               <span
                 class="absolute right-2 top-2 inline-flex items-center gap-1 px-2 py-1 text-xs font-medium"
                 [class.bg-green-100]="photo.isVisible"

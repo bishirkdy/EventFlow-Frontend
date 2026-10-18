@@ -1,8 +1,5 @@
 <div class="min-h-full bg-background px-6 py-8 md:px-10 md:py-10">
-
   <div class="mx-auto max-w-3xl">
-
-    <!-- Back -->
     <button
       type="button"
       (click)="goBack()"
@@ -12,18 +9,11 @@
       Back to Venues
     </button>
 
-
-    <!-- Header -->
     <div class="mb-10">
-      <h1 class="text-3xl font-semibold tracking-tight text-text-primary">
-        Edit Venue
-      </h1>
+      <h1 class="text-3xl font-semibold tracking-tight text-text-primary">Edit Venue</h1>
 
-      <p class="mt-2 text-sm text-text-secondary">
-        Update the venue information.
-      </p>
+      <p class="mt-2 text-sm text-text-secondary">Update the venue information.</p>
     </div>
-
 
     <app-async-state
       [loading]="loading()"
@@ -34,170 +24,131 @@
       (retry)="reload()"
     >
       <ng-template>
-      <form
-        [formGroup]="form"
-        (ngSubmit)="updateVenue()"
-        class="space-y-7"
-      >
+        <form [formGroup]="form" (ngSubmit)="updateVenue()" class="space-y-7">
+          <div>
+            <label for="name" class="mb-2 block text-sm font-medium text-text-primary">
+              Venue name
+            </label>
 
-        <!-- Name -->
-        <div>
-          <label
-            for="name"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
-            Venue name
-          </label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Main Auditorium"
+              class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+            />
 
-          <input
-            id="name"
-            type="text"
-            formControlName="name"
-            placeholder="e.g. Main Auditorium"
-            class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
-          />
+            @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+              <p class="mt-2 text-sm text-red-600">Venue name is required.</p>
+            }
 
-          @if (
-            form.controls.name.touched &&
-            form.controls.name.hasError('required')
-          ) {
-            <p class="mt-2 text-sm text-red-600">
-              Venue name is required.
+            @if (form.controls.name.touched && form.controls.name.hasError('maxlength')) {
+              <p class="mt-2 text-sm text-red-600">Venue name cannot exceed 200 characters.</p>
+            }
+          </div>
+
+          <div>
+            <label for="address" class="mb-2 block text-sm font-medium text-text-primary">
+              Address
+            </label>
+
+            <input
+              id="address"
+              type="text"
+              formControlName="address"
+              placeholder="Enter venue address"
+              class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+            />
+
+            @if (form.controls.address.touched && form.controls.address.hasError('maxlength')) {
+              <p class="mt-2 text-sm text-red-600">Venue address cannot exceed 500 characters.</p>
+            }
+          </div>
+
+          <div class="max-w-sm">
+            <label for="capacity" class="mb-2 block text-sm font-medium text-text-primary">
+              Capacity
+            </label>
+
+            <input
+              id="capacity"
+              type="number"
+              min="1"
+              formControlName="capacity"
+              placeholder="e.g. 500"
+              class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+            />
+
+            @if (form.controls.capacity.touched && form.controls.capacity.hasError('min')) {
+              <p class="mt-2 text-sm text-red-600">Venue capacity must be greater than 0.</p>
+            }
+          </div>
+
+          <div>
+            <label for="venueImage" class="mb-2 block text-sm font-medium text-text-primary"
+              >Venue image</label
+            >
+            <input
+              id="venueImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              (change)="onImageSelected($event)"
+              class="block w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary file:mr-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+            />
+            @if (imagePreview()) {
+              <img
+                [src]="imagePreview()!"
+                alt="Venue preview"
+                class="mt-4 aspect-[16/7] w-full object-cover"
+              />
+            }
+            <p class="mt-2 text-xs text-text-muted">
+              Upload one image. It will be stored in Cloudinary.
             </p>
-          }
+          </div>
 
-          @if (
-            form.controls.name.touched &&
-            form.controls.name.hasError('maxlength')
-          ) {
-            <p class="mt-2 text-sm text-red-600">
-              Venue name cannot exceed 200 characters.
-            </p>
-          }
-        </div>
+          <div>
+            <label for="description" class="mb-2 block text-sm font-medium text-text-primary">
+              Description
+            </label>
 
+            <textarea
+              id="description"
+              rows="5"
+              formControlName="description"
+              placeholder="Tell us something about this venue..."
+              class="w-full resize-none border-0 border-b border-border bg-transparent px-0 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
+            ></textarea>
 
-        <!-- Address -->
-        <div>
-          <label
-            for="address"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
-            Address
-          </label>
+            @if (
+              form.controls.description.touched && form.controls.description.hasError('maxlength')
+            ) {
+              <p class="mt-2 text-sm text-red-600">
+                Venue description cannot exceed 2000 characters.
+              </p>
+            }
+          </div>
 
-          <input
-            id="address"
-            type="text"
-            formControlName="address"
-            placeholder="Enter venue address"
-            class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
-          />
+          <div class="flex items-center gap-4 pt-3">
+            <button
+              type="button"
+              (click)="goBack()"
+              [disabled]="saving()"
+              class="px-5 py-3 text-sm font-medium text-text-secondary transition hover:text-text-primary disabled:opacity-50"
+            >
+              Cancel
+            </button>
 
-          @if (
-            form.controls.address.touched &&
-            form.controls.address.hasError('maxlength')
-          ) {
-            <p class="mt-2 text-sm text-red-600">
-              Venue address cannot exceed 500 characters.
-            </p>
-          }
-        </div>
-
-
-        <!-- Capacity -->
-        <div class="max-w-sm">
-          <label
-            for="capacity"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
-            Capacity
-          </label>
-
-          <input
-            id="capacity"
-            type="number"
-            min="1"
-            formControlName="capacity"
-            placeholder="e.g. 500"
-            class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
-          />
-
-          @if (
-            form.controls.capacity.touched &&
-            form.controls.capacity.hasError('min')
-          ) {
-            <p class="mt-2 text-sm text-red-600">
-              Venue capacity must be greater than 0.
-            </p>
-          }
-        </div>
-
-
-        <!-- Image -->
-      <div>
-        <label for="venueImage" class="mb-2 block text-sm font-medium text-text-primary">Venue image</label>
-        <input id="venueImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="onImageSelected($event)" class="block w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary file:mr-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white" />
-        @if (imagePreview()) {
-          <img [src]="imagePreview()!" alt="Venue preview" class="mt-4 aspect-[16/7] w-full object-cover" />
-        }
-        <p class="mt-2 text-xs text-text-muted">Upload one image. It will be stored in Cloudinary.</p>
-      </div>
-
-      <!-- Description -->
-        <div>
-          <label
-            for="description"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
-            Description
-          </label>
-
-          <textarea
-            id="description"
-            rows="5"
-            formControlName="description"
-            placeholder="Tell us something about this venue..."
-            class="w-full resize-none border-0 border-b border-border bg-transparent px-0 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-0"
-          ></textarea>
-
-          @if (
-            form.controls.description.touched &&
-            form.controls.description.hasError('maxlength')
-          ) {
-            <p class="mt-2 text-sm text-red-600">
-              Venue description cannot exceed 2000 characters.
-            </p>
-          }
-        </div>
-
-
-        <!-- Actions -->
-        <div class="flex items-center gap-4 pt-3">
-
-          <button
-            type="button"
-            (click)="goBack()"
-            [disabled]="saving()"
-            class="px-5 py-3 text-sm font-medium text-text-secondary transition hover:text-text-primary disabled:opacity-50"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            [disabled]="saving()"
-            class="min-w-32 bg-primary px-6 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {{ saving() ? 'Updating...' : 'Update Venue' }}
-          </button>
-
-        </div>
-
-      </form>
+            <button
+              type="submit"
+              [disabled]="saving()"
+              class="min-w-32 bg-primary px-6 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {{ saving() ? 'Updating...' : 'Update Venue' }}
+            </button>
+          </div>
+        </form>
       </ng-template>
     </app-async-state>
-
   </div>
-
 </div>

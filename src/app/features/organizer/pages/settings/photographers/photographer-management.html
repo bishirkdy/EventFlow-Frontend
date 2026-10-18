@@ -1,6 +1,5 @@
 <div class="min-h-screen bg-background p-6 md:p-8">
   <div class="mx-auto max-w-7xl">
-    <!-- Header -->
     <div
       class="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between"
     >
@@ -20,7 +19,6 @@
       </a>
     </div>
 
-    <!-- Invite Photographer -->
     <div class="mt-6 border border-border bg-surface p-5 md:p-6">
       <div>
         <h2 class="text-lg font-semibold text-text-primary">Invite Photographer</h2>
@@ -78,9 +76,7 @@
       </p>
     </div>
 
-    <!-- Invitations -->
     <div class="mt-6 border border-border bg-surface">
-      <!-- Section Header -->
       <div class="border-b border-border p-5">
         <h2 class="text-lg font-semibold text-text-primary">Photographer Invitations</h2>
 
@@ -90,7 +86,6 @@
       </div>
 
       @if (loading()) {
-        <!-- Loading -->
         <div class="flex min-h-56 flex-col items-center justify-center p-8">
           <div
             class="h-8 w-8 animate-spin border-2 rounded-full border-border border-t-secondary"
@@ -99,7 +94,6 @@
           <p class="mt-4 text-sm text-text-muted">Loading invitations...</p>
         </div>
       } @else if (invitations().length === 0) {
-        <!-- Empty -->
         <div class="flex min-h-56 flex-col items-center justify-center p-8 text-center">
           <svg
             class="h-10 w-10 text-text-muted"
@@ -122,7 +116,6 @@
           </p>
         </div>
       } @else {
-        <!-- Table -->
         <div class="overflow-x-auto">
           <table class="w-full min-w-190">
             <thead class="border-b border-border bg-background">
@@ -162,14 +155,12 @@
             <tbody class="divide-y divide-border">
               @for (invitation of invitations(); track invitation.invitationId) {
                 <tr class="transition hover:bg-background">
-                  <!-- Email -->
                   <td class="px-5 py-4">
                     <span class="text-sm font-medium text-text-primary">
                       {{ invitation.email }}
                     </span>
                   </td>
 
-                  <!-- Status -->
                   <td class="px-5 py-4">
                     <span
                       class="inline-flex border px-2.5 py-1 text-xs font-medium"
@@ -179,29 +170,17 @@
                     </span>
                   </td>
 
-                  <!-- Invited -->
                   <td class="whitespace-nowrap px-5 py-4 text-sm text-text-secondary">
                     {{ formatDate(invitation.createdAt) }}
                   </td>
 
-                  <!-- Expires -->
                   <td class="whitespace-nowrap px-5 py-4 text-sm text-text-secondary">
                     {{ formatDate(invitation.expiresAt) }}
                   </td>
 
-                  <!-- Actions -->
                   <td class="px-5 py-4">
                     <div class="flex flex-wrap items-center gap-2">
                       @if (invitation.status === 0) {
-                        <!-- 
-                        <button
-                          type="button"
-                          (click)="resendInvitation(invitation)"
-                          class="border border-secondary px-3 py-1.5 text-xs font-medium text-secondary transition hover:bg-secondary hover:text-white"
-                        >
-                          Resend
-                        </button> -->
-
                         <button
                           type="button"
                           (click)="revokeInvitation(invitation.invitationId)"

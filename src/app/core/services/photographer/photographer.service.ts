@@ -7,56 +7,36 @@ import { ApiResponse } from '@/core/models/common';
 import { Api } from '@/core/api/api';
 import { PHOTOGRAPHER_ENDPOINTS } from '@/core/api/endpoints/photographer/photographer.endpoints';
 
-
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class PhotographerService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(Api);
 
-  getInvitations(
-    eventId: string,
-  ): Observable<ApiResponse<PhotographerInvitationModel[]>> {
+  getInvitations(eventId: string): Observable<ApiResponse<PhotographerInvitationModel[]>> {
     return this.http.get<ApiResponse<PhotographerInvitationModel[]>>(
-      this.api.getUrl(
-        PHOTOGRAPHER_ENDPOINTS.getInvitations(eventId),
-      ),
+      this.api.getUrl(PHOTOGRAPHER_ENDPOINTS.getInvitations(eventId))
     );
   }
 
-  invite(
-    eventId: string,
-    email: string,
-  ): Observable<ApiResponse<PhotographerInvitationModel>> {
+  invite(eventId: string, email: string): Observable<ApiResponse<PhotographerInvitationModel>> {
     return this.http.post<ApiResponse<PhotographerInvitationModel>>(
-      this.api.getUrl(
-        PHOTOGRAPHER_ENDPOINTS.invite(eventId),
-      ),
-      { email },
+      this.api.getUrl(PHOTOGRAPHER_ENDPOINTS.invite(eventId)),
+      { email }
     );
   }
 
-  revoke(
-    eventId: string,
-    invitationId: string,
-  ): Observable<ApiResponse<unknown>> {
+  revoke(eventId: string, invitationId: string): Observable<ApiResponse<unknown>> {
     return this.http.delete<ApiResponse<unknown>>(
-      this.api.getUrl(
-        PHOTOGRAPHER_ENDPOINTS.revoke(eventId, invitationId),
-      ),
+      this.api.getUrl(PHOTOGRAPHER_ENDPOINTS.revoke(eventId, invitationId))
     );
   }
 
-  resend(
-    eventId: string,
-    invitationId: string,
-  ): Observable<ApiResponse<unknown>> {
+  resend(eventId: string, invitationId: string): Observable<ApiResponse<unknown>> {
     return this.http.post<ApiResponse<unknown>>(
-      this.api.getUrl(
-        PHOTOGRAPHER_ENDPOINTS.resend(eventId, invitationId),
-      ),
-      {},
+      this.api.getUrl(PHOTOGRAPHER_ENDPOINTS.resend(eventId, invitationId)),
+      {}
     );
   }
 }

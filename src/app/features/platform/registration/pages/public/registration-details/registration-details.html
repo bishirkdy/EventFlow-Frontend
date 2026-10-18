@@ -5,203 +5,225 @@
       [error]="error()"
       loadingView="spinner"
       loadingLabel="Loading your registration..."
-      (retry)="loadRegistration()">
+      (retry)="loadRegistration()"
+    >
       <ng-template>
-      @if (registration(); as item) {
-    <header class="mb-9">
-      <button type="button"
-        class="mb-7 cursor-pointer text-[10px] font-extrabold uppercase tracking-[0.14em] text-text-secondary transition hover:text-primary"
-        (click)="goToRegistrations()">
-        ← Back to my registrations
-      </button>
+        @if (registration(); as item) {
+          <header class="mb-9">
+            <button
+              type="button"
+              class="mb-7 cursor-pointer text-[10px] font-extrabold uppercase tracking-[0.14em] text-text-secondary transition hover:text-primary"
+              (click)="goToRegistrations()"
+            >
+              ← Back to my registrations
+            </button>
 
-      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <div class="flex items-center gap-3">
-            <span class="h-1.5 w-1.5 bg-primary"></span>
-            <span class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
-              Registration confirmed in system
-            </span>
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="h-1.5 w-1.5 bg-primary"></span>
+                  <span class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
+                    Registration confirmed in system
+                  </span>
+                </div>
+
+                <h1
+                  class="mt-4 font-mono text-3xl font-bold tracking-[-0.04em] text-text-primary sm:text-4xl"
+                >
+                  {{ item.registrationNumber }}
+                </h1>
+
+                <p class="mt-3 text-sm text-text-secondary">
+                  Submitted {{ item.registeredAtUtc | date: 'medium' }}
+                </p>
+              </div>
+
+              <app-registration-status [status]="item.status" />
+            </div>
+          </header>
+
+          <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+            <div class="space-y-6">
+              <section class="border border-border bg-surface p-6 shadow-sm sm:p-8">
+                <div class="flex items-center justify-between gap-4 border-b border-border pb-5">
+                  <div>
+                    <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-primary">
+                      Participant
+                    </p>
+                    <h2 class="mt-2 font-serif text-2xl tracking-[-0.04em] text-text-primary">
+                      Registration details
+                    </h2>
+                  </div>
+
+                  <span
+                    class="bg-surface-soft px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.12em] text-text-secondary"
+                  >
+                    Attendee
+                  </span>
+                </div>
+
+                @if (item.participant; as participant) {
+                  <div class="mt-7 grid gap-6 sm:grid-cols-2">
+                    <div>
+                      <p
+                        class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted"
+                      >
+                        Full name
+                      </p>
+                      <p class="mt-2 text-sm font-semibold text-text-primary">
+                        {{ participant.firstName }} {{ participant.lastName }}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p
+                        class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted"
+                      >
+                        Email
+                      </p>
+                      <p class="mt-2 break-all text-sm font-semibold text-text-primary">
+                        {{ participant.email }}
+                      </p>
+                    </div>
+
+                    @if (participant.phone) {
+                      <div>
+                        <p
+                          class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted"
+                        >
+                          Phone
+                        </p>
+                        <p class="mt-2 text-sm font-semibold text-text-primary">
+                          {{ participant.phone }}
+                        </p>
+                      </div>
+                    }
+
+                    @if (participant.organization) {
+                      <div>
+                        <p
+                          class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted"
+                        >
+                          Organization
+                        </p>
+                        <p class="mt-2 text-sm font-semibold text-text-primary">
+                          {{ participant.organization }}
+                        </p>
+                      </div>
+                    }
+
+                    @if (participant.designation) {
+                      <div>
+                        <p
+                          class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted"
+                        >
+                          Designation
+                        </p>
+                        <p class="mt-2 text-sm font-semibold text-text-primary">
+                          {{ participant.designation }}
+                        </p>
+                      </div>
+                    }
+
+                    <div>
+                      <p
+                        class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted"
+                      >
+                        Participant number
+                      </p>
+                      <p class="mt-2 font-mono text-sm font-semibold text-text-primary">
+                        {{ participant.participantNumber }}
+                      </p>
+                    </div>
+                  </div>
+                } @else {
+                  <p class="mt-6 text-sm leading-7 text-text-secondary">
+                    Participant details are not available yet.
+                  </p>
+                }
+              </section>
+
+              @if (item.waitlistPosition !== null) {
+                <section class="border border-warning/30 bg-warning/10 p-6 sm:p-7">
+                  <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-warning">
+                    Waitlist position
+                  </p>
+                  <div class="mt-3 flex items-end gap-3">
+                    <span class="font-serif text-5xl leading-none text-text-primary"
+                      >#{{ item.waitlistPosition }}</span
+                    >
+                    <span class="pb-1 text-sm text-text-secondary">in line</span>
+                  </div>
+                </section>
+              }
+
+              @if (item.rejectionReason) {
+                <section class="border border-error/30 bg-error/10 p-6 sm:p-7">
+                  <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-error">
+                    Rejection reason
+                  </p>
+                  <p class="mt-3 text-sm leading-7 text-text-primary">{{ item.rejectionReason }}</p>
+                </section>
+              }
+
+              @if (item.cancellationReason) {
+                <section class="border border-border bg-surface p-6 sm:p-7">
+                  <p
+                    class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-text-secondary"
+                  >
+                    Cancellation reason
+                  </p>
+                  <p class="mt-3 text-sm leading-7 text-text-primary">
+                    {{ item.cancellationReason }}
+                  </p>
+                </section>
+              }
+            </div>
+
+            <aside class="lg:sticky lg:top-8 lg:self-start">
+              @if (item.ticket; as ticket) {
+                <app-registration-ticket [ticket]="ticket" />
+              } @else {
+                <section class="border border-border bg-surface p-7 shadow-sm">
+                  <div class="grid h-12 w-12 place-items-center bg-primary-light text-primary">
+                    ✓
+                  </div>
+                  <h2 class="mt-5 font-serif text-2xl tracking-[-0.04em] text-text-primary">
+                    You're registered
+                  </h2>
+                  <p class="mt-3 text-sm leading-7 text-text-secondary">
+                    Your registration is recorded. A ticket will appear here when one is issued.
+                  </p>
+                </section>
+              }
+            </aside>
           </div>
 
-          <h1 class="mt-4 font-mono text-3xl font-bold tracking-[-0.04em] text-text-primary sm:text-4xl">
-            {{ item.registrationNumber }}
-          </h1>
+          <footer class="mt-8 flex flex-wrap gap-3 border-t border-border pt-7">
+            <button
+              type="button"
+              class="cursor-pointer bg-primary px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white transition hover:opacity-90"
+              (click)="goToRegistrations()"
+            >
+              My registrations
+            </button>
 
-          <p class="mt-3 text-sm text-text-secondary">
-            Submitted {{ item.registeredAtUtc | date: 'medium' }}
-          </p>
-        </div>
-
-        <app-registration-status [status]="item.status" />
-      </div>
-    </header>
-
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <div class="space-y-6">
-        <section class="border border-border bg-surface p-6 shadow-sm sm:p-8">
-          <div class="flex items-center justify-between gap-4 border-b border-border pb-5">
-            <div>
-              <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-primary">
-                Participant
-              </p>
-              <h2 class="mt-2 font-serif text-2xl tracking-[-0.04em] text-text-primary">
-                Registration details
-              </h2>
-            </div>
-
-            <span
-              class="bg-surface-soft px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.12em] text-text-secondary">
-              Attendee
-            </span>
-          </div>
-
-          @if (item.participant; as participant) {
-          <div class="mt-7 grid gap-6 sm:grid-cols-2">
-            <div>
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted">
-                Full name
-              </p>
-              <p class="mt-2 text-sm font-semibold text-text-primary">
-                {{ participant.firstName }} {{ participant.lastName }}
-              </p>
-            </div>
-
-            <div>
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted">
-                Email
-              </p>
-              <p class="mt-2 break-all text-sm font-semibold text-text-primary">
-                {{ participant.email }}
-              </p>
-            </div>
-
-            @if (participant.phone) {
-            <div>
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted">
-                Phone
-              </p>
-              <p class="mt-2 text-sm font-semibold text-text-primary">
-                {{ participant.phone }}
-              </p>
-            </div>
-            }
-
-            @if (participant.organization) {
-            <div>
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted">
-                Organization
-              </p>
-              <p class="mt-2 text-sm font-semibold text-text-primary">
-                {{ participant.organization }}
-              </p>
-            </div>
-            }
-
-            @if (participant.designation) {
-            <div>
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted">
-                Designation
-              </p>
-              <p class="mt-2 text-sm font-semibold text-text-primary">
-                {{ participant.designation }}
-              </p>
-            </div>
-            }
-
-            <div>
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.13em] text-text-muted">
-                Participant number
-              </p>
-              <p class="mt-2 font-mono text-sm font-semibold text-text-primary">
-                {{ participant.participantNumber }}
-              </p>
-            </div>
-          </div>
-          } @else {
-          <p class="mt-6 text-sm leading-7 text-text-secondary">
-            Participant details are not available yet.
-          </p>
-          }
-        </section>
-
-        @if (item.waitlistPosition !== null) {
-        <section class="border border-warning/30 bg-warning/10 p-6 sm:p-7">
-          <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-warning">
-            Waitlist position
-          </p>
-          <div class="mt-3 flex items-end gap-3">
-            <span class="font-serif text-5xl leading-none text-text-primary">#{{ item.waitlistPosition }}</span>
-            <span class="pb-1 text-sm text-text-secondary">in line</span>
-          </div>
-        </section>
+            <button
+              type="button"
+              class="cursor-pointer bg-secondary px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white transition hover:opacity-90"
+              (click)="goToFeedback()"
+            >
+              Give feedback
+            </button>
+          </footer>
         }
-
-        @if (item.rejectionReason) {
-        <section class="border border-error/30 bg-error/10 p-6 sm:p-7">
-          <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-error">
-            Rejection reason
-          </p>
-          <p class="mt-3 text-sm leading-7 text-text-primary">{{ item.rejectionReason }}</p>
-        </section>
-        }
-
-        @if (item.cancellationReason) {
-        <section class="border border-border bg-surface p-6 sm:p-7">
-          <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-text-secondary">
-            Cancellation reason
-          </p>
-          <p class="mt-3 text-sm leading-7 text-text-primary">{{ item.cancellationReason }}</p>
-        </section>
-        }
-      </div>
-
-      <aside class="lg:sticky lg:top-8 lg:self-start">
-        @if (item.ticket; as ticket) {
-        <app-registration-ticket [ticket]="ticket" />
-        } @else {
-        <section class="border border-border bg-surface p-7 shadow-sm">
-          <div class="grid h-12 w-12 place-items-center bg-primary-light text-primary">✓</div>
-          <h2 class="mt-5 font-serif text-2xl tracking-[-0.04em] text-text-primary">
-            You're registered
-          </h2>
-          <p class="mt-3 text-sm leading-7 text-text-secondary">
-            Your registration is recorded. A ticket will appear here when one is issued.
-          </p>
-        </section>
-        }
-      </aside>
-    </div>
-
-    <footer class="mt-8 flex flex-wrap gap-3 border-t border-border pt-7">
-      <button type="button"
-        class="cursor-pointer bg-primary px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white transition hover:opacity-90"
-        (click)="goToRegistrations()">
-        My registrations
-      </button>
-
-      <!-- <button
-          type="button"
-          class="cursor-pointer border border-border bg-surface px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-text-primary transition hover:border-primary hover:text-primary"
-          (click)="registerAgain()"
-        >
-          Register again
-        </button> -->
-
-      <button type="button"
-        class="cursor-pointer bg-secondary px-6 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white transition hover:opacity-90"
-        (click)="goToFeedback()">
-        Give feedback
-      </button>
-    </footer>
-    }
       </ng-template>
     </app-async-state>
 
     @if (showFeedbackPopup()) {
-    @if (feedbackEventId(); as selectedEventId) {
-    <app-feedback [eventId]="selectedEventId" (closed)="closeFeedbackPopup()" />
-    }
+      @if (feedbackEventId(); as selectedEventId) {
+        <app-feedback [eventId]="selectedEventId" (closed)="closeFeedbackPopup()" />
+      }
     }
   </main>
 </div>

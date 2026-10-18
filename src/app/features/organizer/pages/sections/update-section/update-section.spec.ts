@@ -10,7 +10,7 @@ describe('UpdateSection', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UpdateSection],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(UpdateSection);

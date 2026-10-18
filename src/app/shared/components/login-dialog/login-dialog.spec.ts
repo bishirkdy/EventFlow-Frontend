@@ -31,8 +31,8 @@ describe('LoginDialog', () => {
       providers: [
         ...provideComponentTestProviders(),
         { provide: AuthService, useValue: authService },
-        { provide: NotificationService, useValue: toastr },
-      ],
+        { provide: NotificationService, useValue: toastr }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginDialog);
@@ -89,7 +89,7 @@ describe('LoginDialog', () => {
 
   it('keeps the dialog open and clears the pending state when login fails', () => {
     authService.login.mockReturnValue(
-      throwError(() => Object.assign(new Error('bad credentials'), { status: 401 })),
+      throwError(() => Object.assign(new Error('bad credentials'), { status: 401 }))
     );
     TestBed.inject(LoginDialogService).open();
     component.email = 'user@example.com';

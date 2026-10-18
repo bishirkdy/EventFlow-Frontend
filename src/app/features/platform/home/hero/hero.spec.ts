@@ -10,7 +10,7 @@ describe('Hero', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideRouter([])],
-      imports: [Hero],
+      imports: [Hero]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Hero);

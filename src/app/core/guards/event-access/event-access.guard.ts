@@ -29,7 +29,8 @@ export interface EventAccessRequirement {
 // Gates an event workspace by the caller's effective backend permissions
 // (and, where a permission is shared, by role). A route passes when every
 // requirement it declares is satisfied.
-export const eventAccessGuard = (requirement: EventAccessRequirement): CanActivateFn =>
+export const eventAccessGuard =
+  (requirement: EventAccessRequirement): CanActivateFn =>
   (route, state) => {
     const access = inject(EventRoleService);
     const router = inject(Router);
@@ -44,8 +45,8 @@ export const eventAccessGuard = (requirement: EventAccessRequirement): CanActiva
           catchError((err) =>
             isTransient(err)
               ? timer(600).pipe(switchMap(() => access.getMyPermissions(eventId)))
-              : throwError(() => err),
-          ),
+              : throwError(() => err)
+          )
         );
 
     return loadAccess().pipe(
@@ -55,7 +56,7 @@ export const eventAccessGuard = (requirement: EventAccessRequirement): CanActiva
 
         const requiredRoles = (requirement.roles ?? []).map((name) => name.toLowerCase());
         const requiredPermissions = (requirement.permissions ?? []).map((name) =>
-          name.toLowerCase(),
+          name.toLowerCase()
         );
 
         const rolesMatch =
@@ -77,7 +78,7 @@ export const eventAccessGuard = (requirement: EventAccessRequirement): CanActiva
           return of(
             returnUrl
               ? router.createUrlTree(['/login'], { queryParams: { returnUrl } })
-              : router.createUrlTree(['/login']),
+              : router.createUrlTree(['/login'])
           );
         }
 
@@ -90,6 +91,6 @@ export const eventAccessGuard = (requirement: EventAccessRequirement): CanActiva
 
         notification.error("Couldn't verify your access. Please try again.");
         return of(router.createUrlTree(['/']));
-      }),
+      })
     );
   };

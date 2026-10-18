@@ -6,14 +6,14 @@ import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { RegisterRequest } from '../../../core/models/auth';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './register.html',
-  styleUrl: './register.css',
+  styleUrl: './register.css'
 })
 export class Register {
   private readonly authService = inject(AuthService);
@@ -38,8 +38,8 @@ export class Register {
     {
       successMessage: 'Account created successfully.',
       onSuccess: () => this.router.navigate(['/login']),
-      errorFallback: 'Registration failed. Please try again.',
-    },
+      errorFallback: 'Registration failed. Please try again.'
+    }
   );
 
   readonly loading = this.registerAction.pending;
@@ -68,7 +68,7 @@ export class Register {
       email: this.email,
       password: this.password,
       firstName: this.firstName,
-      lastName: this.lastName,
+      lastName: this.lastName
     });
   }
 }

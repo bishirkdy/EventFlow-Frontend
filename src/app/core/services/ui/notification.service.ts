@@ -34,7 +34,7 @@ export class NotificationService {
   private show(
     message: string,
     title: string | undefined,
-    type: 'success' | 'info' | 'warning' | 'error',
+    type: 'success' | 'info' | 'warning' | 'error'
   ): void {
     if (!isPlatformBrowser(this.platformId)) return;
 

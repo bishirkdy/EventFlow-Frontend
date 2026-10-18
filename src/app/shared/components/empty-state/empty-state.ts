@@ -5,7 +5,7 @@ import { Button } from '../button/button';
   selector: 'app-empty-state',
   imports: [Button],
   templateUrl: './empty-state.html',
-  styleUrl: './empty-state.css',
+  styleUrl: './empty-state.css'
 })
 export class EmptyState {
   title = input<string>('Nothing here');

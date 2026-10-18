@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { FeedbackService } from '../../../../core/services/feedback/feedback.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { FeedbackResults, FeedbackTargetType } from '../../../../core/models/feedback';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -13,7 +13,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [DatePipe, DecimalPipe, RouterLink, AsyncState],
   templateUrl: './feedback.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerFeedbackComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -34,8 +34,8 @@ export class OrganizerFeedbackComponent implements OnInit {
         if (response) {
           this.results.set(response.data ?? null);
         }
-      },
-    },
+      }
+    }
   );
 
   readonly loading = this.loadAction.pending;
@@ -45,7 +45,7 @@ export class OrganizerFeedbackComponent implements OnInit {
     [FeedbackTargetType.Event]: 'Event',
     [FeedbackTargetType.Session]: 'Session',
     [FeedbackTargetType.Speaker]: 'Speaker',
-    [FeedbackTargetType.Venue]: 'Venue',
+    [FeedbackTargetType.Venue]: 'Venue'
   };
 
   ngOnInit(): void {

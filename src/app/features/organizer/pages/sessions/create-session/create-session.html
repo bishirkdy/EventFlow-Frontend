@@ -1,79 +1,50 @@
 <div class="min-h-full bg-background p-6">
   <div class="mx-auto max-w-3xl">
-
     <div class="mb-6 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-text-primary">
-          Create Session
-        </h1>
+        <h1 class="text-2xl font-semibold text-text-primary">Create Session</h1>
 
-        <p class="mt-1 text-sm text-text-secondary">
-          Create a new session for your event.
-        </p>
+        <p class="mt-1 text-sm text-text-secondary">Create a new session for your event.</p>
       </div>
 
       <button
         type="button"
         (click)="cancel()"
-        class="border border-border px-4 py-2 text-sm
-               font-medium text-text-secondary
-               hover:bg-surface hover:text-text-primary"
+        class="border border-border px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface hover:text-text-primary"
       >
         Cancel
       </button>
     </div>
 
     @if (error()) {
-      <div
-        class="mb-6 border border-red-500/30 bg-red-500/10
-               px-4 py-3 text-sm text-red-500"
-      >
+      <div class="mb-6 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
         {{ error() }}
       </div>
     }
 
-    <form
-      (ngSubmit)="createSession()"
-      class="border border-border bg-surface"
-    >
-
+    <form (ngSubmit)="createSession()" class="border border-border bg-surface">
       <div class="border-b border-border px-6 py-5">
-        <h2 class="text-lg font-medium text-text-primary">
-          Session Information
-        </h2>
+        <h2 class="text-lg font-medium text-text-primary">Session Information</h2>
 
-        <p class="mt-1 text-sm text-text-muted">
-          Enter the information for this session.
-        </p>
+        <p class="mt-1 text-sm text-text-muted">Enter the information for this session.</p>
       </div>
 
       <div class="space-y-6 p-6">
-
-        <!-- Section -->
         <div>
-          <label
-            for="sectionId"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
+          <label for="sectionId" class="mb-2 block text-sm font-medium text-text-primary">
             Section
           </label>
 
           @if (loadingSections()) {
-            <div class="text-sm text-text-muted">
-              Loading sections...
-            </div>
+            <div class="text-sm text-text-muted">Loading sections...</div>
           } @else {
             <select
               id="sectionId"
               name="sectionId"
               [(ngModel)]="session.sectionId"
-              class="w-full border border-border bg-background
-                     px-4 py-3 text-sm text-text-primary
-                     outline-none focus:border-primary"
+              class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
             >
-              <option value="">
-                Select a section
-              </option>
+              <option value="">Select a section</option>
 
               @for (section of sections(); track section.id) {
                 <option [value]="section.id">
@@ -84,12 +55,8 @@
           }
         </div>
 
-        <!-- Title -->
         <div>
-          <label
-            for="title"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
+          <label for="title" class="mb-2 block text-sm font-medium text-text-primary">
             Title
           </label>
 
@@ -99,19 +66,12 @@
             type="text"
             [(ngModel)]="session.title"
             placeholder="Enter session title"
-            class="w-full border border-border bg-background
-                   px-4 py-3 text-sm text-text-primary
-                   outline-none placeholder:text-text-muted
-                   focus:border-primary"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary"
           />
         </div>
 
-        <!-- Description -->
         <div>
-          <label
-            for="description"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
+          <label for="description" class="mb-2 block text-sm font-medium text-text-primary">
             Description
           </label>
 
@@ -121,20 +81,12 @@
             rows="4"
             [(ngModel)]="session.description"
             placeholder="Enter session description"
-            class="w-full resize-none border border-border
-                   bg-background px-4 py-3 text-sm
-                   text-text-primary outline-none
-                   placeholder:text-text-muted
-                   focus:border-primary"
+            class="w-full resize-none border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary"
           ></textarea>
         </div>
 
-        <!-- Session Type -->
         <div>
-          <label
-            for="sessionType"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
+          <label for="sessionType" class="mb-2 block text-sm font-medium text-text-primary">
             Session Type
           </label>
 
@@ -144,58 +96,93 @@
             type="text"
             [(ngModel)]="session.sessionType"
             placeholder="Example: Workshop, Talk, Panel"
-            class="w-full border border-border bg-background
-                   px-4 py-3 text-sm text-text-primary
-                   outline-none placeholder:text-text-muted
-                   focus:border-primary"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary"
           />
         </div>
 
-        <!-- Schedule -->
         @if (eventWindowLabel()) {
           <div class="border border-border bg-background px-4 py-3">
             <p class="text-xs font-medium uppercase tracking-wide text-text-muted">Event window</p>
             <p class="mt-1 text-sm text-text-primary">{{ eventWindowLabel() }}</p>
-            <p class="mt-1 text-xs text-text-muted">Session times must stay inside this event window.</p>
+            <p class="mt-1 text-xs text-text-muted">
+              Session times must stay inside this event window.
+            </p>
           </div>
         }
 
         <div class="grid gap-6 md:grid-cols-2">
           <div>
-            <label for="startTime" class="mb-2 block text-sm font-medium text-text-primary">Start Time</label>
-            <input id="startTime" name="startTime" type="datetime-local" [min]="eventStartLocal()" [max]="eventEndLocal()" [(ngModel)]="session.startTime" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary" />
+            <label for="startTime" class="mb-2 block text-sm font-medium text-text-primary"
+              >Start Time</label
+            >
+            <input
+              id="startTime"
+              name="startTime"
+              type="datetime-local"
+              [min]="eventStartLocal()"
+              [max]="eventEndLocal()"
+              [(ngModel)]="session.startTime"
+              class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+            />
           </div>
           <div>
-            <label for="endTime" class="mb-2 block text-sm font-medium text-text-primary">End Time</label>
-            <input id="endTime" name="endTime" type="datetime-local" [min]="eventStartLocal()" [max]="eventEndLocal()" [(ngModel)]="session.endTime" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary" />
+            <label for="endTime" class="mb-2 block text-sm font-medium text-text-primary"
+              >End Time</label
+            >
+            <input
+              id="endTime"
+              name="endTime"
+              type="datetime-local"
+              [min]="eventStartLocal()"
+              [max]="eventEndLocal()"
+              [(ngModel)]="session.endTime"
+              class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+            />
           </div>
         </div>
 
-        <!-- Venue -->
         <div>
-          <label for="venueId" class="mb-2 block text-sm font-medium text-text-primary">Venue</label>
-          <select id="venueId" name="venueId" [(ngModel)]="session.venueId" class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary">
+          <label for="venueId" class="mb-2 block text-sm font-medium text-text-primary"
+            >Venue</label
+          >
+          <select
+            id="venueId"
+            name="venueId"
+            [(ngModel)]="session.venueId"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
+          >
             <option [ngValue]="null">No venue assigned</option>
-            @for (venue of venues(); track venue.id) { <option [value]="venue.id">{{ venue.name | capitalize }}</option> }
+            @for (venue of venues(); track venue.id) {
+              <option [value]="venue.id">{{ venue.name | capitalize }}</option>
+            }
           </select>
         </div>
 
-        <!-- Image -->
         <div>
-          <label for="sessionImage" class="mb-2 block text-sm font-medium text-text-primary">Session image</label>
-          <input id="sessionImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="onImageSelected($event)" class="block w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary file:mr-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white" />
+          <label for="sessionImage" class="mb-2 block text-sm font-medium text-text-primary"
+            >Session image</label
+          >
+          <input
+            id="sessionImage"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            (change)="onImageSelected($event)"
+            class="block w-full border border-border bg-background px-4 py-3 text-sm text-text-secondary file:mr-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+          />
           @if (imagePreview()) {
-            <img [src]="imagePreview()!" alt="Session preview" class="mt-4 aspect-[16/7] w-full object-cover" />
+            <img
+              [src]="imagePreview()!"
+              alt="Session preview"
+              class="mt-4 aspect-[16/7] w-full object-cover"
+            />
           }
-          <p class="mt-2 text-xs text-text-muted">Upload one image. It will be stored in Cloudinary.</p>
+          <p class="mt-2 text-xs text-text-muted">
+            Upload one image. It will be stored in Cloudinary.
+          </p>
         </div>
 
-        <!-- Capacity -->
         <div>
-          <label
-            for="capacity"
-            class="mb-2 block text-sm font-medium text-text-primary"
-          >
+          <label for="capacity" class="mb-2 block text-sm font-medium text-text-primary">
             Capacity
           </label>
 
@@ -206,18 +193,12 @@
             min="1"
             [(ngModel)]="session.capacity"
             placeholder="Optional"
-            class="w-full border border-border bg-background
-                   px-4 py-3 text-sm text-text-primary
-                   outline-none placeholder:text-text-muted
-                   focus:border-primary"
+            class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary"
           />
 
-          <p class="mt-1 text-xs text-text-muted">
-            Leave empty if there is no capacity limit.
-          </p>
+          <p class="mt-1 text-xs text-text-muted">Leave empty if there is no capacity limit.</p>
         </div>
 
-        <!-- Registration -->
         <div class="border border-border bg-background px-4 py-3">
           <label class="flex items-start gap-3 cursor-pointer">
             <input
@@ -232,24 +213,19 @@
                 Allow registration for this session
               </span>
               <span class="mt-1 block text-xs text-text-muted">
-                Visitors can register for just this session. Their ticket is only valid when scanned at this session.
+                Visitors can register for just this session. Their ticket is only valid when scanned
+                at this session.
               </span>
             </span>
           </label>
         </div>
-
       </div>
 
-      <div
-        class="flex justify-end gap-3 border-t border-border
-               px-6 py-4"
-      >
+      <div class="flex justify-end gap-3 border-t border-border px-6 py-4">
         <button
           type="button"
           (click)="cancel()"
-          class="border border-border px-5 py-2.5 text-sm
-                 font-medium text-text-secondary
-                 hover:bg-background"
+          class="border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:bg-background"
         >
           Cancel
         </button>
@@ -257,9 +233,7 @@
         <button
           type="submit"
           [disabled]="saving() || loadingSections()"
-          class="bg-primary px-5 py-2.5 text-sm font-medium
-                 text-white transition hover:opacity-90
-                 disabled:cursor-not-allowed disabled:opacity-50"
+          class="bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           @if (saving()) {
             Creating...
@@ -268,7 +242,6 @@
           }
         </button>
       </div>
-
     </form>
   </div>
 </div>

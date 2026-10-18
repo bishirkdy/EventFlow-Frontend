@@ -1,9 +1,5 @@
 import { DatePipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { TicketModel } from '../../../../../core/models/registration';
 import { QrCodeComponent } from '../qr-code/qr-code';
@@ -11,9 +7,9 @@ import { QrCodeComponent } from '../qr-code/qr-code';
 @Component({
   selector: 'app-registration-ticket',
   standalone: true,
-  imports: [ QrCodeComponent],
+  imports: [QrCodeComponent],
   templateUrl: './ticket.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TicketComponent {
   readonly ticket = input.required<TicketModel>();

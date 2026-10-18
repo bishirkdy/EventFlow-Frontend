@@ -15,13 +15,13 @@ describe('FeedbackComponent', () => {
 
   function flushTargets() {
     httpMock
-      .expectOne(r => r.url.includes('/sessions') && r.method === 'GET')
+      .expectOne((r) => r.url.includes('/sessions') && r.method === 'GET')
       .flush({ isSuccess: true, statusCode: 200, message: 'ok', data: [] });
     httpMock
-      .expectOne(r => r.url.includes('/speakers') && r.method === 'GET')
+      .expectOne((r) => r.url.includes('/speakers') && r.method === 'GET')
       .flush({ isSuccess: true, statusCode: 200, message: 'ok', data: [] });
     httpMock
-      .expectOne(r => r.url.includes('/venues') && r.method === 'GET')
+      .expectOne((r) => r.url.includes('/venues') && r.method === 'GET')
       .flush({ isSuccess: true, statusCode: 200, message: 'ok', data: [] });
   }
 
@@ -36,9 +36,9 @@ describe('FeedbackComponent', () => {
         provideRouter([]),
         {
           provide: NotificationService,
-          useValue: notify,
-        },
-      ],
+          useValue: notify
+        }
+      ]
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -84,7 +84,7 @@ describe('FeedbackComponent', () => {
   it('notifies and sends no request when rating is missing', () => {
     component.submit();
     expect(notify.error).toHaveBeenCalled();
-    httpMock.expectNone(r => r.url.includes('/feedback') && r.method === 'POST');
+    httpMock.expectNone((r) => r.url.includes('/feedback') && r.method === 'POST');
   });
 
   it('submits feedback and shows the success state', () => {
@@ -94,7 +94,7 @@ describe('FeedbackComponent', () => {
     component.submit();
 
     const req = httpMock.expectOne(
-      r => r.url.includes('/v1/events/event-1/feedback') && r.method === 'POST',
+      (r) => r.url.includes('/v1/events/event-1/feedback') && r.method === 'POST'
     );
     expect(req.request.body.rating).toBe(5);
     expect(req.request.body.comment).toBe('Great');
@@ -102,7 +102,7 @@ describe('FeedbackComponent', () => {
       isSuccess: true,
       statusCode: 200,
       message: 'ok',
-      data: { feedbackId: 'f-1', rating: 5, submittedAtUtc: 'now' },
+      data: { feedbackId: 'f-1', rating: 5, submittedAtUtc: 'now' }
     });
 
     expect(component.submitted()).toBe(true);
@@ -114,11 +114,11 @@ describe('FeedbackComponent', () => {
     component.submit();
 
     const req = httpMock.expectOne(
-      r => r.url.includes('/v1/events/event-1/feedback') && r.method === 'POST',
+      (r) => r.url.includes('/v1/events/event-1/feedback') && r.method === 'POST'
     );
     req.flush(
       { isSuccess: false, statusCode: 409, message: 'Already submitted', data: null },
-      { status: 409, statusText: 'Conflict' },
+      { status: 409, statusText: 'Conflict' }
     );
 
     expect(component.submitted()).toBe(false);
@@ -129,8 +129,13 @@ describe('FeedbackComponent', () => {
     component.setRating(4);
     component.submit();
     httpMock
-      .expectOne(r => r.url.includes('/feedback') && r.method === 'POST')
-      .flush({ isSuccess: true, statusCode: 200, message: 'ok', data: { feedbackId: 'f', rating: 4, submittedAtUtc: 'now' } });
+      .expectOne((r) => r.url.includes('/feedback') && r.method === 'POST')
+      .flush({
+        isSuccess: true,
+        statusCode: 200,
+        message: 'ok',
+        data: { feedbackId: 'f', rating: 4, submittedAtUtc: 'now' }
+      });
 
     component.reset();
 

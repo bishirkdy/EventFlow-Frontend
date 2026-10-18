@@ -1,22 +1,28 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { RegistrationStatusComponent } from '../../../components/registration-status/registration-status';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
 import { RegistrationModel } from '../../../../../../core/models/registration';
 import { ApiResponse } from '@/core/models/common';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-registrations',
   standalone: true,
-  imports: [DatePipe, RegistrationStatusComponent , RouterLink, AsyncState],
+  imports: [DatePipe, RegistrationStatusComponent, RouterLink, AsyncState],
   templateUrl: './my-registrations.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class MyRegistrationsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -27,13 +33,11 @@ export class MyRegistrationsComponent implements OnInit {
   private readonly routeError = signal<string | null>(null);
   private readonly registrationsState = createRawAsyncState<ApiResponse<RegistrationModel[]>>(
     () => this.registrationService.getMine(this.eventId),
-    { autoLoad: false, errorFallback: 'Unable to load your registrations.' },
+    { autoLoad: false, errorFallback: 'Unable to load your registrations.' }
   );
 
   protected readonly loading = this.registrationsState.loading;
-  protected readonly registrations = computed(
-    () => this.registrationsState.data()?.data ?? [],
-  );
+  protected readonly registrations = computed(() => this.registrationsState.data()?.data ?? []);
   protected readonly error = computed<string | null>(() => {
     const stateError = this.registrationsState.error();
     if (stateError) return stateError;

@@ -21,7 +21,7 @@ export interface AsyncActionOptions<Res> {
 
 export function createAsyncAction<Args extends unknown[], Res>(
   fn: (...args: Args) => Observable<Res>,
-  options: AsyncActionOptions<Res> = {},
+  options: AsyncActionOptions<Res> = {}
 ): AsyncAction<Args, Res> {
   assertInInjectionContext(createAsyncAction);
 
@@ -40,7 +40,7 @@ export function createAsyncAction<Args extends unknown[], Res>(
         finalize(() => {
           active.update((count) => Math.max(0, count - 1));
           options.onSettled?.();
-        }),
+        })
       )
       .subscribe({
         next: (response) => {
@@ -52,20 +52,20 @@ export function createAsyncAction<Args extends unknown[], Res>(
         error: (requestError: unknown) => {
           const message = getApiErrorMessage(
             requestError,
-            options.errorFallback ?? 'Something went wrong.',
+            options.errorFallback ?? 'Something went wrong.'
           );
           error.set(message);
           if (options.toastErrors) {
             notification.error(message);
           }
           options.onError?.(requestError);
-        },
+        }
       });
   };
 
   return {
     pending: computed(() => active() > 0),
     error: error.asReadonly(),
-    run,
+    run
   };
 }

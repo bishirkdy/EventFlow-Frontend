@@ -5,14 +5,14 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 
 import { EventPageSectionService } from '../../../../../core/services/event-page-section/event-page-section.service';
 import { CreatePageSectionModel } from '../../../../../core/models/event-page-section';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-create-page-section',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-page-section.html',
-  styleUrl: './create-page-section.css',
+  styleUrl: './create-page-section.css'
 })
 export class CreatePageSection {
   private readonly fb = inject(FormBuilder);
@@ -33,14 +33,8 @@ export class CreatePageSection {
       successMessage: 'Page section created successfully.',
       errorFallback: 'Failed to create page section.',
       onSuccess: () =>
-        this.router.navigate([
-          '/organizer',
-          this.eventId,
-          'pages',
-          this.pageId,
-          'sections',
-        ]),
-    },
+        this.router.navigate(['/organizer', this.eventId, 'pages', this.pageId, 'sections'])
+    }
   );
 
   readonly saving = this.createSectionAction.pending;
@@ -50,15 +44,13 @@ export class CreatePageSection {
     title: [''],
     content: [''],
     showRegistrationForm: [false],
-    configuration: [''],
+    configuration: ['']
   });
 
   constructor() {
-    this.pageId =
-      this.route.parent?.snapshot.paramMap.get('pageId') ?? '';
+    this.pageId = this.route.parent?.snapshot.paramMap.get('pageId') ?? '';
 
-    this.eventId =
-      this.route.parent?.parent?.parent?.snapshot.paramMap.get('eventId') ?? '';
+    this.eventId = this.route.parent?.parent?.parent?.snapshot.paramMap.get('eventId') ?? '';
   }
 
   onImageSelected(event: Event): void {
@@ -81,17 +73,11 @@ export class CreatePageSection {
 
     this.createSectionAction.run({
       ...this.form.getRawValue(),
-      image: this.selectedImage() ?? undefined,
+      image: this.selectedImage() ?? undefined
     });
   }
 
   goBack(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'pages',
-      this.pageId,
-      'sections',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'pages', this.pageId, 'sections']);
   }
 }

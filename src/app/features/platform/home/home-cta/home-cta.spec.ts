@@ -10,7 +10,7 @@ describe('HomeCta', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideRouter([])],
-      imports: [HomeCta],
+      imports: [HomeCta]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeCta);

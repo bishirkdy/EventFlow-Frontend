@@ -11,7 +11,7 @@
   opacity: 1;
 }
 
-.photo-upload input[type="file"] {
+.photo-upload input[type='file'] {
   display: none;
 }
 
@@ -22,7 +22,9 @@
 
 /* Drag and drop styles */
 .photo-upload .border-dashed {
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .photo-upload .border-dashed:hover {

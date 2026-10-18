@@ -14,7 +14,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [RouterLink, CapitalizePipe],
   templateUrl: './event-website-shell.html',
-  styleUrl: './event-website-shell.css',
+  styleUrl: './event-website-shell.css'
 })
 export class EventWebsiteShell {
   readonly data = input.required<EventWebsiteData>();
@@ -25,14 +25,12 @@ export class EventWebsiteShell {
   private readonly loginDialog = inject(LoginDialogService);
   private readonly registrationDialog = inject(RegistrationDialogService);
 
-  readonly registrationEnabled = computed(
-    () => this.hasFeature('registration') && !this.preview(),
-  );
+  readonly registrationEnabled = computed(() => this.hasFeature('registration') && !this.preview());
 
   readonly pages = computed(() =>
     this.data()
       .pages.filter((page) => this.preview() || page.isPublished)
-      .sort((a, b) => a.displayOrder - b.displayOrder),
+      .sort((a, b) => a.displayOrder - b.displayOrder)
   );
 
   /* Finds the website Home page. */
@@ -43,7 +41,7 @@ export class EventWebsiteShell {
         (page) =>
           page.slug.trim().toLowerCase() === 'home' ||
           page.name.trim().toLowerCase() === 'home' ||
-          page.pageType.trim().toLowerCase() === 'home',
+          page.pageType.trim().toLowerCase() === 'home'
       ) ??
       pages[0] ??
       null
@@ -120,7 +118,7 @@ export class EventWebsiteShell {
 
     // Navigation menu items come first, in their configured order.
     const orderedItems = [...this.data().navigationItems].sort(
-      (a, b) => a.displayOrder - b.displayOrder,
+      (a, b) => a.displayOrder - b.displayOrder
     );
 
     for (const item of orderedItems) {
@@ -137,7 +135,7 @@ export class EventWebsiteShell {
         id: `nav-${item.id}`,
         label: item.label,
         href: hrefFor(page),
-        active: page ? page.id === currentId : false,
+        active: page ? page.id === currentId : false
       });
     }
 
@@ -151,7 +149,7 @@ export class EventWebsiteShell {
         id: `page-${page.id}`,
         label: page.name.trim() || page.slug,
         href: hrefFor(page),
-        active: page.id === currentId,
+        active: page.id === currentId
       });
     }
 
@@ -177,7 +175,7 @@ export class EventWebsiteShell {
   hasFeature(code: string): boolean {
     return this.data().features.some(
       (feature) =>
-        feature.isEnabled && feature.featureCode.trim().toLowerCase() === code.trim().toLowerCase(),
+        feature.isEnabled && feature.featureCode.trim().toLowerCase() === code.trim().toLowerCase()
     );
   }
 
@@ -266,11 +264,7 @@ export class EventWebsiteShell {
   }
 
   openEventRegistration(): void {
-    this.openRegistration(
-      RegistrationScope.Event,
-      null,
-      this.data().event?.name ?? null,
-    );
+    this.openRegistration(RegistrationScope.Event, null, this.data().event?.name ?? null);
   }
 
   openSessionRegistration(session: SessionModel): void {
@@ -280,7 +274,7 @@ export class EventWebsiteShell {
   private openRegistration(
     scopeType: RegistrationScope,
     scopeId: string | null,
-    contextTitle: string | null,
+    contextTitle: string | null
   ): void {
     const eventId = this.data().event?.id;
     if (!eventId) return;
@@ -316,7 +310,7 @@ export class EventWebsiteShell {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
-      timeZone: this.data().event?.timeZone,
+      timeZone: this.data().event?.timeZone
     }).format(date);
   }
 
@@ -327,7 +321,7 @@ export class EventWebsiteShell {
     return new Intl.DateTimeFormat('en-IN', {
       hour: 'numeric',
       minute: '2-digit',
-      timeZone: this.data().event?.timeZone,
+      timeZone: this.data().event?.timeZone
     }).format(date);
   }
 
@@ -340,7 +334,7 @@ export class EventWebsiteShell {
       month: 'short',
       hour: 'numeric',
       minute: '2-digit',
-      timeZone: this.data().event?.timeZone,
+      timeZone: this.data().event?.timeZone
     }).format(date);
   }
 }

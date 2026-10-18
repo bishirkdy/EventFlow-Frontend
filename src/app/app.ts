@@ -8,6 +8,6 @@ import { ProgressBar } from './shared/components/progress-bar/progress-bar';
   selector: 'app-root',
   imports: [RouterOutlet, LoginDialog, RegistrationDialog, ProgressBar],
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrl: './app.css'
 })
 export class App {}

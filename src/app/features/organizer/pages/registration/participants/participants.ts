@@ -6,9 +6,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { ParticipantService } from '../../../../../core/services/registration/participant.service';
-import { ParticipantModel } from '../../../../../core/models/registration';
-import { ParticipantStatus } from '../../../../../core/models/registration';
-import { createAsyncAction } from 'core/state';
+import { ParticipantModel, ParticipantStatus } from '../../../../../core/models/registration';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -16,7 +15,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [FormsModule, RouterLink, AsyncState],
   templateUrl: './participants.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantsComponent {
   protected readonly state = inject(OrganizerEventStateService);
@@ -37,7 +36,7 @@ export class ParticipantsComponent {
   private readonly listAction = createAsyncAction(() => this.loadRequest(), {
     errorFallback: 'Unable to load participants.',
     onError: () => this.error.set('Unable to load participants.'),
-    onSuccess: (response) => this.applyList(response),
+    onSuccess: (response) => this.applyList(response)
   });
 
   readonly loading = this.listAction.pending;
@@ -45,12 +44,12 @@ export class ParticipantsComponent {
   protected readonly statuses = [
     {
       value: ParticipantStatus.Active,
-      label: 'Active',
+      label: 'Active'
     },
     {
       value: ParticipantStatus.Cancelled,
-      label: 'Cancelled',
-    },
+      label: 'Cancelled'
+    }
   ];
 
   constructor() {
@@ -61,17 +60,19 @@ export class ParticipantsComponent {
           this.page.set(1);
           return this.loadRequest();
         }),
-        takeUntilDestroyed(),
+        takeUntilDestroyed()
       )
       .subscribe({
         next: (response) => this.applyList(response),
-        error: () => this.error.set('Unable to load participants.'),
+        error: () => this.error.set('Unable to load participants.')
       });
 
     this.load();
   }
 
-  private applyList(response: { data?: { items?: ParticipantModel[]; totalPages?: number } | null }): void {
+  private applyList(response: {
+    data?: { items?: ParticipantModel[]; totalPages?: number } | null;
+  }): void {
     const data = response.data;
 
     this.participants.set(data?.items ?? []);
@@ -102,13 +103,7 @@ export class ParticipantsComponent {
       throw new Error('Event ID is not available.');
     }
 
-    return this.service.list(
-      eventId,
-      this.page(),
-      20,
-      this.search(),
-      this.status(),
-    );
+    return this.service.list(eventId, this.page(), 20, this.search(), this.status());
   }
 
   openParticipant(participant: ParticipantModel): void {
@@ -117,7 +112,7 @@ export class ParticipantsComponent {
       this.state.eventId(),
       'registration',
       'registrations',
-      participant.registrationId,
+      participant.registrationId
     ]);
   }
 

@@ -10,7 +10,7 @@ describe('OrganizerLayout', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OrganizerLayout],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(OrganizerLayout);

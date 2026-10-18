@@ -4,7 +4,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-input',
   imports: [],
   templateUrl: './input.html',
-  styleUrl: './input.css',
+  styleUrl: './input.css'
 })
 export class Input {
   label = input<string>('');

@@ -5,7 +5,7 @@ import { NotificationService } from '../../../../core/services/ui/notification.s
 import { VenueModel } from '../../../../core/models/venue';
 import { VenueService } from '../../../../core/services/venue/venue.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
@@ -14,7 +14,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [CapitalizePipe, AsyncState],
   templateUrl: './venues.html',
-  styleUrl: './venues.css',
+  styleUrl: './venues.css'
 })
 export class Venues implements OnInit {
   private readonly venueService = inject(VenueService);
@@ -28,13 +28,10 @@ export class Venues implements OnInit {
 
   private eventId = '';
 
-  private readonly loadAction = createAsyncAction(
-    () => this.venueService.getVenues(this.eventId),
-    {
-      errorFallback: 'Failed to load venues.',
-      onSuccess: (response) => this.venues.set(response.data ?? []),
-    },
-  );
+  private readonly loadAction = createAsyncAction(() => this.venueService.getVenues(this.eventId), {
+    errorFallback: 'Failed to load venues.',
+    onSuccess: (response) => this.venues.set(response.data ?? [])
+  });
 
   private readonly deleteAction = createAsyncAction(
     (venueId: string) => this.venueService.deleteVenue(this.eventId, venueId),
@@ -47,8 +44,8 @@ export class Venues implements OnInit {
         } else {
           this.toastr.error(response.message || 'Failed to delete venue');
         }
-      },
-    },
+      }
+    }
   );
 
   loading = this.loadAction.pending;
@@ -56,7 +53,6 @@ export class Venues implements OnInit {
 
   ngOnInit(): void {
     const eventId = this.getEventId();
-
 
     if (!eventId) {
       this.toastr.error('Event ID not found');
@@ -87,19 +83,19 @@ export class Venues implements OnInit {
 
   createVenue(): void {
     this.router.navigate(['create'], {
-      relativeTo: this.route,
+      relativeTo: this.route
     });
   }
 
   viewVenue(venueId: string): void {
     this.router.navigate([venueId], {
-      relativeTo: this.route,
+      relativeTo: this.route
     });
   }
 
   editVenue(venueId: string): void {
     this.router.navigate([venueId, 'edit'], {
-      relativeTo: this.route,
+      relativeTo: this.route
     });
   }
 

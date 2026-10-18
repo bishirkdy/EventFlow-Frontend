@@ -9,14 +9,14 @@ import { NavigationItemByPageModel } from '../../../../../core/models/navigation
 import { NavigationItemService } from '../../../../../core/services/navigation-item/navigation-item.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-page-details',
   standalone: true,
   imports: [ReactiveFormsModule, CapitalizePipe],
   templateUrl: './page-details.html',
-  styleUrl: './page-details.css',
+  styleUrl: './page-details.css'
 })
 export class PageDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -49,16 +49,16 @@ export class PageDetails implements OnInit {
         }
 
         this.page.set(r.data);
-      },
-    },
+      }
+    }
   );
 
   private readonly loadNavigationAction = createAsyncAction(
     () => this.navigationItemService.getItemByPage(this.pageId),
     {
       onError: () => this.navigationItem.set(null),
-      onSuccess: (r) => this.navigationItem.set(r.data ?? null),
-    },
+      onSuccess: (r) => this.navigationItem.set(r.data ?? null)
+    }
   );
 
   private readonly updateNavigationAction = createAsyncAction(
@@ -66,7 +66,7 @@ export class PageDetails implements OnInit {
       this.navigationItemService.updateItem(this.eventId, this.navigationItem()?.id ?? '', {
         label,
         pageId: this.pageId,
-        isVisible: this.navigationItem()?.isVisible ?? true,
+        isVisible: this.navigationItem()?.isVisible ?? true
       }),
     {
       errorFallback: 'Failed to update navigation.',
@@ -75,15 +75,15 @@ export class PageDetails implements OnInit {
         this.showNavigationForm.set(false);
         this.toastr.success(r.message);
         this.loadNavigation();
-      },
-    },
+      }
+    }
   );
 
   private readonly createNavigationAction = createAsyncAction(
     (label: string) =>
       this.navigationItemService.createItem(this.eventId, {
         label,
-        pageId: this.pageId,
+        pageId: this.pageId
       }),
     {
       errorFallback: 'Failed to add page to navigation.',
@@ -92,8 +92,8 @@ export class PageDetails implements OnInit {
         this.showNavigationForm.set(false);
         this.toastr.success(r.message);
         this.loadNavigation();
-      },
-    },
+      }
+    }
   );
 
   private readonly removeNavigationAction = createAsyncAction(
@@ -103,8 +103,8 @@ export class PageDetails implements OnInit {
       onSuccess: (r) => {
         this.toastr.success(r.message);
         this.navigationItem.set(null);
-      },
-    },
+      }
+    }
   );
 
   readonly loading = this.loadPageAction.pending;
@@ -112,7 +112,7 @@ export class PageDetails implements OnInit {
   readonly navigationSaving = signal(false);
 
   readonly navigationForm = this.fb.nonNullable.group({
-    label: ['', [Validators.required, Validators.maxLength(200)]],
+    label: ['', [Validators.required, Validators.maxLength(200)]]
   });
 
   ngOnInit(): void {
@@ -156,9 +156,10 @@ export class PageDetails implements OnInit {
     }
 
     const slug = page.slug?.trim().toLowerCase();
-    const url = !slug || slug === 'home'
-      ? `/events/${this.eventId}?preview=1`
-      : `/events/${this.eventId}/${encodeURIComponent(page.slug)}?preview=1`;
+    const url =
+      !slug || slug === 'home'
+        ? `/events/${this.eventId}?preview=1`
+        : `/events/${this.eventId}/${encodeURIComponent(page.slug)}?preview=1`;
 
     window.open(url, '_blank');
   }
@@ -176,7 +177,7 @@ export class PageDetails implements OnInit {
 
     this.showNavigationForm.set(true);
     this.navigationForm.reset({
-      label: page.name,
+      label: page.name
     });
   }
 
@@ -189,14 +190,14 @@ export class PageDetails implements OnInit {
 
     this.showNavigationForm.set(true);
     this.navigationForm.reset({
-      label: item.label,
+      label: item.label
     });
   }
 
   cancelNavigation(): void {
     this.showNavigationForm.set(false);
     this.navigationForm.reset({
-      label: '',
+      label: ''
     });
   }
 

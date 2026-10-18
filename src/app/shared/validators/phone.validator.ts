@@ -18,9 +18,7 @@ export function isValidPhone(value: string): boolean {
   return digits.length >= 7 && digits.length <= 15;
 }
 
-export const phoneValidator: ValidatorFn = (
-  control: AbstractControl,
-): ValidationErrors | null => {
+export const phoneValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value;
 
   if (value === null || value === undefined || String(value).trim() === '') {

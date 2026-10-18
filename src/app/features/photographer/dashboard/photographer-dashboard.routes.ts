@@ -13,14 +13,14 @@ export const photographerRoutes: Routes = [
         children: [
           {
             path: 'upload',
-            loadComponent: () => import('./photo-upload/photo-upload').then(m => m.PhotoUpload),
+            loadComponent: () => import('./photo-upload/photo-upload').then((m) => m.PhotoUpload)
           },
           {
             path: '',
-            loadComponent: () => import('./photo-manager/photo-manager').then(m => m.PhotoManager),
-          },
-        ],
-      },
-    ],
-  },
+            loadComponent: () => import('./photo-manager/photo-manager').then((m) => m.PhotoManager)
+          }
+        ]
+      }
+    ]
+  }
 ];

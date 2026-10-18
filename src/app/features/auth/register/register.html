@@ -1,6 +1,5 @@
 <section class="min-h-[calc(100vh-80px)] bg-background">
   <div class="mx-auto grid min-h-[calc(100vh-80px)] lg:grid-cols-2">
-    <!-- Left -->
     <div class="relative hidden overflow-hidden bg-primary lg:block">
       <div class="absolute -left-32 -top-32 h-96 w-96 border border-white/10"></div>
 
@@ -25,10 +24,8 @@
       </div>
     </div>
 
-    <!-- Right: Form -->
     <div class="flex items-center justify-center px-6 py-12 sm:px-10">
       <div class="w-full max-w-md">
-        <!-- Heading -->
         <div>
           <span class="text-sm font-bold uppercase tracking-[0.2em] text-primary">
             Get started
@@ -43,11 +40,8 @@
           </p>
         </div>
 
-        <!-- Form -->
         <form #registerForm="ngForm" (ngSubmit)="register(registerForm)" class="mt-4 space-y-4">
-          <!-- Name -->
           <div class="grid gap-5 sm:grid-cols-2">
-            <!-- First Name -->
             <div>
               <label for="firstName" class="mb-2 block text-sm font-medium text-text-primary">
                 First name
@@ -77,7 +71,6 @@
               }
             </div>
 
-            <!-- Last Name -->
             <div>
               <label for="lastName" class="mb-2 block text-sm font-medium text-text-primary">
                 Last name
@@ -106,7 +99,6 @@
             </div>
           </div>
 
-          <!-- Username -->
           <div>
             <label for="username" class="mb-2 block text-sm font-medium text-text-primary">
               Username
@@ -142,7 +134,6 @@
             }
           </div>
 
-          <!-- Email -->
           <div>
             <label for="email" class="mb-2 block text-sm font-medium text-text-primary">
               Email
@@ -174,7 +165,6 @@
             }
           </div>
 
-          <!-- Password -->
           <div>
             <label for="password" class="mb-2 block text-sm font-medium text-text-primary">
               Password
@@ -226,7 +216,6 @@
             }
           </div>
 
-          <!-- Confirm Password -->
           <div>
             <label for="confirmPassword" class="mb-2 block text-sm font-medium text-text-primary">
               Confirm password
@@ -270,7 +259,6 @@
             }
           </div>
 
-          <!-- Terms -->
           <label class="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
@@ -298,7 +286,6 @@
             <p class="-mt-3 text-xs text-red-600">You must accept the terms and privacy policy.</p>
           }
 
-          <!-- Submit -->
           <button
             type="submit"
             [disabled]="loading()"
@@ -316,7 +303,6 @@
           </button>
         </form>
 
-        <!-- Login -->
         <p class="mt-8 text-center text-sm text-text-secondary">
           Already have an account?
 
@@ -325,7 +311,6 @@
           </a>
         </p>
 
-        <!-- Back -->
         <div class="mt-6 text-center">
           <a routerLink="/" class="text-sm text-text-muted transition hover:text-primary">
             ← Back to EventFlow

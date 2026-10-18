@@ -14,8 +14,8 @@ describe('apiErrorInterceptor', () => {
       providers: [
         provideHttpClient(withInterceptors([apiErrorInterceptor])),
         provideHttpClientTesting(),
-        { provide: NotificationService, useValue: notification },
-      ],
+        { provide: NotificationService, useValue: notification }
+      ]
     });
     httpMock = TestBed.inject(HttpTestingController);
     notification.error.mockClear();
@@ -27,12 +27,14 @@ describe('apiErrorInterceptor', () => {
     url: string,
     status: number,
     body: string | object | null = null,
-    statusText = '',
+    statusText = ''
   ) => httpMock.expectOne(url).flush(body, { status, statusText });
 
   it('stays out of the way on 401 so authRefreshInterceptor owns recovery', () => {
     let captured: any;
-    TestBed.inject(HttpClient).get('/api/data').subscribe({ error: err => (captured = err) });
+    TestBed.inject(HttpClient)
+      .get('/api/data')
+      .subscribe({ error: (err) => (captured = err) });
 
     flushError('/api/data', 401, 'expired', 'Unauthorized');
 
@@ -41,7 +43,9 @@ describe('apiErrorInterceptor', () => {
   });
 
   it('does not toast on GET failures — components show inline error states', () => {
-    TestBed.inject(HttpClient).get('/api/data').subscribe({ error: () => undefined });
+    TestBed.inject(HttpClient)
+      .get('/api/data')
+      .subscribe({ error: () => undefined });
 
     flushError('/api/data', 500, null, 'Server Error');
 
@@ -49,7 +53,9 @@ describe('apiErrorInterceptor', () => {
   });
 
   it('does not toast a GET 403 — the calling page renders its own state', () => {
-    TestBed.inject(HttpClient).get('/api/data').subscribe({ error: () => undefined });
+    TestBed.inject(HttpClient)
+      .get('/api/data')
+      .subscribe({ error: () => undefined });
 
     flushError('/api/data', 403, null, 'Forbidden');
 
@@ -103,7 +109,12 @@ describe('apiErrorInterceptor', () => {
       .post('/api/items', {})
       .subscribe({ error: () => undefined });
 
-    flushError('/api/items', 400, { message: 'Invalid.', errors: ['Name is required.'] }, 'Bad Request');
+    flushError(
+      '/api/items',
+      400,
+      { message: 'Invalid.', errors: ['Name is required.'] },
+      'Bad Request'
+    );
 
     expect(notification.error).toHaveBeenCalledTimes(1);
     expect(notification.error).toHaveBeenCalledWith('Name is required.');
@@ -117,7 +128,7 @@ describe('apiErrorInterceptor', () => {
     flushError('/api/items', 0, null, 'Unknown Error');
 
     expect(notification.error).toHaveBeenCalledWith(
-      'Network error. Check your connection and try again.',
+      'Network error. Check your connection and try again.'
     );
   });
 

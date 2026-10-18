@@ -1,10 +1,7 @@
 @if (loading()) {
   @switch (loadingView()) {
     @case ('spinner') {
-      <app-loading
-        [label]="loadingLabel()"
-        [align]="layout() === 'inline' ? 'start' : 'center'"
-      />
+      <app-loading [label]="loadingLabel()" [align]="layout() === 'inline' ? 'start' : 'center'" />
     }
     @case ('text') {
       <div

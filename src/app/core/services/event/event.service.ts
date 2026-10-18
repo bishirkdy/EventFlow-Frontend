@@ -11,11 +11,11 @@ import { CreateEventResponse } from '../../models/event';
 import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
-  ProgrammeAnalyticsModel,
+  ProgrammeAnalyticsModel
 } from '../../models/event';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class EventService {
   private readonly http = inject(HttpClient);
@@ -37,14 +37,14 @@ export class EventService {
 
     return this.http.post<ApiResponse<CreateEventResponse>>(
       this.api.getUrl(EVENT_ENDPOINTS.create),
-      formData,
+      formData
     );
   }
 
   claimOwner(eventId: string): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(
       this.api.getUrl(EVENT_ENDPOINTS.claimOwner(eventId)),
-      {},
+      {}
     );
   }
 
@@ -54,7 +54,7 @@ export class EventService {
 
   getPublicEvents(take = 3): Observable<ApiResponse<Event[]>> {
     return this.http.get<ApiResponse<Event[]>>(
-      this.api.getUrl(`${EVENT_ENDPOINTS.public}?take=${take}`),
+      this.api.getUrl(`${EVENT_ENDPOINTS.public}?take=${take}`)
     );
   }
 
@@ -68,19 +68,19 @@ export class EventService {
 
   getOverviewAnalytics(eventId: string): Observable<ApiResponse<EventOverviewAnalyticsModel>> {
     return this.http.get<ApiResponse<EventOverviewAnalyticsModel>>(
-      this.api.getUrl(EVENT_ENDPOINTS.analyticsOverview(eventId)),
+      this.api.getUrl(EVENT_ENDPOINTS.analyticsOverview(eventId))
     );
   }
 
   getProgrammeAnalytics(eventId: string): Observable<ApiResponse<ProgrammeAnalyticsModel>> {
     return this.http.get<ApiResponse<ProgrammeAnalyticsModel>>(
-      this.api.getUrl(EVENT_ENDPOINTS.analyticsProgramme(eventId)),
+      this.api.getUrl(EVENT_ENDPOINTS.analyticsProgramme(eventId))
     );
   }
 
   getContentAnalytics(eventId: string): Observable<ApiResponse<ContentAnalyticsModel>> {
     return this.http.get<ApiResponse<ContentAnalyticsModel>>(
-      this.api.getUrl(EVENT_ENDPOINTS.analyticsContent(eventId)),
+      this.api.getUrl(EVENT_ENDPOINTS.analyticsContent(eventId))
     );
   }
 }

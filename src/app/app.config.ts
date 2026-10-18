@@ -3,7 +3,7 @@ import {
   PLATFORM_ID,
   provideBrowserGlobalErrorListeners,
   provideAppInitializer,
-  inject,
+  inject
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { provideRouter } from '@angular/router';
@@ -22,8 +22,15 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([credentialsInterceptor, loadingInterceptor, authRefreshInterceptor, apiErrorInterceptor])),
-
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        credentialsInterceptor,
+        loadingInterceptor,
+        authRefreshInterceptor,
+        apiErrorInterceptor
+      ])
+    ),
 
     provideAppInitializer(() => {
       const authService = inject(AuthService);
@@ -34,6 +41,6 @@ export const appConfig: ApplicationConfig = {
       if (isPlatformServer(inject(PLATFORM_ID))) return;
 
       return authService.loadCurrentUser();
-    }),
-  ],
+    })
+  ]
 };

@@ -12,17 +12,17 @@ import { EventRoleService } from '../../../../core/services/event-role/event-rol
 import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
-  ProgrammeAnalyticsModel,
+  ProgrammeAnalyticsModel
 } from '../../../../core/models/event';
 import {
   CertificateAnalyticsModel,
-  RegistrationAnalyticsModel,
+  RegistrationAnalyticsModel
 } from '../../../../core/models/registration';
 import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
 import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { createRawAsyncState } from 'core/state';
+import { createRawAsyncState } from '@/core/state';
 
 interface AnalyticsBundle {
   overview: EventOverviewAnalyticsModel | null;
@@ -41,14 +41,14 @@ const EMPTY_ANALYTICS: AnalyticsBundle = {
   registrations: null,
   certificates: null,
   attendance: null,
-  team: null,
+  team: null
 };
 
 @Component({
   selector: 'app-overview',
-  imports: [DatePipe, DecimalPipe, RouterLink , TruncateWordsPipe, CapitalizePipe],
+  imports: [DatePipe, DecimalPipe, RouterLink, TruncateWordsPipe, CapitalizePipe],
   templateUrl: './overview.html',
-  styleUrl: './overview.css',
+  styleUrl: './overview.css'
 })
 export class Overview implements OnInit {
   organizerEventState = inject(OrganizerEventStateService);
@@ -63,43 +63,42 @@ export class Overview implements OnInit {
   private readonly analyticsState = createRawAsyncState<AnalyticsBundle>(
     () => {
       const eventId =
-        this.organizerEventState.eventId() ??
-        this.route.snapshot.paramMap.get('eventId');
+        this.organizerEventState.eventId() ?? this.route.snapshot.paramMap.get('eventId');
 
       if (!eventId) return of(EMPTY_ANALYTICS);
 
       return forkJoin({
         overview: this.eventService.getOverviewAnalytics(eventId).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
+          catchError(() => of(null))
         ),
         programme: this.eventService.getProgrammeAnalytics(eventId).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
+          catchError(() => of(null))
         ),
         content: this.eventService.getContentAnalytics(eventId).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
+          catchError(() => of(null))
         ),
         registrations: this.registrationService.getRegistrationAnalytics(eventId, 30).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
+          catchError(() => of(null))
         ),
         certificates: this.registrationService.getCertificateAnalytics(eventId).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
+          catchError(() => of(null))
         ),
         attendance: this.operationsService.attendanceAnalytics(eventId, 30).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
+          catchError(() => of(null))
         ),
         team: this.roleService.getTeamAnalytics(eventId).pipe(
           map((r) => r.data ?? null),
-          catchError(() => of(null)),
-        ),
+          catchError(() => of(null))
+        )
       });
     },
-    { initial: EMPTY_ANALYTICS },
+    { initial: EMPTY_ANALYTICS }
   );
 
   readonly analyticsLoading = this.analyticsState.loading;

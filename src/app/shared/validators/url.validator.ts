@@ -15,9 +15,7 @@ export function isValidUrl(value: string): boolean {
   }
 }
 
-export const urlValidator: ValidatorFn = (
-  control: AbstractControl,
-): ValidationErrors | null => {
+export const urlValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value;
 
   if (value === null || value === undefined || String(value).trim() === '') {

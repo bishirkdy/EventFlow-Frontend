@@ -1,6 +1,5 @@
 <section class="bg-surface py-20 sm:py-24 lg:py-32">
   <div class="container-app">
-    <!-- Header -->
     <div class="max-w-5xl">
       <div class="mb-6 flex items-center gap-3">
         <span class="h-1.5 w-10 rounded-full bg-primary"></span>
@@ -26,14 +25,12 @@
       </p>
     </div>
 
-    <!-- Journey -->
     <div class="mt-20 sm:mt-24 lg:mt-32">
       @for (step of steps; track step.number; let i = $index) {
         <article
           class="grid items-center gap-10 border-t border-border py-14 sm:gap-12 sm:py-20 lg:grid-cols-2 lg:gap-20 lg:py-28"
           [class.lg:flex-row-reverse]="i % 2 !== 0"
         >
-          <!-- Image -->
           <div
             class="overflow-hidden rounded-2xl bg-surface-soft aspect-4/3 lg:aspect-5/4"
             [class.lg:order-2]="i % 2 !== 0"
@@ -46,9 +43,7 @@
             />
           </div>
 
-          <!-- Content -->
           <div class="max-w-xl" [class.lg:order-1]="i % 2 !== 0">
-            <!-- Number -->
             <div class="mb-6 flex items-center gap-4">
               <span class="text-sm font-semibold tracking-[0.2em] text-primary">
                 {{ step.number }}
@@ -57,19 +52,16 @@
               <span class="h-px w-10 bg-primary"></span>
             </div>
 
-            <!-- Title -->
             <h3
               class="text-4xl font-semibold tracking-[-0.03em] text-text-primary sm:text-5xl lg:text-6xl"
             >
               {{ step.title }}
             </h3>
 
-            <!-- Description -->
             <p class="mt-6 text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
               {{ step.description }}
             </p>
 
-            <!-- CTA -->
             @if (i === 0) {
               <a
                 routerLink="/create-event"

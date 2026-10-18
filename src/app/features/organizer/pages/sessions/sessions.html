@@ -1,23 +1,16 @@
 <div class="min-h-full bg-background p-6">
   <div class="mx-auto max-w-7xl">
-
-    <!-- Header -->
     <div class="mb-6 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-text-primary">
-          Sessions
-        </h1>
+        <h1 class="text-2xl font-semibold text-text-primary">Sessions</h1>
 
-        <p class="mt-1 text-sm text-text-secondary">
-          Manage sessions for this event.
-        </p>
+        <p class="mt-1 text-sm text-text-secondary">Manage sessions for this event.</p>
       </div>
 
       <button
         type="button"
         (click)="createSession()"
-        class="cursor-pointer bg-primary px-4 py-2 text-sm font-medium
-               text-white transition hover:opacity-90"
+        class="cursor-pointer bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
       >
         Create Session
       </button>
@@ -40,17 +33,15 @@
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           @for (session of sessions(); track session.id) {
             <div class="border border-border bg-surface">
-
-              <!-- Card Header -->
               <div class="border-b border-border px-5 py-4">
                 <div class="flex items-start justify-between gap-4">
-
                   <div>
                     <h2 class="text-lg font-semibold text-text-primary">
                       {{ session.title | capitalize }}
                       @if (session.startTime && session.endTime) {
                         <span class="mt-1 block text-xs text-text-muted">
-                          {{ session.startTime | date:'short' }} — {{ session.endTime | date:'short' }}
+                          {{ session.startTime | date: 'short' }} —
+                          {{ session.endTime | date: 'short' }}
                         </span>
                       }
                     </h2>
@@ -68,9 +59,7 @@
                 </div>
               </div>
 
-              <!-- Card Body -->
               <div class="space-y-4 px-5 py-5">
-
                 <div>
                   <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
                     Description
@@ -86,24 +75,19 @@
                 </div>
 
                 <div>
-                  <p class="text-xs font-medium uppercase tracking-wide text-text-muted">
-                    Section
-                  </p>
+                  <p class="text-xs font-medium uppercase tracking-wide text-text-muted">Section</p>
 
                   <p class="mt-1 text-sm text-text-primary">
                     {{ sectionName(session.sectionId) | capitalize }}
                   </p>
                 </div>
-
               </div>
 
-              <!-- Actions -->
               <div class="flex items-center gap-2 border-t border-border px-5 py-4">
                 <button
                   type="button"
                   (click)="viewSession(session.id)"
-                  class="border border-border px-3 py-2 text-sm text-text-secondary
-                         hover:bg-background hover:text-text-primary"
+                  class="border border-border px-3 py-2 text-sm text-text-secondary hover:bg-background hover:text-text-primary"
                 >
                   View
                 </button>
@@ -111,8 +95,7 @@
                 <button
                   type="button"
                   (click)="editSession(session.id)"
-                  class="border border-border px-3 py-2 text-sm text-text-secondary
-                         hover:bg-background hover:text-text-primary"
+                  class="border border-border px-3 py-2 text-sm text-text-secondary hover:bg-background hover:text-text-primary"
                 >
                   Edit
                 </button>
@@ -121,9 +104,7 @@
                   type="button"
                   [disabled]="deleting() === session.id"
                   (click)="deleteSession(session.id)"
-                  class="border border-red-500/30 px-3 py-2 text-sm text-red-500
-                         hover:bg-red-500/10
-                         disabled:cursor-not-allowed disabled:opacity-50"
+                  class="border border-red-500/30 px-3 py-2 text-sm text-red-500 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   @if (deleting() === session.id) {
                     Deleting...
@@ -132,12 +113,10 @@
                   }
                 </button>
               </div>
-
             </div>
           }
         </div>
       </ng-template>
     </app-async-state>
-
   </div>
 </div>

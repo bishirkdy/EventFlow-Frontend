@@ -46,44 +46,28 @@
         Verify & Check In
       </button>
 
-      <button class="border border-border px-5 py-3" (click)="camera()">
-        Camera
-      </button>
+      <button class="border border-border px-5 py-3" (click)="camera()">Camera</button>
     </div>
   </div>
-  <!-- Camera preview / QR scanner -->
-@if (scanning()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-    <div class="w-full max-w-lg border border-border bg-surface p-5">
 
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-lg font-semibold">Scan QR Code</h3>
-          <p class="text-sm text-text-muted">
-            Point your camera at the ticket QR code.
-          </p>
+  @if (scanning()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+      <div class="w-full max-w-lg border border-border bg-surface p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">Scan QR Code</h3>
+            <p class="text-sm text-text-muted">Point your camera at the ticket QR code.</p>
+          </div>
+
+          <button type="button" class="border border-border px-3 py-2" (click)="closeCamera()">
+            Close
+          </button>
         </div>
 
-        <button
-          type="button"
-          class="border border-border px-3 py-2"
-          (click)="closeCamera()"
-        >
-          Close
-        </button>
+        <div class="mt-5 overflow-hidden border border-border bg-black">
+          <video #qrVideo class="h-auto w-full" autoplay muted playsinline></video>
+        </div>
       </div>
-
-      <div class="mt-5 overflow-hidden border border-border bg-black">
-        <video
-          #qrVideo
-          class="h-auto w-full"
-          autoplay
-          muted
-          playsinline
-        ></video>
-      </div>
-
     </div>
-  </div>
-}
+  }
 </div>

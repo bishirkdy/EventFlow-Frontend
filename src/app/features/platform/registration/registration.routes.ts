@@ -6,25 +6,22 @@ export const REGISTRATION_ROUTES: Routes = [
   {
     path: 'events/:eventId/register',
     canActivate: [authGuard, publicEventFeatureGuard('registration')],
-    loadComponent: () =>
-      import('./pages/public/register/register').then(
-        (m) => m.RegisterComponent,
-      ),
+    loadComponent: () => import('./pages/public/register/register').then((m) => m.RegisterComponent)
   },
   {
     path: 'events/:eventId/my-registrations',
     canActivate: [authGuard, publicEventFeatureGuard('registration')],
     loadComponent: () =>
       import('./pages/public/my-registrations/my-registrations').then(
-        (m) => m.MyRegistrationsComponent,
-      ),
+        (m) => m.MyRegistrationsComponent
+      )
   },
   {
     path: 'events/:eventId/registrations/:registrationId',
     canActivate: [authGuard, publicEventFeatureGuard('registration')],
     loadComponent: () =>
       import('./pages/public/registration-details/registration-details').then(
-        (m) => m.PublicRegistrationDetailsComponent,
-      ),
-  },
+        (m) => m.PublicRegistrationDetailsComponent
+      )
+  }
 ];

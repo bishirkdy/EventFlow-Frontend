@@ -13,10 +13,10 @@ import { WeddingTemplate } from '../../templates/wedding/wedding-template';
     EducationTemplate,
     FestivalTemplate,
     SportsTemplate,
-    WeddingTemplate,
+    WeddingTemplate
   ],
   templateUrl: './website-template-selector.html',
-  styleUrl: './website-template-selector.css',
+  styleUrl: './website-template-selector.css'
 })
 export class WebsiteTemplateSelector {
   readonly data = input.required<EventWebsiteData>();
@@ -27,7 +27,7 @@ export class WebsiteTemplateSelector {
     const eventType: string | undefined = this.data().event?.eventType;
     const typeValue = eventType ? eventType.trim() : '';
     const value = typeValue.toLowerCase();
-    
+
     if (value.includes('conference')) return 'conference';
     if (value.includes('education') || value.includes('workshop')) return 'education';
     if (value.includes('festival') || value.includes('cultural')) return 'festival';

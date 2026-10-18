@@ -13,15 +13,31 @@ describe('PublicRegistrationDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [PublicRegistrationDetailsComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: (key: string) => key === 'eventId' ? 'event-1' : 'registration-1' } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'eventId' ? 'event-1' : 'registration-1')
+              }
+            }
+          }
+        },
         { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: RegistrationService,
           useValue: {
-            getById: () => of({ isSuccess: false, statusCode: 404, message: 'Not found', data: null, errors: null }),
-          },
-        },
-      ],
+            getById: () =>
+              of({
+                isSuccess: false,
+                statusCode: 404,
+                message: 'Not found',
+                data: null,
+                errors: null
+              })
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PublicRegistrationDetailsComponent);

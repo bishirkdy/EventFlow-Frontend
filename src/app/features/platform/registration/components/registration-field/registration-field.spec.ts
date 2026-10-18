@@ -12,7 +12,7 @@ const field = {
   isRequired: false,
   displayOrder: 1,
   optionsJson: null,
-  validationJson: null,
+  validationJson: null
 };
 
 describe('RegistrationFieldComponent', () => {
@@ -21,7 +21,7 @@ describe('RegistrationFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationFieldComponent],
+      imports: [RegistrationFieldComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationFieldComponent);

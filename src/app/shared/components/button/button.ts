@@ -5,7 +5,7 @@ import { Component, computed, input } from '@angular/core';
   imports: [],
   standalone: true,
   templateUrl: './button.html',
-  styleUrl: './button.css',
+  styleUrl: './button.css'
 })
 export class Button {
   label = input<string>('');

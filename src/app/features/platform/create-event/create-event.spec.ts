@@ -8,7 +8,7 @@ describe('CreateEvent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateEvent],
+      imports: [CreateEvent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateEvent);

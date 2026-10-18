@@ -28,12 +28,14 @@ describe('ErrorState', () => {
     fixture.componentRef.setInput('showRetry', true);
     fixture.detectChanges();
 
-    const clicked = new Promise<void>((resolve) => fixture.componentInstance.retry.subscribe(resolve));
+    const clicked = new Promise<void>((resolve) =>
+      fixture.componentInstance.retry.subscribe(resolve)
+    );
     (fixture.nativeElement.querySelector('button') as HTMLButtonElement).click();
 
     await clicked;
-    expect((fixture.nativeElement.querySelector('button') as HTMLButtonElement).textContent).toContain(
-      'Try again',
-    );
+    expect(
+      (fixture.nativeElement.querySelector('button') as HTMLButtonElement).textContent
+    ).toContain('Try again');
   });
 });

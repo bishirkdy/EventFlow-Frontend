@@ -52,9 +52,7 @@
           class="flex flex-1 items-center justify-center gap-2 bg-primary cursor-pointer hover:bg-white hover:text-primary hover:border-primary border px-4 py-3 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           @if (capturing()) {
-            <span
-              class="h-4 w-4 animate-spin border-2 border-white/40 border-t-white"
-            ></span>
+            <span class="h-4 w-4 animate-spin border-2 border-white/40 border-t-white"></span>
             Processing...
           } @else {
             <lucide-icon [img]="Camera" [size]="18" />
@@ -85,12 +83,8 @@
           </div>
 
           <div>
-            <p class="text-sm font-semibold text-black">
-              Face profile saved
-            </p>
-            <p class="mt-1 text-xs text-black/90">
-              Ready to find your photos
-            </p>
+            <p class="text-sm font-semibold text-black">Face profile saved</p>
+            <p class="mt-1 text-xs text-black/90">Ready to find your photos</p>
           </div>
         </div>
 

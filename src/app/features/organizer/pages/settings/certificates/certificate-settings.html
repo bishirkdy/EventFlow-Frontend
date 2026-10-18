@@ -21,7 +21,6 @@
       </button>
     </header>
 
-    <!-- Tabs -->
     <div class="flex gap-1 border-b border-border">
       <button
         type="button"
@@ -50,7 +49,6 @@
     </div>
 
     @if (activeTab() === 'design') {
-      <!-- Certificate Settings -->
       <section class="overflow-hidden border border-border bg-surface">
         <div class="border-b border-border px-5 py-4 sm:px-6">
           <h2 class="text-base font-semibold text-text-primary">Certificate Design</h2>
@@ -66,7 +64,6 @@
           </div>
         } @else {
           <div class="space-y-6 p-5 sm:p-6">
-            <!-- Certificate Details -->
             <div>
               <h3 class="mb-4 text-sm font-semibold text-text-primary">Certificate details</h3>
 
@@ -140,7 +137,6 @@
 
             <div class="border-t border-border"></div>
 
-            <!-- Appearance -->
             <div>
               <h3 class="mb-4 text-sm font-semibold text-text-primary">Appearance</h3>
 
@@ -182,7 +178,6 @@
 
             <div class="border-t border-border"></div>
 
-            <!-- Template editor -->
             <div>
               <app-certificate-template-editor
                 [eventId]="eventId()"
@@ -201,7 +196,6 @@
               />
             </div>
 
-            <!-- Save Settings -->
             <div
               class="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-end"
             >
@@ -243,7 +237,6 @@
     }
 
     @if (activeTab() === 'issue') {
-      <!-- Eligibility Requirements -->
       <section class="overflow-hidden border border-border bg-surface">
         <div class="border-b border-border px-5 py-4 sm:px-6">
           <h2 class="text-base font-semibold text-text-primary">Eligibility Requirements</h2>
@@ -331,9 +324,7 @@
         }
       </section>
 
-      <!-- Eligibility Preview -->
       <section class="overflow-hidden border border-border bg-surface">
-        <!-- Section Header -->
         <div class="space-y-4 border-b border-border p-5 sm:p-6">
           <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
             <div>
@@ -375,7 +366,6 @@
               }
             </div>
 
-            <!-- Actions -->
             <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap xl:justify-end">
               <button
                 type="button"
@@ -424,7 +414,6 @@
           </div>
         </div>
 
-        <!-- Eligibility Content -->
         @if (loadingEligibility()) {
           <div class="flex flex-col items-center justify-center gap-3 px-6 py-14">
             <div class="h-8 w-8 animate-spin border-2 border-border border-t-primary"></div>
@@ -604,7 +593,6 @@
         }
       </section>
 
-      <!-- Issued Certificates -->
       <section class="overflow-hidden border border-border bg-surface">
         <div
           class="flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6"
@@ -701,7 +689,7 @@
                         class="inline-flex items-center border px-2.5 py-1 text-xs font-medium"
                         [class]="statusClass(certificate.status)"
                       >
-                              {{ certificate.status | capitalize }}
+                        {{ certificate.status | capitalize }}
                       </span>
                     </td>
 

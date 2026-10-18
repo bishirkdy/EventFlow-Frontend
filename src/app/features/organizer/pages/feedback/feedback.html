@@ -1,10 +1,7 @@
 <div class="w-full space-y-8 p-6">
-    <!-- Page Header -->
   <div class="flex flex-wrap items-start justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold tracking-tight text-text-primary">
-        Feedback
-      </h1>
+      <h1 class="text-2xl font-bold tracking-tight text-text-primary">Feedback</h1>
       <p class="mt-1 text-sm text-text-secondary">
         Participant feedback and ratings for this event.
       </p>
@@ -30,250 +27,220 @@
     (retry)="load()"
   >
     <ng-template>
-    <!-- Summary Statistics -->
-    <div class="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3">
-      <div
-        class="min-w-0 border border-border bg-surface p-5 transition-colors hover:bg-surface-soft"
-      >
-        <p class="text-sm font-medium text-text-secondary">
-          Total responses
-        </p>
-        <p class="mt-3 text-3xl font-bold tracking-tight text-text-primary">
-          {{ results()!.totalCount }}
-        </p>
-        <p class="mt-1 text-xs text-text-muted">
-          Submitted feedback entries
-        </p>
-      </div>
-
-      <div
-        class="min-w-0 border border-border bg-surface p-5 transition-colors hover:bg-surface-soft"
-      >
-        <p class="text-sm font-medium text-text-secondary">
-          Average rating
-        </p>
-
-        <div class="mt-3 flex items-baseline gap-2">
-          <p class="text-3xl font-bold tracking-tight text-text-primary">
-            {{
-              results()!.totalCount > 0
-                ? (results()!.averageRating | number: '1.1-1')
-                : '—'
-            }}
+      <div class="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-3">
+        <div
+          class="min-w-0 border border-border bg-surface p-5 transition-colors hover:bg-surface-soft"
+        >
+          <p class="text-sm font-medium text-text-secondary">Total responses</p>
+          <p class="mt-3 text-3xl font-bold tracking-tight text-text-primary">
+            {{ results()!.totalCount }}
           </p>
-          <span class="text-sm text-text-muted">/ 5</span>
+          <p class="mt-1 text-xs text-text-muted">Submitted feedback entries</p>
         </div>
 
-        <p class="mt-1 text-xs text-text-muted">
-          Overall participant rating
-        </p>
-      </div>
+        <div
+          class="min-w-0 border border-border bg-surface p-5 transition-colors hover:bg-surface-soft"
+        >
+          <p class="text-sm font-medium text-text-secondary">Average rating</p>
 
-      <div
-        class="min-w-0 border border-border bg-surface p-5 transition-colors hover:bg-surface-soft"
-      >
-        <p class="text-sm font-medium text-text-secondary">
-          Targets rated
-        </p>
-        <p class="mt-3 text-3xl font-bold tracking-tight text-text-primary">
-          {{ results()!.targets.length }}
-        </p>
-        <p class="mt-1 text-xs text-text-muted">
-          Targets with submitted ratings
-        </p>
-      </div>
-    </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <p class="text-3xl font-bold tracking-tight text-text-primary">
+              {{ results()!.totalCount > 0 ? (results()!.averageRating | number: '1.1-1') : '—' }}
+            </p>
+            <span class="text-sm text-text-muted">/ 5</span>
+          </div>
 
-    <!-- Rating Distribution and Target Breakdown -->
-    <div class="grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
-      <!-- Rating Distribution -->
-      <section class="min-w-0 border border-border bg-surface">
-        <div class="border-b border-border px-5 py-4">
-          <h2 class="text-base font-semibold text-text-primary">
-            Rating distribution
-          </h2>
-          <p class="mt-1 text-sm text-text-secondary">
-            Breakdown of participant ratings from one to five stars.
-          </p>
+          <p class="mt-1 text-xs text-text-muted">Overall participant rating</p>
         </div>
 
-        <div class="space-y-5 p-5">
-          @for (bucket of results()!.ratingDistribution; track bucket.rating) {
-            <div class="space-y-2">
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-sm font-medium text-text-primary">
-                  {{ bucket.rating }} star{{ bucket.rating === 1 ? '' : 's' }}
-                </span>
+        <div
+          class="min-w-0 border border-border bg-surface p-5 transition-colors hover:bg-surface-soft"
+        >
+          <p class="text-sm font-medium text-text-secondary">Targets rated</p>
+          <p class="mt-3 text-3xl font-bold tracking-tight text-text-primary">
+            {{ results()!.targets.length }}
+          </p>
+          <p class="mt-1 text-xs text-text-muted">Targets with submitted ratings</p>
+        </div>
+      </div>
 
-                <span class="text-sm tabular-nums text-text-secondary">
-                  {{ bucket.count }}
-                  <span class="text-text-muted">
-                    ({{ distributionPercent(bucket.count) }}%)
+      <div class="grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
+        <section class="min-w-0 border border-border bg-surface">
+          <div class="border-b border-border px-5 py-4">
+            <h2 class="text-base font-semibold text-text-primary">Rating distribution</h2>
+            <p class="mt-1 text-sm text-text-secondary">
+              Breakdown of participant ratings from one to five stars.
+            </p>
+          </div>
+
+          <div class="space-y-5 p-5">
+            @for (bucket of results()!.ratingDistribution; track bucket.rating) {
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-sm font-medium text-text-primary">
+                    {{ bucket.rating }} star{{ bucket.rating === 1 ? '' : 's' }}
                   </span>
-                </span>
-              </div>
 
-              <div class="h-2.5 w-full overflow-hidden bg-surface-soft">
-                <div
-                  class="h-full bg-primary transition-[width] duration-300"
-                  [style.width.%]="distributionPercent(bucket.count)"
-                ></div>
+                  <span class="text-sm tabular-nums text-text-secondary">
+                    {{ bucket.count }}
+                    <span class="text-text-muted">
+                      ({{ distributionPercent(bucket.count) }}%)
+                    </span>
+                  </span>
+                </div>
+
+                <div class="h-2.5 w-full overflow-hidden bg-surface-soft">
+                  <div
+                    class="h-full bg-primary transition-[width] duration-300"
+                    [style.width.%]="distributionPercent(bucket.count)"
+                  ></div>
+                </div>
               </div>
+            }
+          </div>
+        </section>
+
+        <section class="min-w-0 border border-border bg-surface">
+          <div class="border-b border-border px-5 py-4">
+            <h2 class="text-base font-semibold text-text-primary">Feedback by target</h2>
+            <p class="mt-1 text-sm text-text-secondary">
+              Compare ratings across individual targets.
+            </p>
+          </div>
+
+          @if (results()!.targets.length > 0) {
+            <div class="w-full min-w-0 overflow-x-auto">
+              <table class="w-full border-collapse text-left">
+                <thead class="bg-surface-soft">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="whitespace-nowrap px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                    >
+                      Type
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                    >
+                      Name
+                    </th>
+                    <th
+                      scope="col"
+                      class="whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                    >
+                      Count
+                    </th>
+                    <th
+                      scope="col"
+                      class="whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                    >
+                      Average
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody class="divide-y divide-border">
+                  @for (target of results()!.targets; track target.targetId) {
+                    <tr class="transition-colors hover:bg-surface-soft">
+                      <td class="px-4 py-3 text-sm text-text-secondary">
+                        {{ targetLabels[target.targetType] }}
+                      </td>
+
+                      <td class="px-4 py-3 text-sm font-medium text-text-primary">
+                        {{ target.targetName }}
+                      </td>
+
+                      <td class="px-4 py-3 text-right text-sm tabular-nums text-text-secondary">
+                        {{ target.count }}
+                      </td>
+
+                      <td
+                        class="px-4 py-3 text-right text-sm font-semibold tabular-nums text-text-primary"
+                      >
+                        {{ target.averageRating | number: '1.1-1' }}
+                        <span class="font-normal text-text-muted">/ 5</span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="px-5 py-10 text-center">
+              <p class="text-sm font-medium text-text-primary">No rated targets yet</p>
+              <p class="mt-1 text-sm text-text-secondary">
+                Target-level statistics will appear when ratings are submitted.
+              </p>
             </div>
           }
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <!-- Feedback by Target -->
-      <section class="min-w-0 border border-border bg-surface">
+      <section class="w-full min-w-0 border border-border bg-surface">
         <div class="border-b border-border px-5 py-4">
-          <h2 class="text-base font-semibold text-text-primary">
-            Feedback by target
-          </h2>
+          <h2 class="text-base font-semibold text-text-primary">Recent feedback</h2>
           <p class="mt-1 text-sm text-text-secondary">
-            Compare ratings across individual targets.
+            Review the latest participant comments and ratings.
           </p>
         </div>
 
-        @if (results()!.targets.length > 0) {
-          <div class="w-full min-w-0 overflow-x-auto">
-            <table class="w-full border-collapse text-left">
-              <thead class="bg-surface-soft">
-                <tr>
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-secondary"
-                  >
-                    Type
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-secondary"
-                  >
-                    Name
-                  </th>
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary"
-                  >
-                    Count
-                  </th>
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary"
-                  >
-                    Average
-                  </th>
-                </tr>
-              </thead>
+        @if (results()!.recentFeedback.length > 0) {
+          <div class="divide-y divide-border">
+            @for (item of results()!.recentFeedback; track item.id) {
+              <article class="p-5 transition-colors hover:bg-surface-soft">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div class="min-w-0 space-y-2">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                      <span
+                        class="text-sm tracking-wide text-amber-500"
+                        [attr.aria-label]="item.rating + ' out of 5 stars'"
+                      >
+                        {{ '★'.repeat(item.rating)
+                        }}<span class="text-text-muted">{{ '★'.repeat(5 - item.rating) }}</span>
+                      </span>
 
-              <tbody class="divide-y divide-border">
-                @for (target of results()!.targets; track target.targetId) {
-                  <tr class="transition-colors hover:bg-surface-soft">
-                    <td class="px-4 py-3 text-sm text-text-secondary">
-                      {{ targetLabels[target.targetType] }}
-                    </td>
+                      <span
+                        class="border border-border px-2 py-1 text-xs font-medium text-text-secondary"
+                      >
+                        {{ targetLabels[item.targetType] }}
+                      </span>
 
-                    <td class="px-4 py-3 text-sm font-medium text-text-primary">
-                      {{ target.targetName }}
-                    </td>
+                      <span class="text-sm font-medium text-text-primary">
+                        {{ item.targetName }}
+                      </span>
+                    </div>
 
-                    <td class="px-4 py-3 text-right text-sm tabular-nums text-text-secondary">
-                      {{ target.count }}
-                    </td>
+                    @if (item.comment) {
+                      <p
+                        class="whitespace-pre-line wrap-break-word text-sm leading-6 text-text-secondary"
+                      >
+                        {{ item.comment }}
+                      </p>
+                    } @else {
+                      <p class="text-sm italic text-text-muted">No written comment provided.</p>
+                    }
+                  </div>
 
-                    <td class="px-4 py-3 text-right text-sm font-semibold tabular-nums text-text-primary">
-                      {{ target.averageRating | number: '1.1-1' }}
-                      <span class="font-normal text-text-muted">/ 5</span>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+                  <time
+                    class="shrink-0 text-xs text-text-muted"
+                    [attr.datetime]="item.submittedAtUtc"
+                  >
+                    {{ item.submittedAtUtc | date: 'mediumDate' }}
+                  </time>
+                </div>
+              </article>
+            }
           </div>
         } @else {
-          <div class="px-5 py-10 text-center">
-            <p class="text-sm font-medium text-text-primary">
-              No rated targets yet
-            </p>
+          <div class="px-5 py-12 text-center">
+            <h3 class="text-sm font-semibold text-text-primary">No feedback yet</h3>
             <p class="mt-1 text-sm text-text-secondary">
-              Target-level statistics will appear when ratings are submitted.
+              Participant feedback will appear here after submissions.
             </p>
           </div>
         }
       </section>
-    </div>
-
-    <!-- Recent Feedback -->
-    <section class="w-full min-w-0 border border-border bg-surface">
-      <div class="border-b border-border px-5 py-4">
-        <h2 class="text-base font-semibold text-text-primary">
-          Recent feedback
-        </h2>
-        <p class="mt-1 text-sm text-text-secondary">
-          Review the latest participant comments and ratings.
-        </p>
-      </div>
-
-      @if (results()!.recentFeedback.length > 0) {
-        <div class="divide-y divide-border">
-          @for (item of results()!.recentFeedback; track item.id) {
-            <article class="p-5 transition-colors hover:bg-surface-soft">
-              <div
-                class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
-              >
-                <div class="min-w-0 space-y-2">
-                  <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                    <span
-                      class="text-sm tracking-wide text-amber-500"
-                      [attr.aria-label]="item.rating + ' out of 5 stars'"
-                    >
-                      {{ '★'.repeat(item.rating) }}<span class="text-text-muted">{{ '★'.repeat(5 - item.rating) }}</span>
-                    </span>
-
-                    <span
-                      class="border border-border px-2 py-1 text-xs font-medium text-text-secondary"
-                    >
-                      {{ targetLabels[item.targetType] }}
-                    </span>
-
-                    <span class="text-sm font-medium text-text-primary">
-                      {{ item.targetName }}
-                    </span>
-                  </div>
-
-                  @if (item.comment) {
-                    <p class="whitespace-pre-line wrap-break-word text-sm leading-6 text-text-secondary">
-                      {{ item.comment }}
-                    </p>
-                  } @else {
-                    <p class="text-sm italic text-text-muted">
-                      No written comment provided.
-                    </p>
-                  }
-                </div>
-
-                <time
-                  class="shrink-0 text-xs text-text-muted"
-                  [attr.datetime]="item.submittedAtUtc"
-                >
-                  {{ item.submittedAtUtc | date: 'mediumDate' }}
-                </time>
-              </div>
-            </article>
-          }
-        </div>
-      } @else {
-        <div class="px-5 py-12 text-center">
-          <h3 class="text-sm font-semibold text-text-primary">
-            No feedback yet
-          </h3>
-          <p class="mt-1 text-sm text-text-secondary">
-            Participant feedback will appear here after submissions.
-          </p>
-        </div>
-      }
-    </section>
     </ng-template>
   </app-async-state>
 </div>

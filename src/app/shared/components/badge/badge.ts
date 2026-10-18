@@ -4,7 +4,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-badge',
   imports: [],
   templateUrl: './badge.html',
-  styleUrl: './badge.css',
+  styleUrl: './badge.css'
 })
 export class Badge {
   label = input<string>('');

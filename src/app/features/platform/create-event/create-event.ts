@@ -9,14 +9,14 @@ import { EventTypeService } from '../../../core/services/event-type/event-type.s
 import { EventTypeModel } from '../../../core/models/event-type';
 import { workspaceUrlForRoles } from '../../../core/routing/event-route.util';
 import { dateRangeValidator } from '../../../shared/validators/date-range.validator';
-import { createAsyncAction, createAsyncState } from 'core/state';
+import { createAsyncAction, createAsyncState } from '@/core/state';
 
 @Component({
   selector: 'app-create-event',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-event.html',
-  styleUrl: './create-event.css',
+  styleUrl: './create-event.css'
 })
 export class CreateEvent implements OnInit {
   private readonly router = inject(Router);
@@ -28,7 +28,7 @@ export class CreateEvent implements OnInit {
 
   private readonly eventTypesState = createAsyncState<EventTypeModel[]>(
     () => this.eventTypeService.getEventTypes(),
-    { initial: [], errorFallback: 'Failed to load event types.' },
+    { initial: [], errorFallback: 'Failed to load event types.' }
   );
 
   readonly eventTypes = this.eventTypesState.data;
@@ -53,17 +53,16 @@ export class CreateEvent implements OnInit {
 
       timeZone: [
         Intl.DateTimeFormat().resolvedOptions().timeZone,
-        [Validators.required, Validators.maxLength(100)],
-      ],
+        [Validators.required, Validators.maxLength(100)]
+      ]
     },
     {
-      validators: dateRangeValidator,
-    },
+      validators: dateRangeValidator
+    }
   );
 
   private readonly createAction = createAsyncAction(
-    (request: Parameters<EventService['createEvent']>[0]) =>
-      this.eventService.createEvent(request),
+    (request: Parameters<EventService['createEvent']>[0]) => this.eventService.createEvent(request),
     {
       onSuccess: (response) => {
         const data = response.data;
@@ -85,11 +84,11 @@ export class CreateEvent implements OnInit {
           },
           error: () => {
             void this.router.navigate(['/owner', data.id]);
-          },
+          }
         });
       },
-      errorFallback: 'Failed to create event.',
-    },
+      errorFallback: 'Failed to create event.'
+    }
   );
 
   readonly loading = this.createAction.pending;
@@ -135,7 +134,7 @@ export class CreateEvent implements OnInit {
       startDate: formValue.startDate,
       endDate: formValue.endDate,
       timeZone: formValue.timeZone,
-      images: this.selectedImages,
+      images: this.selectedImages
     });
   }
 

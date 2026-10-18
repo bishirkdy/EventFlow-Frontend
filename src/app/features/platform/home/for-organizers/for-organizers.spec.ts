@@ -10,7 +10,7 @@ describe('ForOrganizers', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideRouter([])],
-      imports: [ForOrganizers],
+      imports: [ForOrganizers]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ForOrganizers);

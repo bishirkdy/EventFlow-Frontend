@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { createAsyncState } from 'core/state';
+import { createAsyncState } from '@/core/state';
 import { AdminService } from '../../../../core/services/admin/admin.service';
 import { AdminUserListItem } from '../../../../core/models/admin';
 import { PaginatedResponseModel } from '../../../../core/models/common';
@@ -8,7 +8,7 @@ import { AsyncState } from '../../../../shared/components/async-state/async-stat
 @Component({
   selector: 'app-admin-users',
   imports: [AsyncState],
-  templateUrl: './users.html',
+  templateUrl: './users.html'
 })
 export class AdminUsers {
   private readonly admin = inject(AdminService);
@@ -22,9 +22,9 @@ export class AdminUsers {
       this.admin.getUsers({
         page: this.page(),
         pageSize: this.pageSize(),
-        search: this.search() || null,
+        search: this.search() || null
       }),
-    { errorFallback: 'Failed to load users.' },
+    { errorFallback: 'Failed to load users.' }
   );
 
   readonly loading = this.state.loading;

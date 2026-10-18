@@ -1,5 +1,4 @@
 <div class="space-y-8 p-6 lg:p-8">
-
   <div>
     <button
       type="button"
@@ -9,25 +8,14 @@
       ← Back to Page Sections
     </button>
 
-    <h1 class="mt-6 text-3xl font-semibold text-text-primary">
-      Create Page Section
-    </h1>
+    <h1 class="mt-6 text-3xl font-semibold text-text-primary">Create Page Section</h1>
 
-    <p class="mt-2 text-sm text-text-secondary">
-      Add a new section to this page.
-    </p>
+    <p class="mt-2 text-sm text-text-secondary">Add a new section to this page.</p>
   </div>
 
-  <form
-    [formGroup]="form"
-    (ngSubmit)="createSection()"
-    class="max-w-3xl space-y-8"
-  >
-
+  <form [formGroup]="form" (ngSubmit)="createSection()" class="max-w-3xl space-y-8">
     <div>
-      <label class="mb-2 block text-sm font-medium text-text-primary">
-        Section Type
-      </label>
+      <label class="mb-2 block text-sm font-medium text-text-primary"> Section Type </label>
 
       <input
         type="text"
@@ -36,20 +24,13 @@
         class="w-full border-0 border-b border-border bg-transparent px-0 py-3 text-text-primary outline-none focus:border-primary"
       />
 
-      @if (
-        form.controls.sectionType.touched &&
-        form.controls.sectionType.invalid
-      ) {
-        <p class="mt-2 text-sm text-red-600">
-          Section type is required.
-        </p>
+      @if (form.controls.sectionType.touched && form.controls.sectionType.invalid) {
+        <p class="mt-2 text-sm text-red-600">Section type is required.</p>
       }
     </div>
 
     <div>
-      <label class="mb-2 block text-sm font-medium text-text-primary">
-        Title
-      </label>
+      <label class="mb-2 block text-sm font-medium text-text-primary"> Title </label>
 
       <input
         type="text"
@@ -60,9 +41,7 @@
     </div>
 
     <div>
-      <label class="mb-2 block text-sm font-medium text-text-primary">
-        Content
-      </label>
+      <label class="mb-2 block text-sm font-medium text-text-primary"> Content </label>
 
       <textarea
         rows="6"
@@ -73,9 +52,7 @@
     </div>
 
     <div>
-      <label class="mb-2 block text-sm font-medium text-text-primary">
-        Image
-      </label>
+      <label class="mb-2 block text-sm font-medium text-text-primary"> Image </label>
 
       <input
         type="file"
@@ -110,9 +87,7 @@
     </div>
 
     <div>
-      <label class="mb-2 block text-sm font-medium text-text-primary">
-        Configuration
-      </label>
+      <label class="mb-2 block text-sm font-medium text-text-primary"> Configuration </label>
 
       <textarea
         rows="5"
@@ -139,6 +114,5 @@
         {{ saving() ? 'Creating...' : 'Create Section' }}
       </button>
     </div>
-
   </form>
 </div>

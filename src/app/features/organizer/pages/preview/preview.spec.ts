@@ -20,14 +20,14 @@ describe('Preview', () => {
             parent: {
               snapshot: {
                 paramMap: {
-                  get: (key: string) => (key === 'eventId' ? 'event-1' : null),
-                },
-              },
-            },
-          },
+                  get: (key: string) => (key === 'eventId' ? 'event-1' : null)
+                }
+              }
+            }
+          }
         },
-        { provide: Router, useValue: { navigate } },
-      ],
+        { provide: Router, useValue: { navigate } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Preview);
@@ -41,7 +41,7 @@ describe('Preview', () => {
 
   it('opens the event website in preview mode', () => {
     expect(navigate).toHaveBeenCalledWith(['/events', 'event-1'], {
-      queryParams: { preview: '1' },
+      queryParams: { preview: '1' }
     });
   });
 });

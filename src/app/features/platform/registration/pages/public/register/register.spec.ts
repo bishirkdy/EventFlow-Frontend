@@ -13,11 +13,21 @@ const response = {
   statusCode: 200,
   message: 'Success',
   data: {
-    id: 'form-1', eventId: 'event-1', name: 'Registration', description: null,
-    isActive: true, capacityMode: 0, capacity: null, approvedCount: 0,
-    waitlistCount: 0, enableWaitlist: false, opensAtUtc: null, closesAtUtc: null, fields: [],
+    id: 'form-1',
+    eventId: 'event-1',
+    name: 'Registration',
+    description: null,
+    isActive: true,
+    capacityMode: 0,
+    capacity: null,
+    approvedCount: 0,
+    waitlistCount: 0,
+    enableWaitlist: false,
+    opensAtUtc: null,
+    closesAtUtc: null,
+    fields: []
   },
-  errors: null,
+  errors: null
 };
 
 describe('RegisterComponent', () => {
@@ -30,14 +40,17 @@ describe('RegisterComponent', () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: { get: () => 'event-1' } } },
+          useValue: { snapshot: { paramMap: { get: () => 'event-1' } } }
         },
         { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: RegistrationFormService, useValue: { get: () => of(response) } },
         { provide: RegistrationService, useValue: { create: () => of(response) } },
-        { provide: EventService, useValue: { getEventById: () => of({ ...response, data: null }) } },
-        { provide: ToastrService, useValue: { success: vi.fn(), error: vi.fn() } },
-      ],
+        {
+          provide: EventService,
+          useValue: { getEventById: () => of({ ...response, data: null }) }
+        },
+        { provide: ToastrService, useValue: { success: vi.fn(), error: vi.fn() } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);

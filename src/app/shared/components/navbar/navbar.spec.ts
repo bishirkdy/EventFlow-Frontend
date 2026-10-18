@@ -12,7 +12,7 @@ describe('Navbar', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Navbar],
-      providers: provideComponentTestProviders(),
+      providers: provideComponentTestProviders()
     }).compileComponents();
 
     fixture = TestBed.createComponent(Navbar);
@@ -26,10 +26,8 @@ describe('Navbar', () => {
   });
 
   it('opens the login popup from the sign in button', () => {
-    const buttons = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('button'),
-    );
-    const signIn = buttons.find(button => button.textContent?.trim() === 'Sign in');
+    const buttons = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button'));
+    const signIn = buttons.find((button) => button.textContent?.trim() === 'Sign in');
 
     expect(signIn).toBeTruthy();
     signIn!.click();
@@ -39,9 +37,9 @@ describe('Navbar', () => {
   });
 
   it('links to the real pages instead of the removed dead ones', () => {
-    const hrefs = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('a'),
-    ).map(anchor => anchor.getAttribute('href'));
+    const hrefs = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('a')).map(
+      (anchor) => anchor.getAttribute('href')
+    );
 
     expect(hrefs).toContain('/events');
     expect(hrefs).toContain('/about');
@@ -56,7 +54,7 @@ describe('Navbar', () => {
       email: 'admin@example.com',
       firstName: 'Ada',
       lastName: 'Admin',
-      isPlatformAdmin: true,
+      isPlatformAdmin: true
     });
 
     expect(component.userLinks().map((link) => link.label)).toEqual(['Admin Console']);
@@ -69,12 +67,12 @@ describe('Navbar', () => {
       email: 'jane@example.com',
       firstName: 'Jane',
       lastName: 'Doe',
-      isPlatformAdmin: false,
+      isPlatformAdmin: false
     });
 
     expect(component.userLinks().map((link) => link.label)).toEqual([
       'My Events',
-      'My Certificates',
+      'My Certificates'
     ]);
   });
 });

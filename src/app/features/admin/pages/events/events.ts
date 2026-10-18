@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { createAsyncState } from 'core/state';
+import { createAsyncState } from '@/core/state';
 import { AdminService } from '../../../../core/services/admin/admin.service';
 import { AdminEventListItem } from '../../../../core/models/admin';
 import { PaginatedResponseModel } from '../../../../core/models/common';
@@ -11,7 +11,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 @Component({
   selector: 'app-admin-events',
   imports: [RouterLink, DatePipe, AsyncState, CapitalizePipe],
-  templateUrl: './events.html',
+  templateUrl: './events.html'
 })
 export class AdminEvents {
   private readonly admin = inject(AdminService);
@@ -29,9 +29,9 @@ export class AdminEvents {
         page: this.page(),
         pageSize: this.pageSize(),
         status: this.status() || null,
-        search: this.search() || null,
+        search: this.search() || null
       }),
-    { errorFallback: 'Failed to load events.' },
+    { errorFallback: 'Failed to load events.' }
   );
 
   readonly loading = this.state.loading;

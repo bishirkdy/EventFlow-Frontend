@@ -13,19 +13,19 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
-  LucideAngularModule,
+  LucideAngularModule
 } from 'lucide-angular';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { PhotoService } from '@/core/services/photo/photo.service';
 import { Photo } from '@/core/models/photographer';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-photo-manager',
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   templateUrl: './photo-manager.html',
-  styleUrl: './photo-manager.css',
+  styleUrl: './photo-manager.css'
 })
 export class PhotoManager implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -65,15 +65,15 @@ export class PhotoManager implements OnInit {
           this.totalCount.set(0);
           this.notification.error(response.message || 'Failed to load photos.');
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly deleteAction = createAsyncAction(
     (photoId: string) =>
       this.photoService.deletePhoto(this.eventId(), photoId).pipe(
         finalize(() => this.clearDeleting(photoId)),
-        map((response) => ({ photoId, response })),
+        map((response) => ({ photoId, response }))
       ),
     {
       errorFallback: 'Failed to delete photo.',
@@ -93,8 +93,8 @@ export class PhotoManager implements OnInit {
           this.currentPage.update((page) => page - 1);
           this.loadPhotos();
         }
-      },
-    },
+      }
+    }
   );
 
   loading = this.loadAction.pending;
@@ -123,7 +123,7 @@ export class PhotoManager implements OnInit {
     CalendarDays,
     Trash2,
     ChevronLeft,
-    ChevronRight,
+    ChevronRight
   };
 
   loadPhotos(): void {
@@ -145,7 +145,7 @@ export class PhotoManager implements OnInit {
     }
 
     const confirmed = confirm(
-      `Are you sure you want to delete this photo? This action cannot be undone.`,
+      `Are you sure you want to delete this photo? This action cannot be undone.`
     );
 
     if (!confirmed) {
@@ -154,7 +154,7 @@ export class PhotoManager implements OnInit {
 
     this.deleting.update((current) => ({
       ...current,
-      [photo.photoId]: true,
+      [photo.photoId]: true
     }));
 
     this.deleteAction.run(photo.photoId);
@@ -178,7 +178,7 @@ export class PhotoManager implements OnInit {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
+      minute: '2-digit'
     });
   }
 }

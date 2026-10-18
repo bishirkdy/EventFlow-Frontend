@@ -15,7 +15,7 @@ describe('authRefreshInterceptor', () => {
   const authService = {
     refresh: vi.fn(() => of(false)),
     loadCurrentUser: vi.fn(() => of(null)),
-    clearCurrentUser: vi.fn(),
+    clearCurrentUser: vi.fn()
   };
 
   beforeEach(() => {
@@ -24,8 +24,8 @@ describe('authRefreshInterceptor', () => {
         provideHttpClient(withInterceptors([authRefreshInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
-        { provide: AuthService, useValue: authService },
-      ],
+        { provide: AuthService, useValue: authService }
+      ]
     });
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -44,9 +44,7 @@ describe('authRefreshInterceptor', () => {
       .get(url)
       .subscribe({ error: () => undefined });
 
-    httpMock
-      .expectOne(url)
-      .flush('no session', { status: 401, statusText: 'Unauthorized' });
+    httpMock.expectOne(url).flush('no session', { status: 401, statusText: 'Unauthorized' });
   }
 
   it('never redirects for the session probe while no navigation is committed', () => {
@@ -77,13 +75,13 @@ describe('authRefreshInterceptor', () => {
 
   it('uses the in-flight navigation target as returnUrl', () => {
     vi.spyOn(router, 'getCurrentNavigation').mockReturnValue({
-      extractedUrl: router.parseUrl('/photographer/7/photos'),
+      extractedUrl: router.parseUrl('/photographer/7/photos')
     } as any);
 
     failWith401('/v1/events');
 
     expect(String(navigateSpy.mock.calls[0][0])).toBe(
-      '/login?returnUrl=%2Fphotographer%2F7%2Fphotos',
+      '/login?returnUrl=%2Fphotographer%2F7%2Fphotos'
     );
   });
 
@@ -91,7 +89,7 @@ describe('authRefreshInterceptor', () => {
     router.navigated = true;
     Object.defineProperty(router, 'url', {
       configurable: true,
-      get: () => '/login?returnUrl=%2Fphotographer%2F7%2Fphotos&email=a%40b.com',
+      get: () => '/login?returnUrl=%2Fphotographer%2F7%2Fphotos&email=a%40b.com'
     });
 
     failWith401('/v1/events');
@@ -115,11 +113,9 @@ describe('authRefreshInterceptor', () => {
     let body: unknown;
     TestBed.inject(HttpClient)
       .get('/v1/events')
-      .subscribe(value => (body = value));
+      .subscribe((value) => (body = value));
 
-    httpMock
-      .expectOne('/v1/events')
-      .flush('expired', { status: 401, statusText: 'Unauthorized' });
+    httpMock.expectOne('/v1/events').flush('expired', { status: 401, statusText: 'Unauthorized' });
     httpMock.expectOne('/v1/events').flush({ ok: true });
 
     expect(body).toEqual({ ok: true });

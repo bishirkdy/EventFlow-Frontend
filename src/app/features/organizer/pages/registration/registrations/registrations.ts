@@ -12,17 +12,17 @@ import { RegistrationService } from '../../../../../core/services/registration/r
 import {
   RegistrationModel,
   RegistrationStatsModel,
-  RegistrationStatus,
+  RegistrationStatus
 } from '../../../../../core/models/registration';
-import { getApiErrorMessage } from 'core/api/api-error';
-import { createAsyncAction } from 'core/state';
+import { getApiErrorMessage } from '@/core/api/api-error';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-registrations',
   standalone: true,
   imports: [DatePipe, AsyncState],
-  templateUrl: './registrations.html',
+  templateUrl: './registrations.html'
 })
 export class RegistrationsComponent {
   protected readonly eventState = inject(OrganizerEventStateService);
@@ -52,34 +52,31 @@ export class RegistrationsComponent {
   protected readonly statuses = [
     {
       value: RegistrationStatus.Pending,
-      label: 'Pending',
+      label: 'Pending'
     },
     {
       value: RegistrationStatus.Approved,
-      label: 'Approved',
+      label: 'Approved'
     },
     {
       value: RegistrationStatus.Rejected,
-      label: 'Rejected',
+      label: 'Rejected'
     },
     {
       value: RegistrationStatus.Cancelled,
-      label: 'Cancelled',
+      label: 'Cancelled'
     },
     {
       value: RegistrationStatus.Waitlisted,
-      label: 'Waitlisted',
-    },
+      label: 'Waitlisted'
+    }
   ];
 
   private readonly listAction = createAsyncAction(
     (eventId: string) => this.service.list(eventId, this.pageNumber(), this.pageSize),
     {
       errorFallback: 'Unable to load registrations.',
-      onError: (err) =>
-        this.error.set(
-          getApiErrorMessage(err, 'Unable to load registrations.'),
-        ),
+      onError: (err) => this.error.set(getApiErrorMessage(err, 'Unable to load registrations.')),
       onSuccess: (response) => {
         if (!response.isSuccess) {
           this.error.set(response.message || 'Unable to load registrations.');
@@ -96,8 +93,8 @@ export class RegistrationsComponent {
 
         this.registrations.set(data.items ?? []);
         this.totalPages.set(data.totalPages || 1);
-      },
-    },
+      }
+    }
   );
 
   private readonly statsAction = createAsyncAction(
@@ -107,8 +104,8 @@ export class RegistrationsComponent {
         if (response.isSuccess && response.data) {
           this.stats.set(response.data);
         }
-      },
-    },
+      }
+    }
   );
 
   private readonly approveAction = createAsyncAction(
@@ -124,8 +121,8 @@ export class RegistrationsComponent {
         this.toastr.success(response.message || 'Registration approved.');
 
         this.load();
-      },
-    },
+      }
+    }
   );
 
   private readonly rejectAction = createAsyncAction(
@@ -142,8 +139,8 @@ export class RegistrationsComponent {
         this.toastr.success(response.message || 'Registration rejected.');
 
         this.load();
-      },
-    },
+      }
+    }
   );
 
   private readonly cancelAction = createAsyncAction(
@@ -159,8 +156,8 @@ export class RegistrationsComponent {
         this.toastr.success(response.message || 'Registration cancelled.');
 
         this.load();
-      },
-    },
+      }
+    }
   );
 
   protected readonly loading = this.listAction.pending;

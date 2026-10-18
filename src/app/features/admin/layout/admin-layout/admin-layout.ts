@@ -6,7 +6,7 @@ import { ADMIN_NAVIGATION } from '../../config/admin-navigation';
 @Component({
   selector: 'app-admin-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule],
-  templateUrl: './admin-layout.html',
+  templateUrl: './admin-layout.html'
 })
 export class AdminLayout {
   readonly navigation = ADMIN_NAVIGATION;

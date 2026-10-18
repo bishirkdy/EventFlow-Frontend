@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const trimmedRequiredValidator: ValidatorFn = (
-  control: AbstractControl,
+  control: AbstractControl
 ): ValidationErrors | null => {
   const value = control.value;
 

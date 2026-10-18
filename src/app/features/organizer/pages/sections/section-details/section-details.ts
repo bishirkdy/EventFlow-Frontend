@@ -5,7 +5,7 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { SectionModel } from '../../../../../core/models/section';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
@@ -14,15 +14,14 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [CapitalizePipe, AsyncState],
   templateUrl: './section-details.html',
-  styleUrl: './section-details.css',
+  styleUrl: './section-details.css'
 })
 export class SectionDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sectionService = inject(SectionService);
   private readonly toastr = inject(NotificationService);
-  private readonly organizerEventState =
-    inject(OrganizerEventStateService);
+  private readonly organizerEventState = inject(OrganizerEventStateService);
 
   section = signal<SectionModel | null>(null);
   error = signal<string | null>(null);
@@ -42,8 +41,8 @@ export class SectionDetails implements OnInit {
         }
 
         this.section.set(response.data);
-      },
-    },
+      }
+    }
   );
 
   private readonly deleteAction = createAsyncAction(
@@ -51,8 +50,8 @@ export class SectionDetails implements OnInit {
     {
       successMessage: 'Section deleted successfully.',
       errorFallback: 'Failed to delete section.',
-      onSuccess: () => this.goBack(),
-    },
+      onSuccess: () => this.goBack()
+    }
   );
 
   loading = this.loadAction.pending;
@@ -83,27 +82,15 @@ export class SectionDetails implements OnInit {
   }
 
   editSection(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-      this.sectionId,
-      'edit',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections', this.sectionId, 'edit']);
   }
 
   goBack(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sections',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sections']);
   }
 
   deleteSection(): void {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this section?'
-    );
+    const confirmed = window.confirm('Are you sure you want to delete this section?');
 
     if (!confirmed) {
       return;

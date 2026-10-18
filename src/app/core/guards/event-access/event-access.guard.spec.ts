@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, UrlTree } from '@angular/router';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router, UrlTree } from '@angular/router';
 import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 
 import { eventAccessGuard, EventAccessRequirement } from './event-access.guard';
@@ -14,19 +13,19 @@ describe('eventAccessGuard', () => {
   function makeRoute(eventIdValue: string | null): any {
     return {
       paramMap: {
-        get: (key: string) => (key === 'eventId' ? eventIdValue : null),
+        get: (key: string) => (key === 'eventId' ? eventIdValue : null)
       },
-      parent: null,
+      parent: null
     };
   }
 
   async function executeGuard(
     requirement: EventAccessRequirement,
     eventIdValue: string | null = eventId,
-    state: any = {},
+    state: any = {}
   ): Promise<any> {
     const result: any = TestBed.runInInjectionContext(() =>
-      eventAccessGuard(requirement)(makeRoute(eventIdValue), state),
+      eventAccessGuard(requirement)(makeRoute(eventIdValue), state)
     );
     if (result instanceof UrlTree || typeof result === 'boolean') return result;
     return await firstValueFrom(result as Observable<any>);
@@ -39,8 +38,8 @@ describe('eventAccessGuard', () => {
         isSuccess: true,
         statusCode: 200,
         message: 'ok',
-        data: { roles: access.roles ?? [], permissions: access.permissions ?? [] },
-      }),
+        data: { roles: access.roles ?? [], permissions: access.permissions ?? [] }
+      })
     );
     return spy;
   }
@@ -51,9 +50,9 @@ describe('eventAccessGuard', () => {
         provideRouter([]),
         {
           provide: EventRoleService,
-          useValue: { getMyPermissions: vi.fn() },
-        },
-      ],
+          useValue: { getMyPermissions: vi.fn() }
+        }
+      ]
     });
   });
 
@@ -118,7 +117,7 @@ describe('eventAccessGuard', () => {
     spy.getMyPermissions.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 401 })));
 
     const result = await executeGuard({ permissions: ['photo.upload'] }, eventId, {
-      url: '/photographer/7/photos',
+      url: '/photographer/7/photos'
     });
 
     expect(result.toString()).toBe('/login?returnUrl=%2Fphotographer%2F7%2Fphotos');

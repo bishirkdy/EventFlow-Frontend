@@ -6,7 +6,7 @@ import { EventPageService } from '../../../../core/services/event-page/event-pag
 import { EventPageModel } from '../../../../core/models/event-page';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
@@ -14,7 +14,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
   standalone: true,
   imports: [CapitalizePipe, AsyncState],
   templateUrl: './pages.html',
-  styleUrl: './pages.css',
+  styleUrl: './pages.css'
 })
 export class Pages implements OnInit {
   private readonly pageService = inject(EventPageService);
@@ -32,8 +32,8 @@ export class Pages implements OnInit {
     (eventId: string) => this.pageService.getManagePages(eventId),
     {
       errorFallback: 'Failed to load event pages.',
-      onSuccess: (response) => this.pages.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.pages.set(response.data ?? [])
+    }
   );
 
   private readonly publishAction = createAsyncAction(
@@ -43,8 +43,8 @@ export class Pages implements OnInit {
       onSuccess: (response) => {
         this.toastr.success(response.message);
         this.loadPages();
-      },
-    },
+      }
+    }
   );
 
   private readonly unpublishAction = createAsyncAction(
@@ -54,8 +54,8 @@ export class Pages implements OnInit {
       onSuccess: (response) => {
         this.toastr.success(response.message);
         this.loadPages();
-      },
-    },
+      }
+    }
   );
 
   private readonly reorderAction = createAsyncAction(
@@ -65,8 +65,8 @@ export class Pages implements OnInit {
       onSuccess: (response) => {
         this.toastr.success(response.message);
         this.loadPages();
-      },
-    },
+      }
+    }
   );
 
   private readonly deleteAction = createAsyncAction(
@@ -76,8 +76,8 @@ export class Pages implements OnInit {
       onSuccess: (response) => {
         this.toastr.success(response.message);
         this.loadPages();
-      },
-    },
+      }
+    }
   );
 
   loading = this.loadAction.pending;
@@ -141,7 +141,7 @@ export class Pages implements OnInit {
 
     this.reorderAction.run(
       eventId,
-      current.map((item) => item.id),
+      current.map((item) => item.id)
     );
   }
 
@@ -181,9 +181,10 @@ export class Pages implements OnInit {
     }
 
     const slug = page.slug?.trim().toLowerCase();
-    const url = !slug || slug === 'home'
-      ? `/events/${eventId}?preview=1`
-      : `/events/${eventId}/${encodeURIComponent(page.slug)}?preview=1`;
+    const url =
+      !slug || slug === 'home'
+        ? `/events/${eventId}?preview=1`
+        : `/events/${eventId}/${encodeURIComponent(page.slug)}?preview=1`;
 
     window.open(url, '_blank');
   }

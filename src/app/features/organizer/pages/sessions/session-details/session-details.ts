@@ -17,14 +17,14 @@ import { SessionSpeakerService } from '../../../../../core/services/session-spea
 import { EventFeatureService } from '../../../../../core/services/event-feature/event-feature.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { AsyncState } from '@/shared/components/async-state/async-state';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-session-details',
   standalone: true,
   imports: [DatePipe, CapitalizePipe, AsyncState],
   templateUrl: './session-details.html',
-  styleUrl: './session-details.css',
+  styleUrl: './session-details.css'
 })
 export class SessionDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -33,8 +33,7 @@ export class SessionDetails implements OnInit {
   private readonly toastr = inject(NotificationService);
   private readonly venueService = inject(VenueService);
   private readonly sectionService = inject(SectionService);
-  private readonly organizerEventState =
-    inject(OrganizerEventStateService);
+  private readonly organizerEventState = inject(OrganizerEventStateService);
   private readonly speakerService = inject(SpeakerService);
   private readonly sessionSpeakerService = inject(SessionSpeakerService);
   private readonly eventFeatureService = inject(EventFeatureService);
@@ -64,29 +63,29 @@ export class SessionDetails implements OnInit {
         }
 
         this.session.set(response.data);
-      },
-    },
+      }
+    }
   );
 
   private readonly venuesAction = createAsyncAction(
     () => this.venueService.getVenues(this.eventId),
     {
-      onSuccess: (response) => this.venues.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.venues.set(response.data ?? [])
+    }
   );
 
   private readonly sectionsAction = createAsyncAction(
     () => this.sectionService.getSections(this.eventId),
     {
-      onSuccess: (response) => this.sections.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.sections.set(response.data ?? [])
+    }
   );
 
   private readonly assignAction = createAsyncAction(
     (speakerId: string) =>
-      this.sessionSpeakerService.assign(this.eventId, this.sessionId, speakerId).pipe(
-        map((response) => ({ speakerId, response })),
-      ),
+      this.sessionSpeakerService
+        .assign(this.eventId, this.sessionId, speakerId)
+        .pipe(map((response) => ({ speakerId, response }))),
     {
       errorFallback: 'Failed to update speaker assignment.',
       onSettled: () => this.speakerUpdating.set(null),
@@ -101,15 +100,15 @@ export class SessionDetails implements OnInit {
           next.add(speakerId);
           return next;
         });
-      },
-    },
+      }
+    }
   );
 
   private readonly removeAction = createAsyncAction(
     (speakerId: string) =>
-      this.sessionSpeakerService.remove(this.eventId, this.sessionId, speakerId).pipe(
-        map((response) => ({ speakerId, response })),
-      ),
+      this.sessionSpeakerService
+        .remove(this.eventId, this.sessionId, speakerId)
+        .pipe(map((response) => ({ speakerId, response }))),
     {
       errorFallback: 'Failed to update speaker assignment.',
       onSettled: () => this.speakerUpdating.set(null),
@@ -124,8 +123,8 @@ export class SessionDetails implements OnInit {
           next.delete(speakerId);
           return next;
         });
-      },
-    },
+      }
+    }
   );
 
   private readonly deleteAction = createAsyncAction(
@@ -134,16 +133,15 @@ export class SessionDetails implements OnInit {
       successMessage: 'Session deleted successfully.',
       errorFallback: 'Failed to delete session.',
       onSettled: () => this.deleting.set(false),
-      onSuccess: () => this.goBack(),
-    },
+      onSuccess: () => this.goBack()
+    }
   );
 
   loading = this.sessionAction.pending;
 
   ngOnInit(): void {
     const eventId = this.organizerEventState.eventId();
-    const sessionId =
-      this.route.snapshot.paramMap.get('sessionId');
+    const sessionId = this.route.snapshot.paramMap.get('sessionId');
 
     if (!eventId) {
       this.error.set('Event ID not found.');
@@ -172,24 +170,32 @@ export class SessionDetails implements OnInit {
   private loadSpeakerFeature(): void {
     this.eventFeatureService.getFeatures(this.eventId).subscribe({
       next: (response) => {
-        const enabled = (response.data ?? []).some(feature => feature.isEnabled && feature.featureCode.toLowerCase() === 'speakers');
+        const enabled = (response.data ?? []).some(
+          (feature) => feature.isEnabled && feature.featureCode.toLowerCase() === 'speakers'
+        );
         this.speakerFeatureEnabled.set(enabled);
         if (enabled) {
           this.speakerService.getSpeakers(this.eventId).subscribe({
-            next: (result) => this.speakers.set((result.data ?? []).filter(speaker => speaker.isActive)),
-            error: () => undefined,
+            next: (result) =>
+              this.speakers.set((result.data ?? []).filter((speaker) => speaker.isActive)),
+            error: () => undefined
           });
           this.sessionSpeakerService.get(this.eventId, this.sessionId).subscribe({
-            next: (result) => this.assignedSpeakerIds.set(new Set((result.data ?? []).map(speaker => speaker.speakerId))),
-            error: () => undefined,
+            next: (result) =>
+              this.assignedSpeakerIds.set(
+                new Set((result.data ?? []).map((speaker) => speaker.speakerId))
+              ),
+            error: () => undefined
           });
         }
       },
-      error: () => this.speakerFeatureEnabled.set(false),
+      error: () => this.speakerFeatureEnabled.set(false)
     });
   }
 
-  isSpeakerAssigned(id: string): boolean { return this.assignedSpeakerIds().has(id); }
+  isSpeakerAssigned(id: string): boolean {
+    return this.assignedSpeakerIds().has(id);
+  }
 
   toggleSpeaker(speaker: SpeakerModel): void {
     const assigned = this.isSpeakerAssigned(speaker.id);
@@ -203,36 +209,26 @@ export class SessionDetails implements OnInit {
 
   venueName(venueId: string | null): string {
     if (!venueId) return 'No venue assigned';
-    return this.venues().find(venue => venue.id === venueId)?.name ?? 'Venue unavailable';
+    return this.venues().find((venue) => venue.id === venueId)?.name ?? 'Venue unavailable';
   }
 
   sectionName(sectionId: string | null): string {
     if (!sectionId) return 'No section assigned';
-    return this.sections().find(section => section.id === sectionId)?.name ?? 'Section unavailable';
+    return (
+      this.sections().find((section) => section.id === sectionId)?.name ?? 'Section unavailable'
+    );
   }
 
   editSession(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sessions',
-      this.sessionId,
-      'edit',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sessions', this.sessionId, 'edit']);
   }
 
   goBack(): void {
-    this.router.navigate([
-      '/organizer',
-      this.eventId,
-      'sessions',
-    ]);
+    this.router.navigate(['/organizer', this.eventId, 'sessions']);
   }
 
   deleteSession(): void {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this session?',
-    );
+    const confirmed = window.confirm('Are you sure you want to delete this session?');
 
     if (!confirmed) {
       return;
