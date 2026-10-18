@@ -7,14 +7,14 @@ import { NotificationService } from '../../../../../core/services/ui/notificatio
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { RegistrationService } from '../../../../../core/services/registration/registration.service';
 import { RegistrationModel, RegistrationStatus } from '../../../../../core/models/registration';
-import { getApiErrorMessage } from 'core/api/api-error';
-import { createAsyncAction } from 'core/state';
+import { getApiErrorMessage } from '@/core/api/api-error';
+import { createAsyncAction } from '@/core/state';
 
 @Component({
   selector: 'app-registration-details',
   standalone: true,
   imports: [DatePipe],
-  templateUrl: './registration-details.html',
+  templateUrl: './registration-details.html'
 })
 export class RegistrationDetailsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -34,11 +34,7 @@ export class RegistrationDetailsComponent implements OnInit {
     {
       errorFallback: 'Unable to load registration.',
       onError: (err) => {
-        console.error('DETAIL ERROR:', err);
-
-        this.error.set(
-          getApiErrorMessage(err, 'Unable to load registration.'),
-        );
+        this.error.set(getApiErrorMessage(err, 'Unable to load registration.'));
       },
       onSuccess: (response) => {
         if (!response.isSuccess || !response.data) {
@@ -47,15 +43,13 @@ export class RegistrationDetailsComponent implements OnInit {
         }
 
         this.registration.set(response.data);
-      },
-    },
+      }
+    }
   );
 
   private readonly statusAction = createAsyncAction(
-    (
-      request$: ReturnType<RegistrationService['approve']>,
-      successMessage: string,
-    ) => request$.pipe(map((response) => ({ successMessage, response }))),
+    (request$: ReturnType<RegistrationService['approve']>, successMessage: string) =>
+      request$.pipe(map((response) => ({ successMessage, response }))),
     {
       errorFallback: 'Action failed.',
       onSuccess: ({ successMessage, response }) => {
@@ -65,8 +59,8 @@ export class RegistrationDetailsComponent implements OnInit {
         }
         this.toastr.success(successMessage);
         this.registration.set(response.data);
-      },
-    },
+      }
+    }
   );
 
   private readonly rejectAction = createAsyncAction(
@@ -80,8 +74,8 @@ export class RegistrationDetailsComponent implements OnInit {
         }
         this.toastr.success('Registration rejected.');
         this.registration.set(response.data);
-      },
-    },
+      }
+    }
   );
 
   protected readonly loading = this.loadAction.pending;
@@ -108,15 +102,13 @@ export class RegistrationDetailsComponent implements OnInit {
     const item = this.registration();
     if (!eventId || !item) return;
 
-    this.rejectAction.run(
-      this.service.reject(eventId, item.id, { reason: reason.trim() }),
-    );
+    this.rejectAction.run(this.service.reject(eventId, item.id, { reason: reason.trim() }));
   }
 
   protected waitlist(): void {
     this.action(
       (eventId, id) => this.service.waitlist(eventId, id),
-      'Registration moved to waitlist.',
+      'Registration moved to waitlist.'
     );
   }
 
@@ -134,8 +126,11 @@ export class RegistrationDetailsComponent implements OnInit {
   }
 
   private action(
-    request: (eventId: string, registrationId: string) => ReturnType<RegistrationService['approve']>,
-    successMessage: string,
+    request: (
+      eventId: string,
+      registrationId: string
+    ) => ReturnType<RegistrationService['approve']>,
+    successMessage: string
   ): void {
     const eventId = this.eventState.eventId();
     const item = this.registration();

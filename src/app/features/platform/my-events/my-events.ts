@@ -13,14 +13,14 @@ import { workspaceUrlForRoles } from '../../../core/routing/event-route.util';
 import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink, TruncateWordsPipe , FeedbackComponent, CapitalizePipe, AsyncState],
+  imports: [DatePipe, RouterLink, TruncateWordsPipe, FeedbackComponent, CapitalizePipe, AsyncState],
   templateUrl: './my-events.html',
-  styleUrl: './my-events.css',
+  styleUrl: './my-events.css'
 })
 export class MyEvents implements OnInit {
   events = signal<Event[]>([]);
@@ -46,14 +46,14 @@ export class MyEvents implements OnInit {
     'eventadmin',
     'photographer',
     'staff',
-    'attendancestaff',
+    'attendancestaff'
   ];
 
   private readonly openAction = createAsyncAction(
     (event: Event) =>
-      this.roleService.getMyRoles(event.id).pipe(
-        map((response) => ({ event, roles: response.data ?? [] })),
-      ),
+      this.roleService
+        .getMyRoles(event.id)
+        .pipe(map((response) => ({ event, roles: response.data ?? [] }))),
     {
       toastErrors: true,
       errorFallback: 'Failed to open event',
@@ -66,8 +66,8 @@ export class MyEvents implements OnInit {
         }
 
         void this.router.navigate(url);
-      },
-    },
+      }
+    }
   );
 
   private readonly loadAction = createAsyncAction(() => this.eventService.getMyEvents(), {
@@ -81,7 +81,7 @@ export class MyEvents implements OnInit {
         this.loadEventRoles(event.id);
         this.loadRegistrationStatus(event.id);
       }
-    },
+    }
   });
 
   readonly loading = this.loadAction.pending;
@@ -114,15 +114,15 @@ export class MyEvents implements OnInit {
 
         if (roles.some((role) => this.restrictedRoles.includes(role))) {
           this.restrictedEventIds.update((ids) =>
-            ids.includes(eventId) ? ids : [...ids, eventId],
+            ids.includes(eventId) ? ids : [...ids, eventId]
           );
         }
 
         this.rolesLoadedEventIds.update((ids) => (ids.includes(eventId) ? ids : [...ids, eventId]));
       },
-      error: (error: unknown) => {
-        console.error(`Failed to load roles for event ${eventId}`, error);
-      },
+      error: () => {
+        // Non-critical: roles only hide restricted events from the list.
+      }
     });
   }
 
@@ -135,18 +135,18 @@ export class MyEvents implements OnInit {
           const registration = registrations[0];
 
           this.registeredEventIds.update((ids) =>
-            ids.includes(eventId) ? ids : [...ids, eventId],
+            ids.includes(eventId) ? ids : [...ids, eventId]
           );
 
           this.registrationIds.update((ids) => ({
             ...ids,
-            [eventId]: registration.id,
+            [eventId]: registration.id
           }));
         }
       },
-      error: (error: unknown) => {
-        console.error(`Failed to load registrations for event ${eventId}`, error);
-      },
+      error: () => {
+        // Non-critical: registration status only decorates the event card.
+      }
     });
   }
 

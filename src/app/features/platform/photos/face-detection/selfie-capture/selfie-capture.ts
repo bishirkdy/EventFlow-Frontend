@@ -7,25 +7,23 @@ import {
   ViewChild,
   inject,
   output,
-  signal,
+  signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Camera, LucideAngularModule } from 'lucide-angular';
 
 import { FaceDetectionService } from '../face-detection.service';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
-import type { NotificationService as NotificationServiceType } from '../../../../../core/services/ui/notification.service';
 
 @Component({
   selector: 'app-selfie-capture',
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
-  templateUrl: './selfie-capture.html',
+  templateUrl: './selfie-capture.html'
 })
-
 export class SelfieCapture implements OnInit, OnDestroy {
   private readonly faceDetection = inject(FaceDetectionService);
-  private readonly notification = inject<NotificationServiceType>(NotificationService);
+  private readonly notification = inject(NotificationService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   @ViewChild('videoElement')
@@ -66,8 +64,7 @@ export class SelfieCapture implements OnInit, OnDestroy {
   private async loadFaceModels(): Promise<void> {
     try {
       await this.faceDetection.loadModels();
-    } catch (error) {
-      console.error('Failed to load face detection models:', error);
+    } catch {
       this.error.set('Failed to load face detection models. Please refresh the page.');
     }
   }
@@ -95,9 +92,9 @@ export class SelfieCapture implements OnInit, OnDestroy {
         video: {
           facingMode: 'user',
           width: { ideal: 640 },
-          height: { ideal: 480 },
+          height: { ideal: 480 }
         },
-        audio: false,
+        audio: false
       });
 
       if (this.destroyed) {
@@ -117,8 +114,7 @@ export class SelfieCapture implements OnInit, OnDestroy {
       await video.play();
 
       this.startFaceDetection();
-    } catch (error) {
-      console.error('Failed to access camera:', error);
+    } catch {
       this.stopCamera();
 
       this.error.set('Unable to access the camera. Please check your browser permissions.');
@@ -180,9 +176,7 @@ export class SelfieCapture implements OnInit, OnDestroy {
         const detections = await this.faceDetection.detectFaces(video);
 
         this.faceDetected.set(detections.length > 0);
-
-      } catch (error) {
-        console.error('Face detection failed:', error);
+      } catch {
         this.faceDetected.set(false);
       } finally {
         this.detectionInProgress = false;
@@ -223,9 +217,7 @@ export class SelfieCapture implements OnInit, OnDestroy {
 
       this.stopCamera();
       this.saved.emit();
-    } catch (error) {
-      console.error('Selfie capture error:', error);
-
+    } catch {
       this.error.set('Failed to save your face profile. Please try again.');
 
       this.notification.error('Failed to save your face profile.');

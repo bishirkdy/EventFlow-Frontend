@@ -3,38 +3,41 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, map, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
-import type { NotificationService as NotificationServiceType } from '../../../../../core/services/ui/notification.service';
-import { FaceDetectionService } from '../face-detection.service';
+import { FaceDetectionService, type MatchedPhoto } from '../face-detection.service';
 import { ArrowLeft, ScanFace, Camera, LucideAngularModule, X } from 'lucide-angular';
 import { SelfieCapture } from '../selfie-capture/selfie-capture';
 import { PhotoService } from '@/core/services/photo/photo.service';
-import { createRawAsyncState } from 'core/state';
+import { type Photo } from '@/core/models/photographer';
+import { createRawAsyncState } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
+
+interface MatchedEventPhoto extends Photo {
+  confidence: number;
+}
 
 @Component({
   selector: 'app-my-photos',
   standalone: true,
   imports: [CommonModule, RouterLink, LucideAngularModule, SelfieCapture, AsyncState],
-  templateUrl: './my-photos.html',
+  templateUrl: './my-photos.html'
 })
 export class MyPhotos implements OnInit {
-
   private readonly route = inject(ActivatedRoute);
   private readonly photoService = inject(PhotoService);
-  private readonly faceDetection = inject<FaceDetectionService>(FaceDetectionService);
-  private readonly notification = inject<NotificationServiceType>(NotificationService);
+  private readonly faceDetection = inject(FaceDetectionService);
+  private readonly notification = inject(NotificationService);
 
   readonly eventId = signal<string>('');
   readonly matching = signal(false);
   readonly hasFaceProfile = signal(false);
 
-  private readonly photosState = createRawAsyncState<any[]>(
+  private readonly photosState = createRawAsyncState<Photo[]>(
     () => {
       const eventId = this.eventId();
       if (!eventId) return of([]);
       return this.loadPage(eventId, 1);
     },
-    { initial: [], autoLoad: false, errorFallback: 'Failed to load event photos.' },
+    { initial: [], autoLoad: false, errorFallback: 'Failed to load event photos.' }
   );
 
   readonly allPhotos = this.photosState.data;
@@ -45,7 +48,7 @@ export class MyPhotos implements OnInit {
     this.photosState.load();
   }
 
-  readonly matchedPhotos = signal<any[]>([]);
+  readonly matchedPhotos = signal<MatchedEventPhoto[]>([]);
 
   readonly totalMatched = computed(() => this.matchedPhotos().length);
   readonly totalPhotos = computed(() => (this.loading() ? 0 : this.allPhotos().length));
@@ -66,23 +69,21 @@ export class MyPhotos implements OnInit {
     }
   }
 
-  private loadPage(eventId: string, page: number): Observable<any[]> {
+  private loadPage(eventId: string, page: number): Observable<Photo[]> {
     return this.photoService.getPhotos(eventId, page, 100, true).pipe(
       switchMap((response) => {
         if (response.isSuccess && response.data) {
           const items = response.data.items ?? [];
 
           if (response.data.hasNextPage) {
-            return this.loadPage(eventId, page + 1).pipe(
-              map((rest) => [...items, ...rest]),
-            );
+            return this.loadPage(eventId, page + 1).pipe(map((rest) => [...items, ...rest]));
           }
 
           return of(items);
         }
 
         return of([]);
-      }),
+      })
     );
   }
 
@@ -99,7 +100,7 @@ export class MyPhotos implements OnInit {
     const descriptor: Float32Array | null = await this.faceDetection.loadUserFaceDescriptorAsync();
     if (!descriptor) {
       this.notification.error(
-        'Please set up your face profile first in the Selfie Capture section.',
+        'Please set up your face profile first in the Selfie Capture section.'
       );
       return;
     }
@@ -110,21 +111,16 @@ export class MyPhotos implements OnInit {
     const photoUrls = this.allPhotos().map((p) => p.imageUrl);
 
     try {
-      // Process all photos for face detection
       const descriptors = await this.faceDetection.processEventPhotos(photoUrls);
 
-      // Find matches
       const matches = this.faceDetection.findMatchingPhotos(descriptor, descriptors, 0.6);
 
-      // Map back to full photo data
-      const matchedPhotos = matches
-        .map((match: any) => {
-          const photo = this.allPhotos().find(
-            (p) => p.imageId === match.photoId || p.imageUrl === match.photoId,
-          );
-          return photo ? { ...photo, confidence: match.confidence, faceBox: match.faceBox } : null;
-        })
-        .filter(Boolean);
+      const matchedPhotos: MatchedEventPhoto[] = matches.flatMap((match: MatchedPhoto) => {
+        const photo = this.allPhotos().find(
+          (p) => p.photoId === match.photoId || p.imageUrl === match.photoId
+        );
+        return photo ? [{ ...photo, confidence: match.confidence }] : [];
+      });
 
       this.matchedPhotos.set(matchedPhotos);
 
@@ -132,18 +128,17 @@ export class MyPhotos implements OnInit {
         this.notification.success(`Found ${matchedPhotos.length} photos of you!`);
       } else {
         this.notification.info(
-          'No matching photos found. Try retaking your selfie or check back later.',
+          'No matching photos found. Try retaking your selfie or check back later.'
         );
       }
-    } catch (error) {
-      console.error('Face matching error:', error);
+    } catch {
       this.notification.error('Failed to find matching photos. Please try again.');
     } finally {
       this.matching.set(false);
     }
   }
 
-  openPhoto(photo: any) {
+  openPhoto(photo: MatchedEventPhoto) {
     window.open(photo.imageUrl, '_blank');
   }
 
@@ -153,7 +148,7 @@ export class MyPhotos implements OnInit {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
+      minute: '2-digit'
     });
   }
 
@@ -190,8 +185,7 @@ export class MyPhotos implements OnInit {
       this.hasFaceProfile.set(descriptor !== null);
       this.matchedPhotos.set([]);
       this.closeSelfieModal();
-    } catch (error) {
-      console.error('Failed to refresh face profile:', error);
+    } catch {
       this.notification.error('The face profile was saved, but its status could not be refreshed.');
     }
   }

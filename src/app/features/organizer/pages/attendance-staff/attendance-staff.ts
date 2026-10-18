@@ -17,7 +17,7 @@ import { SessionModel } from '../../../../core/models/session';
 
 import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { EmailValidator } from '../../../../core/validators/email.validator';
-import { createAsyncAction } from 'core/state';
+import { createAsyncAction } from '@/core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 
 @Component({
@@ -25,7 +25,7 @@ import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CapitalizePipe],
   templateUrl: './attendance-staff.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttendanceStaffComponent {
   private readonly emailValidator = inject(EmailValidator);
@@ -41,7 +41,7 @@ export class AttendanceStaffComponent {
   readonly staff = signal<AttendanceStaffModel[]>([]);
   readonly invitations = signal<EventInvitationModel[]>([]);
   readonly pendingInvitations = computed(() =>
-    this.invitations().filter((invitation) => invitation.status === 0),
+    this.invitations().filter((invitation) => invitation.status === 0)
   );
   readonly sections = signal<SectionModel[]>([]);
   readonly sessions = signal<SessionModel[]>([]);
@@ -59,50 +59,46 @@ export class AttendanceStaffComponent {
     {
       errorFallback: 'Unable to load attendance staff.',
       onError: () => this.toast.error('Unable to load attendance staff.'),
-      onSuccess: (response) => this.staff.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.staff.set(response.data ?? [])
+    }
   );
 
   private readonly sectionsAction = createAsyncAction(
     (eventId: string) => this.sectionService.getSections(eventId),
     {
       errorFallback: 'Unable to load sections.',
-      onError: (error) => {
-        console.error('Sections error:', error);
-
+      onError: () => {
         this.sections.set([]);
 
         this.toast.error('Unable to load sections.');
       },
-      onSuccess: (response) => this.sections.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.sections.set(response.data ?? [])
+    }
   );
 
   private readonly sessionsAction = createAsyncAction(
     (eventId: string) => this.sessionService.getSessions(eventId),
     {
       errorFallback: 'Unable to load sessions.',
-      onError: (error) => {
-        console.error('Sessions error:', error);
-
+      onError: () => {
         this.sessions.set([]);
 
         this.toast.error('Unable to load sessions.');
       },
-      onSuccess: (response) => this.sessions.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.sessions.set(response.data ?? [])
+    }
   );
 
   private readonly inviteAction = createAsyncAction(
-    (eventId: string, payload: { email: string; scopeType: InvitationScopeType; scopeId: string | null }) =>
-      this.invitationService.inviteAttendanceStaff(eventId, payload).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+    (
+      eventId: string,
+      payload: { email: string; scopeType: InvitationScopeType; scopeId: string | null }
+    ) =>
+      this.invitationService
+        .inviteAttendanceStaff(eventId, payload)
+        .pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Failed to send invitation.',
-      onError: (error) => {
-        console.error('Invite attendance staff error:', error);
-      },
       onSuccess: ({ eventId, response }) => {
         if (!response.isSuccess) {
           this.toast.error(response.message || 'Failed to send invitation.');
@@ -113,29 +109,26 @@ export class AttendanceStaffComponent {
 
         this.resetForm();
         this.load(eventId);
-      },
-    },
+      }
+    }
   );
 
   private readonly invitationsAction = createAsyncAction(
     (eventId: string) => this.invitationService.getAttendanceStaffInvitations(eventId),
     {
       onError: () => this.invitations.set([]),
-      onSuccess: (response) => this.invitations.set(response.data ?? []),
-    },
+      onSuccess: (response) => this.invitations.set(response.data ?? [])
+    }
   );
 
   private readonly revokeInvitationAction = createAsyncAction(
     (eventId: string, invitationId: string) =>
-      this.invitationService.revokeAttendanceStaffInvitation(eventId, invitationId).pipe(
-        map((response) => ({ eventId, response })),
-      ),
+      this.invitationService
+        .revokeAttendanceStaffInvitation(eventId, invitationId)
+        .pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Failed to revoke invitation.',
       onSettled: () => this.revokingInvitationId.set(null),
-      onError: (error) => {
-        console.error('Revoke invitation error:', error);
-      },
       onSuccess: ({ eventId, response }) => {
         if (!response.isSuccess) {
           this.toast.error(response.message || 'Failed to revoke invitation.');
@@ -144,19 +137,15 @@ export class AttendanceStaffComponent {
 
         this.toast.success('Invitation revoked.');
         this.load(eventId);
-      },
-    },
+      }
+    }
   );
 
   private readonly revokeAction = createAsyncAction(
-    (eventId: string, staffId: string) => this.ops.revokeStaff(eventId, staffId).pipe(
-      map((response) => ({ eventId, response })),
-    ),
+    (eventId: string, staffId: string) =>
+      this.ops.revokeStaff(eventId, staffId).pipe(map((response) => ({ eventId, response }))),
     {
       errorFallback: 'Unable to revoke.',
-      onError: (error) => {
-        console.error('Revoke staff error:', error);
-      },
       onSuccess: ({ eventId, response }) => {
         if (!response.isSuccess) {
           this.toast.error(response.message || 'Unable to revoke.');
@@ -165,14 +154,14 @@ export class AttendanceStaffComponent {
 
         this.toast.success('Attendance staff revoked.');
         this.load(eventId);
-      },
-    },
+      }
+    }
   );
 
   readonly loadingStaff = this.staffAction.pending;
   readonly invitationsLoading = this.invitationsAction.pending;
   readonly loadingScopes = computed(
-    () => this.sectionsAction.pending() || this.sessionsAction.pending(),
+    () => this.sectionsAction.pending() || this.sessionsAction.pending()
   );
   readonly inviting = this.inviteAction.pending;
 
@@ -271,7 +260,7 @@ export class AttendanceStaffComponent {
 
     if (this.scopeType !== 1 && !this.scopeId) {
       this.toast.error(
-        this.scopeType === 2 ? 'Please select a section.' : 'Please select a session.',
+        this.scopeType === 2 ? 'Please select a section.' : 'Please select a session.'
       );
       return;
     }
@@ -281,7 +270,7 @@ export class AttendanceStaffComponent {
     this.inviteAction.run(eventId, {
       email,
       scopeType: this.scopeType as InvitationScopeType,
-      scopeId,
+      scopeId
     });
   }
 
@@ -350,13 +339,13 @@ export class AttendanceStaffComponent {
         return 'Event';
 
       case 2:
-        return this.sections().find((section) => section.id === x.scopeId)?.name ?? '—';
+        return this.sections().find((section) => section.id === x.scopeId)?.name ?? 'â€”';
 
       case 3:
-        return this.sessions().find((session) => session.id === x.scopeId)?.title ?? '—';
+        return this.sessions().find((session) => session.id === x.scopeId)?.title ?? 'â€”';
 
       default:
-        return '—';
+        return 'â€”';
     }
   }
 

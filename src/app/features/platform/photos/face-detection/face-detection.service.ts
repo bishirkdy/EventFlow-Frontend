@@ -25,7 +25,7 @@ interface StoredFaceProfile {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class FaceDetectionService {
   private modelsLoaded = false;
@@ -63,14 +63,14 @@ export class FaceDetectionService {
     await Promise.all([
       faceapi.nets.tinyFaceDetector.loadFromUri(this.MODEL_URL),
       faceapi.nets.faceLandmark68Net.loadFromUri(this.MODEL_URL),
-      faceapi.nets.faceRecognitionNet.loadFromUri(this.MODEL_URL),
+      faceapi.nets.faceRecognitionNet.loadFromUri(this.MODEL_URL)
     ]);
 
     this.modelsLoaded = true;
   }
 
   async detectFaces(
-    imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
+    imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
   ): Promise<any[]> {
     await this.loadModels();
 
@@ -81,15 +81,15 @@ export class FaceDetectionService {
         imageElement,
         new faceapi.TinyFaceDetectorOptions({
           inputSize: 320,
-          scoreThreshold: 0.6,
-        }),
+          scoreThreshold: 0.6
+        })
       )
       .withFaceLandmarks()
       .withFaceDescriptors();
   }
 
   async computeFaceDescriptor(
-    imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
+    imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
   ): Promise<Float32Array | null> {
     await this.loadModels();
     const faceapi = await import('@vladmandic/face-api');
@@ -98,8 +98,8 @@ export class FaceDetectionService {
         imageElement,
         new faceapi.TinyFaceDetectorOptions({
           inputSize: 224,
-          scoreThreshold: 0.4,
-        }),
+          scoreThreshold: 0.4
+        })
       )
       .withFaceLandmarks()
       .withFaceDescriptor();
@@ -124,7 +124,7 @@ export class FaceDetectionService {
               for (const descriptor of cached) {
                 descriptors.push({
                   descriptor,
-                  imageId: url,
+                  imageId: url
                 });
               }
             }
@@ -138,20 +138,17 @@ export class FaceDetectionService {
               if (descriptor) {
                 descriptors.push({
                   descriptor: new Float32Array(descriptor),
-                  imageId: url,
+                  imageId: url
                 });
               }
             }
-
-            // Cache all descriptors for this photo in future iterations.
-            // See the note below about multi-face caching.
-          } catch (error) {
-            console.warn(`Failed to process photo ${url}:`, error);
+          } catch {
+            // Skip photos that cannot be read; matching continues with the rest.
           }
         }
 
         return descriptors;
-      }),
+      })
     );
 
     return results.flat();
@@ -175,36 +172,30 @@ export class FaceDetectionService {
       throw new Error('Cannot save an empty face descriptor.');
     }
 
-    // Update the in-memory cache immediately.
     this.userFaceDescriptor = new Float32Array(descriptor);
 
-    try {
-      const db = await this.openDB();
+    const db = await this.openDB();
 
-      await new Promise<void>((resolve, reject) => {
-        const transaction = db.transaction(this.STORE_NAME, 'readwrite');
-        const store = transaction.objectStore(this.STORE_NAME);
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction(this.STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
 
-        const profile: StoredFaceProfile = {
-          id: this.PROFILE_KEY,
-          descriptor: Array.from(descriptor),
-          timestamp: Date.now(),
-        };
+      const profile: StoredFaceProfile = {
+        id: this.PROFILE_KEY,
+        descriptor: Array.from(descriptor),
+        timestamp: Date.now()
+      };
 
-        store.put(profile);
+      store.put(profile);
 
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () =>
-          reject(transaction.error ?? new Error('Failed to save face profile.'));
-        transaction.onabort = () =>
-          reject(transaction.error ?? new Error('Face profile save was aborted.'));
-      });
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () =>
+        reject(transaction.error ?? new Error('Failed to save face profile.'));
+      transaction.onabort = () =>
+        reject(transaction.error ?? new Error('Face profile save was aborted.'));
+    });
 
-      db.close();
-    } catch (error) {
-      console.error('Failed to persist face descriptor:', error);
-      throw error;
-    }
+    db.close();
   }
 
   getUserFaceDescriptor(): Float32Array | null {
@@ -212,7 +203,6 @@ export class FaceDetectionService {
   }
 
   async loadUserFaceDescriptorAsync(): Promise<Float32Array | null> {
-    // Return cached data when available.
     if (this.userFaceDescriptor) {
       return new Float32Array(this.userFaceDescriptor);
     }
@@ -245,8 +235,7 @@ export class FaceDetectionService {
       }
 
       return descriptor;
-    } catch (error) {
-      console.error('Failed to load face descriptor:', error);
+    } catch {
       return null;
     }
   }
@@ -255,33 +244,28 @@ export class FaceDetectionService {
     this.userFaceDescriptor = null;
     this.faceDescriptors.clear();
 
-    try {
-      const db = await this.openDB();
+    const db = await this.openDB();
 
-      await new Promise<void>((resolve, reject) => {
-        const transaction = db.transaction(this.STORE_NAME, 'readwrite');
-        const store = transaction.objectStore(this.STORE_NAME);
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction(this.STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
 
-        store.delete(this.PROFILE_KEY);
+      store.delete(this.PROFILE_KEY);
 
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () =>
-          reject(transaction.error ?? new Error('Failed to delete face profile.'));
-        transaction.onabort = () =>
-          reject(transaction.error ?? new Error('Face profile deletion was aborted.'));
-      });
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () =>
+        reject(transaction.error ?? new Error('Failed to delete face profile.'));
+      transaction.onabort = () =>
+        reject(transaction.error ?? new Error('Face profile deletion was aborted.'));
+    });
 
-      db.close();
-    } catch (error) {
-      console.error('Failed to clear stored face descriptor:', error);
-      throw error;
-    }
+    db.close();
   }
 
   findMatchingPhotos(
     userDescriptor: Float32Array,
     eventDescriptors: FaceDescriptor[],
-    threshold = 0.6,
+    threshold = 0.6
   ): MatchedPhoto[] {
     const bestMatches = new Map<string, MatchedPhoto>();
 
@@ -304,7 +288,7 @@ export class FaceDetectionService {
         bestMatches.set(item.imageId, {
           photoId: item.imageId,
           imageUrl: item.imageId,
-          confidence,
+          confidence
         });
       }
     }

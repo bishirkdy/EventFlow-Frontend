@@ -9,7 +9,7 @@ import {
   Plus,
   X,
   LoaderCircle,
-  LucideAngularModule,
+  LucideAngularModule
 } from 'lucide-angular';
 
 import { NotificationService } from '../../../../core/services/ui/notification.service';
@@ -20,7 +20,7 @@ import { PhotoService } from '@/core/services/photo/photo.service';
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   templateUrl: './photo-upload.html',
-  styleUrl: './photo-upload.css',
+  styleUrl: './photo-upload.css'
 })
 export class PhotoUpload implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -49,7 +49,7 @@ export class PhotoUpload implements OnInit {
     Upload,
     Plus,
     X,
-    LoaderCircle,
+    LoaderCircle
   };
 
   ngOnInit(): void {
@@ -149,12 +149,12 @@ export class PhotoUpload implements OnInit {
 
       this.uploading.update((current) => ({
         ...current,
-        [key]: true,
+        [key]: true
       }));
 
       this.uploadProgress.update((current) => ({
         ...current,
-        [key]: 0,
+        [key]: 0
       }));
 
       try {
@@ -166,14 +166,13 @@ export class PhotoUpload implements OnInit {
 
         successCount++;
         this.notification.success(`${file.name} uploaded successfully.`);
-      } catch (error) {
-        console.error(`Failed to upload ${file.name}:`, error);
+      } catch {
         failedFiles.push(file);
         this.notification.error(`Failed to upload ${file.name}.`);
       } finally {
         this.uploading.update((current) => ({
           ...current,
-          [key]: false,
+          [key]: false
         }));
       }
     }
@@ -186,7 +185,7 @@ export class PhotoUpload implements OnInit {
       this.notification.success(`${successCount} photo(s) uploaded successfully.`);
     } else {
       this.notification.error(
-        `${successCount} uploaded; ${failedFiles.length} failed. You can retry the failed files.`,
+        `${successCount} uploaded; ${failedFiles.length} failed. You can retry the failed files.`
       );
     }
   }
