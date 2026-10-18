@@ -30,6 +30,7 @@ import {
 
 import { RegistrationFormSubmit } from '../../../../../core/models/registration';
 import { Router } from '@angular/router';
+import { emailValidator } from '@/shared/validators/email.validator';
 
 @Component({
   selector: 'app-registration-form',
@@ -51,7 +52,7 @@ export class RegistrationFormComponent {
   protected readonly form = this.fb.nonNullable.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, emailValidator]],
     phone: [''],
     organization: [''],
     designation: [''],
@@ -117,7 +118,7 @@ export class RegistrationFormComponent {
     }
 
     if (field.fieldType === RegistrationFieldType.Email) {
-      validators.push(Validators.email);
+      validators.push(emailValidator);
     }
 
     const rules = this.parseValidationRules(field.validationJson);
