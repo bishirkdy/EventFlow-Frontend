@@ -28,6 +28,7 @@ import { AttendanceAnalyticsModel } from '../../../../core/models/operations';
 import { TeamAnalyticsModel } from '../../../../core/models/event-role';
 import { createAsyncAction, createRawAsyncState } from 'core/state';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { isValidEmail } from '@/shared/validators/email.validator';
 
 @Component({
   selector: 'app-owner-dashboard',
@@ -249,6 +250,11 @@ export class OwnerDashboard implements OnInit {
     const email = this.organizerEmail().trim();
 
     if (!this.eventId || !email || this.inviting()) {
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      this.toastr.error('Enter a valid email address.');
       return;
     }
 
