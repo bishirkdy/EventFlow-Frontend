@@ -128,17 +128,33 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
       const sectionNames = new Map((sections?.data ?? []).map(s => [s.id, s.name]));
       const sessionNames = new Map((sessions?.data ?? []).map(s => [s.id, s.title]));
       const sessionSections = new Map((sessions?.data ?? []).map(s => [s.id, s.sectionId]));
+      const sessionsBySection = new Map<string, { id: string; title: string }[]>();
+      for (const session of sessions?.data ?? []) {
+        const list = sessionsBySection.get(session.sectionId) ?? [];
+        list.push({ id: session.id, title: session.title });
+        sessionsBySection.set(session.sectionId, list);
+      }
       const options: StaffScope[] = [];
       for (const assignment of mine) {
         if (assignment.scopeType === AttendanceScopeType.Event) {
           options.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
         } else if (assignment.scopeType === AttendanceScopeType.Section && assignment.scopeId) {
+          // A section lead may operate any session within their section, plus
+          // section-wide (area) check-ins for event-level tickets.
           options.push({
             key: `section:${assignment.scopeId}`,
-            label: sectionNames.get(assignment.scopeId) ?? 'Section',
+            label: `${sectionNames.get(assignment.scopeId) ?? 'Section'} — all sessions`,
             sectionId: assignment.scopeId,
             sessionId: null,
           });
+          for (const session of sessionsBySection.get(assignment.scopeId) ?? []) {
+            options.push({
+              key: `session:${session.id}`,
+              label: session.title,
+              sectionId: assignment.scopeId,
+              sessionId: session.id,
+            });
+          }
         } else if (assignment.scopeType === AttendanceScopeType.Session && assignment.scopeId) {
           options.push({
             key: `session:${assignment.scopeId}`,
