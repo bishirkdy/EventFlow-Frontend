@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
   LucideAngularModule,
@@ -13,6 +13,7 @@ import {
   CheckCircle,
 } from 'lucide-angular';
 import { Button } from '../../../shared/components/button/button';
+import { isValidEmail } from '@/shared/validators/email.validator';
 
 interface ContactDetail {
   label: string;
@@ -45,7 +46,25 @@ export class Contact {
     { label: 'Office', value: 'Calicut, Kerala, India', icon: MapPin },
   ];
 
-  submit(): void {
+  submit(form: NgForm): void {
+    form.control.markAllAsTouched();
+
+    if (form.invalid) {
+      return;
+    }
+
+    const name = this.name().trim();
+    const email = this.email().trim();
+    const message = this.message().trim();
+
+    if (!name || !isValidEmail(email) || !message) {
+      return;
+    }
+
+    this.name.set(name);
+    this.email.set(email);
+    this.subject.set(this.subject().trim());
+    this.message.set(message);
     this.sent.set(true);
   }
 }

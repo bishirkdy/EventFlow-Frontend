@@ -70,8 +70,9 @@
         }
 
         <form
+          #contactForm="ngForm"
           class="space-y-5"
-          (ngSubmit)="submit()"
+          (ngSubmit)="submit(contactForm)"
         >
           <div class="grid gap-5 sm:grid-cols-2">
             <!-- Name -->
@@ -85,10 +86,16 @@
                 type="text"
                 autocomplete="name"
                 required
+                maxlength="150"
                 [(ngModel)]="name"
+                #nameField="ngModel"
                 placeholder="Enter your name"
                 class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
               />
+
+              @if (nameField.touched && nameField.invalid) {
+                <p class="text-xs font-medium text-error">Please enter your name.</p>
+              }
             </div>
 
             <!-- Email -->
@@ -102,10 +109,21 @@
                 type="email"
                 autocomplete="email"
                 required
+                maxlength="255"
+                pattern="[A-Za-z][A-Za-z0-9._-]*@[A-Za-z0-9-]+\.[A-Za-z]{2,}"
                 [(ngModel)]="email"
+                #emailField="ngModel"
                 placeholder="Enter your email"
                 class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
               />
+
+              @if (emailField.touched && emailField.invalid) {
+                @if (emailField.hasError('required')) {
+                  <p class="text-xs font-medium text-error">Please enter your email.</p>
+                } @else {
+                  <p class="text-xs font-medium text-error">Enter a valid email address.</p>
+                }
+              }
             </div>
           </div>
 
@@ -135,14 +153,24 @@
               required
               rows="6"
               [(ngModel)]="message"
+              #messageField="ngModel"
               placeholder="Tell us about your question, event, or the support you need..."
               class="w-full resize-y rounded-md border border-border bg-surface px-3.5 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
             ></textarea>
+
+            @if (messageField.touched && messageField.invalid) {
+              <p class="text-xs font-medium text-error">Please enter your message.</p>
+            }
           </div>
 
           <!-- Submit -->
           <div class="border-t border-border pt-5">
-            <app-button label="Send Message" size="lg" />
+            <app-button
+              label="Send Message"
+              type="submit"
+              size="lg"
+              [disabled]="contactForm.invalid === true"
+            />
             <p class="mt-3 text-xs leading-5 text-text-muted">
               Fields marked with * are required.
             </p>
