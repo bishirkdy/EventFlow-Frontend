@@ -26,6 +26,7 @@ export class EditPageSection implements OnInit {
 
   readonly selectedImage = signal<File | null>(null);
   readonly currentImageUrl = signal<string | null>(null);
+  readonly imagePreview = signal<string | null>(null);
 
   private pageId = '';
   private sectionId = '';
@@ -122,8 +123,10 @@ export class EditPageSection implements OnInit {
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
 
-    this.selectedImage.set(input.files?.[0] ?? null);
+    this.selectedImage.set(file);
+    this.imagePreview.set(file ? URL.createObjectURL(file) : null);
   }
 
   updateSection(): void {

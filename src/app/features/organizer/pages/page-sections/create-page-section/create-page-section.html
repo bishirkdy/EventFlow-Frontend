@@ -66,6 +66,14 @@
           {{ selectedImage()?.name }}
         </p>
       }
+
+      @if (imagePreview()) {
+        <img
+          [src]="imagePreview()!"
+          alt="Section image preview"
+          class="mt-4 h-40 w-64 object-cover"
+        />
+      }
     </div>
 
     <div class="border border-border bg-surface px-4 py-3">

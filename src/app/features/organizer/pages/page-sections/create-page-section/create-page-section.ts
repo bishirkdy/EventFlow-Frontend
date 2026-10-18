@@ -25,6 +25,7 @@ export class CreatePageSection {
   private eventId = '';
 
   readonly selectedImage = signal<File | null>(null);
+  readonly imagePreview = signal<string | null>(null);
 
   private readonly createSectionAction = createAsyncAction(
     (payload: CreatePageSectionModel) =>
@@ -58,6 +59,7 @@ export class CreatePageSection {
     const file = input.files?.[0] ?? null;
 
     this.selectedImage.set(file);
+    this.imagePreview.set(file ? URL.createObjectURL(file) : null);
   }
 
   createSection(): void {

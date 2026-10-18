@@ -74,6 +74,14 @@
             {{ selectedImage()?.name }}
           </p>
         }
+
+        @if (imagePreview()) {
+          <img
+            [src]="imagePreview()!"
+            alt="New section image preview"
+            class="mt-4 h-40 w-64 object-cover"
+          />
+        }
       </div>
 
       <div class="flex items-center gap-3">
