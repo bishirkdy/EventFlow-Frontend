@@ -45,7 +45,7 @@ describe('Navbar', () => {
 
     expect(hrefs).toContain('/events');
     expect(hrefs).toContain('/about');
-    expect(hrefs).toContain('/features');
+    expect(hrefs).toContain('/contact');
     expect(hrefs).not.toContain('/profile');
   });
 
