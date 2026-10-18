@@ -1,77 +1,133 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AsyncState } from './async-state';
+import { provideComponentTestProviders } from '../../../testing/component-providers';
 
 @Component({
-  standalone: true,
   imports: [AsyncState],
   template: `
     <app-async-state
-      [loading]="loading()"
-      [error]="error()"
-      [empty]="empty()"
-      skeleton="cards"
-      [skeletonCount]="2"
-      emptyTitle="No items"
-      emptyMessage="Create one to get started."
-      (retry)="retry()"
+      [loading]="loading"
+      [error]="error"
+      [empty]="empty"
+      [layout]="layout"
+      [loadingView]="loadingView"
+      [loadingLabel]="loadingLabel"
+      [emptyTitle]="emptyTitle"
+      [emptyActionLabel]="emptyActionLabel"
+      (retry)="retries = retries + 1"
+      (emptyAction)="emptyActions = emptyActions + 1"
     >
       <ng-template>
-        <p class="content">Loaded content</p>
+        <p class="projected-content">Loaded content</p>
       </ng-template>
     </app-async-state>
   `,
 })
-class HostComponent {
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
-  readonly empty = signal(false);
+class Host {
+  loading = false;
+  error: string | null = null;
+  empty = false;
+  layout: 'block' | 'inline' = 'block';
+  loadingView: 'skeleton' | 'spinner' | 'text' = 'skeleton';
+  loadingLabel = '';
+  emptyTitle = 'Nothing here';
+  emptyActionLabel = '';
   retries = 0;
-
-  retry(): void {
-    this.retries += 1;
-  }
+  emptyActions = 0;
 }
 
 describe('AsyncState', () => {
-  let fixture: ComponentFixture<HostComponent>;
-  let host: HostComponent;
+  let fixture: ComponentFixture<Host>;
+  let host: Host;
+  let el: HTMLElement;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [HostComponent] }).compileComponents();
-    fixture = TestBed.createComponent(HostComponent);
+    await TestBed.configureTestingModule({
+      imports: [Host],
+      providers: provideComponentTestProviders(),
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Host);
     host = fixture.componentInstance;
-    fixture.detectChanges();
+    el = fixture.nativeElement as HTMLElement;
   });
 
-  it('renders the projected content when loaded', () => {
-    expect(fixture.nativeElement.querySelector('.content')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('app-skeleton')).toBeNull();
-  });
-
-  it('renders a skeleton while loading and hides the content', () => {
-    host.loading.set(true);
+  it('shows a skeleton while loading by default', () => {
+    host.loading = true;
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('app-skeleton')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('.content')).toBeNull();
+    expect(el.querySelector('app-skeleton')).toBeTruthy();
+    expect(el.querySelector('.projected-content')).toBeFalsy();
   });
 
-  it('renders the error state and emits retry', () => {
-    host.error.set('Boom');
+  it('shows a spinner when loadingView is spinner', () => {
+    host.loading = true;
+    host.loadingView = 'spinner';
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('Boom');
-    (fixture.nativeElement.querySelector('button') as HTMLButtonElement).click();
+    expect(el.querySelector('app-loading')).toBeTruthy();
+  });
+
+  it('shows a text placeholder when loadingView is text', () => {
+    host.loading = true;
+    host.loadingView = 'text';
+    host.loadingLabel = 'Loading sessions...';
+    fixture.detectChanges();
+
+    expect(el.textContent).toContain('Loading sessions...');
+  });
+
+  it('renders the error state with the message and fallback', () => {
+    host.error = 'Boom';
+    fixture.detectChanges();
+
+    const state = el.querySelector('app-error-state');
+    expect(state).toBeTruthy();
+    expect((state as HTMLElement).textContent).toContain('Boom');
+  });
+
+  it('uses inline error layout when requested', () => {
+    host.error = 'Boom';
+    host.layout = 'inline';
+    fixture.detectChanges();
+
+    expect(el.querySelector('.border-red-500\\/30')).toBeTruthy();
+  });
+
+  it('emits retry from the error state', () => {
+    host.error = 'Boom';
+    fixture.detectChanges();
+
+    const retry = el.querySelector<HTMLButtonElement>('app-error-state button');
+    retry?.click();
+    fixture.detectChanges();
+
     expect(host.retries).toBe(1);
   });
 
-  it('renders the empty state', () => {
-    host.empty.set(true);
+  it('renders the empty state with a call to action', () => {
+    host.empty = true;
+    host.emptyTitle = 'No sessions found';
+    host.emptyActionLabel = 'Create Session';
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('No items');
-    expect(fixture.nativeElement.querySelector('.content')).toBeNull();
+    expect(el.textContent).toContain('No sessions found');
+
+    const action = el.querySelector<HTMLButtonElement>('app-empty-state button');
+    expect(action).toBeTruthy();
+    action?.click();
+    fixture.detectChanges();
+
+    expect(host.emptyActions).toBe(1);
+  });
+
+  it('projects the content template once resolved', () => {
+    fixture.detectChanges();
+
+    expect(el.querySelector('.projected-content')?.textContent).toContain('Loaded content');
+    expect(el.querySelector('app-skeleton')).toBeFalsy();
+    expect(el.querySelector('app-error-state')).toBeFalsy();
   });
 });

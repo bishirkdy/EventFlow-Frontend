@@ -1,14 +1,39 @@
 @if (loading()) {
-  <app-skeleton [variant]="skeleton()" [count]="skeletonCount()" />
+  @switch (loadingView()) {
+    @case ('spinner') {
+      <app-loading
+        [label]="loadingLabel()"
+        [align]="layout() === 'inline' ? 'start' : 'center'"
+      />
+    }
+    @case ('text') {
+      <div
+        class="border border-border bg-surface px-6 py-10 text-center text-sm text-text-muted"
+        role="status"
+        aria-live="polite"
+      >
+        {{ loadingLabel() || 'Loading...' }}
+      </div>
+    }
+    @default {
+      <app-skeleton [variant]="skeleton()" [count]="skeletonCount()" />
+    }
+  }
 } @else if (error()) {
   <app-error-state
     [message]="error() || errorFallback()"
+    [variant]="layout() === 'inline' ? 'inline' : 'block'"
     [showRetry]="showRetry()"
     [retryLabel]="retryLabel()"
     (retry)="retry.emit()"
   />
 } @else if (empty()) {
-  <app-empty-state [title]="emptyTitle()" [message]="emptyMessage()" />
+  <app-empty-state
+    [title]="emptyTitle()"
+    [message]="emptyMessage()"
+    [actionLabel]="emptyActionLabel()"
+    (action)="emptyAction.emit()"
+  />
 } @else {
   @if (content(); as template) {
     <ng-container *ngTemplateOutlet="template" />

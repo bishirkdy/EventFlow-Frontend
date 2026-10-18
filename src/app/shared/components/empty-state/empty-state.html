@@ -3,8 +3,9 @@
 >
   <div
     class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-light text-primary"
+    aria-hidden="true"
   >
-    +
+    {{ icon() }}
   </div>
 
   <h3 class="text-lg font-semibold text-text-primary">
@@ -17,7 +18,11 @@
     </p>
   }
 
-  <div class="mt-6">
+  <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+    @if (actionLabel()) {
+      <app-button type="button" [label]="actionLabel()" (click)="action.emit()" />
+    }
+
     <ng-content />
   </div>
 </div>
