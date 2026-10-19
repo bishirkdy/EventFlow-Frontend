@@ -65,6 +65,7 @@
                   <th class="px-5 py-3 text-left font-semibold">Participant</th>
                   <th class="px-5 py-3 text-left font-semibold">Number</th>
                   <th class="px-5 py-3 text-left font-semibold">Organization</th>
+                  <th class="px-5 py-3 text-left font-semibold">Session</th>
                   <th class="px-5 py-3 text-left font-semibold">Status</th>
                   <th class="px-5 py-3"></th>
                 </tr>
@@ -78,6 +79,7 @@
                     </td>
                     <td class="px-5 py-4">{{ item.participantNumber }}</td>
                     <td class="px-5 py-4">{{ item.organization || '—' }}</td>
+                    <td class="px-5 py-4">{{ sessionTitle(item) }}</td>
                     <td class="px-5 py-4">
                       <span
                         class="bg-secondary-light px-2.5 py-1 text-xs font-medium text-secondary"

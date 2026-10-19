@@ -6,7 +6,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
 import { ParticipantService } from '../../../../../core/services/registration/participant.service';
-import { ParticipantModel, ParticipantStatus } from '../../../../../core/models/registration';
+import { SessionService } from '../../../../../core/services/session/session.service';
+import { SessionModel } from '../../../../../core/models/session';
+import {
+  ParticipantModel,
+  ParticipantStatus,
+  RegistrationScope
+} from '../../../../../core/models/registration';
 import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
 
@@ -21,10 +27,12 @@ export class ParticipantsComponent {
   protected readonly state = inject(OrganizerEventStateService);
 
   private readonly service = inject(ParticipantService);
+  private readonly sessionService = inject(SessionService);
   private readonly router = inject(Router);
   private readonly searchChanged = new Subject<void>();
 
   readonly participants = signal<ParticipantModel[]>([]);
+  readonly sessions = signal<SessionModel[]>([]);
   readonly error = signal<string | null>(null);
   readonly search = signal('');
   readonly status = signal<number | null>(null);
@@ -38,6 +46,14 @@ export class ParticipantsComponent {
     onError: () => this.error.set('Unable to load participants.'),
     onSuccess: (response) => this.applyList(response)
   });
+
+  private readonly sessionsAction = createAsyncAction(
+    (eventId: string) => this.sessionService.getSessions(eventId),
+    {
+      onError: () => this.sessions.set([]),
+      onSuccess: (response) => this.sessions.set(response.data ?? [])
+    }
+  );
 
   readonly loading = this.listAction.pending;
 
@@ -94,6 +110,25 @@ export class ParticipantsComponent {
     this.error.set(null);
 
     this.listAction.run();
+    this.loadSessions();
+  }
+
+  private loadSessions(): void {
+    const eventId = this.state.eventId();
+
+    if (eventId) {
+      this.sessionsAction.run(eventId);
+    }
+  }
+
+  sessionTitle(participant: ParticipantModel): string {
+    if (participant.scopeType !== RegistrationScope.Session || !participant.scopeId) {
+      return '—';
+    }
+
+    return (
+      this.sessions().find((session) => session.id === participant.scopeId)?.title ?? 'Session'
+    );
   }
 
   private loadRequest() {
