@@ -6,6 +6,5 @@ export enum InvitationType {
 
 export enum InvitationScopeType {
   Event = 1,
-  Section = 2,
   Session = 3
 }

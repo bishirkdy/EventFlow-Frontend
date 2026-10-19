@@ -6,9 +6,7 @@
       Verify the ticket on the server before recording attendance.
     </p>
   </div>
-  <div class="overflow-hidden border border-border bg-black">
-    <video #video class="aspect-video w-full object-cover" playsinline muted></video>
-  </div>
+
   <div class="border border-border bg-surface p-5">
     @if (!scopesLoaded()) {
       <p class="mb-5 text-sm text-text-secondary">Loading your scan scopes…</p>
@@ -25,32 +23,36 @@
           }
         </select>
         <p class="mt-1 text-xs text-text-secondary">
-          Scans are only accepted for the scope assigned to you.
+          A scan is recorded against the ticket's own session; you may only scan within the scope
+          assigned to you.
         </p>
       </div>
     }
+
     <div class="flex items-center gap-3">
       <span class="h-2.5 w-2.5 rounded-full bg-secondary"></span>
       <p class="text-sm text-text-primary">{{ message() }}</p>
     </div>
+
     <div class="mt-5 flex gap-3">
       <button
         type="button"
-        (click)="start()"
-        class="border border-border px-4 py-2.5 text-sm font-medium hover:border-secondary"
+        (click)="openCamera()"
+        class="bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
       >
-        Start camera
+        Open camera
       </button>
       @if (status() === 'success' || status() === 'error') {
         <button
           type="button"
-          (click)="start()"
-          class="bg-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
+          (click)="openCamera()"
+          class="border border-border px-5 py-2.5 text-sm font-medium hover:border-secondary"
         >
           Scan next
         </button>
       }
     </div>
+
     <div class="mt-6 border-t border-border pt-5">
       <label class="text-sm font-medium">Manual QR fallback</label>
       <div class="mt-2 flex gap-2">
@@ -70,4 +72,25 @@
       </div>
     </div>
   </div>
+
+  @if (cameraOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+      <div class="w-full max-w-lg border border-border bg-surface p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">Scan QR code</h3>
+            <p class="text-sm text-text-muted">Point your camera at the ticket QR code.</p>
+          </div>
+
+          <button type="button" class="border border-border px-3 py-2" (click)="closeCamera()">
+            Close
+          </button>
+        </div>
+
+        <div class="mt-5 overflow-hidden border border-border bg-black">
+          <video #qrVideo class="h-auto w-full" autoplay muted playsinline></video>
+        </div>
+      </div>
+    </div>
+  }
 </section>

@@ -9,10 +9,8 @@ import { AttendanceStaffModel } from '../../../../core/models/operations';
 import { InvitationService } from '../../../../core/services/invitation/invitation.service';
 import { EventInvitationModel, InvitationScopeType } from '../../../../core/models/invitation';
 
-import { SectionService } from '../../../../core/services/section/section.service';
 import { SessionService } from '../../../../core/services/session/session.service';
 
-import { SectionModel } from '../../../../core/models/section';
 import { SessionModel } from '../../../../core/models/session';
 
 import { NotificationService } from '../../../../core/services/ui/notification.service';
@@ -33,7 +31,6 @@ export class AttendanceStaffComponent {
 
   private readonly ops = inject(OperationsService);
   private readonly invitationService = inject(InvitationService);
-  private readonly sectionService = inject(SectionService);
   private readonly sessionService = inject(SessionService);
 
   private readonly toast = inject(NotificationService);
@@ -43,9 +40,7 @@ export class AttendanceStaffComponent {
   readonly pendingInvitations = computed(() =>
     this.invitations().filter((invitation) => invitation.status === 0)
   );
-  readonly sections = signal<SectionModel[]>([]);
   readonly sessions = signal<SessionModel[]>([]);
-
   readonly scopePopupOpen = signal(false);
   readonly selectedScopeName = signal('');
   readonly revokingInvitationId = signal<string | null>(null);
@@ -60,19 +55,6 @@ export class AttendanceStaffComponent {
       errorFallback: 'Unable to load attendance staff.',
       onError: () => this.toast.error('Unable to load attendance staff.'),
       onSuccess: (response) => this.staff.set(response.data ?? [])
-    }
-  );
-
-  private readonly sectionsAction = createAsyncAction(
-    (eventId: string) => this.sectionService.getSections(eventId),
-    {
-      errorFallback: 'Unable to load sections.',
-      onError: () => {
-        this.sections.set([]);
-
-        this.toast.error('Unable to load sections.');
-      },
-      onSuccess: (response) => this.sections.set(response.data ?? [])
     }
   );
 
@@ -160,9 +142,7 @@ export class AttendanceStaffComponent {
 
   readonly loadingStaff = this.staffAction.pending;
   readonly invitationsLoading = this.invitationsAction.pending;
-  readonly loadingScopes = computed(
-    () => this.sectionsAction.pending() || this.sessionsAction.pending()
-  );
+  readonly loadingScopes = this.sessionsAction.pending;
   readonly inviting = this.inviteAction.pending;
 
   constructor() {
@@ -176,7 +156,6 @@ export class AttendanceStaffComponent {
   load(eventId: string): void {
     this.staffAction.run(eventId);
     this.invitationsAction.run(eventId);
-    this.sectionsAction.run(eventId);
     this.sessionsAction.run(eventId);
   }
 
@@ -203,24 +182,10 @@ export class AttendanceStaffComponent {
     }
 
     this.scopePopupOpen.set(true);
-
-    if (this.scopeType === 2) {
-      this.loadSections(eventId);
-      return;
-    }
-
-    if (this.scopeType === 3) {
-      this.loadSessions(eventId);
-    }
+    this.loadSessions(eventId);
   }
 
   closeScopePopup(): void {
-    this.scopePopupOpen.set(false);
-  }
-
-  selectSection(section: SectionModel): void {
-    this.scopeId = section.id;
-    this.selectedScopeName.set(section.name);
     this.scopePopupOpen.set(false);
   }
 
@@ -228,10 +193,6 @@ export class AttendanceStaffComponent {
     this.scopeId = session.id;
     this.selectedScopeName.set(session.title);
     this.scopePopupOpen.set(false);
-  }
-
-  private loadSections(eventId: string): void {
-    this.sectionsAction.run(eventId);
   }
 
   private loadSessions(eventId: string): void {
@@ -259,9 +220,7 @@ export class AttendanceStaffComponent {
     }
 
     if (this.scopeType !== 1 && !this.scopeId) {
-      this.toast.error(
-        this.scopeType === 2 ? 'Please select a section.' : 'Please select a session.'
-      );
+      this.toast.error('Please select a session.');
       return;
     }
 
@@ -338,9 +297,6 @@ export class AttendanceStaffComponent {
       case 1:
         return 'Event';
 
-      case 2:
-        return this.sections().find((section) => section.id === x.scopeId)?.name ?? 'â€”';
-
       case 3:
         return this.sessions().find((session) => session.id === x.scopeId)?.title ?? 'â€”';
 
@@ -353,9 +309,6 @@ export class AttendanceStaffComponent {
     switch (scopeType) {
       case 1:
         return 'Event';
-
-      case 2:
-        return 'Section';
 
       case 3:
         return 'Session';

@@ -1,17 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  ViewChild,
-  inject,
-  signal
-} from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { OperationsService } from '../../../../core/services/operations/operations.service';
-import { SectionService } from '../../../../core/services/section/section.service';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { NotificationService } from '../../../../core/services/ui/notification.service';
@@ -19,16 +11,9 @@ import { AttendanceScopeType } from '../../../../core/models/operations';
 
 type ScannerStatus = 'ready' | 'starting' | 'scanning' | 'verifying' | 'success' | 'error';
 
-type BarcodeDetectorLike = {
-  detect(source: HTMLVideoElement): Promise<Array<{ rawValue?: string }>>;
-};
-
-type BarcodeDetectorConstructorLike = new (options?: { formats?: string[] }) => BarcodeDetectorLike;
-
 export type StaffScope = {
   key: string;
   label: string;
-  sectionId: string | null;
   sessionId: string | null;
 };
 
@@ -37,14 +22,13 @@ export type StaffScope = {
   standalone: true,
   templateUrl: './scanner.html'
 })
-export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
+export class AttendanceQrScanner implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly operations = inject(OperationsService);
-  private readonly sections = inject(SectionService);
   private readonly sessions = inject(SessionService);
   private readonly auth = inject(AuthService);
   private readonly notify = inject(NotificationService);
-  @ViewChild('video', { static: true }) video!: ElementRef<HTMLVideoElement>;
+  @ViewChild('qrVideo') private qrVideo?: ElementRef<HTMLVideoElement>;
 
   readonly status = signal<ScannerStatus>('ready');
   readonly manualQr = signal('');
@@ -52,11 +36,13 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
   readonly scopes = signal<StaffScope[]>([]);
   readonly scopesLoaded = signal(false);
   readonly selectedScope = signal<StaffScope | null>(null);
+  readonly cameraOpen = signal(false);
+
+  private scannerControls?: IScannerControls;
+
   readonly eventId =
     this.route.parent?.parent?.snapshot.paramMap.get('eventId') ??
     this.route.parent?.snapshot.paramMap.get('eventId');
-  private stream: MediaStream | null = null;
-  private frame = 0;
 
   constructor() {
     const existing = this.auth.currentUser();
@@ -72,12 +58,8 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit(): void {
-    void this.start();
-  }
-
   ngOnDestroy(): void {
-    this.stop();
+    this.stopCamera();
   }
 
   selectScope(key: string): void {
@@ -85,54 +67,52 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     if (scope) this.selectedScope.set(scope);
   }
 
-  async start(): Promise<void> {
-    if (!this.eventId || this.status() === 'scanning') return;
+  openCamera(): void {
+    if (!this.eventId || this.status() === 'scanning' || this.status() === 'starting') return;
+
+    this.cameraOpen.set(true);
     this.status.set('starting');
-    try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
-        audio: false
-      });
-      this.video.nativeElement.srcObject = this.stream;
-      await this.video.nativeElement.play();
-      const Detector = (
-        globalThis as unknown as { BarcodeDetector?: BarcodeDetectorConstructorLike }
-      ).BarcodeDetector;
-      if (!Detector) {
-        this.status.set('ready');
-        this.message.set(
-          'Automatic QR scanning is unavailable in this browser. Use manual QR entry below.'
-        );
-        return;
-      }
-      this.status.set('scanning');
-      this.message.set('Scanning...');
-      const detector = new Detector({ formats: ['qr_code'] });
-      const scan = async () => {
-        if (this.status() !== 'scanning') return;
-        try {
-          const codes = await detector.detect(this.video.nativeElement);
-          const value = codes.find((x) => x.rawValue)?.rawValue;
-          if (value) {
-            await this.verify(value);
-            return;
+    this.message.set('Starting camera...');
+
+    setTimeout(async () => {
+      try {
+        const reader = new BrowserMultiFormatReader();
+
+        this.scannerControls = await reader.decodeFromVideoDevice(
+          undefined,
+          this.qrVideo!.nativeElement,
+          (result) => {
+            if (!result) return;
+
+            this.stopCamera();
+            void this.verify(result.getText());
           }
-        } catch {
-          /* Camera frames can occasionally fail while focus changes. */
-        }
-        this.frame = requestAnimationFrame(scan);
-      };
-      this.frame = requestAnimationFrame(scan);
-    } catch {
-      this.status.set('error');
-      this.message.set('Camera access is unavailable. Use manual QR entry.');
+        );
+
+        this.status.set('scanning');
+        this.message.set('Scanning...');
+      } catch {
+        this.stopCamera();
+        this.status.set('error');
+        this.message.set('Camera access is unavailable. Use manual QR entry.');
+        this.notify.error(null, 'Camera access is unavailable.');
+      }
+    });
+  }
+
+  closeCamera(): void {
+    this.stopCamera();
+
+    if (this.status() === 'scanning' || this.status() === 'starting') {
+      this.status.set('ready');
+      this.message.set('Point the camera at a participant QR code.');
     }
   }
 
-  stop(): void {
-    if (this.frame) cancelAnimationFrame(this.frame);
-    this.stream?.getTracks().forEach((track) => track.stop());
-    this.stream = null;
+  private stopCamera(): void {
+    this.scannerControls?.stop();
+    this.scannerControls = undefined;
+    this.cameraOpen.set(false);
   }
 
   verifyManual(): void {
@@ -147,45 +127,18 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
     }
     forkJoin({
       staff: this.operations.getStaff(this.eventId).pipe(catchError(() => of(null))),
-      sections: this.sections.getSections(this.eventId).pipe(catchError(() => of(null))),
       sessions: this.sessions.getSessions(this.eventId).pipe(catchError(() => of(null)))
-    }).subscribe(({ staff, sections, sessions }) => {
+    }).subscribe(({ staff, sessions }) => {
       const mine = (staff?.data ?? []).filter((x) => x.isActive && x.userId === me);
-      const sectionNames = new Map((sections?.data ?? []).map((s) => [s.id, s.name]));
       const sessionNames = new Map((sessions?.data ?? []).map((s) => [s.id, s.title]));
-      const sessionSections = new Map((sessions?.data ?? []).map((s) => [s.id, s.sectionId]));
-      const sessionsBySection = new Map<string, { id: string; title: string }[]>();
-      for (const session of sessions?.data ?? []) {
-        const list = sessionsBySection.get(session.sectionId) ?? [];
-        list.push({ id: session.id, title: session.title });
-        sessionsBySection.set(session.sectionId, list);
-      }
       const options: StaffScope[] = [];
       for (const assignment of mine) {
         if (assignment.scopeType === AttendanceScopeType.Event) {
-          options.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
-        } else if (assignment.scopeType === AttendanceScopeType.Section && assignment.scopeId) {
-          // A section lead may operate any session within their section, plus
-          // section-wide (area) check-ins for event-level tickets.
-          options.push({
-            key: `section:${assignment.scopeId}`,
-            label: `${sectionNames.get(assignment.scopeId) ?? 'Section'} — all sessions`,
-            sectionId: assignment.scopeId,
-            sessionId: null
-          });
-          for (const session of sessionsBySection.get(assignment.scopeId) ?? []) {
-            options.push({
-              key: `session:${session.id}`,
-              label: session.title,
-              sectionId: assignment.scopeId,
-              sessionId: session.id
-            });
-          }
+          options.push({ key: 'event', label: 'Event-wide', sessionId: null });
         } else if (assignment.scopeType === AttendanceScopeType.Session && assignment.scopeId) {
           options.push({
             key: `session:${assignment.scopeId}`,
             label: sessionNames.get(assignment.scopeId) ?? 'Session',
-            sectionId: sessionSections.get(assignment.scopeId) ?? null,
             sessionId: assignment.scopeId
           });
         }
@@ -197,7 +150,7 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
         // Owners and organizers hold event.team.manage and legitimately scan
         // event-wide without an assignment row; the server still authorizes
         // every scan, so unassigned users are rejected there with a clear error.
-        unique.push({ key: 'event', label: 'Event-wide', sectionId: null, sessionId: null });
+        unique.push({ key: 'event', label: 'Event-wide', sessionId: null });
       }
       this.scopes.set(unique);
       this.selectedScope.update((scope) =>
@@ -209,30 +162,28 @@ export class AttendanceQrScanner implements AfterViewInit, OnDestroy {
 
   private async verify(value: string): Promise<void> {
     if (!this.eventId || this.status() === 'verifying') return;
-    this.stop();
+    this.stopCamera();
     this.status.set('verifying');
     this.message.set('Verifying ticket and attendance permission...');
     const scope = this.selectedScope();
-    this.operations
-      .checkInQr(this.eventId, value, scope?.sectionId ?? null, scope?.sessionId ?? null)
-      .subscribe({
-        next: (response) => {
-          if (response.isSuccess) {
-            this.status.set('success');
-            this.message.set(response.message || 'Participant checked in successfully.');
-            this.manualQr.set('');
-            this.notify.success(this.message());
-          } else {
-            this.status.set('error');
-            this.message.set(response.message || 'Ticket verification failed.');
-            this.notify.error(null, this.message());
-          }
-        },
-        error: (error) => {
+    this.operations.checkInQr(this.eventId, value, null, scope?.sessionId ?? null).subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          this.status.set('success');
+          this.message.set(response.message || 'Participant checked in successfully.');
+          this.manualQr.set('');
+          this.notify.success(this.message());
+        } else {
           this.status.set('error');
-          this.message.set('Ticket verification failed.');
-          this.notify.error(error, this.message());
+          this.message.set(response.message || 'Ticket verification failed.');
+          this.notify.error(null, this.message());
         }
-      });
+      },
+      error: (error) => {
+        this.status.set('error');
+        this.message.set('Ticket verification failed.');
+        this.notify.error(error, this.message());
+      }
+    });
   }
 }

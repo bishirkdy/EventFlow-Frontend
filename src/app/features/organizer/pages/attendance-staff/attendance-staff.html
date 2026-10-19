@@ -3,7 +3,7 @@
     <h2 class="text-2xl font-semibold text-text-primary">Attendance Staff</h2>
 
     <p class="text-sm text-text-muted">
-      Send staff invitations scoped to a whole event, a section, or a session.
+      Send staff invitations scoped to a whole event or a specific session.
     </p>
   </div>
 
@@ -21,7 +21,6 @@
       (ngModelChange)="onScopeTypeChange()"
     >
       <option [ngValue]="1">Event</option>
-      <option [ngValue]="2">Section</option>
       <option [ngValue]="3">Session</option>
     </select>
 
@@ -37,7 +36,7 @@
         class="min-h-11 border border-border bg-background px-4 py-3 text-left text-sm text-text-primary hover:bg-surface"
         (click)="openScopePopup()"
       >
-        {{ selectedScopeName() || (scopeType === 2 ? 'Select Section' : 'Select Session') }}
+        {{ selectedScopeName() || 'Select Session' }}
       </button>
     }
 
@@ -173,9 +172,7 @@
     <div class="pointer-events-auto w-full max-w-lg border border-border bg-surface shadow-xl">
       <div class="flex items-center justify-between border-b border-border px-5 py-4">
         <div>
-          <h3 class="text-lg font-semibold text-text-primary">
-            {{ scopeType === 2 ? 'Select Section' : 'Select Session' }}
-          </h3>
+          <h3 class="text-lg font-semibold text-text-primary">Select Session</h3>
 
           <p class="mt-1 text-sm text-text-muted">
             Select the scope for this attendance staff member.
@@ -194,26 +191,6 @@
       <div class="max-h-96 overflow-y-auto p-3">
         @if (loadingScopes()) {
           <div class="px-4 py-10 text-center text-sm text-text-muted">Loading...</div>
-        } @else if (scopeType === 2) {
-          @for (section of sections(); track section.id) {
-            <button
-              type="button"
-              class="block w-full cursor-pointer border-b border-border px-4 py-4 text-left last:border-b-0 hover:bg-background"
-              (click)="selectSection(section)"
-            >
-              <p class="font-medium text-text-primary">
-                {{ section.name | capitalize }}
-              </p>
-
-              @if (section.description) {
-                <p class="mt-1 text-xs text-text-muted">
-                  {{ section.description }}
-                </p>
-              }
-            </button>
-          } @empty {
-            <div class="px-4 py-10 text-center text-sm text-text-muted">No sections available.</div>
-          }
         } @else {
           @for (session of sessions(); track session.id) {
             <button
