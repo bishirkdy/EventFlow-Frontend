@@ -26,48 +26,39 @@
         <p class="mt-2 text-3xl font-bold">{{ d.attendancePercentage | number: '1.0-1' }}%</p>
       </div>
     </div>
-  }
 
-  <div class="border border-border bg-surface p-6">
-    <h3 class="text-lg font-semibold">QR Check-in</h3>
-
-    <div class="mt-4 flex flex-col gap-3 sm:flex-row">
-      <input
-        class="min-h-11 flex-1 border border-border bg-background px-4"
-        [ngModel]="qr()"
-        (ngModelChange)="qr.set($event)"
-        placeholder="Scan or paste ticket QR value"
-      />
-
-      <button
-        class="bg-primary cursor-pointer hover:bg-white hover:text-primary hover:border-primary border px-5 py-3 font-semibold text-white"
-        (click)="checkIn()"
-      >
-        Verify & Check In
-      </button>
-
-      <button class="border border-border px-5 py-3" (click)="camera()">Camera</button>
-    </div>
-  </div>
-
-  @if (scanning()) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div class="w-full max-w-lg border border-border bg-surface p-5">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-semibold">Scan QR Code</h3>
-            <p class="text-sm text-text-muted">Point your camera at the ticket QR code.</p>
-          </div>
-
-          <button type="button" class="border border-border px-3 py-2" (click)="closeCamera()">
-            Close
-          </button>
+    @if (d.sessions.length > 0) {
+      <section class="overflow-hidden border border-border bg-surface">
+        <div class="border-b border-border px-5 py-4">
+          <h3 class="text-sm font-semibold text-text-primary">By session</h3>
         </div>
 
-        <div class="mt-5 overflow-hidden border border-border bg-black">
-          <video #qrVideo class="h-auto w-full" autoplay muted playsinline></video>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="border-b border-border bg-background">
+              <tr>
+                <th class="px-5 py-3 text-left font-semibold">Session</th>
+                <th class="px-5 py-3 text-left font-semibold">Checked in</th>
+                <th class="px-5 py-3 text-left font-semibold">Checked out</th>
+                <th class="px-5 py-3 text-left font-semibold">Currently inside</th>
+                <th class="px-5 py-3 text-left font-semibold">Attendance</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-border">
+              @for (session of d.sessions; track session.sessionId) {
+                <tr>
+                  <td class="px-5 py-4 font-medium">{{ sessionTitle(session.sessionId) }}</td>
+                  <td class="px-5 py-4">{{ session.checkedIn }}</td>
+                  <td class="px-5 py-4">{{ session.checkedOut }}</td>
+                  <td class="px-5 py-4">{{ session.currentlyInside }}</td>
+                  <td class="px-5 py-4">{{ session.attendancePercentage | number: '1.0-1' }}%</td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
-      </div>
-    </div>
+      </section>
+    }
   }
 </div>

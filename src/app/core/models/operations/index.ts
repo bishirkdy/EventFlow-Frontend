@@ -8,3 +8,4 @@ export * from './attendance-staff.model';
 export * from './hour-bucket.model';
 export * from './notification.model';
 export * from './notification-status.enum';
+export * from './session-attendance.model';
