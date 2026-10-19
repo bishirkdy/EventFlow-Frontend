@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { SessionModel } from '../../../../core/models/session';
 import { SectionModel } from '../../../../core/models/section';
+import { RegistrationScope } from '../../../../core/models/registration';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { SectionService } from '../../../../core/services/section/section.service';
 import { OrganizerEventStateService } from '../../services/organizer-event-state.service';
@@ -85,6 +86,12 @@ export class Sessions implements OnInit {
 
   editSession(sessionId: string): void {
     this.router.navigate(['/organizer', this.eventId, 'sessions', sessionId, 'edit']);
+  }
+
+  manageRegistrationForm(sessionId: string): void {
+    this.router.navigate(['/organizer', this.eventId, 'registration', 'form'], {
+      queryParams: { scopeType: RegistrationScope.Session, scopeId: sessionId }
+    });
   }
 
   deleteSession(sessionId: string): void {

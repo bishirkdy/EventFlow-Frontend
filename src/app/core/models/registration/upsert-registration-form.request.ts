@@ -1,7 +1,10 @@
 ﻿import { CapacityMode } from './capacity-mode.enum';
 import { RegistrationFormFieldRequest } from './registration-form-field-request.request';
+import { RegistrationScope } from './registration-scope.enum';
 
 export interface UpsertRegistrationFormRequest {
+  scopeType: RegistrationScope;
+  scopeId?: string | null;
   name: string;
   description?: string | null;
   isActive: boolean;

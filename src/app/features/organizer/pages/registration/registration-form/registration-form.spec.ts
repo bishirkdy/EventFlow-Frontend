@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { RegistrationFormPageComponent } from './registration-form';
 
 describe('RegistrationFormPageComponent', () => {
@@ -7,7 +8,13 @@ describe('RegistrationFormPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationFormPageComponent]
+      imports: [RegistrationFormPageComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: { get: () => null } } }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationFormPageComponent);

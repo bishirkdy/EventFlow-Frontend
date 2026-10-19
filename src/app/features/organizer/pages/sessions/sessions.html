@@ -102,6 +102,14 @@
 
                 <button
                   type="button"
+                  (click)="manageRegistrationForm(session.id)"
+                  class="border border-border px-3 py-2 text-sm text-text-secondary hover:bg-background hover:text-text-primary"
+                >
+                  Registration form
+                </button>
+
+                <button
+                  type="button"
                   [disabled]="deleting() === session.id"
                   (click)="deleteSession(session.id)"
                   class="border border-red-500/30 px-3 py-2 text-sm text-red-500 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"

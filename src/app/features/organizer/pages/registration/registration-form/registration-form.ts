@@ -1,9 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../../../../core/services/ui/notification.service';
 
 import { OrganizerEventStateService } from '../../../services/organizer-event-state.service';
-import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration';
+import {
+  CapacityMode,
+  RegistrationFieldType,
+  RegistrationScope
+} from '../../../../../core/models/registration';
 import { RegistrationFormService } from '../../../../../core/services/registration/registration-form.service';
 import {
   RegistrationFormFieldModel,
@@ -25,15 +30,23 @@ export class RegistrationFormPageComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly toastr = inject(NotificationService);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly eventId = this.eventState.eventId;
+
+  protected readonly scopeType = this.resolveScopeType();
+  protected readonly scopeId = this.route.snapshot.queryParamMap.get('scopeId');
 
   protected readonly error = signal<string | null>(null);
   protected readonly formId = signal<string | null>(null);
   protected readonly fields = signal<EditableField[]>([]);
+  protected readonly isInherited = signal(false);
+
+  protected readonly scopeLabel =
+    this.scopeType === RegistrationScope.Session ? 'Session' : 'Event';
 
   private readonly loadAction = createAsyncAction(
-    (eventId: string) => this.formService.get(eventId),
+    (eventId: string) => this.formService.get(eventId, this.scopeType, this.scopeId),
     {
       errorFallback: 'Unable to load registration form.',
       onError: (err) => {
@@ -75,6 +88,7 @@ export class RegistrationFormPageComponent {
 
         if (response.data) {
           this.formId.set(response.data.id);
+          this.isInherited.set(response.data.isInherited);
           this.applyModel(response.data);
         } else {
           this.prepareCreateForm();
@@ -98,6 +112,7 @@ export class RegistrationFormPageComponent {
         }
 
         this.formId.set(response.data.id);
+        this.isInherited.set(response.data.isInherited);
 
         this.applyModel(response.data);
 
@@ -109,6 +124,7 @@ export class RegistrationFormPageComponent {
   protected readonly loading = this.loadAction.pending;
   protected readonly saving = this.upsertAction.pending;
   protected readonly CapacityMode = CapacityMode;
+  protected readonly RegistrationScope = RegistrationScope;
 
   protected readonly form = this.fb.nonNullable.group({
     name: ['Event Registration', [Validators.required, Validators.maxLength(200)]],
@@ -273,6 +289,8 @@ export class RegistrationFormPageComponent {
     }
 
     const request: UpsertRegistrationFormRequest = {
+      scopeType: this.scopeType,
+      scopeId: this.scopeId,
       name: this.form.controls.name.value.trim(),
       description: this.form.controls.description.value.trim() || null,
       isActive: this.form.controls.isActive.value,
@@ -298,6 +316,14 @@ export class RegistrationFormPageComponent {
     this.upsertAction.run(eventId, request);
   }
 
+  private resolveScopeType(): RegistrationScope {
+    const raw = this.route.snapshot.queryParamMap.get('scopeType');
+
+    return raw === String(RegistrationScope.Session)
+      ? RegistrationScope.Session
+      : RegistrationScope.Event;
+  }
+
   private load(): void {
     const eventId = this.eventId();
 
@@ -314,10 +340,14 @@ export class RegistrationFormPageComponent {
   private prepareCreateForm(): void {
     this.formId.set(null);
     this.error.set(null);
+    this.isInherited.set(false);
     this.fields.set([]);
 
     this.form.reset({
-      name: 'Event Registration',
+      name:
+        this.scopeType === RegistrationScope.Session
+          ? 'Session Registration'
+          : 'Event Registration',
       description: '',
       isActive: true,
       capacityMode: CapacityMode.Unlimited,

@@ -8,6 +8,12 @@
           class="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-(--color-secondary)"
         >
           Registration
+
+          <span
+            class="rounded-full border border-[#e3e0dc] px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-[#77736e]"
+          >
+            {{ scopeLabel }} form
+          </span>
         </div>
 
         <h1 class="text-2xl font-semibold tracking-tight text-primary">
@@ -57,6 +63,13 @@
         </p>
       </section>
     } @else {
+      @if (scopeType === RegistrationScope.Session && isInherited()) {
+        <section class="mb-6 border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          This session is currently using the event registration form. Saving will create a form
+          just for this session.
+        </section>
+      }
+
       <form
         class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]"
         (submit)="$event.preventDefault(); save()"
