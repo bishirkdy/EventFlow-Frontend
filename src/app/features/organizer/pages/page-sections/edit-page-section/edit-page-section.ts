@@ -69,7 +69,6 @@ export class EditPageSection implements OnInit {
     title: [''],
     content: [''],
     isVisible: [true],
-    showRegistrationForm: [false],
     configuration: ['']
   });
 
@@ -114,7 +113,6 @@ export class EditPageSection implements OnInit {
       title: section.title ?? '',
       content: section.content ?? '',
       isVisible: section.isVisible,
-      showRegistrationForm: section.showRegistrationForm,
       configuration: section.configuration ?? ''
     });
 

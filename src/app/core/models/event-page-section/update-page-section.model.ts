@@ -4,6 +4,5 @@
   content?: string;
   image?: File;
   isVisible: boolean;
-  showRegistrationForm?: boolean;
   configuration?: string;
 }
