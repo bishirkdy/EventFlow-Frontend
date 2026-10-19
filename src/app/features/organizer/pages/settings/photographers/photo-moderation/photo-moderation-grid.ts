@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { forkJoin, map } from 'rxjs';
+import { map } from 'rxjs';
 import { NotificationService } from '@/core/services/ui/notification.service';
 import { OrganizerEventStateService } from '@/features/organizer/services/organizer-event-state.service';
 import { PhotoService } from '@/core/services/photo/photo.service';
@@ -124,22 +124,22 @@ export class PhotoModerationGrid implements OnInit {
 
   private readonly bulkVisibilityAction = createAsyncAction(
     (targets: Photo[], isVisible: boolean) =>
-      forkJoin(
-        targets.map((photo) =>
-          this.photoService.toggleVisibility(this.eventId(), photo.photoId, isVisible)
+      this.photoService
+        .bulkToggleVisibility(
+          this.eventId(),
+          targets.map((photo) => photo.photoId),
+          isVisible
         )
-      ).pipe(map((responses) => ({ targets, isVisible, responses }))),
+        .pipe(map((response) => ({ targets, isVisible, response }))),
     {
-      errorFallback: 'Failed to update some photos. Refreshing the list.',
+      errorFallback: 'Failed to update the selected photos. Refreshing the list.',
       onError: () => {
         this.clearSelection();
         this.loadPhotos();
       },
-      onSuccess: ({ targets, isVisible, responses }) => {
-        const failed = responses.some((response) => !response.isSuccess);
-
-        if (failed) {
-          this.notification.error('Some photos could not be updated. Refreshing the list.');
+      onSuccess: ({ targets, isVisible, response }) => {
+        if (!response.isSuccess) {
+          this.notification.error(response.message || 'Failed to update the selected photos.');
           this.clearSelection();
           this.loadPhotos();
           return;
@@ -152,7 +152,7 @@ export class PhotoModerationGrid implements OnInit {
         );
 
         this.clearSelection();
-        this.notification.success(`Updated ${targets.length} photo(s).`);
+        this.notification.success(response.message || `Updated ${targets.length} photo(s).`);
       }
     }
   );

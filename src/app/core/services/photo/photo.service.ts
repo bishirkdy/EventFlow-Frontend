@@ -59,4 +59,15 @@ export class PhotoService {
       { isVisible }
     );
   }
+
+  bulkToggleVisibility(
+    eventId: string,
+    photoIds: string[],
+    isVisible: boolean
+  ): Observable<ApiResponse<object>> {
+    return this.http.patch<ApiResponse<object>>(
+      `${this.apiUrl}${PHOTO_ENDPOINTS.bulkUpdateVisibility(eventId)}`,
+      { photoIds, isVisible }
+    );
+  }
 }
