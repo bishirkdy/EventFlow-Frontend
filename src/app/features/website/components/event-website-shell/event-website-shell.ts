@@ -8,11 +8,12 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { LoginDialogService } from '../../../../core/services/ui/login-dialog.service';
 import { RegistrationDialogService } from '../../../../core/services/ui/registration-dialog.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
+import { Menu, X, ChevronRight, ArrowUpRight , LucideAngularModule} from 'lucide-angular';
 
 @Component({
   selector: 'app-event-website-shell',
   standalone: true,
-  imports: [RouterLink, CapitalizePipe],
+  imports: [RouterLink, CapitalizePipe , LucideAngularModule],
   templateUrl: './event-website-shell.html',
   styleUrl: './event-website-shell.css'
 })
@@ -24,6 +25,13 @@ export class EventWebsiteShell {
   private readonly authService = inject(AuthService);
   private readonly loginDialog = inject(LoginDialogService);
   private readonly registrationDialog = inject(RegistrationDialogService);
+
+  readonly Menu = Menu;
+  readonly X = X;
+  readonly ChevronRight = ChevronRight;
+  readonly ArrowUpRight = ArrowUpRight;
+
+  isMobileMenuOpen = false;
 
   readonly registrationEnabled = computed(() => this.hasFeature('registration') && !this.preview());
 
@@ -257,10 +265,6 @@ export class EventWebsiteShell {
 
   canRegisterSession(session: SessionModel): boolean {
     return this.registrationEnabled() && session.allowRegistration === true;
-  }
-
-  sectionRegistrationEnabled(section: { showRegistrationForm?: boolean }): boolean {
-    return this.registrationEnabled() && section.showRegistrationForm === true;
   }
 
   openEventRegistration(): void {
