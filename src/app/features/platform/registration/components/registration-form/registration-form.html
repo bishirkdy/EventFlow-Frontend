@@ -11,7 +11,7 @@
           <span class="h-1.5 w-1.5 bg-primary" aria-hidden="true"></span>
 
           <span class="text-[10px] font-extrabold uppercase tracking-[0.22em] text-primary">
-            Event registration
+            {{ session() ? 'Session registration' : 'Event registration' }}
           </span>
         </div>
 
@@ -51,7 +51,7 @@
               formControlName="firstName"
               autocomplete="given-name"
               placeholder="First name"
-              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
+              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-primary"
             />
 
             @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
@@ -70,7 +70,7 @@
               formControlName="lastName"
               autocomplete="family-name"
               placeholder="Last name"
-              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
+              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-primary"
             />
 
             @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
@@ -89,7 +89,7 @@
               formControlName="email"
               autocomplete="email"
               placeholder="you@example.com"
-              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
+              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-primary"
             />
 
             @if (form.controls.email.invalid && form.controls.email.touched) {
@@ -114,7 +114,7 @@
               formControlName="phone"
               autocomplete="tel"
               placeholder="+91 00000 00000"
-              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
+              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-primary"
             />
 
             @if (form.controls.phone.invalid && form.controls.phone.touched) {
@@ -133,7 +133,7 @@
               formControlName="organization"
               autocomplete="organization"
               placeholder="Company or organization"
-              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
+              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-primary"
             />
           </div>
 
@@ -148,7 +148,7 @@
               formControlName="designation"
               autocomplete="organization-title"
               placeholder="Your role or designation"
-              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary"
+              class="w-full border border-border bg-surface px-4 py-3.5 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-primary"
             />
           </div>
         </div>
@@ -214,7 +214,7 @@
     @if (heroImage()) {
       <img
         [src]="heroImage()!"
-        [alt]="event()?.name || registrationForm().name"
+        [alt]="session()?.title || event()?.name || registrationForm().name"
         class="absolute inset-0 h-full w-full object-cover"
       />
 
@@ -242,7 +242,7 @@
       <div class="flex items-start justify-between gap-6">
         <div class="border border-white/30 bg-black/20 px-4 py-2 backdrop-blur-md">
           <span class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-white">
-            You're invited
+            {{ session() ? 'Session registration' : "You're invited" }}
           </span>
         </div>
 
@@ -255,47 +255,102 @@
         }
       </div>
 
-      <div class="max-w-xl">
-        @if (event()?.name) {
-          <p class="mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white/70">
-            {{ event()!.name }}
-          </p>
-        }
+      @if (session(); as currentSession) {
+        <div class="max-w-xl">
+          @if (currentSession.sessionType) {
+            <p class="mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white/70">
+              {{ currentSession.sessionType }}
+            </p>
+          }
 
-        <h2
-          class="font-serif text-4xl font-medium leading-[0.95] tracking-tighter text-white sm:text-5xl xl:text-6xl"
-        >
-          Your place starts here.
-        </h2>
+          <h2
+            class="font-serif text-4xl font-medium leading-[0.95] tracking-tighter text-white sm:text-5xl xl:text-6xl"
+          >
+            {{ currentSession.title }}
+          </h2>
 
-        <p class="mt-5 max-w-md text-sm leading-7 text-white/75">
-          Complete your details, reserve your place, and get ready for the experience.
-        </p>
+          @if (currentSession.description) {
+            <p class="mt-5 max-w-md text-sm leading-7 text-white/75">
+              {{ currentSession.description }}
+            </p>
+          }
 
-        <div class="mt-7 flex flex-wrap gap-3">
-          @if (eventDate(); as dates) {
+          <div class="mt-7 flex flex-wrap gap-3">
+            @if (sessionTime(); as time) {
+              <div class="border border-white/20 bg-black/20 px-4 py-3 backdrop-blur-md">
+                <p class="text-[9px] font-extrabold uppercase tracking-[0.14em] text-white/60">
+                  Time
+                </p>
+
+                <p class="mt-1 text-sm font-semibold text-white">
+                  @if (time.start) {
+                    {{ time.start | date: 'mediumDate' }} · {{ time.start | date: 'shortTime' }}
+                  }
+                  @if (time.end) {
+                    – {{ time.end | date: 'shortTime' }}
+                  }
+                </p>
+              </div>
+            }
+
             <div class="border border-white/20 bg-black/20 px-4 py-3 backdrop-blur-md">
               <p class="text-[9px] font-extrabold uppercase tracking-[0.14em] text-white/60">
-                Date
+                Capacity
               </p>
 
               <p class="mt-1 text-sm font-semibold text-white">
-                {{ dates.start | date: 'mediumDate' }}
+                {{
+                  currentSession.capacity !== null
+                    ? currentSession.capacity + ' places'
+                    : 'Unlimited'
+                }}
               </p>
             </div>
-          }
-
-          @if (registrationForm().enableWaitlist) {
-            <div class="border border-white/20 bg-black/20 px-4 py-3 backdrop-blur-md">
-              <p class="text-[9px] font-extrabold uppercase tracking-[0.14em] text-white/60">
-                Availability
-              </p>
-
-              <p class="mt-1 text-sm font-semibold text-white">Waitlist enabled</p>
-            </div>
-          }
+          </div>
         </div>
-      </div>
+      } @else {
+        <div class="max-w-xl">
+          @if (event()?.name) {
+            <p class="mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white/70">
+              {{ event()!.name }}
+            </p>
+          }
+
+          <h2
+            class="font-serif text-4xl font-medium leading-[0.95] tracking-tighter text-white sm:text-5xl xl:text-6xl"
+          >
+            Your place starts here.
+          </h2>
+
+          <p class="mt-5 max-w-md text-sm leading-7 text-white/75">
+            Complete your details, reserve your place, and get ready for the experience.
+          </p>
+
+          <div class="mt-7 flex flex-wrap gap-3">
+            @if (eventDate(); as dates) {
+              <div class="border border-white/20 bg-black/20 px-4 py-3 backdrop-blur-md">
+                <p class="text-[9px] font-extrabold uppercase tracking-[0.14em] text-white/60">
+                  Date
+                </p>
+
+                <p class="mt-1 text-sm font-semibold text-white">
+                  {{ dates.start | date: 'mediumDate' }}
+                </p>
+              </div>
+            }
+
+            @if (registrationForm().enableWaitlist) {
+              <div class="border border-white/20 bg-black/20 px-4 py-3 backdrop-blur-md">
+                <p class="text-[9px] font-extrabold uppercase tracking-[0.14em] text-white/60">
+                  Availability
+                </p>
+
+                <p class="mt-1 text-sm font-semibold text-white">Waitlist enabled</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
   </aside>
 </form>

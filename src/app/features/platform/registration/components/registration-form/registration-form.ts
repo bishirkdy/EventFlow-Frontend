@@ -19,6 +19,7 @@ import {
 import { RegistrationFieldComponent } from '../registration-field/registration-field';
 import { CapacityMode, RegistrationFieldType } from '../../../../../core/models/registration';
 import { Event } from '../../../../../core/models/event';
+import { SessionModel } from '../../../../../core/models/session';
 
 import {
   RegistrationFormFieldModel,
@@ -42,6 +43,8 @@ export class RegistrationFormComponent {
   readonly registrationForm = input.required<RegistrationFormModel>();
 
   readonly event = input<Event | null>(null);
+
+  readonly session = input<SessionModel | null>(null);
 
   readonly submitting = input(false);
   readonly submitted = output<RegistrationFormSubmit>();
@@ -74,6 +77,12 @@ export class RegistrationFormComponent {
   });
 
   protected readonly heroImage = computed(() => {
+    const session = this.session();
+
+    if (session) {
+      return session.imageUrl;
+    }
+
     const images = this.event()?.images ?? [];
 
     return [...images].sort((a, b) => a.displayOrder - b.displayOrder).at(0)?.url ?? null;
@@ -89,6 +98,19 @@ export class RegistrationFormComponent {
     return {
       start: event.startDate,
       end: event.endDate
+    };
+  });
+
+  protected readonly sessionTime = computed(() => {
+    const session = this.session();
+
+    if (!session || (!session.startTime && !session.endTime)) {
+      return null;
+    }
+
+    return {
+      start: session.startTime,
+      end: session.endTime
     };
   });
 
