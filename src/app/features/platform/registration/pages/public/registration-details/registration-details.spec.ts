@@ -4,6 +4,8 @@ import { of } from 'rxjs';
 
 import { PublicRegistrationDetailsComponent } from './registration-details';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
+import { EventService } from '../../../../../../core/services/event/event.service';
+import { SessionService } from '../../../../../../core/services/session/session.service';
 
 describe('PublicRegistrationDetailsComponent', () => {
   let component: PublicRegistrationDetailsComponent;
@@ -28,6 +30,32 @@ describe('PublicRegistrationDetailsComponent', () => {
           provide: RegistrationService,
           useValue: {
             getById: () =>
+              of({
+                isSuccess: false,
+                statusCode: 404,
+                message: 'Not found',
+                data: null,
+                errors: null
+              })
+          }
+        },
+        {
+          provide: EventService,
+          useValue: {
+            getEventById: () =>
+              of({
+                isSuccess: false,
+                statusCode: 404,
+                message: 'Not found',
+                data: null,
+                errors: null
+              })
+          }
+        },
+        {
+          provide: SessionService,
+          useValue: {
+            getSessionById: () =>
               of({
                 isSuccess: false,
                 statusCode: 404,

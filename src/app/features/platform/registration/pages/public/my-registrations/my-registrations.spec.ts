@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 
 import { MyRegistrationsComponent } from './my-registrations';
 import { RegistrationService } from '../../../../../../core/services/registration/registration.service';
+import { SessionService } from '../../../../../../core/services/session/session.service';
 
 describe('MyRegistrationsComponent', () => {
   let component: MyRegistrationsComponent;
@@ -19,6 +20,13 @@ describe('MyRegistrationsComponent', () => {
           provide: RegistrationService,
           useValue: {
             getMine: () =>
+              of({ isSuccess: true, statusCode: 200, message: 'Success', data: [], errors: null })
+          }
+        },
+        {
+          provide: SessionService,
+          useValue: {
+            getSessions: () =>
               of({ isSuccess: true, statusCode: 200, message: 'Success', data: [], errors: null })
           }
         }

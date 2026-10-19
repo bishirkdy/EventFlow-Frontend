@@ -48,6 +48,16 @@
                     <span class="break-all font-mono text-xs text-text-muted">
                       {{ registration.registrationNumber }}
                     </span>
+
+                    @if (scopeLabel(registration); as scope) {
+                      <span class="text-text-muted">·</span>
+
+                      <span
+                        class="border border-secondary bg-secondary-light px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-secondary"
+                      >
+                        {{ scope }}
+                      </span>
+                    }
                   </div>
 
                   <h2 class="mt-4 text-lg font-semibold text-text-primary">
