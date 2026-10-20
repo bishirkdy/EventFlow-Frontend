@@ -8,6 +8,7 @@ import { Event } from '../../models/event';
 import { EVENT_ENDPOINTS } from '../../api/endpoints/event-entpoints/event-endpoints';
 import { CreateEventRequest } from '../../models/event';
 import { CreateEventResponse } from '../../models/event';
+import { PublicEventStats } from '../../models/event';
 import {
   ContentAnalyticsModel,
   EventOverviewAnalyticsModel,
@@ -55,6 +56,12 @@ export class EventService {
   getPublicEvents(take = 3): Observable<ApiResponse<Event[]>> {
     return this.http.get<ApiResponse<Event[]>>(
       this.api.getUrl(`${EVENT_ENDPOINTS.public}?take=${take}`)
+    );
+  }
+
+  getPublicEventStats(): Observable<ApiResponse<PublicEventStats>> {
+    return this.http.get<ApiResponse<PublicEventStats>>(
+      this.api.getUrl(EVENT_ENDPOINTS.publicStats)
     );
   }
 

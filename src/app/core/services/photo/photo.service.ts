@@ -29,12 +29,17 @@ export class PhotoService {
     eventId: string,
     page: number,
     pageSize: number,
-    visibleOnly?: boolean
+    visibleOnly?: boolean,
+    mine?: boolean
   ): Observable<ApiResponse<PaginatedResponseModel<Photo>>> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
 
     if (visibleOnly !== undefined) {
       params = params.set('visibleOnly', visibleOnly);
+    }
+
+    if (mine !== undefined) {
+      params = params.set('mine', mine);
     }
 
     return this.http.get<ApiResponse<PaginatedResponseModel<Photo>>>(

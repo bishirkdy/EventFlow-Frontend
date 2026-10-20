@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -26,9 +26,9 @@ export class CreateNavigationItem implements OnInit {
   private readonly state = inject(OrganizerEventStateService);
   private readonly toastr = inject(NotificationService);
 
-  pageOptions: EventPageModel[] = [];
-  loadingPages = true;
-  saving = false;
+  readonly pageOptions = signal<EventPageModel[]>([]);
+  readonly loadingPages = signal(true);
+  readonly saving = signal(false);
 
   private readonly loadPagesAction = createAsyncAction(
     (id: string) => this.pages.getManagePages(id),
@@ -36,11 +36,11 @@ export class CreateNavigationItem implements OnInit {
       toastErrors: true,
       errorFallback: 'Failed to load event pages.',
       onSettled: () => {
-        this.loadingPages = false;
+        this.loadingPages.set(false);
       },
       onSuccess: (r) => {
-        this.pageOptions = [...(r.data ?? [])].sort(
-          (a, b) => Number(b.isPublished) - Number(a.isPublished)
+        this.pageOptions.set(
+          [...(r.data ?? [])].sort((a, b) => Number(b.isPublished) - Number(a.isPublished))
         );
       }
     }
@@ -52,7 +52,7 @@ export class CreateNavigationItem implements OnInit {
     {
       errorFallback: 'Failed to create navigation item.',
       onSettled: () => {
-        this.saving = false;
+        this.saving.set(false);
       },
       onSuccess: ({ id, r }) => {
         this.toastr.success(r.message);
@@ -72,7 +72,7 @@ export class CreateNavigationItem implements OnInit {
 
     if (!id) {
       this.toastr.error('Event information is missing.');
-      this.loadingPages = false;
+      this.loadingPages.set(false);
       return;
     }
 
@@ -89,7 +89,7 @@ export class CreateNavigationItem implements OnInit {
 
     const v = this.form.getRawValue();
 
-    this.saving = true;
+    this.saving.set(true);
 
     this.createItemAction.run(id, {
       label: v.label.trim(),

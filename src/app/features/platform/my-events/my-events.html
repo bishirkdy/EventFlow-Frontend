@@ -65,13 +65,6 @@
                   {{ event.name | capitalize }}
                 </h2>
 
-                @if (event.description) {
-                  <p class="mt-2 line-clamp-2 min-h-10 text-sm text-text-secondary">
-                    {{ event.description | truncateWords: 50 }}
-                  </p>
-                } @else {
-                  <p class="mt-2 min-h-10 text-sm text-text-muted">No description available.</p>
-                }
 
                 <div class="mt-5 border-t border-border pt-4">
                   <p class="text-xs font-medium uppercase tracking-wide text-text-muted">

@@ -134,13 +134,6 @@ export const routes: Routes = [
       import('./features/platform/feedback/feedback').then((m) => m.FeedbackComponent)
   },
   {
-    path: 'verify/certificate/:certificateNumber',
-    loadComponent: () =>
-      import('./features/platform/certificates/certificate-verify/certificate-verify').then(
-        (m) => m.CertificateVerify
-      )
-  },
-  {
     path: 'events/:eventId/:slug',
     canActivate: [websiteAccessGuard],
     loadComponent: () => import('./features/website/website').then((m) => m.Website)

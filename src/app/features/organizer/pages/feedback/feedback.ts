@@ -1,9 +1,8 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FeedbackService } from '../../../../core/services/feedback/feedback.service';
-import { NotificationService } from '../../../../core/services/ui/notification.service';
 import { FeedbackResults, FeedbackTargetType } from '../../../../core/models/feedback';
 import { createAsyncAction } from '@/core/state';
 import { AsyncState } from '@/shared/components/async-state/async-state';
@@ -11,16 +10,19 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
 @Component({
   selector: 'app-organizer-feedback',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, RouterLink, AsyncState],
+  imports: [DatePipe, DecimalPipe, AsyncState],
   templateUrl: './feedback.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class OrganizerFeedbackComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly feedbackService = inject(FeedbackService);
-  private readonly notify = inject(NotificationService);
 
-  readonly eventId = this.route.snapshot.paramMap.get('eventId') ?? '';
+  readonly eventId =
+    this.route.pathFromRoot
+      .map((route) => route.snapshot.paramMap.get('eventId'))
+      .find((id): id is string => !!id) ?? '';
   readonly results = signal<FeedbackResults | null>(null);
 
   private readonly loadAction = createAsyncAction(

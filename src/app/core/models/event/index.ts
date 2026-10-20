@@ -9,6 +9,7 @@ export * from './event-status.enum';
 export * from './key-count.model';
 export * from './page-section-count.model';
 export * from './programme-analytics.model';
+export * from './public-event-stats.model';
 export * from './section-count.model';
 export * from './upload-event-images.request';
 export * from './venue-load.model';

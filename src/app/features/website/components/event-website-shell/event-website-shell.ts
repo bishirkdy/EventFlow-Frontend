@@ -8,12 +8,12 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { LoginDialogService } from '../../../../core/services/ui/login-dialog.service';
 import { RegistrationDialogService } from '../../../../core/services/ui/registration-dialog.service';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
-import { Menu, X, ChevronRight, ArrowUpRight , LucideAngularModule} from 'lucide-angular';
+import { Menu, X, ChevronRight, ArrowUpRight, LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-event-website-shell',
   standalone: true,
-  imports: [RouterLink, CapitalizePipe , LucideAngularModule],
+  imports: [RouterLink, CapitalizePipe, LucideAngularModule],
   templateUrl: './event-website-shell.html',
   styleUrl: './event-website-shell.css'
 })

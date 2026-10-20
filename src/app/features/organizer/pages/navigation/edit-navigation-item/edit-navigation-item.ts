@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -28,10 +28,10 @@ export class EditNavigationItem implements OnInit {
   private readonly toastr = inject(NotificationService);
   private readonly pages = inject(EventPageService);
 
-  pageOptions: EventPageModel[] = [];
-  loadingPages = true;
-  loading = true;
-  saving = false;
+  readonly pageOptions = signal<EventPageModel[]>([]);
+  readonly loadingPages = signal(true);
+  readonly loading = signal(true);
+  readonly saving = signal(false);
 
   item: NavigationItemModel | null = null;
 
@@ -41,11 +41,11 @@ export class EditNavigationItem implements OnInit {
       toastErrors: true,
       errorFallback: 'Failed to load event pages.',
       onSettled: () => {
-        this.loadingPages = false;
+        this.loadingPages.set(false);
       },
       onSuccess: (r) => {
-        this.pageOptions = [...(r.data ?? [])].sort(
-          (a, b) => Number(b.isPublished) - Number(a.isPublished)
+        this.pageOptions.set(
+          [...(r.data ?? [])].sort((a, b) => Number(b.isPublished) - Number(a.isPublished))
         );
       }
     }
@@ -57,7 +57,7 @@ export class EditNavigationItem implements OnInit {
       toastErrors: true,
       errorFallback: 'Failed to load navigation item.',
       onSettled: () => {
-        this.loading = false;
+        this.loading.set(false);
       },
       onSuccess: ({ itemId, r }) => {
         const item = r.data?.find((x) => x.id === itemId) ?? null;
@@ -84,7 +84,7 @@ export class EditNavigationItem implements OnInit {
     {
       errorFallback: 'Failed to update navigation item.',
       onSettled: () => {
-        this.saving = false;
+        this.saving.set(false);
       },
       onSuccess: ({ id, r }) => {
         this.toastr.success(r.message);
@@ -106,8 +106,8 @@ export class EditNavigationItem implements OnInit {
 
     if (!id || !itemId) {
       this.toastr.error('Navigation item information is required.');
-      this.loading = false;
-      this.loadingPages = false;
+      this.loading.set(false);
+      this.loadingPages.set(false);
       return;
     }
 
@@ -126,7 +126,7 @@ export class EditNavigationItem implements OnInit {
 
     const v = this.form.getRawValue();
 
-    this.saving = true;
+    this.saving.set(true);
 
     this.updateItemAction.run(id, itemId, {
       label: v.label.trim(),

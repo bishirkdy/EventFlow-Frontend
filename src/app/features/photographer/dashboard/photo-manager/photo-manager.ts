@@ -48,7 +48,7 @@ export class PhotoManager implements OnInit {
   readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
 
   private readonly loadAction = createAsyncAction(
-    () => this.photoService.getPhotos(this.eventId(), this.currentPage(), this.pageSize()),
+    () => this.photoService.getPhotos(this.eventId(), this.currentPage(), this.pageSize(), undefined, true),
     {
       errorFallback: 'Failed to load photos.',
       onError: () => {

@@ -62,13 +62,8 @@ export class PlatformFeatures {
       title: 'Feedback & Certificates',
       description: 'Collect feedback and create certificates for participants after the event.',
       image: 'images/journey/img1.png'
-    },
-    {
-      title: 'Analytics',
-      description:
-        'Understand registrations, attendance, participation, and overall event performance.',
-      image: 'images/journey/img1.png'
     }
+
   ];
 
   setActive(index: number): void {

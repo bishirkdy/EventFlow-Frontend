@@ -59,7 +59,7 @@
 
         @if (loadingSettings()) {
           <div class="flex flex-col items-center justify-center gap-3 px-6 py-12">
-            <div class="h-7 w-7 animate-spin border-2 border-border border-t-primary"></div>
+            <div class="h-7 w-7 animate-spin rounded-full border-2 border-border border-t-primary"></div>
             <p class="text-sm text-text-secondary">Loading certificate settings...</p>
           </div>
         } @else {
@@ -207,7 +207,7 @@
               >
                 @if (previewing()) {
                   <div
-                    class="h-4 w-4 animate-spin cursor-pointer border-2 border-border border-t-primary"
+                    class="h-4 w-4 animate-spin rounded-full cursor-pointer border-2 border-border border-t-primary"
                   ></div>
                   Generating preview...
                 } @else {
@@ -223,7 +223,7 @@
                 class="inline-flex items-center cursor-pointer justify-center gap-2 bg-primary border hover:border-primary hover:text-primary hover:bg-white px-5 py-2.5 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 @if (savingSettings()) {
-                  <div class="h-4 w-4 animate-spin border-2 border-white/40 border-t-white"></div>
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></div>
                   Saving...
                 } @else {
                   <lucide-icon [img]="Save" [size]="16" />
@@ -247,7 +247,7 @@
 
         @if (loadingSettings()) {
           <div class="flex flex-col items-center justify-center gap-3 px-6 py-12">
-            <div class="h-7 w-7 animate-spin border-2 border-border border-t-primary"></div>
+            <div class="h-7 w-7 animate-spin rounded-full border-2 border-border border-t-primary"></div>
             <p class="text-sm text-text-secondary">Loading certificate settings...</p>
           </div>
         } @else {
@@ -416,7 +416,7 @@
 
         @if (loadingEligibility()) {
           <div class="flex flex-col items-center justify-center gap-3 px-6 py-14">
-            <div class="h-8 w-8 animate-spin border-2 border-border border-t-primary"></div>
+            <div class="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary"></div>
             <p class="text-sm text-text-secondary">Computing participant eligibility...</p>
           </div>
         } @else if (eligibility(); as summary) {
@@ -614,7 +614,7 @@
 
         @if (loadingIssued()) {
           <div class="flex flex-col items-center justify-center gap-3 px-6 py-14">
-            <div class="h-8 w-8 animate-spin border-2 border-border border-t-primary"></div>
+            <div class="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary"></div>
             <p class="text-sm text-text-secondary">Loading issued certificates...</p>
           </div>
         } @else if (issued().length === 0) {

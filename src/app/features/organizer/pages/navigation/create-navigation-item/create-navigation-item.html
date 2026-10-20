@@ -23,8 +23,8 @@
           formControlName="pageId"
           class="w-full border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
         >
-          <option value="">{{ loadingPages ? 'Loading pages...' : 'Select a page' }}</option>
-          @for (page of pageOptions; track page.id) {
+          <option value="">{{ loadingPages() ? 'Loading pages...' : 'Select a page' }}</option>
+          @for (page of pageOptions(); track page.id) {
             <option [value]="page.id">
               {{ page.name | capitalize }}{{ page.isPublished ? '' : ' (draft)' }}
             </option>
@@ -44,10 +44,10 @@
         Cancel</button
       ><button
         type="submit"
-        [disabled]="form.invalid || saving"
+        [disabled]="form.invalid || saving()"
         class="bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {{ saving ? 'Creating...' : 'Create Item' }}
+        {{ saving() ? 'Creating...' : 'Create Item' }}
       </button>
     </div>
   </form>

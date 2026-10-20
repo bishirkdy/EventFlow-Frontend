@@ -10,7 +10,6 @@ import { NotificationService } from '../../../core/services/ui/notification.serv
 
 import { Event } from '../../../core/models/event';
 import { workspaceUrlForRoles } from '../../../core/routing/event-route.util';
-import { TruncateWordsPipe } from '@/shared/components/pipes/truncate-words.pipe';
 import { CapitalizePipe } from '@/shared/components/pipes/capitalize.pipe';
 import { FeedbackComponent } from '../feedback/feedback';
 import { createAsyncAction } from '@/core/state';
@@ -18,7 +17,7 @@ import { AsyncState } from '@/shared/components/async-state/async-state';
 
 @Component({
   selector: 'app-my-events',
-  imports: [DatePipe, RouterLink, TruncateWordsPipe, FeedbackComponent, CapitalizePipe, AsyncState],
+  imports: [DatePipe, RouterLink, FeedbackComponent, CapitalizePipe, AsyncState],
   templateUrl: './my-events.html',
   styleUrl: './my-events.css'
 })
@@ -28,7 +27,6 @@ export class MyEvents implements OnInit {
   private readonly eventService = inject(EventService);
   private readonly roleService = inject(EventRoleService);
   private readonly registrationService = inject(RegistrationService);
-  private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
 
@@ -61,7 +59,7 @@ export class MyEvents implements OnInit {
         const url = workspaceUrlForRoles(event.id, roles);
 
         if (!url) {
-          this.notify.error("You don't have access to this event.");
+          this.router.navigate(["/events" , event.id])
           return;
         }
 
@@ -120,9 +118,6 @@ export class MyEvents implements OnInit {
 
         this.rolesLoadedEventIds.update((ids) => (ids.includes(eventId) ? ids : [...ids, eventId]));
       },
-      error: () => {
-        // Non-critical: roles only hide restricted events from the list.
-      }
     });
   }
 
@@ -144,9 +139,6 @@ export class MyEvents implements OnInit {
           }));
         }
       },
-      error: () => {
-        // Non-critical: registration status only decorates the event card.
-      }
     });
   }
 

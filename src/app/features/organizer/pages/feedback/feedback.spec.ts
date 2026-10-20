@@ -63,11 +63,7 @@ describe('OrganizerFeedbackComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => 'event-1'
-              }
-            }
+            pathFromRoot: [{ snapshot: { paramMap: { get: () => 'event-1' } } }]
           }
         },
         {

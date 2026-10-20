@@ -1,12 +1,14 @@
 import { Component, computed, input } from '@angular/core';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-button',
-  imports: [],
+  imports: [NgClass],
   standalone: true,
   templateUrl: './button.html',
   styleUrl: './button.css'
 })
+
 export class Button {
   label = input<string>('');
   variant = input<'primary' | 'secondary' | 'ghost' | 'danger'>('primary');
