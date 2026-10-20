@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
@@ -7,13 +7,11 @@ import {
   Mail,
   Phone,
   MapPin,
-  Clock,
   ArrowRight,
   CalendarDays,
-  CheckCircle
+  MessageCircle
 } from 'lucide-angular';
 import { Button } from '../../../shared/components/button/button';
-import { isValidEmail } from '@/shared/validators/email.validator';
 
 interface ContactDetail {
   label: string;
@@ -29,16 +27,30 @@ interface ContactDetail {
   styleUrl: './contact.css'
 })
 export class Contact {
-  readonly sent = signal(false);
+  private static readonly whatsAppNumber = '919048931894';
+
+  readonly whatsappOpened = signal(false);
 
   readonly name = signal('');
-  readonly email = signal('');
   readonly subject = signal('');
   readonly message = signal('');
 
+  readonly whatsappUrl = computed(() => {
+    const text = [
+      'Hello EventFlow,',
+      '',
+      `Name: ${this.name().trim()}`,
+      `Subject: ${this.subject().trim() || 'General enquiry'}`,
+      '',
+      this.message().trim()
+    ].join('\n');
+
+    return `https://wa.me/${Contact.whatsAppNumber}?text=${encodeURIComponent(text)}`;
+  });
+
   readonly ArrowRight = ArrowRight;
   readonly CalendarDays = CalendarDays;
-  readonly CheckCircle = CheckCircle;
+  readonly MessageCircle = MessageCircle;
 
   readonly details: ContactDetail[] = [
     { label: 'Email', value: 'support@eventflow.com', icon: Mail },
@@ -54,17 +66,17 @@ export class Contact {
     }
 
     const name = this.name().trim();
-    const email = this.email().trim();
     const message = this.message().trim();
 
-    if (!name || !isValidEmail(email) || !message) {
+    if (!name || !message) {
       return;
     }
 
     this.name.set(name);
-    this.email.set(email);
     this.subject.set(this.subject().trim());
     this.message.set(message);
-    this.sent.set(true);
+    this.whatsappOpened.set(true);
+
+    window.open(this.whatsappUrl(), '_blank', 'noopener,noreferrer');
   }
 }

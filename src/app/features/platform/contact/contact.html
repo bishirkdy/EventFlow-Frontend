@@ -45,11 +45,11 @@
             How can we help?
           </h2>
           <p class="mt-3 text-sm leading-7 text-text-secondary">
-            Complete the form and give us a little context about your enquiry.
+            Complete the form and send it through WhatsApp.
           </p>
         </div>
 
-        @if (sent()) {
+        @if (whatsappOpened()) {
           <div
             class="mb-6 flex items-start gap-3 border border-primary/30 bg-primary-light p-4"
             role="status"
@@ -58,68 +58,51 @@
             <div
               class="flex h-9 w-9 shrink-0 items-center justify-center border border-primary/20 bg-background text-primary"
             >
-              <lucide-icon [img]="CheckCircle" [size]="19" />
+              <lucide-icon [img]="MessageCircle" [size]="19" />
             </div>
 
             <div>
-              <p class="text-sm font-semibold text-text-primary">Message sent successfully</p>
+              <p class="text-sm font-semibold text-text-primary">
+                WhatsApp is opening in a new tab
+              </p>
               <p class="mt-1 text-sm leading-6 text-text-secondary">
-                Thanks {{ name() || 'there' }}! We have received your message and will respond soon.
+                Press <span class="font-semibold">Send</span> in WhatsApp to deliver your message.
+                If it did not open,
+                <a
+                  [href]="whatsappUrl()"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-semibold text-primary underline"
+                >
+                  open WhatsApp
+                </a>
+                .
               </p>
             </div>
           </div>
         }
 
         <form #contactForm="ngForm" class="space-y-5" (ngSubmit)="submit(contactForm)">
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div class="flex min-w-0 flex-col gap-2">
-              <label for="contact-name" class="text-sm font-medium text-text-primary">
-                Full name <span class="text-error">*</span>
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                autocomplete="name"
-                required
-                maxlength="150"
-                [(ngModel)]="name"
-                #nameField="ngModel"
-                placeholder="Enter your name"
-                class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
-              />
+          <div class="flex min-w-0 flex-col gap-2">
+            <label for="contact-name" class="text-sm font-medium text-text-primary">
+              Full name <span class="text-error">*</span>
+            </label>
+            <input
+              id="contact-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              maxlength="150"
+              [(ngModel)]="name"
+              #nameField="ngModel"
+              placeholder="Enter your name"
+              class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
+            />
 
-              @if (nameField.touched && nameField.invalid) {
-                <p class="text-xs font-medium text-error">Please enter your name.</p>
-              }
-            </div>
-
-            <div class="flex min-w-0 flex-col gap-2">
-              <label for="contact-email" class="text-sm font-medium text-text-primary">
-                Email address <span class="text-error">*</span>
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                autocomplete="email"
-                required
-                maxlength="255"
-                pattern="[A-Za-z][A-Za-z0-9._-]*@[A-Za-z0-9-]+\.[A-Za-z]{2,}"
-                [(ngModel)]="email"
-                #emailField="ngModel"
-                placeholder="Enter your email"
-                class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
-              />
-
-              @if (emailField.touched && emailField.invalid) {
-                @if (emailField.hasError('required')) {
-                  <p class="text-xs font-medium text-error">Please enter your email.</p>
-                } @else {
-                  <p class="text-xs font-medium text-error">Enter a valid email address.</p>
-                }
-              }
-            </div>
+            @if (nameField.touched && nameField.invalid) {
+              <p class="text-xs font-medium text-error">Please enter your name.</p>
+            }
           </div>
 
           <div class="flex flex-col gap-2">
@@ -130,6 +113,7 @@
               id="contact-subject"
               name="subject"
               type="text"
+              maxlength="200"
               [(ngModel)]="subject"
               placeholder="What is your enquiry about?"
               class="h-12 w-full rounded-md border border-border bg-surface px-3.5 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary-light"
@@ -144,6 +128,7 @@
               id="contact-message"
               name="message"
               required
+              maxlength="1000"
               rows="6"
               [(ngModel)]="message"
               #messageField="ngModel"
@@ -158,12 +143,16 @@
 
           <div class="border-t border-border pt-5">
             <app-button
-              label="Send Message"
+              label="Send via WhatsApp"
               type="submit"
               size="lg"
               [disabled]="contactForm.invalid === true"
-            />
-            <p class="mt-3 text-xs leading-5 text-text-muted">Fields marked with * are required.</p>
+            >
+              <lucide-icon [img]="MessageCircle" [size]="18" />
+            </app-button>
+            <p class="mt-3 text-xs leading-5 text-text-muted">
+              Fields marked with * are required. WhatsApp opens in a new tab.
+            </p>
           </div>
         </form>
       </div>

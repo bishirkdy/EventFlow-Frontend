@@ -83,7 +83,7 @@
                     <div class="mt-5 flex flex-wrap gap-3 border-t border-border pt-4">
                       <a
                         [routerLink]="registrationLink(event.id)"
-                        class="flex-1 items-center justify-center hover:bg-white border hover:border-secondary hover:text-secondary bg-secondary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-secondary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                          class="flex-1 items-center justify-center cursor-pointer border border-border px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-tertiary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                       >
                         {{ isRegistered(event.id) ? 'My Registration' : 'Register' }}
                       </a>
