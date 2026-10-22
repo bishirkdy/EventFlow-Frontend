@@ -15,6 +15,7 @@ import { credentialsInterceptor } from './core/interceptors/credentialsIntercept
 import { loadingInterceptor } from './core/interceptors/loadingInterceptor';
 import { authRefreshInterceptor } from './core/interceptors/authRefreshInterceptor';
 import { apiErrorInterceptor } from './core/interceptors/apiErrorInterceptor';
+import { AppConfigService } from './core/config/app-config.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
