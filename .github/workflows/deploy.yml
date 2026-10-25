@@ -10,16 +10,21 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: eventflow-frontend-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     env:
       AWS_REGION: ap-southeast-2
       ECR_REPOSITORY: eventflow-frontend
       ECR_REGISTRY: 730132962765.dkr.ecr.ap-southeast-2.amazonaws.com
       EC2_INSTANCE_ID: i-0948b406f0a18940c
-      IMAGE_TAG: latest
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout source
@@ -35,49 +40,132 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push Docker image
-        run: |
-          docker build \
-            -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" .
-          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Deploy through SSM
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          cache-from: type=gha,scope=eventflow-frontend
+          cache-to: type=gha,scope=eventflow-frontend,mode=max
+
+      - name: Deploy and verify through SSM
+        shell: bash
         run: |
+          set -euo pipefail
+
           IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          # Pass one complete shell script to SSM.
+          read -r -d '' DEPLOY_SCRIPT <<'REMOTE' || true
+          set -Eeuo pipefail
+
+          IMAGE="__IMAGE__"
+          REGION="__REGION__"
+          REGISTRY="__REGISTRY__"
+          NAME="eventflow-frontend"
+          OLD="eventflow-frontend-rollback"
+          HEALTH_URL="http://127.0.0.1:4200/"
+
+          # Keep the current container and image for rollback.
+          OLD_IMAGE=$(docker inspect "$NAME" --format '{{.Config.Image}}')
+          docker image inspect "$OLD_IMAGE" >/dev/null
+
+          # Authenticate and download the new image first.
+          aws ecr get-login-password --region "$REGION" |
+            docker login --username AWS --password-stdin "$REGISTRY"
+          docker pull "$IMAGE"
+
+          # Do not overwrite an existing rollback container.
+          if docker inspect "$OLD" >/dev/null 2>&1; then
+            echo "A rollback container already exists; refusing deployment."
+            exit 1
+          fi
+
+          # Stop and preserve the previous container.
+          docker stop "$NAME"
+          docker rename "$NAME" "$OLD"
+
+          rollback() {
+            echo "Health check failed; restoring previous frontend."
+            docker rm -f "$NAME" >/dev/null 2>&1 || true
+            docker start "$OLD"
+            docker rename "$OLD" "$NAME"
+            exit 1
+          }
+          trap rollback ERR
+
+          # Recreate the frontend with the new image.
+          docker run -d \
+            --name "$NAME" \
+            --restart unless-stopped \
+            -p 4200:4200 \
+            "$IMAGE"
+
+          # Wait up to 60 seconds for HTTP success.
+          HEALTHY=0
+          for i in $(seq 1 12); do
+            if curl --silent --show-error --fail \
+              --max-time 3 "$HEALTH_URL" >/dev/null; then
+              HEALTHY=1
+              break
+            fi
+            sleep 5
+          done
+
+          if [ "$HEALTHY" -ne 1 ]; then
+            echo "Frontend HTTP health check failed."
+            docker logs --tail 100 "$NAME" || true
+            rollback
+          fi
+
+          # Keep the previous container until the new app is healthy.
+          trap - ERR
+          docker rm "$OLD"
+
+          echo "Frontend deployment and HTTP health check succeeded."
+          docker ps --filter "name=$NAME"
+
+          # Conservative cleanup: never remove volumes or all images.
+          docker builder prune -af --filter "until=168h" || true
+          docker image prune -f || true
+          docker system df
+          REMOTE
+
+          # Safely substitute deployment values and encode the script.
+          DEPLOY_SCRIPT="${DEPLOY_SCRIPT//__IMAGE__/$IMAGE}"
+          DEPLOY_SCRIPT="${DEPLOY_SCRIPT//__REGION__/$AWS_REGION}"
+          DEPLOY_SCRIPT="${DEPLOY_SCRIPT//__REGISTRY__/$ECR_REGISTRY}"
+
+          PARAMS=$(jq -cn --arg script "$DEPLOY_SCRIPT" \
+            '{commands: [$script]}')
 
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$EC2_INSTANCE_ID" \
-            --document-name "AWS-RunShellScript" \
+            --document-name AWS-RunShellScript \
             --comment "Deploy EventFlow frontend" \
-            --parameters "$(jq -cn --arg image "$IMAGE" --arg region "$AWS_REGION" --arg registry "$ECR_REGISTRY" '{
-              commands: [
-                "set -e",
-                ("aws ecr get-login-password --region " + $region + " | docker login --username AWS --password-stdin " + $registry),
-                ("docker pull " + $image),
-                "docker rm -f eventflow-frontend || true",
-                ("docker run -d --name eventflow-frontend --restart unless-stopped -p 4200:4200 " + $image),
-                "docker ps --filter name=eventflow-frontend"
-              ]
-            }')" \
-            --query "Command.CommandId" \
+            --parameters "$PARAMS" \
+            --query 'Command.CommandId' \
             --output text)
 
           echo "SSM command ID: $COMMAND_ID"
 
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             STATUS=$(aws ssm get-command-invocation \
               --command-id "$COMMAND_ID" \
               --instance-id "$EC2_INSTANCE_ID" \
-              --query "Status" \
+              --query Status \
               --output text 2>/dev/null || true)
 
             case "$STATUS" in
               Success)
-                echo "Frontend deployment successful."
                 aws ssm get-command-invocation \
                   --command-id "$COMMAND_ID" \
                   --instance-id "$EC2_INSTANCE_ID" \
-                  --query "StandardOutputContent" \
+                  --query StandardOutputContent \
                   --output text
                 exit 0
                 ;;
@@ -85,7 +173,7 @@ jobs:
                 aws ssm get-command-invocation \
                   --command-id "$COMMAND_ID" \
                   --instance-id "$EC2_INSTANCE_ID" \
-                  --query "[Status,StandardErrorContent,StandardOutputContent]" \
+                  --query '[Status,StandardErrorContent,StandardOutputContent]' \
                   --output json
                 exit 1
                 ;;
@@ -94,5 +182,5 @@ jobs:
             sleep 10
           done
 
-          echo "Timed out waiting for SSM deployment."
+          echo "Timed out waiting for SSM. Check the command in AWS Systems Manager."
           exit 1
