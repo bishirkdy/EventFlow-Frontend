@@ -148,7 +148,10 @@
                     </button>
                   }
 
-                  @if (item.status === 1 || item.status === 4) {
+                  @if (
+                    item.status === RegistrationStatus.Approved ||
+                    item.status === RegistrationStatus.Waitlisted
+                  ) {
                     <button
                       type="button"
                       (click)="cancel(item, $event)"
