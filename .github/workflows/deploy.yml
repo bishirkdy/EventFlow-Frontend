@@ -20,10 +20,10 @@ jobs:
     timeout-minutes: 30
 
     env:
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-      ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
-      EC2_INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
