@@ -1,14 +1,11 @@
-import { inject, Injectable } from '@angular/core';
-import { AppConfigService } from '../config/app-config.service';
+import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Api {
-  private readonly baseUrl = environment.production
-    ? 'https://eventflow-app.duckdns.org/api'
-    : 'http://localhost:5000/api';
+  private readonly baseUrl = environment.apiUrl.replace(/\/+$/, '');
 
   getUrl(endpoint: string): string {
     return `${this.baseUrl}${endpoint}`;

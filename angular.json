@@ -25,7 +25,11 @@
                 "input": "public"
               }
             ],
-            "styles": ["node_modules/ngx-spinner/animations/ball-atom.css","node_modules/ngx-toastr/toastr.css", "src/styles.css"],
+            "styles": [
+              "node_modules/ngx-spinner/animations/ball-atom.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/styles.css"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
@@ -37,6 +41,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",

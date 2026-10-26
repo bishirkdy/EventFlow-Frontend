@@ -198,14 +198,14 @@ describe('MyEvents openEvent role routing', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/owner', 'evt-1']);
   });
 
-  it('stays put with a toast when the account has no role on the event', async () => {
+  it('opens the public event site when the account has no role on the event', async () => {
     await setup();
     withRoles();
 
     component.openEvent(testEvent);
 
-    expect(router.navigate).not.toHaveBeenCalled();
-    expect(toastr.error).toHaveBeenCalledTimes(1);
+    expect(router.navigate).toHaveBeenCalledWith(['/events', 'evt-1']);
+    expect(toastr.error).not.toHaveBeenCalled();
   });
 
   it('stays put with a toast when the role lookup fails', async () => {
